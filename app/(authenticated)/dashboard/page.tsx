@@ -9,14 +9,14 @@ const Page = () => {
     const { data, error, isLoading }  = sampleRepository.hooks.useJoke();
     return <div>
         <div>
-            home: {store.ui.title}
+            Dashboard: {store.ui.title}
         </div>
-        <div>
+        {/* <div>
             fact: {data?.setup}
-        </div>
-        <Button className={"ml-8"} onClick={() => {
+        </div> */}
+        {/* <Button className={"ml-8"} onClick={() => {
             store.ui.changeTitle("from home")
-        }}>change title</Button>
+        }}>Button</Button> */}
     </div>;
 };
 

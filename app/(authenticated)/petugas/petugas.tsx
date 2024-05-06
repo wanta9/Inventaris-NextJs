@@ -4,14 +4,14 @@ import React from "react";
 import {Button, Card} from "antd";
 import {store} from "#/store";
 
-const Page = () => {
+const petugas = () => {
     return <div>
-        about: {store.ui.title}
-        <Button onClick={() => {
-            store.ui.changeTitle("from about")
+        petugas: {store.ui.title}
+        <Button onClick= {() => {
+            store.ui.changeTitle("from petugas")
         }}>change title</Button>
     </div>;
 };
 
-export default Page;
+export default petugas;
 

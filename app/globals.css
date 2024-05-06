@@ -1,4 +1,8 @@
-/*@tailwind base;*/
+/*@tailwind base;*//* global.css */
+body {
+    background-color: #582DD2;
+  }
+  
 @tailwind components;
 @tailwind utilities;
 

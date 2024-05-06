@@ -9,7 +9,6 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 const Login = () => {
     // const store = useStore();
     const [loading, setLoading] = useState(false);
-
     // let history = useHistory();
     const onFinish = (values: any) => {
         console.log('Received values of form: ', values);
@@ -25,7 +24,7 @@ const Login = () => {
         // return history.push("/app/page_example_1");
     };
 
-    return <div style={{width: '100vw', display: 'flex', justifyContent: 'center'}}>
+    return <div style={{width: 'center', display: 'flex', justifyContent: 'center'}}>
         <Row justify={'center'}>
             <Col>
                 <div style={{
@@ -35,26 +34,15 @@ const Login = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}>
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'stretch'}}>
-                        <Typography.Paragraph
-                            style={{
-                                margin: 0,
-                                padding: 0,
-                                fontSize: 20,
-                                marginLeft: 5,
-                                fontWeight: 600,
-                                color: "#413d3e",
-                            }}
-                        >
-                            Boilerplate
-                        </Typography.Paragraph>
-                    </div>
                     <Card
-                        style={{width: 320, textAlign: 'center'}}
-                        headStyle={{fontSize: 13, fontWeight: 200}}
-                        className={"shadow"}
-                        bordered={true}
-                        title={'Sign in to your account'}
+                        style={{width: 400,
+                            textAlign: 'center',
+                            margin:20,
+                           }}
+                           
+                       headStyle={{font: 'bold', fontSize: 18, fontWeight: 200}}
+                       bordered={true}
+                       title={'Selamat Datang!'}
                     >
                         <Form
                             layout={'vertical'}
@@ -63,70 +51,43 @@ const Login = () => {
                             onFinish={onFinish}
                         >
                             <Form.Item
-                                label="Email"
-                                name="email"
+                                label="Nama Perngguna"
+                                name="nama"
                                 // size={'large'}
-                                rules={[{required: false, message: 'Please input your Username!'}]}
+                                rules={[{required: false, message: 'Masukan nama yg bener!'}]}
                             >
                                 <Input
                                     prefix={<UserOutlined className="site-form-item-icon"/>}
-                                    type="text"
-                                    placeholder="Email"/>
+                                    type="text"/>
                             </Form.Item>
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    marginBottom: 17,
                                 }}
-                                label="Password"
-                                name="password"
+                                label="Sandi"
+                                name="sandi"
                                 // size={'large'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
+                                rules={[{required: false, message: 'masukkan sandi!'}]}
                             >
                                 <Input.Password
                                     prefix={<LockOutlined className="site-form-item-icon"/>}
                                     type="password"
-                                    placeholder="Password"
                                 />
-                            </Form.Item>
+                            </Form.Item>                    
                             <Form.Item
                                 style={{
-                                    marginTop: 0,
-                                    marginBottom: 20,
-                                    padding: 0
-                                }}
-                                // label="Password"
-                                name="forgot-password"
-                                // size={'small'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                <a className="login-form-forgot" href="">
-                                    Forgot password
-                                </a>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 5,
-                                    textAlign: 'left'
-                                }}>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
+                                    marginBottom: 17,
                                 }}>
                                 <Button type="primary"
                                         block
                                         loading={loading}
                                         htmlType="submit"
                                         size={'large'}
+                                        style={{background:'#582DD2'}}
                                         onSubmit={enterLoading}
                                         className="login-form-button">
-                                    Sign In
+                                    Masuk
                                 </Button>
                             </Form.Item>
                         </Form>

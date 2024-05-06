@@ -39,14 +39,13 @@ const Register = () => {
 
                     </div>
                     <Card
-                        style={{width: 320,
+                        style={{width: 400,
                              textAlign: 'center',
-                             margin:70,
+                             margin:20,
                             }}
-                        headStyle={{fontSize: 13, fontWeight: 200}}
-                        className={"shadow"}
+                        headStyle={{font: 'bold', fontSize: 18, fontWeight: 200}}
                         bordered={true}
-                        title={'Sign in to your account'}
+                        title={'PENDAFTARAN'}
                     >
                         <Form
                             layout={'vertical'}
@@ -55,10 +54,17 @@ const Register = () => {
                             onFinish={onFinish}
                         >
                             <Form.Item
+                                style={{
+                                    width: 280,
+                                    margin: 'auto', 
+                                }}
                                 label="Nama Pengguna"
-                                name="namapengguna"                                // size={'large'}
-                                rules={[{required: false, message: 'Masukin Nama yg bener!'}]}
+                                name="namapengguna"                               
+                                rules={[{required: false, message: 'Masukkan Nama yang benar!'}]}
                             >
+                                <style>
+                                    background-color: #582DD2;
+                                </style>
                                 <Input
                                     prefix={<UserOutlined className="site-form-item-icon"/>}
                                     type="text"/>
@@ -66,11 +72,11 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}
                                 label="Sandi"
                                 name="sandi"
-                                // size={'large'}
                             >
                                 <Input.Password
                                     prefix={<LockOutlined className="site-form-item-icon"/>}
@@ -80,7 +86,8 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}
                                 label="Konfirmasi Sandi"
                                 name="konfirmasisandi"
@@ -95,7 +102,8 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}
                                 label="NISN"
                                 name="nisn"
@@ -109,7 +117,8 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}
                                 label="Nama Lengkap"
                                 name="nama lengkap"
@@ -124,7 +133,8 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}
                                 label="Kelas"
                                 name="kelas"
@@ -139,7 +149,9 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto',
+                                    marginBottom: 17, 
                                 }}
                                 label="Nomer Telp"
                                 name="nomertelp"
@@ -154,33 +166,8 @@ const Register = () => {
 
                             <Form.Item
                                 style={{
-                                    marginTop: 0,
-                                    marginBottom: 20,
-                                    padding: 0
-                                }}
-                                // label="Password"
-                                name="forgot-password"
-                                // size={'small'}
-                                rules={[{required: false, message: 'Please input your Password!'}]}
-                            >
-                                <a className="login-form-forgot" href="">
-                                    Forgot password
-                                </a>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 5,
-                                    textAlign: 'left'
-                                }}>
-                                <Form.Item name="remember" valuePropName="checked" noStyle>
-                                    <Checkbox>Remember me</Checkbox>
-                                </Form.Item>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 0,
+                                    width: 280,
+                                    margin: 'auto', 
                                 }}>
                                 <Button type="primary"
                                         block
@@ -188,8 +175,9 @@ const Register = () => {
                                         htmlType="submit"
                                         size={'large'}
                                         onSubmit={enterLoading}
-                                        className="login-form-button">
-                                    Sign In
+                                        style={{background:'#582DD2'}}
+                                        className="register-form-button">
+                                    Daftar
                                 </Button>
                             </Form.Item>
                         </Form>

@@ -18,6 +18,7 @@ export default function RootLayout({
       <head />
 
       <body>
+        
         <Script src="/api/env" strategy={"beforeInteractive"}></Script>
         <Provider>{children}</Provider>
       </body>

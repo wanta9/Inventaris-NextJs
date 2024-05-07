@@ -27,15 +27,15 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
-    { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
-    { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
-    { key: '/letakbarang', icon: <InboxOutlined />, label: 'Letak barang' },
-    { key: '/barang', icon: <InboxOutlined />, label: 'Barang' },
-    { key: '/barangmasuk', icon: <InboxOutlined />, label: 'Barang Masuk' },
-    { key: '/barangkeluar', icon: <InboxOutlined />, label: 'Barang Keluar' },
-    { key: '/barangrusak', icon: <InboxOutlined />, label: 'Barang Rusak' },
-    { key: '/peminjaman', icon: <InboxOutlined />, label: 'Peminjaman' },
-    { key: '/riwayat', icon: <InboxOutlined />, label: 'Riwayat' },
+    // { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
+    // { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
+    // { key: '/letakbarang', icon: <InboxOutlined />, label: 'Letak barang' },
+    // { key: '/barang', icon: <InboxOutlined />, label: 'Barang' },
+    // { key: '/barangmasuk', icon: <InboxOutlined />, label: 'Barang Masuk' },
+    // { key: '/barangkeluar', icon: <InboxOutlined />, label: 'Barang Keluar' },
+    // { key: '/barangrusak', icon: <InboxOutlined />, label: 'Barang Rusak' },
+    // { key: '/peminjaman', icon: <InboxOutlined />, label: 'Peminjaman' },
+    // { key: '/riwayat', icon: <InboxOutlined />, label: 'Riwayat' },
   ];
 
   return (

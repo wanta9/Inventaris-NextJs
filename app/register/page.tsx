@@ -38,15 +38,27 @@ const Register = () => {
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'stretch'}}>
 
                     </div>
-                    <Card
-                        style={{width: 400,
-                             textAlign: 'center',
-                             margin:20,
-                            }}
-                        headStyle={{font: 'bold', fontSize: 18, fontWeight: 200}}
-                        bordered={true}
-                        title={'PENDAFTARAN'}
+                    <Card style={{ textAlign: "center" }}>
+
+                    <div style={{ display: "inline-block" }}>
+
+                    <img src="ikon.png"
+                    style={{ width: 100,
+                        marginTop: 0,
+                     }}/>
+
+                    </div>
+
+                    <div style={{width: 400,
+                            textAlign: 'center',
+                            margin:0,
+                            marginBottom: 30,
+                            fontSize: 18, fontWeight: 200,
+                    }}
                     >
+                        <span style={{fontWeight: 'bold'}}>Pendaftaran</span>
+                        </div>
+
                         <Form
                             layout={'vertical'}
                             name="normal_login"
@@ -62,9 +74,6 @@ const Register = () => {
                                 name="namapengguna"                               
                                 rules={[{required: false, message: 'Masukkan Nama yang benar!'}]}
                             >
-                                <style>
-                                    background-color: #582DD2;
-                                </style>
                                 <Input
                                     prefix={<UserOutlined className="site-form-item-icon"/>}
                                     type="text"/>
@@ -185,7 +194,16 @@ const Register = () => {
                 </div>
             </Col>
         </Row>
-
+        <div className="register-page">
+            <style>
+                {`
+                    body {
+                        background-color: #582DD2;
+                    }
+                `}
+            </style>
+            {/* Konten halaman login */}
+        </div>
     </div>;
 };
 

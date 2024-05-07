@@ -11,7 +11,7 @@ const Page = () => {
         <div>
             Dashboard: {store.ui.title}
         </div>
-        {/* <div>
+        {/* <div>       
             fact: {data?.setup}
         </div> */}
         {/* <Button className={"ml-8"} onClick={() => {

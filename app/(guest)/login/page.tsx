@@ -7,11 +7,13 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 // import ParticlesLayout from "../components/Layout/ParticlesLayout";
 
 const Login = () => {
+    
     // const store = useStore();
     const [loading, setLoading] = useState(false);
     // let history = useHistory();
 
     const onFinish = (values: any) => {
+        
         console.log('Received values of form: ', values);
         enterLoading(values).then(res => {
             console.log(res, "awasaa");
@@ -35,16 +37,28 @@ const Login = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}>
-                    <Card
-                        style={{width: 400,
+                    <Card style={{ textAlign: "center",
+                     }}>
+
+                    <div style={{ display: "inline-block" }}>
+
+                    <img src="ikon.png"
+                    style={{ width: 100,
+                        marginTop:0,
+                     }}/>
+
+                    </div>
+
+                    <div style={{width: 400,
                             textAlign: 'center',
-                            margin:20,
-                           }}
-                           
-                       headStyle={{font: 'bold', fontSize: 18, fontWeight: 200}}
-                       bordered={true}
-                       title={'Selamat Datang!'}
+                            margin:0,
+                            marginBottom: 30,
+                            fontSize: 18, fontWeight: 200,
+                    }}
                     >
+                        <span style={{fontWeight: 'bold'}}>Selamat Datang</span>
+                        </div>
+
                         <Form
                             layout={'vertical'}
                             name="normal_login"
@@ -96,7 +110,16 @@ const Login = () => {
                 </div>
             </Col>
         </Row>
-
+        <div className="login-page">
+            <style>
+                {`
+                    body {
+                        background-color: #582DD2;
+                    }
+                `}
+            </style>
+            {/* Konten halaman login */}
+        </div>
     </div>;
 };
 

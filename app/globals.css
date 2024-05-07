@@ -1,8 +1,15 @@
 /*@tailwind base;*//* global.css */
-body {
-    background-color: #582DD2;
-  }
-  
+/* global.css */
+
+.login-page {
+  background-color: #582DD2;
+}
+
+.register-page {
+  background-color: #582DD2;
+}
+
+
 @tailwind components;
 @tailwind utilities;
 

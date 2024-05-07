@@ -3,7 +3,7 @@
 import React from 'react';
 import { HomeOutlined, InboxOutlined, UserOutlined, DropboxOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, Space, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import { useRouter } from "next/navigation";
 import { Card, Row, Col, Avatar } from 'antd';
 
@@ -27,15 +27,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
-    // { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
-    // { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
-    // { key: '/letakbarang', icon: <InboxOutlined />, label: 'Letak barang' },
-    // { key: '/barang', icon: <InboxOutlined />, label: 'Barang' },
-    // { key: '/barangmasuk', icon: <InboxOutlined />, label: 'Barang Masuk' },
-    // { key: '/barangkeluar', icon: <InboxOutlined />, label: 'Barang Keluar' },
-    // { key: '/barangrusak', icon: <InboxOutlined />, label: 'Barang Rusak' },
-    // { key: '/peminjaman', icon: <InboxOutlined />, label: 'Peminjaman' },
-    // { key: '/riwayat', icon: <InboxOutlined />, label: 'Riwayat' },
+    { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
   ];
 
   return (
@@ -54,46 +46,12 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             items={menu}
             onClick={({ key }) => {
               router.push(key);
-              // console.log(`key ${key} route not found`);
             }}
           />
         </Sider>
         <Layout style={{ padding: '0 24px 24px', height: 'calc(100vh - 64px)', display: 'flex', justifyContent: 'space-between' }}>
             <Content style={{ padding: '75px 50px 50px'}}>
-              <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Dashboard</h1>
-            <p style={{ paddingBottom: '20px'}}>Halo, Elisabet. Selamat Datang di Inventaris!</p>
-            <Row gutter={[32, 32]}> {/* Mengatur jarak horizontal dan vertikal antara kartu-kartu */}
-                <Col>
-                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
-                    <Meta
-                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
-                      style={{ padding: '15px 20px 10px'}}
-                      title="20"
-                      description="Barang"
-                    />
-                  </Card>
-                </Col>
-                <Col>
-                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
-                    <Meta
-                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
-                      style={{ padding: '15px 20px 10px'}}
-                      title="3"
-                      description="Peminjam"
-                    />
-                  </Card>
-                </Col>
-                <Col>
-                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
-                    <Meta
-                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
-                      style={{ padding: '15px 20px 10px'}}
-                      title="5"
-                      description="Aktif"
-                    />
-                  </Card>
-                </Col>
-              </Row>
+              {children}
         </Content>
         </Layout>
       </Layout>

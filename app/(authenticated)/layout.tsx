@@ -5,12 +5,13 @@ import { HomeOutlined, InboxOutlined, UserOutlined, DropboxOutlined } from '@ant
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, Space, theme } from 'antd';
 import { useRouter } from "next/navigation";
-import { Card } from 'antd';
+import { Card, Row, Col, Avatar } from 'antd';
 
 
 
 
 const { Header, Content, Sider } = Layout;
+const { Meta } = Card;
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode
@@ -40,16 +41,16 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   return (
     <Layout>
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: '16px' }}>
+        <Sider width={250} style={{ background: colorBgContainer }}>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px 5px'}}>
             {/* Logo */}
-            <img src="ikon.png" style={{ width: '60px', marginLeft: '-6px' }} />
+            <img src="ikon.png" style={{ width: '80px',  }} />
             {/* Judul */}
-            <h3 style={{ marginTop: '6px' }}>INVENTARIS</h3>
+            <h3 style={{ marginTop: '6px', fontSize: '19px', fontWeight: 'bold' }}>INVENTARIS</h3>
           </div>
           <Menu
             mode="inline"
-            style={{ height: '100%', borderRight: 0 ,}}
+            style={{ padding: '0 25px 20px'}}
             items={menu}
             onClick={({ key }) => {
               router.push(key);
@@ -58,9 +59,41 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
           />
         </Sider>
         <Layout style={{ padding: '0 24px 24px', height: 'calc(100vh - 64px)', display: 'flex', justifyContent: 'space-between' }}>
-            <Content>
-              <h1>Dashboard</h1>
-            <p>Halo, Elisabet. Selamat Datang di Inventaris!</p>
+            <Content style={{ padding: '75px 50px 50px'}}>
+              <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Dashboard</h1>
+            <p style={{ paddingBottom: '20px'}}>Halo, Elisabet. Selamat Datang di Inventaris!</p>
+            <Row gutter={[32, 32]}> {/* Mengatur jarak horizontal dan vertikal antara kartu-kartu */}
+                <Col>
+                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
+                    <Meta
+                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
+                      style={{ padding: '15px 20px 10px'}}
+                      title="20"
+                      description="Barang"
+                    />
+                  </Card>
+                </Col>
+                <Col>
+                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
+                    <Meta
+                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
+                      style={{ padding: '15px 20px 10px'}}
+                      title="3"
+                      description="Peminjam"
+                    />
+                  </Card>
+                </Col>
+                <Col>
+                  <Card className="shadow-card" style={{ width: '200px', height: '130px'}}>
+                    <Meta
+                      avatar={<Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=1" />}
+                      style={{ padding: '15px 20px 10px'}}
+                      title="5"
+                      description="Aktif"
+                    />
+                  </Card>
+                </Col>
+              </Row>
         </Content>
         </Layout>
       </Layout>

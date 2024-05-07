@@ -10,13 +10,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-    {/* ugh */}
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
-      <head />
-
+      <>
+      <title>Dashboard</title>
+      </>
       <body>
         
         <Script src="/api/env" strategy={"beforeInteractive"}></Script>

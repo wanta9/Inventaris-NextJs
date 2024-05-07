@@ -11,12 +11,6 @@ const Page = () => {
         <div>
             Dashboard: {store.ui.title}
         </div>
-        {/* <div>
-            fact: {data?.setup}
-        </div> */}
-        {/* <Button className={"ml-8"} onClick={() => {
-            store.ui.changeTitle("from home")
-        }}>Button</Button> */}
     </div>;
 };
 

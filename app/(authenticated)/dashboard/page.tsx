@@ -186,11 +186,11 @@ const handleSave = () => {
             <div>
                 <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Dashboard</h1>
                 <p style={{ paddingBottom: '20px'}}>Halo, Elisabet. Selamat Datang di Inventaris!</p>
-                <Row gutter={[48, 48]}>
+                <Row gutter={[40, 40]}>
                     <Col>
                         <Card className="shadow-card" style={{ width: '300px', height: '150px'}}>
                             <Meta
-                            avatar={<img src="ikon.png"style={{ width: '100px', }} />}
+                            avatar={<img src="ikon.png"style={{ width: '50px', }} />}
                             style={{ padding: '30px 30px 10px'}}
                             title="20"
                             description="Barang"
@@ -200,7 +200,7 @@ const handleSave = () => {
                     <Col>
                         <Card className="shadow-card" style={{ width: '300px', height: '150px'}}>
                             <Meta
-                            avatar={<img src="ikon.png" style={{ width: '100px'}} />}
+                            avatar={<img src="ikon.png" style={{ width: '50px'}} />}
                             style={{ padding: '30px 30px 10px'}}
                             title="3"
                             description="Peminjam"
@@ -210,7 +210,7 @@ const handleSave = () => {
                     <Col>
                         <Card className="shadow-card" style={{ width: '300px', height: '150px'}}>
                             <Meta
-                            avatar={<img src="ikon.png" style={{ width: '100px'}} />}
+                            avatar={<img src="ikon.png" style={{ width: '50px'}} />}
                             style={{ padding: '30px 30px 10px'}}
                             title="5"
                             description="Aktif"
@@ -303,24 +303,36 @@ const handleSave = () => {
                 </Modal>
             </div>
             <div style={{ marginTop: '30px'}}>
-            <Row gutter={[24, 24]}>
+            <Row>
                 <Col flex="auto">
-                    <Card className="shadow-card" style={{ height: '450px' }}>
-                        <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px   '}}>Jumlah Peminjaman</h1>
+                    <Card className="shadow-card" style={{ height: '450px', marginRight: '50px'}}>
+                        <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px'}}>Jumlah Peminjaman</h1>
                         <div className="">
                             <canvas id="bar-chart" style={{ height: '35vh', paddingTop: '50px'}}></canvas>
                         </div>
                     </Card>
                 </Col>
-                <Col flex="200px">
-                    <Card className="shadow-card" style={{ height: '450px', width: '450px' }}>
-                        <Meta
-                            style={{ padding: '15px 20px 10px'}}
-                            title=""
-                            description=""
-                        />
+                <Col>
+                    <Card className="shadow-card" style={{ width: '300px', height: '450px', padding: '50px 40px ', marginRight: '50px'}}>
+                      <Meta
+                        avatar={<img src="ikon.png" style={{ width: '90px' }} />}
+                        title="20"
+                        style={{ marginBottom: '20px'}}
+                        description="Barang"
+                      />
+                      <Meta
+                        avatar={<img src="ikon.png" style={{ width: '90px' }} />}
+                        title="20"
+                        style={{ marginBottom: '20px'}}
+                        description="Barang"
+                      />
+                      <Meta
+                        avatar={<img src="ikon.png" style={{ width: '90px' }} />}
+                        title="20"
+                        description="Barang"
+                      />
                     </Card>
-                </Col>
+                  </Col>
             </Row>
         </div>
 

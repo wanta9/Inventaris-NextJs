@@ -34,29 +34,29 @@ const Page = () => {
       </Item>
     </Menu>
   );
-    const handleChange = (info: any) => {
-      let fileList = [...info.fileList];
-    
-      // Limit to one file
-      fileList = fileList.slice(-1);
-    
-      // Handle upload status
-      fileList = fileList.map(file => {
-        if (file.response) {
-          // Handle server response
-          if (file.response.status === 'success') {
-            file.url = file.response.url; // Set URL if upload is successful
-          } else {
-            // Show error message if upload fails
-            message.error(`${file.name} upload failed: ${file.response.message}`);
-            fileList = [];
-          }
+  const handleChange = (info: any) => {
+    let fileList = [...info.fileList];
+  
+    // Limit to one file
+    fileList = fileList.slice(-1);
+  
+    // Handle upload status
+    fileList = fileList.map(file => {
+      if (file.response) {
+        // Handle server response
+        if (file.response.status === 'success') {
+          file.url = file.response.url; // Set URL if upload is successful
+        } else {
+          // Show error message if upload fails
+          message.error(`${file.name} upload failed: ${file.response.message}`);
+          fileList = [];
         }
-        return file;
-      });
-    
-      setFileList(fileList);
-    };
+      }
+      return file;
+    });
+  
+    setFileList(fileList);
+  };
 
   const handleButtonClick = () => {
     setModalVisible(true);

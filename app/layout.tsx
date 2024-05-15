@@ -11,7 +11,6 @@ export default function RootLayout({children}: {children: React.ReactNode})
       <title>Dashboard</title>
       </>
       <body>
-        
         <Script src="/api/env" strategy={"beforeInteractive"}></Script>
         <Provider>{children}</Provider>
       </body>

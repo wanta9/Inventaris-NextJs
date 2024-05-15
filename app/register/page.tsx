@@ -1,200 +1,86 @@
 "use client";
 
-import React, {useState} from "react";
-// import {observer} from 'mobx-react-lite';
-import {Button, Card, Checkbox, Col, Form, Input, Row, Typography} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
-// import ParticlesLayout from "../components/Layout/ParticlesLayout";
+import React, { useState } from "react";
+import { Button, Card, Form, Input } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 const Register = () => {
-    // const store = useStore();
     const [loading, setLoading] = useState(false);
 
-    // let history = useHistory();
     const onFinish = (values: any) => {
         console.log('Received values of form: ', values);
-        enterLoading(values).then(res => {
-            console.log(res, "awasaa");
-        }).catch((error) => {
-            console.log({error}, "awasaa error");
-        });
+        // Handle form submission here
     };
 
-    const enterLoading = async (props: any) => {
-        // store.setInitialToken("ayayay", "clap");
-        // return history.push("/app/page_example_1");
-    };
-
-    return <div style={{width: '100vw', display: 'flex', justifyContent: 'center'}}>
-        <Row justify={'center'}>
-            <Col>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginTop: '5vh',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}>
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'stretch'}}>
-
-                    </div>
-                    <Card style={{ textAlign: "center" }}>
-
-                    <div style={{ display: "inline-block" }}>
-
-                    <img src="ikon.png"
-                    style={{ width: 100,
-                        marginTop: 0,
-                     }}/>
-
-                    </div>
-
-                    <div style={{width: 400,
-                            textAlign: 'center',
-                            margin:0,
-                            marginBottom: 30,
-                            fontSize: 18, fontWeight: 200,
-                    }}
-                    >
-                        <span style={{fontWeight: 'bold'}}>Pendaftaran</span>
-                        </div>
-
-                        <Form
-                            layout={'vertical'}
-                            name="normal_login"
-                            className="login-form"
-                            onFinish={onFinish}
-                        >
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="Nama Pengguna"
-                                name="namapengguna"                               
-                                rules={[{required: false, message: 'Masukkan Nama yang benar!'}]}
-                            >
-                                <Input
-                                    prefix={<UserOutlined className="site-form-item-icon"/>}
-                                    type="text"/>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="Sandi"
-                                name="sandi"
-                            >
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="password"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="Konfirmasi Sandi"
-                                name="konfirmasisandi"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Masukkan sandi yg benar!'}]}
-                            >
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="password"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="NISN"
-                                name="nisn"
-                                // size={'large'}
-                            >
-                                <Input
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="integer"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="Nama Lengkap"
-                                name="nama lengkap"
-                                // size={'large'}
-                                rules={[{required: false, message: 'nama lu siapa??!!'}]}
-                            >
-                                <Input
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="string"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}
-                                label="Kelas"
-                                name="kelas"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Anak kelas mana lu !'}]}
-                            >
-                                <Input
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="string"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto',
-                                    marginBottom: 17, 
-                                }}
-                                label="Nomer Telp"
-                                name="nomertelp"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Maukkan Nomor yg benar!'}]}
-                            >
-                                <Input
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="integer"
-                                />
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    width: 280,
-                                    margin: 'auto', 
-                                }}>
-                                <Button type="primary"
-                                        block
-                                        loading={loading}
-                                        htmlType="submit"
-                                        size={'large'}
-                                        onSubmit={enterLoading}
-                                        style={{background:'#582DD2'}}
-                                        className="register-form-button">
-                                    Daftar
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <Card style={{ width: '90%', maxWidth: 400, padding: 20 }}>
+                <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                    <img src="ikon.png" alt="logo" style={{ width: 100 }} />
+                    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>Pendaftaran</div>
                 </div>
-            </Col>
-        </Row>
-        <div className="register-page">
+                <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
+                    <Form.Item
+                        label="Nama Pengguna"
+                        name="namapengguna"
+                        rules={[{ required: true, message: 'Masukkan Nama yang benar!' }]}
+                    >
+                        <Input prefix={<UserOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Sandi"
+                        name="sandi"
+                        rules={[{ required: true, message: 'Masukkan sandi!' }]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} type="password" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Konfirmasi Sandi"
+                        name="konfirmasisandi"
+                        rules={[{ required: true, message: 'Masukkan sandi yang benar!' }]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} type="password" />
+                    </Form.Item>
+                    <Form.Item
+                        label="NISN"
+                        name="nisn"
+                        rules={[{ type: 'integer', message: 'Masukkan NISN yang benar!' }]}
+                    >
+                        <Input prefix={<LockOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Nama Lengkap"
+                        name="namalengkap"
+                    >
+                        <Input prefix={<LockOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Kelas"
+                        name="kelas"
+                    >
+                        <Input prefix={<LockOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Nomer Telp"
+                        name="nomertelp"
+                        rules={[{ type: 'integer', message: 'Masukkan nomor telepon yang benar!' }]}
+                    >
+                        <Input prefix={<LockOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            block
+                            loading={loading}
+                            htmlType="submit"
+                            style={{ background: '#582DD2' }}
+                        >
+                            Daftar
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+            <div className="register-page">
             <style>
                 {`
                     body {
@@ -204,7 +90,8 @@ const Register = () => {
             </style>
             {/* Konten halaman login */}
         </div>
-    </div>;
+        </div>
+    );
 };
 
 export default Register;

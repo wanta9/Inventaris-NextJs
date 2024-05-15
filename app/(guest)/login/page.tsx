@@ -1,116 +1,53 @@
 "use client";
 
-import React, {useState} from "react";
-// import {observer} from 'mobx-react-lite';
-import {Button, Card, Checkbox, Col, Form, Input, Row, Typography} from 'antd';
-import {LockOutlined, UserOutlined} from '@ant-design/icons';
-// import ParticlesLayout from "../components/Layout/ParticlesLayout";
+import React, { useState } from "react";
+import { Button, Card, Col, Form, Input, Row } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 const Login = () => {
-    
-    // const store = useStore();
     const [loading, setLoading] = useState(false);
-    // let history = useHistory();
 
     const onFinish = (values: any) => {
-        
         console.log('Received values of form: ', values);
-        enterLoading(values).then(res => {
-            console.log(res, "awasaa");
-        }).catch((error) => {
-            console.log({error}, "awasaa error");
-        });
+        // Handle form submission here
     };
 
-    const enterLoading = async (props: any) => {
-        // store.setInitialToken("ayayay", "clap");
-        // return history.push("/app/page_example_1");
-    };
-
-    return <div style={{width: 'center', display: 'flex', justifyContent: 'center'}}>
-        <Row justify={'center'}>
-            <Col>
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    marginTop: '5vh',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}>
-                    <Card style={{ textAlign: "center",
-                     }}>
-
-                    <div style={{ display: "inline-block" }}>
-
-                    <img src="ikon.png"
-                    style={{ width: 100,
-                        marginTop:0,
-                     }}/>
-
-                    </div>
-
-                    <div style={{width: 400,
-                            textAlign: 'center',
-                            margin:0,
-                            marginBottom: 30,
-                            fontSize: 18, fontWeight: 200,
-                    }}
-                    >
-                        <span style={{fontWeight: 'bold'}}>Selamat Datang</span>
-                        </div>
-
-                        <Form
-                            layout={'vertical'}
-                            name="normal_login"
-                            className="login-form"
-                            onFinish={onFinish}
-                        >
-                            <Form.Item
-                                label="Nama Perngguna"
-                                name="nama"
-                                // size={'large'}
-                                rules={[{required: false, message: 'Masukan nama yg bener!'}]}
-                            >
-                                <Input
-                                    prefix={<UserOutlined className="site-form-item-icon"/>}
-                                    type="text"/>
-                            </Form.Item>
-
-                            <Form.Item
-                                style={{
-                                    marginBottom: 17,
-                                }}
-                                label="Sandi"
-                                name="sandi"
-                                // size={'large'}
-                                rules={[{required: false, message: 'masukkan sandi!'}]}
-                            >
-                                <Input.Password
-                                    prefix={<LockOutlined className="site-form-item-icon"/>}
-                                    type="password"
-                                />
-                            </Form.Item>                    
-                            <Form.Item
-                                style={{
-                                    marginBottom: 17,
-                                }}>
-                                <Button type="primary"
-                                        block
-                                        loading={loading}
-                                        htmlType="submit"
-                                        size={'large'}
-                                        style={{background:'#582DD2'}}
-                                        onSubmit={enterLoading}
-                                        className="login-form-button">
-                                    Masuk
-                                </Button>
-                            </Form.Item>
-                        </Form>
-                    </Card>
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <Card style={{ maxWidth: 400, width: '100%', padding: 20 }}>
+                <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                    <img src="ikon.png" alt="logo" style={{ width: 100 }} />
+                    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>Selamat Datang</div>
                 </div>
-            </Col>
-        </Row>
-        <div className="login-page">
+                <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
+                    <Form.Item
+                        label="Nama Pengguna"
+                        name="nama"
+                        rules={[{ required: true, message: 'Masukkan nama yang benar!' }]}
+                    >
+                        <Input prefix={<UserOutlined />} type="text" />
+                    </Form.Item>
+                    <Form.Item
+                        label="Sandi"
+                        name="sandi"
+                        rules={[{ required: true, message: 'Masukkan sandi!' }]}
+                    >
+                        <Input.Password prefix={<LockOutlined />} type="password" />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button
+                            type="primary"
+                            block
+                            loading={loading}
+                            htmlType="submit"
+                            style={{ background: '#582DD2' }}
+                        >
+                            Masuk
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Card>
+            <div className="login-page">
             <style>
                 {`
                     body {
@@ -120,7 +57,8 @@ const Login = () => {
             </style>
             {/* Konten halaman login */}
         </div>
-    </div>;
+        </div>
+    );
 };
 
 export default Login;

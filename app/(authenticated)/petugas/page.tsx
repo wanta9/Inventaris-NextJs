@@ -56,12 +56,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   const inputRef = useRef<InputRef>(null);
   const form = useContext(EditableContext)!;
 
-  useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus();
-    }
-  }, [editing]);
-
   const toggleEdit = () => {
     setEditing(!editing);
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
@@ -119,7 +113,6 @@ type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 const Page: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
   const [telp, setTelp] = useState('');
@@ -128,6 +121,7 @@ const Page: React.FC = () => {
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
 
   const handleChange = (info: any) => {
@@ -160,19 +154,43 @@ const Page: React.FC = () => {
 
   const handleModalCancel = () => {
     setModalVisible(false);
+    setModalEditVisible(false);
   };
   
   const handleSaveModalData = () => {
-    const newData: DataType = {
-      key: count.toString(),
-      name: nama,
-      username: namaPengguna,
-      telp: telp,
-      nip: nip,
-    };
-    setDataSource([...dataSource, newData]);
-    setCount(count + 1);
-    setModalVisible(false);
+    if (editData) {
+      const newData = dataSource.map(item => {
+        if (item.key === editData.key) {
+          return { ...item, name: nama, username: namaPengguna, telp, nip };
+        }
+        return item;
+      });
+      setDataSource(newData);
+      setModalVisible(false);
+      setModalEditVisible(false);
+      setEditData(null);
+      // Reset state nilai input setelah penyimpanan berhasil
+      setNama('');
+      setNamaPengguna('');
+      setNIP('');
+      setTelp('');
+    } else {
+      const newData: DataType = {
+        key: count.toString(),
+        name: nama,
+        username: namaPengguna,
+        telp: telp,
+        nip: nip,
+      };
+      setDataSource([...dataSource, newData]);
+      setCount(count + 1);
+      setModalVisible(false);
+      setModalEditVisible(false);
+      // Reset state nilai input setelah penyimpanan berhasil
+      setNamaPengguna('');
+      setNIP('');
+      setTelp('');
+    }
   };
   
   const handleDelete = (key: React.Key) => {
@@ -181,28 +199,13 @@ const Page: React.FC = () => {
   };
   
   const handleEdit = (record: DataType) => {
-    setEditData(record); // Set data yang akan di-edit ke dalam state
-    setNama(record.name); // Set nilai nama ke state
-    setNamaPengguna(record.username); // Set nilai nama pengguna ke state
-    setNIP(record.nip); // Set nilai NIP ke state
-    setTelp(record.telp); // Set nilai telepon ke state
-    setModalVisible(true); // Tampilkan modal
+    setEditData(record); 
+    setNamaPengguna(record.username); 
+    setNIP(record.nip); 
+    setTelp(record.telp); 
+    setModalEditVisible(true); 
   };
-
-const handleSaveEditData = () => {
-  if (editData) {
-    const newData = dataSource.map(item => {
-      if (item.key === editData.key) {
-        return { ...item, name: nama, username: namaPengguna, telp, nip };
-      }
-      return item;
-    });
-    setDataSource(newData);
-    setModalVisible(false);
-    setEditData(null); // Reset data yang di-edit
-    // Tidak perlu mereset nilai input
-  }
-};
+  
   
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -235,7 +238,7 @@ const handleSaveEditData = () => {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <span>
-            <a onClick={() => handleEdit(record.key)}><EditOutlined /></a> {/* Tambahkan tombol edit */}
+             <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
             <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.key)}>
               <DeleteOutlined />
             </Popconfirm>
@@ -270,7 +273,6 @@ const handleSaveEditData = () => {
       ...col,
       onCell: (record: DataType) => ({
         record,
-        editable: col.editable,
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave,
@@ -296,133 +298,204 @@ const handleSaveEditData = () => {
         dataSource={dataSource}
         columns={columns as ColumnTypes}
       />
-      <Modal
-        title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Buat Akun Petugas</div>}
-        style={{ textAlign: 'center' }}
-        width={900}
-        visible={modalVisible}
-        onCancel={handleModalCancel}
-        footer={[
-          <Button key="cancel" onClick={handleModalCancel}>
-            Batal
-          </Button>,
-          <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px' }}>
-            Simpan
-          </Button>,
-        ]}
-        maskStyle={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
-        }}
-      >
-        <div style={{ marginTop: '70px', marginRight: '70px' }}>
-          <Row gutter={[24, 24]}>
-            <Col span={12}>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>Nama</p>
-                </Col>
-                <Col>
-                  <Input
-                    style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                    placeholder="Nama"
-                    value={nama}
-                    onChange={(e) => setNama(e.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>NIP</p>
-                </Col>
-                <Col>
-                  <Input
-                    style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                    type="string"
-                    placeholder="NIP"
-                    value={nip}
-                    onChange={(e) => setNIP(e.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>Telp</p>
-                </Col>
-                <Col>
-                  <Input
-                    style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                    type="string"
-                    placeholder="Telp"
-                    value={telp}
-                    onChange={(e) => setTelp(e.target.value)}
-                    maxLength={12}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8}>
-                  <p>Unggah Foto</p>
-                </Col>
-                <Col>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                    fileList={fileList}
-                    onChange={handleChange}
-                  >
-                    <Button icon={<UploadOutlined />}>Unggah</Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={12}>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>Nama Pengguna</p>
-                </Col>
-                <Col span={16}>
-                  <Input
-                    style={{ marginBottom: '12px', width: '300px', height: '40px' }}
-                    placeholder="Nama Pengguna"
-                    value={namaPengguna}
-                    onChange={(e) => setNamaPengguna(e.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>Sandi</p>
-                </Col>
-                <Col span={16}>
-                  <Input.Password
-                    style={{ marginBottom: '12px', width: '300px', height: '40px' }}
-                    placeholder="Sandi"
-                    value={sandi}
-                    onChange={(e) => setSandi(e.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row align="middle">
-                <Col span={8}>
-                  <p>Konfirmasi Sandi</p>
-                </Col>
-                <Col span={16}>
-                  <Input.Password
-                    style={{ marginBottom: '12px', width: '300px', height: '40px' }}
-                    placeholder="Konfirmasi Sandi"
-                    value={konfirmasiSandi}
-                    onChange={(e) => setKonfirmasiSandi(e.target.value)}
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </div>
-      </Modal>
+        <Modal
+          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Akun Petugas</div>}
+          style={{ textAlign: 'center' }}
+          width={900}
+          visible={modalVisible}
+          onCancel={handleSaveModalData}
+          footer={[
+            <Button key="cancel" onClick={handleSaveModalData}>
+              Batal
+            </Button>,
+            <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px' }}>
+              Simpan
+            </Button>,
+          ]}
+          maskStyle={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+          }}
+        >
+          <div style={{ marginTop: '70px', marginRight: '70px' }}>
+            <Row gutter={[24, 24]}>
+              <Col span={12}>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Nama</p>
+                  </Col>
+                  <Col>
+                    <Input
+                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      placeholder="Nama"
+                      value={nama}
+                      onChange={(e) => setNama(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>NIP</p>
+                  </Col>
+                  <Col>
+                    <Input
+                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      type="string"
+                      placeholder="NIP"
+                      value={nip}
+                      onChange={(e) => setNIP(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Telp</p>
+                  </Col>
+                  <Col>
+                    <Input
+                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      type="string"
+                      placeholder="Telp"
+                      value={telp}
+                      onChange={(e) => setTelp(e.target.value)}
+                      maxLength={12}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={8}>
+                    <p>Unggah Foto</p>
+                  </Col>
+                  <Col>
+                    <Upload
+                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                      listType="picture"
+                      fileList={fileList}
+                      onChange={handleChange}
+                    >
+                      <Button icon={<UploadOutlined />}>Unggah</Button>
+                    </Upload>
+                  </Col>
+                </Row>
+              </Col>
+              <Col span={12}>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Nama Pengguna</p>
+                  </Col>
+                  <Col span={16}>
+                    <Input
+                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      placeholder="Nama Pengguna"
+                      value={namaPengguna}
+                      onChange={(e) => setNamaPengguna(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Sandi</p>
+                  </Col>
+                  <Col span={16}>
+                    <Input.Password
+                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      placeholder="Sandi"
+                      value={sandi}
+                      onChange={(e) => setSandi(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Konfirmasi Sandi</p>
+                  </Col>
+                  <Col span={16}>
+                    <Input.Password
+                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      placeholder="Konfirmasi Sandi"
+                      value={konfirmasiSandi}
+                      onChange={(e) => setKonfirmasiSandi(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </div>
+        </Modal>
+        <Modal
+          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Akun Petugas</div>}
+          style={{ textAlign: 'center' }}
+          width={900}
+          visible={modalEditVisible}
+          onCancel={handleModalCancel}
+          footer={[
+            <Button key="cancel" onClick={handleModalCancel}>
+              Batal
+            </Button>,
+            <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px' }}>
+              Simpan
+            </Button>,
+          ]}
+          maskStyle={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+          }}
+        >
+          <div style={{ marginTop: '70px', marginRight: '70px' }}>
+            <Row gutter={[24, 24]}>
+              <Col span={12}>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Nama Pengguna</p>
+                  </Col>
+                  <Col span={16}>
+                    <Input
+                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      placeholder="Nama Pengguna"
+                      value={namaPengguna}
+                      onChange={(e) => setNamaPengguna(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>NIP</p>
+                  </Col>
+                  <Col>
+                    <Input
+                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      type="string"
+                      placeholder="NIP"
+                      value={nip}
+                      onChange={(e) => setNIP(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row align="middle">
+                  <Col span={8}>
+                    <p>Telp</p>
+                  </Col>
+                  <Col>
+                    <Input
+                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      type="string"
+                      placeholder="Telp"
+                      value={telp}
+                      onChange={(e) => setTelp(e.target.value)}
+                      maxLength={12}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </div>
+        </Modal>
     </div>
+    
   );
 };
 

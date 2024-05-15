@@ -366,12 +366,12 @@ const handleSave = () => {
             <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
               <Dropdown overlay={menu} placement="bottomCenter">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Button style={{ width: '170px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <img src="ikon.png" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
                       <div>
-                          <div style={{ fontSize: '10px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
-                        <div  style={{ fontSize: '10px', color: 'grey ', marginRight: '47px'}}>Admin</div>
+                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
+                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
                       </div>
                     </div>
                   </Button>

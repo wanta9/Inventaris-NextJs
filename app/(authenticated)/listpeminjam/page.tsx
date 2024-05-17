@@ -1,15 +1,13 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, Col, Input, Table, Tag } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
+import { Avatar, Button, Input, Table } from "antd";
 import type { UploadFile } from 'antd';
 
 const { Column } = Table;
 const { Search } = Input;
 
-const listpeminjam = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+const ListPeminjam = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -62,6 +60,11 @@ const listpeminjam = () => {
     setSearchText(value);
   };
 
+  const handleChangeStatus = (key: React.Key) => {
+    // Implement your status change logic here
+    console.log("Status changed for:", key);
+  };
+
   const filteredData = data.filter(item =>
     item.nama.toLowerCase().includes(searchText.toLowerCase()) ||
     item.namapengguna.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -71,9 +74,9 @@ const listpeminjam = () => {
   return (
     <div>
       <div>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Peminjam</h1>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
       </div>
-      <div style={{ marginTop: '20px'}}>
+      <div style={{ marginTop: '20px' }}>
         <Search
           placeholder="Cari nama, nama pengguna, atau NISN"
           allowClear
@@ -82,21 +85,19 @@ const listpeminjam = () => {
           style={{ width: 300 }}
         />
         <Table dataSource={filteredData}>
-  <Column
-    title="Foto dan Nama"
-    key="fotoNama"
-    render={(record) => (
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar src={record.foto} />
-        <span style={{ marginLeft: 8 }}>{record.nama}</span>
-      </div>
-    )}
-  />
-  <Column title="Nama Pengguna" dataIndex="namapengguna" key="namapengguna" />
-  <Column title="Telepon" dataIndex="telp" key="telp" />
-  <Column title="NISN" dataIndex="nisn" key="nisn" />
-</Table>
-
+          <Column
+            title="Nama"
+            key="fotoNama"
+            render={(text, record: DataType) => (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar src={record.foto} />
+                <span style={{ marginLeft: 8 }}>{record.nama}</span>
+              </div>
+            )}
+          />
+          <Column title="Nama Pengguna" dataIndex="namapengguna" key="namapengguna" />
+          <Column title="Telepon" dataIndex="telp" key="telp" />
+          <Column title="NISN" dataIndex="nisn" key="nisn" />
           <Column
             title="Status"
             dataIndex="status"
@@ -113,4 +114,4 @@ const listpeminjam = () => {
   );
 };
 
-export default listpeminjam;
+export default ListPeminjam;

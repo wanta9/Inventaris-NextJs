@@ -1,25 +1,27 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState } from "react";
-import { Avatar, Card, Col, Row, Button, Modal, Input, Upload, message, Select, Tag } from "antd";
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import Chart from 'chart.js/auto';
+import { Avatar, Button, Col, Input, Table, Tag } from "antd";
+import { UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 
-const { Option } = Select;
+const { Column } = Table;
+const { Search } = Input;
 
-const listpeminjam: React.FC = () => {
+const listpeminjam = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
+  const [searchText, setSearchText] = useState('');
 
   interface DataType {
     key: React.Key;
     nama: string;
-    namapengguna : string;
+    namapengguna: string;
     telp: number;
     nisn: string;
     status: string;
+    foto: string;
   }
 
   const initialData: DataType[] = [
@@ -30,6 +32,7 @@ const listpeminjam: React.FC = () => {
       telp: 123456789,
       nisn: '1234567890',
       status: 'Diterima',
+      foto: "image 5.png",
     },
     {
       key: '2',
@@ -38,6 +41,7 @@ const listpeminjam: React.FC = () => {
       telp: 987654321,
       nisn: '0987654321',
       status: 'Ditolak',
+      foto: "image 5.png",
     },
     {
       key: '3',
@@ -46,6 +50,7 @@ const listpeminjam: React.FC = () => {
       telp: 543216789,
       nisn: '5432167890',
       status: 'Pending',
+      foto: "image 5.png",
     },
   ];
 
@@ -53,44 +58,56 @@ const listpeminjam: React.FC = () => {
     setData(initialData);
   }, []);
 
-  const handleStatusChange = (value: string, dataIndex: number) => {
-    const newData = [...data];
-    newData[dataIndex].status = value;
-    setData(newData);
+  const handleSearch = (value: string) => {
+    setSearchText(value);
   };
+
+  const filteredData = data.filter(item =>
+    item.nama.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.namapengguna.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.nisn.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div>
       <div>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Peminjam</h1>
       </div>
-      <div style={{ marginTop: '30px'}}>
-        {data.map((item, index) => (
-          <div key={item.key} style={{ marginBottom: '20px' }}>
-            <Card>
-              <Row gutter={16}>
-                <Col span={6}>
-                  <Card.Meta
-                    avatar={<Avatar src={"image 5.png"} />}
-                    title={item.nama}
-                    description={item.namapengguna}
-                  />
-                </Col>
-                <Col span={6}>
-                  <p>Telepon: {item.telp}</p>
-                  <p>NISN: {item.nisn}</p>
-                </Col>
-                <Col span={6}>
-                  <Select defaultValue={item.status} style={{ width: '100%' }} onChange={(value) => handleStatusChange(value, index)}>
-                    <Option value="Diterima">Diterima</Option>
-                    <Option value="Ditolak">Ditolak</Option>
-                    <Option value="Pending">Pending</Option>
-                  </Select>
-                </Col>
-              </Row>
-            </Card>
-          </div>
-        ))}
+      <div style={{ marginTop: '20px'}}>
+        <Search
+          placeholder="Cari nama, nama pengguna, atau NISN"
+          allowClear
+          enterButton
+          onSearch={handleSearch}
+          style={{ width: 300 }}
+        />
+        <Table dataSource={filteredData}>
+  <Column
+    title="Foto dan Nama"
+    key="fotoNama"
+    render={(record) => (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar src={record.foto} />
+        <span style={{ marginLeft: 8 }}>{record.nama}</span>
+      </div>
+    )}
+  />
+  <Column title="Nama Pengguna" dataIndex="namapengguna" key="namapengguna" />
+  <Column title="Telepon" dataIndex="telp" key="telp" />
+  <Column title="NISN" dataIndex="nisn" key="nisn" />
+</Table>
+
+          <Column
+            title="Status"
+            dataIndex="status"
+            key="status"
+            render={(status: string, record: DataType) => (
+              <Button type="primary" onClick={() => handleChangeStatus(record.key)}>
+                {status}
+              </Button>
+            )}
+          />
+        </Table>
       </div>
     </div>
   );

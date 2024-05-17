@@ -330,6 +330,7 @@
 
     return (
       <div>
+        <title>Petugas</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Petugas</h1>
         <Card style={{ marginTop: '100px', borderRadius: '20px'}}>
         <Search

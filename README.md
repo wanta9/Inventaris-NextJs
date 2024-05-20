@@ -36,4 +36,15 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## push bang
 
+## assalamualaikum
 
+## pull bang
+
+## gass
+
+## gass
+
+
+## Rony
+
+## share lok deck

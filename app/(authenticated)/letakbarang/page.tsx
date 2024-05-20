@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useContext, useState, useRef } from 'react';
-import { Button, Form, Input, Modal, Popconfirm, Table, message, Row, Col, Card } from 'antd';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Modal, Table, message, Row, Col, Card } from 'antd';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import type { FormInstance } from 'antd';
 
@@ -39,62 +39,60 @@ interface EditableCellProps {
   handleEdit: (record: DataType) => void;
 }
 
-
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    handleEdit,
-    ...restProps
-  }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-  
-    const toggleEdit = () => {
-      setEditing(!editing);
-      form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
-  
-    const save = async () => {
-      try {
-        const values = await form.validateFields();
-        toggleEdit();
-        handleSave({ ...record, ...values });
-      } catch (errInfo) {
-        console.log('Save failed:', errInfo);
-      }
-    };
-  
-    let childNode = children;
-  
-    if (editable) {
-      childNode = editing ? (
-        <Form.Item
-          style={{ margin: 0 }}
-          name={dataIndex}
-          rules={[
-            {
-              required: true,
-              message: `${title} is required.`,
-            },
-          ]}
-        >
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-        </Form.Item>
-      ) : (
-        <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
-          {children}
-        </div>
-      );
-    }
-  
-    return <td {...restProps}>{childNode}</td>;
+  title,
+  editable,
+  children,
+  dataIndex,
+  record,
+  handleSave,
+  handleEdit,
+  ...restProps
+}) => {
+  const [editing, setEditing] = useState(false);
+  const inputRef = useRef<InputRef>(null);
+  const form = useContext(EditableContext)!;
+
+  const toggleEdit = () => {
+    setEditing(!editing);
+    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
-  
+
+  const save = async () => {
+    try {
+      const values = await form.validateFields();
+      toggleEdit();
+      handleSave({ ...record, ...values });
+    } catch (errInfo) {
+      console.log('Save failed:', errInfo);
+    }
+  };
+
+  let childNode = children;
+
+  if (editable) {
+    childNode = editing ? (
+      <Form.Item
+        style={{ margin: 0 }}
+        name={dataIndex}
+        rules={[
+          {
+            required: true,
+            message: `${title} is required.`,
+          },
+        ]}
+      >
+        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+      </Form.Item>
+    ) : (
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+        {children}
+      </div>
+    );
+  }
+
+  return <td {...restProps}>{childNode}</td>;
+};
 
 const Page: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -267,6 +265,77 @@ const Page: React.FC = () => {
           </Form>
         </Modal>
       </Card>
+=======
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '27px' }}>Letak Barang</h1>
+      <Row style={{ marginTop: '70px' }}>
+        <Col xs={24} sm={20} md={16} lg={12} xl={8}>
+          <Card>
+            <Button
+              type="primary"
+              onClick={() => setModalVisible(true)}
+              icon={<PlusOutlined />}
+              style={{ marginBottom: '16px' }}
+            >
+              Tambah Letak Barang
+            </Button>
+            <Table
+              components={components}
+              rowClassName={() => 'editable-row'}
+              bordered
+              dataSource={dataSource}
+              columns={columns as ColumnTypes}
+              pagination={false}
+              style={{ marginTop: '20px' }}
+            />
+            <Modal
+              title="Tambah Letak Barang"
+              visible={modalVisible}
+              onCancel={handleModalCancel}
+              footer={[
+                <Button key="cancel" onClick={handleModalCancel}>
+                  Batal
+                </Button>,
+                <Button key="save" type="primary" onClick={handleSaveModalData}>
+                  Simpan
+                </Button>,
+              ]}
+            >
+              <Form>
+                <Form.Item label="Letak Barang" required>
+                  <Input
+                    value={letakBarang}
+                    onChange={(e) => setLetakBarang(e.target.value)}
+                    placeholder="Masukkan letak barang"
+                  />
+                </Form.Item>
+              </Form>
+            </Modal>
+            <Modal
+              title="Edit Letak Barang"
+              visible={modalEditVisible}
+              onCancel={handleModalCancel}
+              footer={[
+                <Button key="cancel" onClick={handleModalCancel}>
+                  Batal
+                </Button>,
+                <Button key="save" type="primary" onClick={handleSaveModalData}>
+                  Simpan
+                </Button>,
+              ]}
+            >
+              <Form>
+                <Form.Item label="Letak Barang" required>
+                  <Input
+                    value={letakBarang}
+                    onChange={(e) => setLetakBarang(e.target.value)}
+                    placeholder="Masukkan letak barang"
+                  />
+                </Form.Item>
+              </Form>
+            </Modal>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

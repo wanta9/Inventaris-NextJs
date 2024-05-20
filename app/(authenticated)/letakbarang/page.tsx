@@ -200,8 +200,9 @@ const Page: React.FC = () => {
 
   return (
     <div>
+      <title>Letak Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Letak Barang</h1>
-      <Card style={{ width: '40%'}}>
+      <Card style={{ width: '40%', marginTop: '100px'}}>
         <Button
           type="primary"
           onClick={() => setModalVisible(true)}
@@ -221,6 +222,8 @@ const Page: React.FC = () => {
         <Modal
           title="Tambah Letak Barang"
           visible={modalVisible}
+          centered
+          style={{ textAlign: 'center'}}
           onCancel={handleModalCancel}
           footer={[
             <Button key="cancel" onClick={handleModalCancel}>
@@ -231,15 +234,18 @@ const Page: React.FC = () => {
             </Button>,
           ]}
         >
-          <Form>
-            <Form.Item label="Letak Barang" required>
+        <Row gutter={[24, 24]} style={{ marginTop: '50px'}}>
+          <Col span={6}>
+            <p>Letak Barang</p>
+            </Col>
+            <Col span={18}>
               <Input
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
               />
-            </Form.Item>
-          </Form>
+            </Col>
+          </Row>
         </Modal>
         <Modal
           title="Edit Letak Barang"
@@ -254,88 +260,20 @@ const Page: React.FC = () => {
             </Button>,
           ]}
         >
-          <Form>
-            <Form.Item label="Letak Barang" required>            
+        <Row gutter={[24, 24]}>
+            <Col span={6}>
+              <p>Letak Barang</p>
+            </Col>
+            <Col span={18}>
               <Input
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
               />
-            </Form.Item>
-          </Form>
+            </Col>
+          </Row>
         </Modal>
       </Card>
-=======
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '27px' }}>Letak Barang</h1>
-      <Row style={{ marginTop: '70px' }}>
-        <Col xs={24} sm={20} md={16} lg={12} xl={8}>
-          <Card>
-            <Button
-              type="primary"
-              onClick={() => setModalVisible(true)}
-              icon={<PlusOutlined />}
-              style={{ marginBottom: '16px' }}
-            >
-              Tambah Letak Barang
-            </Button>
-            <Table
-              components={components}
-              rowClassName={() => 'editable-row'}
-              bordered
-              dataSource={dataSource}
-              columns={columns as ColumnTypes}
-              pagination={false}
-              style={{ marginTop: '20px' }}
-            />
-            <Modal
-              title="Tambah Letak Barang"
-              visible={modalVisible}
-              onCancel={handleModalCancel}
-              footer={[
-                <Button key="cancel" onClick={handleModalCancel}>
-                  Batal
-                </Button>,
-                <Button key="save" type="primary" onClick={handleSaveModalData}>
-                  Simpan
-                </Button>,
-              ]}
-            >
-              <Form>
-                <Form.Item label="Letak Barang" required>
-                  <Input
-                    value={letakBarang}
-                    onChange={(e) => setLetakBarang(e.target.value)}
-                    placeholder="Masukkan letak barang"
-                  />
-                </Form.Item>
-              </Form>
-            </Modal>
-            <Modal
-              title="Edit Letak Barang"
-              visible={modalEditVisible}
-              onCancel={handleModalCancel}
-              footer={[
-                <Button key="cancel" onClick={handleModalCancel}>
-                  Batal
-                </Button>,
-                <Button key="save" type="primary" onClick={handleSaveModalData}>
-                  Simpan
-                </Button>,
-              ]}
-            >
-              <Form>
-                <Form.Item label="Letak Barang" required>
-                  <Input
-                    value={letakBarang}
-                    onChange={(e) => setLetakBarang(e.target.value)}
-                    placeholder="Masukkan letak barang"
-                  />
-                </Form.Item>
-              </Form>
-            </Modal>
-          </Card>
-        </Col>
-      </Row>
     </div>
   );
 };

@@ -28,7 +28,9 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
     { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
-    { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' }
+    { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
+    { key: '', label: 'Menu', type: 'group'},
+    { key: '/letakbarang', icon: <UserOutlined />, label: 'Letak Barang' }
   ];
 
   return (

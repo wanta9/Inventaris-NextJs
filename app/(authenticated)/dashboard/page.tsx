@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Avatar, Card, Col, Row, Button, Modal, Input, Upload, message, Dropdown, Menu, Divider} from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Avatar, Card, Col, Row, Button, Modal, Input, Upload, message, Dropdown, Menu, Select} from "antd";
 import { PlusOutlined, UploadOutlined, UserOutlined, DownOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Chart from 'chart.js/auto';
 import type { UploadFile } from 'antd';
 
 
 const { Item } = Menu;
+const { Option } = Select;
 
 const Page = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -18,8 +19,23 @@ const Page = () => {
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [selectedYear, setSelectedYear] = useState("thisYear");
+  const [selectText, setSelectText] = useState("Tahun Ini");
+  const allowedYears = ["2024", "2023", "2022"];
+  // const chartRef = useRef<HTMLCanvasElement>(null);
+
+// tahun
+const handleChangeYear = (value: any) => {
+  if (value === "Tahun Ini") {
+    setSelectText("Tahun Ini");
+  } else {
+    setSelectText(value);
+  }
+  setSelectedYear(value);
+};
 
 
+// menu akun
   const menu = (
     <Menu>
       <Item key="1">
@@ -34,10 +50,10 @@ const Page = () => {
       </Item>
     </Menu>
   );
-  const handleChange = (info: any) => {
+  const handleChangeUpload = (info: any) => {
     let fileList = [...info.fileList];
   
-    // Limit to one file
+    // batas 1 file upload
     fileList = fileList.slice(-1);
   
     // Handle upload status
@@ -58,14 +74,17 @@ const Page = () => {
     setFileList(fileList);
   };
 
+// handle untuk tombol open modal
   const handleButtonClick = () => {
     setModalVisible(true);
 };
 
+// handle untuk tombol tutup modal
 const handleModalCancel = () => {
     setModalVisible(false);
 };
 
+// handle simpan modal
 const handleSave = () => {
   // Logika untuk menyimpan data
   setModalVisible(false);
@@ -77,22 +96,10 @@ const handleSave = () => {
           label: '',
           data: {
             labels: [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
-            ],
+                "Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember",],
             datasets: [
                 {
-                  label: new Date().getFullYear(),
+                  label: selectedYear,
                   backgroundColor: [
                         '#582DD2',
                         '#582DD2',
@@ -122,7 +129,7 @@ const handleSave = () => {
                         '#582DD2',
                   ],
                     borderWidth: 1,
-                    data: [65, 59, 80, 81, 56, 55, 40, 30, 45, 20, 70, 90],
+                    data: [65, 59, 80, 81, 56, 55, 40, 30, 45, 20, 70, 100],
                     fill: false,
                     barThickness: 20,
                     borderRadius: {
@@ -197,10 +204,14 @@ const handleSave = () => {
       }, []);
 
     return (
-        <div>
+        <>
             <div>
+                <title>Dashboard</title>
                 <h1 style={{ fontSize: '25px', fontWeight: 'bold'}}>Dashboard</h1>
                 <p style={{ paddingBottom: '20px'}}>Halo, Elisabet. Selamat Datang di Inventaris!</p>
+
+                {/* Barang, Peminjam, Aktif */}
+
                 <Row gutter={[40, 40]}>
                     <Col>
                     <Card className="shadow-card" style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}>
@@ -235,8 +246,12 @@ const handleSave = () => {
                         </div>
                       </Card>
                     </Col>
+                    {/* button Tambah akun petugas */}
                     <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined />} style={{ marginTop: '90px', marginLeft: '110px'}}>Akun Petugas</Button>
                 </Row>
+
+                {/* Pop up Tambah Akun Petugas */}
+
                 <Modal
                 title={<div style={{ fontSize: '20px',  fontWeight: 'bold'}}>Buat Akun Petugas</div>}
                 style={{ textAlign: 'center'}}
@@ -290,7 +305,7 @@ const handleSave = () => {
                             action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                             listType="picture"
                             fileList={fileList}
-                            onChange={handleChange}
+                            onChange={handleChangeUpload}
                           >
                             <Button  icon={<UploadOutlined />}>Unggah</Button>
                           </Upload>
@@ -326,19 +341,38 @@ const handleSave = () => {
                   </Row>
                 </div>
                 </Modal>
-            </div>
-            <div style={{ marginTop: '30px'}}>
+            </div>,
+            <div>
+              
+          {/* Diagram Batang */}
+
             <Row>
                 <Col flex="auto">
-                    <Card className="shadow-card" style={{ height: '450px', marginRight: '50px'}}>
-                        <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px'}}>Jumlah Peminjaman</h1>
+                    <Card className="shadow-card" style={{ height: '500px', marginRight: '50px'}}>
+                        <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px'}}>Jumlah Peminjaman</h1> 
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
+                          <Select 
+                            value={selectText}
+                            onChange={handleChangeYear}
+                            style={{ width: 120, right: '10px', bottom: '20px'}}
+                            allowClear
+                            placeholder={<span>Tahun Ini</span>}
+                          >
+                            {allowedYears.map((year) => (
+                              <Option key={year} value={year}>{year}</Option>
+                            ))}
+                          </Select>
+                        </div>
                         <div className="">
-                            <canvas id="bar-chart" style={{ height: '35vh', paddingTop: '50px'}}></canvas>
+                            <canvas id="bar-chart" style={{ height: '35vh'}}></canvas>
                         </div>
                     </Card>
                 </Col>
+
+                {/* Barang Masuk, Barang Keluar, Barang Rusak */}
+
                 <Col>
-                    <Card className="shadow-card" style={{ width: '300px', height: '450px', padding: '20px 20px 0'}}>
+                    <Card className="shadow-card" style={{ width: '300px', height: '500px', padding: '50px 20px 0'}}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
                             <div>
@@ -363,6 +397,9 @@ const handleSave = () => {
                     </Card>
                   </Col>
             </Row>
+
+            {/* Info Akun */}
+
             <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
               <Dropdown overlay={menu} placement="bottomCenter">
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -377,9 +414,9 @@ const handleSave = () => {
                   </Button>
                 </div>
               </Dropdown>
-            </div>
-        </div>  
-        </div>
+            </div> 
+          </div>
+      </>
     );
         
 

@@ -4,13 +4,11 @@
   import { Button, Form, Input, Modal, Popconfirm, Table, Upload, message, Row, Col, Card} from 'antd';
   import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
   import type { UploadFile } from 'antd';
-  import type { InputRef } from 'antd';
-  import type { GetRef } from 'antd';
+  import type { InputRef, FormInstance } from 'antd';
 
 
   const { Search } = Input;
 
-  type FormInstance<T> = GetRef<typeof Form<T>>;
 
   const EditableContext = React.createContext<FormInstance<any> | null>(null);
   interface Item {
@@ -285,7 +283,7 @@
         render: (_, record) =>
           dataSource.length >= 1 ? (
             <span>
-              <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+              <Button type="link" onClick={() => handleEdit(record.key)} icon={<EditOutlined />} />
               <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.key)}>
                 <DeleteOutlined />
               </Popconfirm>

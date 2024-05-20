@@ -40,7 +40,7 @@ interface EditableCellProps {
 }
 
 
-const EditableCell: React.FC<EditableCellProps> = ({
+const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     title,
     editable,
     children,
@@ -150,7 +150,7 @@ const Page: React.FC = () => {
     setLetakBarang('');
   };
 
-  const defaultColumns = [
+  const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
       title: 'Letak Barang',
       dataIndex: 'letakbarang',
@@ -163,7 +163,7 @@ const Page: React.FC = () => {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+            <Button type="link" onClick={() => handleEdit(record.key)} icon={<EditOutlined />} />
           </span>
         ) : null,
     },
@@ -257,7 +257,7 @@ const Page: React.FC = () => {
           ]}
         >
           <Form>
-            <Form.Item label="Letak Barang" required>
+            <Form.Item label="Letak Barang" required>            
               <Input
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}

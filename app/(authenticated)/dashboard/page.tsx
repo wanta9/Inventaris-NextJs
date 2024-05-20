@@ -25,8 +25,8 @@ const Page = () => {
   // const chartRef = useRef<HTMLCanvasElement>(null);
 
 // tahun
-const handleChangeYear = (value) => {
-  if (value === "thisYear") {
+const handleChangeYear = (value: any) => {
+  if (value === "Tahun Ini") {
     setSelectText("Tahun Ini");
   } else {
     setSelectText(value);
@@ -96,19 +96,7 @@ const handleSave = () => {
           label: '',
           data: {
             labels: [
-                "Januari",
-                "Februari",
-                "Maret",
-                "April",
-                "Mei",
-                "Juni",
-                "Juli",
-                "Agustus",
-                "September",
-                "Oktober",
-                "November",
-                "Desember",
-            ],
+                "Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember",],
             datasets: [
                 {
                   label: selectedYear,
@@ -354,19 +342,19 @@ const handleSave = () => {
                 </div>
                 </Modal>
             </div>,
-            <div style={{ marginTop: '30px'}}>
+            <div>
               
           {/* Diagram Batang */}
 
             <Row>
                 <Col flex="auto">
-                    <Card className="shadow-card" style={{ height: '450px', marginRight: '50px'}}>
+                    <Card className="shadow-card" style={{ height: '500px', marginRight: '50px'}}>
                         <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px'}}>Jumlah Peminjaman</h1> 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
                           <Select 
                             value={selectText}
                             onChange={handleChangeYear}
-                            style={{ width: 120, color: 'black' }}
+                            style={{ width: 120, right: '10px', bottom: '20px'}}
                             allowClear
                             placeholder={<span>Tahun Ini</span>}
                           >
@@ -384,7 +372,7 @@ const handleSave = () => {
                 {/* Barang Masuk, Barang Keluar, Barang Rusak */}
 
                 <Col>
-                    <Card className="shadow-card" style={{ width: '300px', height: '450px', padding: '20px 20px 0'}}>
+                    <Card className="shadow-card" style={{ width: '300px', height: '500px', padding: '50px 20px 0'}}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
                             <div>

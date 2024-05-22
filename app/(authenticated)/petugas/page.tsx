@@ -5,13 +5,12 @@
   import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
   import type { UploadFile } from 'antd';
   import type { InputRef } from 'antd';
-  import type { GetRef } from 'antd';
+  import { FormInstance } from 'antd/lib/form';
 
 
   const { Search } = Input;
 
-  type FormInstance<T> = GetRef<typeof Form<T>>;
-
+  
   const EditableContext = React.createContext<FormInstance<any> | null>(null);
   interface Item {
     key: string;
@@ -285,7 +284,7 @@
         render: (_, record) =>
           dataSource.length >= 1 ? (
             <span>
-              <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+              <Button type="link" onClick={() => handleEdit(record.key)} icon={<EditOutlined />} />
               <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.key)}>
                 <DeleteOutlined />
               </Popconfirm>
@@ -293,6 +292,21 @@
           ) : null,
       },
     ];
+    
+    const columns = defaultColumns.map((col) => {
+      if (!col.editable) {
+        return col;
+      }
+      return {
+        ...col,
+        onCell: (record: DataType) => ({
+          record,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          handleSave,
+        }),
+      };
+    });
 
     const handleSave = (row: DataType) => {
       const newData = [...dataSource];
@@ -312,21 +326,6 @@
       },
     };
 
-    const columns = defaultColumns.map((col) => {
-      if (!col.editable) {
-        return col;
-      }
-      return {
-        ...col,
-        onCell: (record: DataType) => ({
-          record,
-          dataIndex: col.dataIndex,
-          title: col.title,
-          handleSave,
-        }),
-      };
-    });
-
     return (
       <div>
         <title>Petugas</title>
@@ -342,8 +341,9 @@
         <Button
           type="primary"
           onClick={handleButtonClick}
-          icon={<PlusOutlined />}
-          style={{ marginLeft: 'auto', display: 'flex'}}    
+          icon={<PlusOutlined className="custom-icon"/>}
+          style={{ marginLeft: 'auto', display: 'flex', bottom: '25px', right:'20px', backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black'}}  
+          className="custom-button"  
         >
           Akun Petugas
         </Button>
@@ -353,7 +353,7 @@
           bordered
           dataSource={filteredData} 
           columns={columns as ColumnTypes}
-          style={{ marginTop: '50px'}}
+          style={{ marginTop: '30px'}}
         />
           <Modal
             title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Akun Petugas</div>}
@@ -363,10 +363,10 @@
             visible={modalVisible}
             onCancel={handleModalCancel}
             footer={[
-              <Button key="cancel" onClick={handleModalCancel}>
+              <Button key="cancel" onClick={handleModalCancel} style={{ backgroundColor: 'white', borderColor: 'black', color: 'black'}}>
                 Batal
               </Button>,
-              <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px' }}>
+              <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px', backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2'}}>
                 Simpan
               </Button>,
             ]}
@@ -454,11 +454,11 @@
                   </Row>
                   <Row align="middle">
                     <Col span={8}>
-                      <p>Sandi</p>
+                      <p style={{ right: '20px'}}>Sandi</p>
                     </Col>
                     <Col span={16}>
                       <Input.Password
-                        style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                        style={{ marginBottom: '12px', width: '300px', height: '40px'}}
                         placeholder="Sandi"
                         value={sandi}
                         onChange={(e) => setSandi(e.target.value)}

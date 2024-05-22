@@ -101,17 +101,19 @@ const Page: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
-
+  
   const handleSaveModalData = () => {
     if (!letakBarang) {
       message.error('Letak Barang harus diisi.');
       return;
     }
-
+    
+    const upperCaseLetakBarang = letakBarang.toUpperCase();
+    
     if (editData) {
       const newData = dataSource.map(item => {
         if (item.key === editData.key) {
-          return { ...item, letakbarang: letakBarang };
+          return { ...item, letakbarang: upperCaseLetakBarang };
         }
         return item;
       });
@@ -121,7 +123,7 @@ const Page: React.FC = () => {
     } else {
       const newData: DataType = {
         key: count.toString(),
-        letakbarang: letakBarang,
+        letakbarang: upperCaseLetakBarang,
       };
       setDataSource([...dataSource, newData]);
       setCount(count + 1);
@@ -131,22 +133,20 @@ const Page: React.FC = () => {
     setLetakBarang('');
   };
 
-  const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
-  };
-
+  // handle Edit 
   const handleEdit = (record: DataType) => {
     setEditData(record);
     setLetakBarang(record.letakbarang);
     setModalEditVisible(true);
   };
 
+  // hanle modal simpan  
   const handleModalCancel = () => {
     setModalVisible(false);
     setModalEditVisible(false);
     setLetakBarang('');
   };
+
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -158,10 +158,10 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (_, record) =>
+      render: (record: DataType) =>
         dataSource.length >= 1 ? (
           <span>
-            <Button type="link" onClick={() => handleEdit(record.key)} icon={<EditOutlined />} />
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
           </span>
         ) : null,
     },
@@ -202,12 +202,12 @@ const Page: React.FC = () => {
     <div>
       <title>Letak Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Letak Barang</h1>
-      <Card style={{ width: '40%', marginTop: '100px'}}>
+      <Card style={{ width: '30%', marginTop: '100px'}}>
         <Button
           type="primary"
           onClick={() => setModalVisible(true)}
           icon={<PlusOutlined />}
-          style={{ marginBottom: '16px' }}
+          style={{ marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
         >
           Tambah Letak Barang
         </Button>
@@ -217,7 +217,7 @@ const Page: React.FC = () => {
           bordered
           dataSource={dataSource}
           columns={columns as ColumnTypes}
-          style={{ marginTop: '50px', width: '80%' }}
+          style={{ marginTop: '40px', width: '90%', marginLeft: '14px'}}
         />
         <Modal
           title="Tambah Letak Barang"
@@ -229,12 +229,12 @@ const Page: React.FC = () => {
             <Button key="cancel" onClick={handleModalCancel}>
               Batal
             </Button>,
-            <Button key="save" type="primary" onClick={handleSaveModalData}>
+            <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2'}}>
               Simpan
             </Button>,
           ]}
         >
-        <Row gutter={[24, 24]} style={{ marginTop: '50px'}}>
+        <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px'}}>
           <Col span={6}>
             <p>Letak Barang</p>
             </Col>
@@ -243,24 +243,27 @@ const Page: React.FC = () => {
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
+                className="uppercase-input"
               />
             </Col>
-          </Row>
+          </Row>   
         </Modal>
         <Modal
           title="Edit Letak Barang"
           visible={modalEditVisible}
+          centered
+          style={{ textAlign: 'center'}}
           onCancel={handleModalCancel}
           footer={[
             <Button key="cancel" onClick={handleModalCancel}>
               Batal
             </Button>,
-            <Button key="save" type="primary" onClick={handleSaveModalData}>
+            <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2'}}>
               Simpan
             </Button>,
           ]}
         >
-        <Row gutter={[24, 24]}>
+        <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px'}}>
             <Col span={6}>
               <p>Letak Barang</p>
             </Col>
@@ -269,6 +272,7 @@ const Page: React.FC = () => {
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
+                className="uppercase-input"
               />
             </Col>
           </Row>

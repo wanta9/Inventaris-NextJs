@@ -21,7 +21,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const router = useRouter();
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
 
 
@@ -30,10 +30,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
     { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
     { key: '', label: 'Menu', type: 'group'},
-    { key: '/letakbarang', icon: <UserOutlined />, label: 'Letak Barang' }
+    { key: '/letakbarang', icon: <UserOutlined />, label: 'Letak Barang' },
+    { key: '/barang', icon: <UserOutlined />, label: 'Barang' }
   ];
 
-  return (
+  return ( 
     <Layout>
       <Layout>
         <Sider width={250} style={{ background: colorBgContainer }}>

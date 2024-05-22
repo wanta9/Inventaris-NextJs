@@ -14,7 +14,6 @@ export const Provider = ({children}: any) => {
   return <ConfigProvider
     theme={{
       token: {
-        colorPrimary: '#582DD2',
       },
     }}
   >

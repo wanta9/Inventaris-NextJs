@@ -247,7 +247,8 @@ const handleSave = () => {
                       </Card>
                     </Col>
                     {/* button Tambah akun petugas */}
-                    <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined />} style={{ marginTop: '90px', marginLeft: '110px'}}>Akun Petugas</Button>
+                    <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined />} style={{ backgroundColor: 'white', color: 'black', marginTop: '90px', marginLeft: '110px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
+                    >Akun Petugas</Button>
                 </Row>
 
                 {/* Pop up Tambah Akun Petugas */}
@@ -256,11 +257,12 @@ const handleSave = () => {
                 title={<div style={{ fontSize: '20px',  fontWeight: 'bold'}}>Buat Akun Petugas</div>}
                 style={{ textAlign: 'center'}}
                 width={900}
+                centered
                 visible={modalVisible}
                 onCancel={handleModalCancel}
                 footer={[
-                    <Button key="cancel" onClick={handleModalCancel}>Batal</Button>,
-                    <Button style={{ marginRight: '27px'}} key="save" type="primary" onClick={handleSave}>Simpan</Button>
+                    <Button key="cancel" onClick={handleModalCancel} style={{ borderColor: 'black', color: 'black'}}>Batal</Button>,
+                    <Button style={{ backgroundColor: '#582DD2', color: 'white', marginRight: '27px'}} key="save" type="primary" onClick={handleSave}>Simpan</Button>
                 ]}
                 maskStyle={{
                   display: 'flex',

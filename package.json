@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "lint": "next lint"
   },
   "dependencies": {
@@ -20,14 +20,9 @@
     "mobx": "^6.9.0",
     "mobx-react-lite": "^4.0.1",
     "next": "13.4.9",
-<<<<<<< Updated upstream
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-=======
     "next-auth": "^4.24.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
->>>>>>> Stashed changes
     "superagent": "^8.0.9",
     "superagent-intercept": "^0.1.2",
     "swr": "^2.2.0",

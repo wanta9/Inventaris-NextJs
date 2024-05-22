@@ -9,7 +9,6 @@ import { Card, Row, Col, Avatar } from 'antd';
 
 
 
-
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card;
 

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button, Card, Col, Form, Input, Row } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { title } from "process";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ const Login = () => {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <title>Login    </title>
             <Card style={{ maxWidth: 400, width: '100%', padding: 20 }}>
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
                     <img src="ikon.png" alt="logo" style={{ width: 100 }} />
@@ -44,6 +46,13 @@ const Login = () => {
                         >
                             Masuk
                         </Button>
+                        <div style={{ textAlign: 'center', position: 'relative', margin: '20px 0', marginTop: '30px'}}>
+                        <hr style={{ borderTop: '1px solid #ccc', width: '100%', margin: '0', padding: '0' }} />
+                        <span style={{ backgroundColor: '#fff', position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', padding: '0 10px' }}>ATAU</span>
+                        </div>
+                        <div style={{ textAlign: 'center', paddingTop: '5px'}}>
+                            belum mempunyai akun?<a href="http://localhost:3001/register">  Daftar Sekarang</a>
+                        </div>
                     </Form.Item>
                 </Form>
             </Card>

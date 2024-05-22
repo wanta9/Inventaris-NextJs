@@ -20,13 +20,10 @@
     "mobx": "^6.9.0",
     "mobx-react-lite": "^4.0.1",
     "next": "13.4.9",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-
     "next-auth": "^4.24.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-
+    "react-router-dom": "^6.23.1",
     "superagent": "^8.0.9",
     "superagent-intercept": "^0.1.2",
     "swr": "^2.2.0",

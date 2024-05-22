@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Button, Card, Col, Form, Input, InputRef, Modal, Popconfirm, Row, Table, Upload, message } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown } from 'antd';
+import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 
 const { Search } = Input;
+const { Item } = Menu;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -125,6 +126,22 @@ const Page: React.FC = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
 
+
+  // menu akun
+  const menu = (
+    <Menu>
+      <Item key="1">
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          <UserOutlined style={{ marginRight: '10px' }}/>Profil
+        </a>
+      </Item>
+      <Item key="2">
+        <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+        <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
+        </a>
+      </Item>
+    </Menu>
+  );
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
@@ -529,6 +546,21 @@ const Page: React.FC = () => {
           </Col>
         </Row>
       </Modal>
+      <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src="ikon.png" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                      <div>
+                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
+                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </Dropdown>
+            </div> 
     </div>
   );
 };

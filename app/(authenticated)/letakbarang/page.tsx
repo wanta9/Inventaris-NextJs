@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useContext, useState, useRef } from 'react';
-import { Button, Form, Input, Modal, Table, message, Row, Col, Card } from 'antd';
-import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Modal, Table, message, Row, Col, Card, Menu, Dropdown } from 'antd';
+import { PlusOutlined, EditOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
 import type { FormInstance } from 'antd';
+
+const { Item } = Menu;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
@@ -102,6 +104,23 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   
+   // menu akun
+   const menu = (
+    <Menu>
+      <Item key="1">
+        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+          <UserOutlined style={{ marginRight: '10px' }}/>Profil
+        </a>
+      </Item>
+      <Item key="2">
+        <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+        <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
+        </a>
+      </Item>
+    </Menu>
+  );
+
+  // handle save modal data
   const handleSaveModalData = () => {
     if (!letakBarang) {
       message.error('Letak Barang harus diisi.');
@@ -236,7 +255,7 @@ const Page: React.FC = () => {
         >
         <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px'}}>
           <Col span={6}>
-            <p>Letak Barang</p>
+            <p>Nama Ruangan</p>
             </Col>
             <Col span={18}>
               <Input
@@ -265,7 +284,7 @@ const Page: React.FC = () => {
         >
         <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px'}}>
             <Col span={6}>
-              <p>Letak Barang</p>
+              <p>Nama Ruangan</p>
             </Col>
             <Col span={18}>
               <Input
@@ -278,6 +297,22 @@ const Page: React.FC = () => {
           </Row>
         </Modal>
       </Card>
+      {/* menu info akun */}
+      <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src="ikon.png" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                      <div>
+                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
+                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </Dropdown>
+            </div> 
     </div>
   );
 };

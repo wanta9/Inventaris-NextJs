@@ -14,7 +14,7 @@ const Peminjam = () => {
   const [searchText, setSearchText] = useState('');
 
   interface DataType {
-    key: React.Key;
+    key: string;
     nama: string;
     namapengguna: string;
     telp: number;
@@ -77,7 +77,7 @@ const Peminjam = () => {
     window.location.href = `http://localhost:3001/editpeminjam?key=${key}`;
   };
 
-  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
+  const handleButtonClick = (e: any, key: string) => {
     e.stopPropagation();
     handleChangeStatus(key);
   };

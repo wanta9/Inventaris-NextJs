@@ -14,7 +14,7 @@ const Peminjam = () => {
   const [searchText, setSearchText] = useState('');
 
   interface DataType {
-    key: React.Key;
+    key: string;
     nama: string;
     namapengguna: string;
     telp: number;
@@ -61,10 +61,10 @@ const Peminjam = () => {
     setSearchText(value);
   };
 
-  const handleChangeStatus = (key: React.Key) => {
+  const handleChangeStatus = (key: string) => {
     // Implement your status change logic here
     console.log('Status changed for:', key);
-  };
+};
 
   const filteredData = data.filter(
     (item) =>
@@ -77,11 +77,11 @@ const Peminjam = () => {
     window.location.href = `http://localhost:3001/editpeminjam?key=${key}`;
   };
 
-  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
+  const handleButtonClick = (e:any, key: string) => {
     e.stopPropagation();
     handleChangeStatus(key);
-  };
-
+  };  
+  
   return (
     <div>
       <div>

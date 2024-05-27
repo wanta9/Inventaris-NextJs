@@ -51,4 +51,6 @@ ajel
 
 rony sesat
 
+p git push
+
 tony si mail

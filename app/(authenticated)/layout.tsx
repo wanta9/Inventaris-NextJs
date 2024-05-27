@@ -30,7 +30,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
     { key: '', label: 'Menu', type: 'group'},
     { key: '/letakbarang', icon: <UserOutlined />, label: 'Letak Barang' },
-    { key: '/barang', icon: <UserOutlined />, label: 'Barang' }
+    { key: '/barang', icon: <UserOutlined />, label: 'Barang' },
+    { key: '/barangmasuk', icon: <UserOutlined />, label: 'Barang Masuk' }
   ];
 
   return ( 

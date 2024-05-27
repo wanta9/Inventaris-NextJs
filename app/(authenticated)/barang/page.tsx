@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown, Image } from 'antd';
+import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, UserOutlined, DownOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 
 const { Search } = Input;
@@ -122,19 +122,21 @@ const Page: React.FC = () => {
   const [namaBarang, setNamaBarang] = useState('');
   const [harga, setharga] = useState('');
   const [letakBarang, setLetakBarang] = useState('');
-  const [jumlah, setJumlah] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
+
+  const menu1 = (
+    <Menu>
+      <Menu.Item key="1">RPL</Menu.Item>
+      <Menu.Item key="2">TKJ</Menu.Item>
+      <Menu.Item key="3">TBSM</Menu.Item>
+    </Menu>
+  );
 
 
   // menu akun
   const menu = (
     <Menu>
-      <Item key="1">
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          <UserOutlined style={{ marginRight: '10px' }}/>Profil
-        </a>
-      </Item>
       <Item key="2">
         <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
         <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
@@ -142,20 +144,22 @@ const Page: React.FC = () => {
       </Item>
     </Menu>
   );
+  
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
 
-  useEffect(() => {
-    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
-  }, []);  
-  
   const filteredData = dataSource.filter(item =>
     item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
     item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
     item.letakBarang.toLowerCase().includes(searchText.toLowerCase()) ||
     item.deskripsi.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  useEffect(() => {
+    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
+  }, [filteredData]);  
+  
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
@@ -209,6 +213,7 @@ const Page: React.FC = () => {
     const newData = dataSource.filter(item => item.key !== key);
     setDataSource(newData);
   };
+  
   
   const handleEdit = (record: Item) => {
     setEditData(record);
@@ -281,22 +286,29 @@ const Page: React.FC = () => {
       <title>Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
       <Card style={{marginTop: '100px'}}>
-        <Button
-          type="primary"
-          onClick={handleButtonClick}
-          icon={<PlusOutlined />}
-          style={{ marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-        >
-          Letak Barang
-        </Button>
-        <Button
-          type="primary"
-          onClick={handleButtonClick}
-          icon={<PlusOutlined className="custom-icon" />}
-          style={{ marginLeft: 'auto', display: 'flex', right: '20px', backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black' }}
-        >
-          Barang
-        </Button>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
+          <Dropdown overlay={menu1  } placement="bottomLeft">
+            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}>
+             Letak Barang <DownOutlined />
+            </Button>
+          </Dropdown>
+          <Button
+            type="primary"
+            onClick={handleButtonClick}
+            icon={<PlusOutlined />}
+            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+          >
+            Letak Barang
+          </Button>
+          <Button
+            type="primary"
+            onClick={handleButtonClick}
+            icon={<PlusOutlined className="custom-icon" />}
+            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black' }}
+          >
+            Barang
+          </Button>
+        </div>
         <Table
           components={components}
           rowClassName={() => 'editable-row'}
@@ -551,7 +563,7 @@ const Page: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src="ikon.png" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                    <Image src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
                       <div>
                           <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
                         <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>

@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Card, Form, Input, InputRef, Modal, message, Table } from 'antd';
+import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker } from 'antd';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
+import TextArea from 'antd/es/input/TextArea';
 
+const { Option } = Select;
 const { Search } = Input;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -119,7 +121,7 @@ const Page: React.FC = () => {
   const filteredData = dataSource.filter(item =>
     item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
     item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
+    // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
     item.jumlah.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -186,28 +188,29 @@ const Page: React.FC = () => {
     {
       title: 'Kode Barang',
       dataIndex: 'kodeBarang',
-      editable: false, // saya disable
+      editable: false,
     },
     {
       title: 'Nama Barang',
       dataIndex: 'namaBarang',
-      editable: true,
+      editable: false,
     },
     {
       title: 'Harga',
       dataIndex: 'harga',
-      editable: true,
+      editable: false,
       render: (text: string) => `Rp ${text}`,
     },
     {
       title: 'Jumlah',
       dataIndex: 'jumlah',
-      editable: true,
+      editable: false,
     },
     {
       title: 'Tanggal Masuk',
       dataIndex: 'tanggalMasuk',
       editable: true,
+      render: (text: string) => text,
     },
     {
       title: '',
@@ -219,7 +222,7 @@ const Page: React.FC = () => {
       ),
     },
   ];
-
+  
   const mergedColumns = columns.map(col => {
     if (!col.editable) {
       return col;
@@ -248,8 +251,8 @@ const Page: React.FC = () => {
           onSearch={value => handleSearch(value)}
           style={{ width: 300}}
         />
-        <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined/>} style={{marginLeft: 'auto', display: 'flex', bottom: '25px', right:'20px', backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black'}}>
-          Tambah Barang
+        <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined style={{ marginTop: '4px'}}/>} style={{marginLeft: 'auto', display: 'flex', bottom: '25px', right:'20px', backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black'}}>
+         Barang
         </Button>
         <Table
           rowClassName={() => 'editable-row'}
@@ -260,50 +263,82 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={editData ? "Edit Barang" : "Tambah Barang"}
-        style={{ textAlign: 'center'}}
-        centered
-        onCancel={handleModalCancel}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black' } }}
-        onOk={handleSaveModalData}
-      >
-        <Form form={form} layout="vertical">
-          {editData ? (
-            <Form.Item
-              name="kodeBarang"
-              label="Kode Barang"
-              rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
-            >
-              <Input disabled />
-            </Form.Item>
-          ) : null}
+      visible={modalVisible || modalEditVisible}
+      title={editData ? "Edit Barang" : "Tambah Barang"}
+      style={{ textAlign: 'center'}}
+      onCancel={handleModalCancel}
+      centered
+      okText="Simpan"
+      okButtonProps={{ style: { background: '#582DD2' } }}
+      cancelText="Batal"
+      cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
+      onOk={handleSaveModalData}
+    >
+      <Form form={form} layout="vertical">
+        {editData ? (
           <Form.Item
-            name="namaBarang"
-            label="Nama Barang"
-            rules={[{ required: true, message: 'Tolong isi nama barang!' }]}
+            name="kodeBarang"
+            label="Kode Barang"
+            rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
           >
-            <Input />
+            <Select placeholder="Pilih Kode Barang" style={{ width: '200px' }}>
+              {dataSource.map(item => (
+                <Option key={item.key} value={item.kodeBarang}>
+                  {`${item.kodeBarang} - ${item.namaBarang}`}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
+        ) : (
           <Form.Item
-            name="harga"
-            label="Harga"
-            rules={[{ required: true, message: 'Tolong isi harga!' }]}
+            name="kodeBarang"
+            label="Kode Barang"
+            rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
           >
-            <Input prefix="Rp"/>
+            <Select placeholder="Pilih Kode Barang" style={{ width: '200px' }}>
+              {dataSource.map(item => (
+                <Option key={item.key} value={item.kodeBarang}>
+                  {`${item.kodeBarang} - ${item.namaBarang}`}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item
-            name="jumlah"
-            label="Jumlah"
-            rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+        )}
+        <Form.Item
+          name="tanggalMasuk"
+          label="Tanggal Masuk"
+          rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+        >
+          <DatePicker style={{ width: '200px' }} />
+        </Form.Item>
+        <Form.Item
+          name="jumlah"
+          label="Jumlah"
+          rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+        >
+          <Input style={{ width: '200px' }} />
+        </Form.Item>
+
+        <Form.Item
+          name="ruangan"
+          label="Ruangan"
+          rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
+        >
+          <Select placeholder="Pilih Ruangan" style={{ width: '200px' }}>
+            <Option value="ruangan1">Ruangan 1</Option>
+            <Option value="ruangan2">Ruangan 2</Option>
+            {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="keterangan"
+          label="Keterangan"
+          rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+        >
+          <TextArea rows={4} style={{ width: '100%' }} />
+        </Form.Item>
+      </Form>
+    </Modal>
     </div>
   );
 };

@@ -14,7 +14,7 @@ const Peminjam = () => {
   const [searchText, setSearchText] = useState('');
 
   interface DataType {
-    key: string;
+    id: string;
     nama: string;
     namapengguna: string;
     telp: number;
@@ -25,7 +25,7 @@ const Peminjam = () => {
 
   const initialData: DataType[] = [
     {
-      key: '1',
+      id: '1',
       nama: 'John Brown',
       namapengguna: 'johnny',
       telp: 123456789,
@@ -34,7 +34,7 @@ const Peminjam = () => {
       foto: 'image 5.png',
     },
     {
-      key: '2',
+      id: '2',
       nama: 'Jim Green',
       namapengguna: 'jimmy',
       telp: 987654321,
@@ -43,7 +43,7 @@ const Peminjam = () => {
       foto: 'image 5.png',
     },
     {
-      key: '3',
+      id: '3',
       nama: 'Joe Black',
       namapengguna: 'joey',
       telp: 543216789,
@@ -73,13 +73,13 @@ const Peminjam = () => {
       item.nisn.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleRowClick = (key: string) => {
-    window.location.href = `http://localhost:3001/editpeminjam?key=${key}`;
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3001/editpeminjam?id=${id}`;
   };
 
-  const handleButtonClick = (e: any, key: string) => {
+  const handleButtonClick = (e: any, id: string) => {
     e.stopPropagation();
-    handleChangeStatus(key);
+    handleChangeStatus(id);
   };
 
   return (
@@ -101,7 +101,7 @@ const Peminjam = () => {
             dataSource={filteredData}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
-              onClick: () => handleRowClick(record.key),
+              onClick: () => handleRowClick(record.id),
               style: { cursor: 'pointer' },
             })}
             rowClassName="clickable-row"
@@ -124,7 +124,7 @@ const Peminjam = () => {
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={(e) => handleButtonClick(e, record.key)}>
+                <Button type="primary" onClick={(e) => handleButtonClick(e, record.id)}>
                   {status}
                 </Button>
               )}

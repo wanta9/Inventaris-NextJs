@@ -38,11 +38,6 @@ const handleChangeYear = (value: any) => {
 // menu akun
   const menu = (
     <Menu>
-      <Item key="1">
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          <UserOutlined style={{ marginRight: '10px' }}/>Profil
-        </a>
-      </Item>
       <Item key="2">
         <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
         <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar

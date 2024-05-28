@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker } from 'antd';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker, Dropdown, Image, Menu } from 'antd';
+import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 
 const { Option } = Select;
 const { Search } = Input;
+const { Item } = Menu;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -113,6 +114,17 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
+
+
+  const menu = (
+    <Menu>
+      <Item key="2">
+        <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+        <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
+        </a>
+      </Item>
+    </Menu>
+  );
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -243,7 +255,7 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
-      <Card>
+      <Card style={{ marginTop: '100px'}}>
         <Search
           placeholder="Telusuri Barang"
           allowClear
@@ -259,86 +271,111 @@ const Page: React.FC = () => {
           bordered
           dataSource={filteredData}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
         />
       </Card>
       <Modal
       visible={modalVisible || modalEditVisible}
-      title={editData ? "Edit Barang" : "Tambah Barang"}
+      title={editData ? "Edit Barang" : "Tambah Barang"} 
       style={{ textAlign: 'center'}}
       onCancel={handleModalCancel}
       centered
+      width={900}
       okText="Simpan"
       okButtonProps={{ style: { background: '#582DD2' } }}
       cancelText="Batal"
       cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
       onOk={handleSaveModalData}
     >
-      <Form form={form} layout="vertical">
-        {editData ? (
-          <Form.Item
-            name="kodeBarang"
-            label="Kode Barang"
-            rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
-          >
-            <Select placeholder="Pilih Kode Barang" style={{ width: '200px' }}>
-              {dataSource.map(item => (
-                <Option key={item.key} value={item.kodeBarang}>
-                  {`${item.kodeBarang} - ${item.namaBarang}`}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        ) : (
-          <Form.Item
-            name="kodeBarang"
-            label="Kode Barang"
-            rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
-          >
-            <Select placeholder="Pilih Kode Barang" style={{ width: '200px' }}>
-              {dataSource.map(item => (
-                <Option key={item.key} value={item.kodeBarang}>
-                  {`${item.kodeBarang} - ${item.namaBarang}`}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        )}
-        <Form.Item
-          name="tanggalMasuk"
-          label="Tanggal Masuk"
-          rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-        >
-          <DatePicker style={{ width: '200px' }} />
-        </Form.Item>
-        <Form.Item
-          name="jumlah"
-          label="Jumlah"
-          rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
-        >
-          <Input style={{ width: '200px' }} />
-        </Form.Item>
-
-        <Form.Item
-          name="ruangan"
-          label="Ruangan"
-          rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
-        >
-          <Select placeholder="Pilih Ruangan" style={{ width: '200px' }}>
-            <Option value="ruangan1">Ruangan 1</Option>
-            <Option value="ruangan2">Ruangan 2</Option>
-            {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="keterangan"
-          label="Keterangan"
-          rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
-        >
-          <TextArea rows={4} style={{ width: '100%' }} />
-        </Form.Item>
-      </Form>
+        <Form form={form} layout="horizontal" style={{ marginTop : '50px'}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ flex: 1, marginRight: '16px' }}>
+              <Form.Item
+                name="kodeBarang"
+                label="Kode Barang"
+                style={{ textAlign: 'left'}}
+                colon={false}
+                labelAlign='left'
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
+              >
+                <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
+                  {dataSource.map(item => (
+                    <Option key={item.key} value={item.kodeBarang}>
+                      {`${item.kodeBarang} - ${item.namaBarang}`}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="tanggalMasuk"
+                label="Tanggal Masuk"
+                colon={false}
+                labelAlign='left'
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+              >
+                <DatePicker placeholder= "Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="jumlah"
+                label="Jumlah"
+                colon={false}
+                labelAlign='left'
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input  placeholder= "Jumlah"style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+            </div>
+            <div style={{ flex: 1 }}>
+              <Form.Item
+                name="ruangan"
+                label="Ruangan"
+                colon={false}
+                // Agar ke Kiri Teksnya
+                labelAlign='left'
+                // Atur Col
+                labelCol={{ span: 5 }}
+                // Atur lebar Input
+                wrapperCol={{ span: 8 }}
+                rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
+              >
+                <Select placeholder="Pilih Ruangan" style={{ width: '100%', height: '40px' }}>
+                  <Option value="ruangan1">TKJ</Option>
+                  <Option value="ruangan2">RPL</Option>
+                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="keterangan"
+                label="Keterangan"
+                colon={false}
+                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+              >
+                <TextArea rows={4} style={{ width: '100%' }} />
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
     </Modal>
+    <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Image src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                      <div>
+                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
+                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </Dropdown>
+            </div> 
     </div>
   );
 };

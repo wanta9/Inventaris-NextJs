@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card, Col, Row } from 'antd';
+import { Button, Card, Col, Divider, Row } from 'antd';
 import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Option } from 'antd/es/mentions';
@@ -15,13 +15,13 @@ const editpeminjam = () => {
       <title>Edit Peminjam</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Edit Peminjam</h1>
       <Card
-        style={{ marginTop: '30px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', width: '50%' }}
+        style={{ marginTop: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', width: '80%', borderRadius: '30px', height: '80%'}}
       >
-        <div style={{ padding: '50px 200px 50px 50px', fontFamily }}>
+        <div style={{ padding: '50px 50px 20px 80px', fontFamily }}>
           <Row>
-            <Col span={12}>
+            <Col span={8} style={{ marginTop: '20px'}}>
               <Row align="middle" style={rowStyle}>
-                <Col span={16} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Lengkap
                 </Col>
                 <Col
@@ -38,7 +38,7 @@ const editpeminjam = () => {
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
-                <Col span={16} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Pengguna
                 </Col>
                 <Col
@@ -55,7 +55,7 @@ const editpeminjam = () => {
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
-                <Col span={16} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Telp
                 </Col>
                 <Col
@@ -72,7 +72,7 @@ const editpeminjam = () => {
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
-                <Col span={16} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   NISN
                 </Col>
                 <Col
@@ -89,7 +89,7 @@ const editpeminjam = () => {
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
-                <Col span={16} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Status
                 </Col>
                 <Col
@@ -102,26 +102,29 @@ const editpeminjam = () => {
                   <Select
                     placeholder="Status"
                     allowClear
-                    style={{ width: '100%', fontSize: '17px', fontFamily, fontWeight }}
+                    style={{ width: '100%', fontSize: '17px', fontFamily, fontWeight, borderColor: 'black'}}
                   >
                     <Option value="diterima">Diterima</Option>
                     <Option value="ditolak">Ditolak</Option>
                   </Select>
                 </Col>
               </Row>
-            </Col>
-            <Col span={12}>
+            </Col>   
+          <Col span={8} push={5}>
+            <Divider type="vertical" style={{ height: '100%', borderColor: 'grey'}} />
+          </Col>
+            <Col span={8}>
               <Row align="middle">
-                <Col span={12} push={12}>
-                  <img src="image 5.png" alt="gambar" style={{ width: '250px', height: 'auto' }} />
+                <Col span={12} >
+                  <img src="sitmen.png" alt="gambar" style={{ width: '250px', height: 'auto', borderRadius: '100%' }} />
                 </Col>
               </Row>
               <Row align="middle">
-                <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                  <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white' }}>
-                    <a href="http://localhost:3001/peminjam">
-                      <ArrowLeftOutlined />
-                      Kembali
+                 
+                <Col span={12} push={13} style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                  <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white', width: '200px', height: '35px', borderRadius: '10px'}}>
+                    <a href="http://localhost:3001/peminjam" style={{ fontWeight, fontSize: '14px'}}>
+                      Simpan
                     </a>
                   </Button>
                 </Col>
@@ -130,10 +133,10 @@ const editpeminjam = () => {
           </Row>
         </div>
       </Card>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '50%' }}>
-        <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white' }}>
-          <a href="http://localhost:3001/peminjam">
-            <ArrowLeftOutlined style={{ marginRight: '10px' }} />
+      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
+        <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white', width: '20%', height: '40px', borderRadius: '10px'}}>
+          <a href="http://localhost:3001/peminjam" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
+            <ArrowLeftOutlined style={{ marginRight: '25px' }} />
             Kembali
           </a>
         </Button>

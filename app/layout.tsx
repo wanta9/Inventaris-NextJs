@@ -16,6 +16,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script src="/api/env" strategy={'beforeInteractive'}></Script>
         <Provider>{children}</Provider>
       </body>
-    </html>
+    </html> 
   );
 }

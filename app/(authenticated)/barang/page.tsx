@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown, Image } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, UserOutlined, DownOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 
 const { Search } = Input;
@@ -168,6 +168,7 @@ const Page: React.FC = () => {
 
   const handleButtonClick = () => {
     setModalVisible(true);
+
   };
   
   const handleModalCancel = () => {
@@ -286,12 +287,19 @@ const Page: React.FC = () => {
       <title>Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
       <Card style={{marginTop: '100px'}}>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
+        <Search
+            placeholder="Telusuri Barang"
+            allowClear
+            enterButton
+            onSearch={value => handleSearch(value)}
+            style={{ width: 300, marginRight: '800px'}}
+          />
           <Dropdown overlay={menu1  } placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}>
              Letak Barang <DownOutlined />
             </Button>
-          </Dropdown>
+          </Dropdown> 
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -366,9 +374,8 @@ const Page: React.FC = () => {
                     <Col span={18}>
                       <Input
                         style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                        addonBefore="Rp"
+                        prefix="Rp"
                         value={harga}
-                        placeholder="harga"
                         onChange={handleHargaChange}
                       />
                     </Col>
@@ -413,7 +420,7 @@ const Page: React.FC = () => {
         title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
         style={{ textAlign: 'center' }}
         centered
-        width={900}
+        width={1000}
         visible={modalEditVisible}
         onCancel={handleModalCancel}
         footer={[

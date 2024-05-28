@@ -225,10 +225,10 @@ const Page: React.FC = () => {
         <Button
           type="primary"
           onClick={() => setModalVisible(true)}
-          icon={<PlusOutlined />}
+          icon={<PlusOutlined style={{ marginTop: '4px'}}/>}
           style={{ marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
         >
-          Tambah Letak Barang
+          Letak Barang
         </Button>
         <Table
           components={components}
@@ -245,7 +245,7 @@ const Page: React.FC = () => {
           style={{ textAlign: 'center'}}
           onCancel={handleModalCancel}
           footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
+            <Button key="cancel" onClick={handleModalCancel} style={{ border: 'black'}}>
               Batal
             </Button>,
             <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2'}}>

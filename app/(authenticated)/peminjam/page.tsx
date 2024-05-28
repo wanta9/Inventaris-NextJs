@@ -61,7 +61,7 @@ const Peminjam = () => {
     setSearchText(value);
   };
 
-  const handleChangeStatus = (key: React.Key) => {
+  const handleChangeStatus = (key: string) => {
     // Implement your status change logic here
     console.log('Status changed for:', key);
   };

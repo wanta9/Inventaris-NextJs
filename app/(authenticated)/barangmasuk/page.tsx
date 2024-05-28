@@ -263,6 +263,7 @@ const Page: React.FC = () => {
         visible={modalVisible || modalEditVisible}
         title={editData ? "Edit Barang" : "Tambah Barang"}
         style={{ textAlign: 'center'}}
+        centered
         onCancel={handleModalCancel}
         okText="Simpan"
         okButtonProps={{ style: { background: '#582DD2' } }}

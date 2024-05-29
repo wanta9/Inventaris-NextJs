@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { AudioOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { Avatar, Button, Input, Table, Card } from 'antd';
 import type { UploadFile } from 'antd';
@@ -12,6 +13,14 @@ const Peminjam = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const suffix = (
+    <AudioOutlined
+      style={{
+        fontSize: 16,
+        color: '#1677ff',
+      }}
+    />
+  );
 
   interface DataType {
     id: string;

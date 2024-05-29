@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation"; // Import useRouter
 import { Avatar, Button, Input, Table, Card } from "antd";
 import type { UploadFile } from 'antd';
@@ -14,7 +15,7 @@ const peminjaman = () => {
   const [searchText, setSearchText] = useState('');
 
   interface DataType {
-    key: React.Key;
+    id: string;
     namapeminjam: string;
     telpon: string;
     kodepeminjam: string;
@@ -26,7 +27,7 @@ const peminjaman = () => {
 
   const initialData: DataType[] = [
     {
-      key: '1',
+      id: '1',
       namapeminjam: 'John Brown',
       telpon: '1234567890',
       kodepeminjam: 'kode',
@@ -36,7 +37,7 @@ const peminjaman = () => {
       foto: "image 5.png",
     },
     {
-      key: '2',
+      id: '2',
       namapeminjam: 'Jim Green',
       telpon: '9876543210',
       kodepeminjam: 'kode',
@@ -46,7 +47,7 @@ const peminjaman = () => {
       foto: "image 5.png",
     },
     {
-      key: '3',
+      id: '3',
       namapeminjam: 'Joe Black',
       telpon: '5432167890',
       kodepeminjam: 'kode',
@@ -61,6 +62,10 @@ const peminjaman = () => {
     setData(initialData);
   }, []);
 
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+  };
+
   const handleChangeStatus = (key: React.Key) => {
     // Implement your status change logic here
     console.log("Status changed for:", key);
@@ -72,6 +77,16 @@ const peminjaman = () => {
     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
   );
 
+  
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
+  };
+
+  const handleButtonClick = (e: any, id: string) => {
+    e.stopPropagation();
+    handleChangeStatus(id);
+  };
+
   return (
     <div>
       <div>
@@ -80,8 +95,22 @@ const peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-          
-          <Table dataSource={filteredData} style={{ paddingTop: '40px' }}>
+        <Search
+    placeholder="Cari nama, nama pengguna, atau NISN"
+    allowClear
+    onSearch={handleSearch}
+    prefix={<SearchOutlined style={{ marginRight: 8 }} />}
+    style={{ width: 300 }}
+  />
+        <Table
+            dataSource={filteredData}
+            style={{ paddingTop: '40px' }}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record.id),
+              style: { cursor: 'pointer' },
+            })}
+            rowClassName="clickable-row"
+          >
             <Column
               title="Nama Peminjam"
               key="fotonamapeminjam"
@@ -101,7 +130,7 @@ const peminjaman = () => {
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={() => handleChangeStatus(record.key)}>
+                <Button type="primary" onClick={(e) => handleButtonClick(e, record.id)}>
                   {status}
                 </Button>
               )}

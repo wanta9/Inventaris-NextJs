@@ -15,11 +15,11 @@ const editpeminjam = () => {
       <title>Edit Peminjam</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Edit Peminjam</h1>
       <Card
-        style={{ marginTop: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', width: '80%', borderRadius: '30px', height: '80%'}}
+        style={{ marginTop: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', width: '80%', borderRadius: '30px', height: '450px'}}
       >
-        <div style={{ padding: '50px 50px 20px 80px', fontFamily }}>
+        <div style={{ padding: '50px 50px 40px 80px', fontFamily }}>
           <Row>
-            <Col span={8} style={{ marginTop: '20px'}}>
+            <Col span={8} push={1} style={{ marginTop: '20px'}}>
               <Row align="middle" style={rowStyle}>
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Lengkap
@@ -119,10 +119,11 @@ const editpeminjam = () => {
                   <img src="sitmen.png" alt="gambar" style={{ width: '250px', height: 'auto', borderRadius: '100%' }} />
                 </Col>
               </Row>
+            </Col> 
+            <Col push={20} style={{ marginTop: '40px'}}>
               <Row align="middle">
-                 
-                <Col span={12} push={13} style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                  <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white', width: '200px', height: '35px', borderRadius: '10px'}}>
+                <Col style={{ fontSize: '17px', fontFamily, fontWeight}}>
+                  <Button style={{ backgroundColor: '#582DD2', color: 'white', width: '200px', height: '35px', borderRadius: '10px'}}>
                     <a href="http://localhost:3001/peminjam" style={{ fontWeight, fontSize: '14px'}}>
                       Simpan
                     </a>

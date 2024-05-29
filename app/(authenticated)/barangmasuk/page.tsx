@@ -256,16 +256,18 @@ const Page: React.FC = () => {
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
       <Card style={{ marginTop: '100px'}}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
         <Search
           placeholder="Telusuri Barang"
           allowClear
           enterButton
           onSearch={value => handleSearch(value)}
-          style={{ width: 300}}
+          style={{ width: 300, marginRight: '110vh'}}
         />
-        <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined style={{ marginTop: '4px'}}/>} style={{marginLeft: 'auto', display: 'flex', bottom: '25px', right:'20px', backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black'}}>
+        <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined style={{ marginTop: '4px'}}/>} style={{ backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', marginRight: '20px'}}>
          Barang
         </Button>
+        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered

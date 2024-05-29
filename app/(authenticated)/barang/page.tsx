@@ -286,17 +286,17 @@ const Page: React.FC = () => {
     <div>
       <title>Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
-      <Card style={{marginTop: '100px'}}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
+      <Card style={{marginTop: '100px', borderRadius: '20px'}}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}>
         <Search
             placeholder="Telusuri Barang"
             allowClear
             enterButton
             onSearch={value => handleSearch(value)}
-            style={{ width: 300, marginRight: '800px'}}
+            style={{ width: 300, marginRight: '650px'}}
           />
           <Dropdown overlay={menu1  } placement="bottomLeft">
-            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}>
+            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px'}}>
              Letak Barang <DownOutlined />
             </Button>
           </Dropdown> 
@@ -304,17 +304,19 @@ const Page: React.FC = () => {
             type="primary"
             onClick={handleButtonClick}
             icon={<PlusOutlined />}
-            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px'}}
           >
             Letak Barang
           </Button>
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined className="custom-icon" />}
-            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black' }}
+            icon={<PlusOutlined style={{ }}/>}
+            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px'}}
           >
+            <span style={{ marginRight: '10px'}}>
             Barang
+            </span>
           </Button>
         </div>
         <Table
@@ -323,7 +325,7 @@ const Page: React.FC = () => {
           bordered
           dataSource={filteredData}
           columns={columns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal

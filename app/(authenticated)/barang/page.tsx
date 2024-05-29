@@ -124,6 +124,7 @@ const Page: React.FC = () => {
   const [letakBarang, setLetakBarang] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
+  const fontFamily = 'Barlow, sans-serif';
 
   const menu1 = (
     <Menu>
@@ -296,7 +297,7 @@ const Page: React.FC = () => {
             style={{ width: 300, marginRight: '650px'}}
           />
           <Dropdown overlay={menu1  } placement="bottomLeft">
-            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px'}}>
+            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
              Letak Barang <DownOutlined />
             </Button>
           </Dropdown> 
@@ -304,7 +305,7 @@ const Page: React.FC = () => {
             type="primary"
             onClick={handleButtonClick}
             icon={<PlusOutlined />}
-            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px'}}
+            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}
           >
             Letak Barang
           </Button>
@@ -312,7 +313,7 @@ const Page: React.FC = () => {
             type="primary"
             onClick={handleButtonClick}
             icon={<PlusOutlined style={{ }}/>}
-            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px'}}
+            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px', fontFamily}}
           >
             <span style={{ marginRight: '10px'}}>
             Barang

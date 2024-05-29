@@ -116,7 +116,7 @@ const editpeminjam = () => {
             <Col span={8}>
               <Row align="middle">
                 <Col span={12} >
-                  <img src="sitmen.png" alt="gambar" style={{ width: '250px', height: 'auto', borderRadius: '100%' }} />
+                  <img src="sitmen.png" alt="gambar" style={{ width: '250px', height: 'auto', borderRadius: '100%', marginTop: '20px'}} />
                 </Col>
               </Row>
             </Col> 
@@ -135,7 +135,7 @@ const editpeminjam = () => {
         </div>
       </Card>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
-        <Button style={{ marginTop: '20px', backgroundColor: '#582DD2', color: 'white', width: '20%', height: '40px', borderRadius: '10px'}}>
+        <Button style={{ marginTop: '30px', backgroundColor: '#582DD2', color: 'white', width: '20%', height: '50px', borderRadius: '10px'}}>
           <a href="http://localhost:3001/peminjam" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
             <ArrowLeftOutlined style={{ marginRight: '25px' }} />
             Kembali

@@ -27,12 +27,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
     { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
-    { key: '/peminjam', icon: <UserOutlined />, label: 'Peminjam' },
+    { key: '/peminjam', icon: <img src="petugas.svg" style={{ width: '18px'}}/>, label: 'Peminjam' },
     { key: '', label: 'Menu', type: 'group'},
-    { key: '/letakbarang', icon: <UserOutlined />, label: 'Letak Barang' },
-    { key: '/barang', icon: <UserOutlined />, label: 'Barang' },
-    { key: '/barangmasuk', icon: <UserOutlined />, label: 'Barang Masuk' }
-  ];
+    { key: '/letakbarang', icon: <img src="letakbarang.svg"  style={{ width: '18px'}}/>, label: 'Letak Barang' },
+    { key: '/barang', icon: <img src='barang.svg' alt='barang Icon' style={{ width: '18px'}}/>, label: 'Barang' },
+    { key: '/barangmasuk', icon: <img src="barangmasuk.svg" style={{ width: '18px'}}/>, label: 'Barang Masuk' },
+    { key: '/barangkeluar', icon: <img src="barangkeluar.svg" style={{ width: '18px'}}/>, label: 'Barang Keluar' }
+  ];  
 
   return ( 
     <Layout>

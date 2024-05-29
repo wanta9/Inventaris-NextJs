@@ -223,9 +223,9 @@ const Page: React.FC = () => {
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Letak Barang</h1>
       <Card style={{ width: '30%', marginTop: '100px'}}>
         <Button
-          type="primary"
+          type="primary"w
           onClick={() => setModalVisible(true)}
-          icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '10px'}}/>}
+          icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '20px'}}/>}
           style={{ width: '200px', height: '40px',marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
         >
           <span style={{ marginTop: '4px', marginLeft: '5px'}}>

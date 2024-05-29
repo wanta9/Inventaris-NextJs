@@ -115,14 +115,8 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
-  const fontWeight = '500';
 
-  // klik row
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/barangmasuk?id=${id}`;
-  };
 
-  // menu keluar
   const menu = (
     <Menu>
       <Item key="2">
@@ -215,19 +209,13 @@ const Page: React.FC = () => {
       editable: false,
     },
     {
-      title: 'Harga',
-      dataIndex: 'harga',
-      editable: false,
-      render: (text: string) => `Rp ${text}`,
-    },
-    {
       title: 'Jumlah',
       dataIndex: 'jumlah',
       editable: false,
     },
     {
-      title: 'Tanggal Masuk',
-      dataIndex: 'tanggalMasuk',
+      title: 'Tanggal Keluar',
+      dataIndex: 'tanggalKeluar',
       editable: true,
       render: (text: string) => text,
     },
@@ -260,8 +248,8 @@ const Page: React.FC = () => {
 
   return (
     <div>
-      <title>Barang Masuk</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
+      <title>Barang Keluar</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Keluar</h1>
       <Card style={{ marginTop: '100px'}}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
         <Search
@@ -273,7 +261,7 @@ const Page: React.FC = () => {
         />
         <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px'}}/>} style={{ backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', marginRight: '20px', width:'200px', height: '40px'}}>
          <span style={{ marginRight: '20px', fontFamily}}>
-          Barang Masuk
+          Barang Keluar
           </span>
         </Button>
         </div>
@@ -281,17 +269,13 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={filteredData}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record.id),
-            style: { cursor: 'pointer' },
-          })}
           columns={mergedColumns as ColumnTypes}
           style={{ marginTop: '30px'}}
         />
       </Card>
       <Modal
       visible={modalVisible || modalEditVisible}
-      title={editData ? <span style={{ fontWeight: 'bold' }}>Edit Barang Masuk</span> : <span style={{ fontWeight: 'bold' }}>Tambah Barang Masuk</span>} 
+       title={editData ? <span style={{ fontWeight: 'bold' }}>Edit Barang Keluar</span> : <span style={{ fontWeight: 'bold' }}>Tambah Barang Keluar</span>}
       style={{ textAlign: 'center'}}
       onCancel={handleModalCancel}
       centered
@@ -322,17 +306,6 @@ const Page: React.FC = () => {
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
-              <Form.Item
-                name="tanggalMasuk"
-                label="Tanggal Masuk"
-                colon={false}
-                labelAlign='left'
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 15 }}
-                rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-              >
-                <DatePicker placeholder= "Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
               <Form.Item
                 name="jumlah"

@@ -225,10 +225,12 @@ const Page: React.FC = () => {
         <Button
           type="primary"
           onClick={() => setModalVisible(true)}
-          icon={<PlusOutlined style={{ marginTop: '4px'}}/>}
-          style={{ marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
+          icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '10px'}}/>}
+          style={{ width: '200px', height: '40px',marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
         >
+          <span style={{ marginTop: '4px', marginLeft: '5px'}}>
           Letak Barang
+          </span>
         </Button>
         <Table
           components={components}

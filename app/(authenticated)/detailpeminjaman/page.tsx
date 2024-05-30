@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Card, Row, Col } from 'antd';
+import { FormInstance } from 'antd/lib/form';
+import { Button, Card, Row, Col, Divider, DatePicker } from 'antd';
 import React from 'react';
 import {  ArrowLeftOutlined } from '@ant-design/icons';
 
@@ -26,13 +27,19 @@ const detailpeminjaman = () => {
                         </div>
                       </Card>
                 </Col>
-                <Col>
+                <Col style={{ marginLeft: '30px' }}>
                 <Card className="shadow-card" style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center', stroke: '' }}>
                         <div>
                           Tgl Peminjaman 
+                          <div>
+                          <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
+                          </div>
                         </div>
                         <div>
                           Tgl Pengembalian 
+                          <div>
+                          <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
+                          </div>
                         </div>
                         <div>
                           Status

@@ -287,14 +287,14 @@ const Page: React.FC = () => {
     <div>
       <title>Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
-      <Card style={{marginTop: '100px', borderRadius: '20px'}}>
+      <Card style={{marginTop: '50px', borderRadius: '20px'}}>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}>
         <Search
             placeholder="Telusuri Barang"
             allowClear
             enterButton
             onSearch={value => handleSearch(value)}
-            style={{ width: 300, marginRight: '650px'}}
+            style={{ width: 300, marginRight: '500px'}}
           />
           <Dropdown overlay={menu1  } placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
@@ -325,6 +325,7 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={filteredData}
+          pagination={{ pageSize: 5 }} 
           columns={columns as ColumnTypes}
           style={{ marginTop: '40px' }}
         />

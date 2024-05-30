@@ -108,11 +108,6 @@ const Page: React.FC = () => {
    const menu = (
     <Menu>
       <Item key="1">
-        <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-          <UserOutlined style={{ marginRight: '10px' }}/>Profil
-        </a>
-      </Item>
-      <Item key="2">
         <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
         <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
         </a>
@@ -223,7 +218,7 @@ const Page: React.FC = () => {
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Letak Barang</h1>
       <Card style={{ width: '30%', marginTop: '100px'}}>
         <Button
-          type="primary"w
+          type="primary"
           onClick={() => setModalVisible(true)}
           icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '20px'}}/>}
           style={{ width: '200px', height: '40px',marginBottom: '16px', backgroundColor: 'white', color: 'black', display: 'flex', marginLeft: 'auto', right: '20px',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
@@ -238,6 +233,7 @@ const Page: React.FC = () => {
           bordered
           dataSource={dataSource}
           columns={columns as ColumnTypes}
+          pagination={{ pageSize: 5 }}
           style={{ marginTop: '40px', width: '90%', marginLeft: '14px'}}
         />
         <Modal

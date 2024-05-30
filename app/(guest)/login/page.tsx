@@ -51,7 +51,7 @@ const Login = () => {
                         <span style={{ backgroundColor: '#fff', position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)', padding: '0 10px' }}>ATAU</span>
                         </div>
                         <div style={{ textAlign: 'center', paddingTop: '5px'}}>
-                            belum mempunyai akun?<a href="http://localhost:3001/register">  Daftar Sekarang</a>
+                            belum mempunyai akun? <a href="http://localhost:3001/register">  Daftar Sekarang</a>
                         </div>
                     </Form.Item>
                 </Form>

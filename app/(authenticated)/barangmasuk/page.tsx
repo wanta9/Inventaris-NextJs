@@ -119,7 +119,7 @@ const Page: React.FC = () => {
 
   // klik row
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/barangmasuk?id=${id}`;
+    window.location.href = `http://localhost:3001/detailbarangmasuk?id=${id}`;
   };
 
   // menu keluar
@@ -302,7 +302,7 @@ const Page: React.FC = () => {
       cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
       onOk={handleSaveModalData}
     >
-        <Form form={form} layout="horizontal" style={{ marginTop : '50px'}}>
+        <Form form={form} layout="horizontal" style={{ marginTop : '70px'}}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item

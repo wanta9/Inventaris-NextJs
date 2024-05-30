@@ -97,7 +97,7 @@ const Peminjam = () => {
         <title>Peminjam</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
       </div>
-      <Card style={{ marginTop: '100px' }}>
+      <Card style={{ marginTop: '50px' }}>
         <div style={{ marginTop: '20px' }}>
           <Search
             placeholder="Cari nama, nama pengguna, atau NISN"
@@ -109,6 +109,7 @@ const Peminjam = () => {
           <Table
             dataSource={filteredData}
             style={{ paddingTop: '40px' }}
+            pagination={{ pageSize: 5 }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),
               style: { cursor: 'pointer' },

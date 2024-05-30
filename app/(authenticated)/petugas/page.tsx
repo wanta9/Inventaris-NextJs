@@ -1,29 +1,8 @@
 'use client';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  Popconfirm,
-  Table,
-  Upload,
-  message,
-  Row,
-  Col,
-  Card,
-  Dropdown,
-  Menu,
-} from 'antd';
-import {
-  PlusOutlined,
-  UploadOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  UserOutlined,
-  ArrowLeftOutlined,
-} from '@ant-design/icons';
+import {Button,Form,Input,Modal,Popconfirm,Table,Upload,message,Row,Col,Card, Dropdown,Menu,} from 'antd';
+import { PlusOutlined,UploadOutlined,DeleteOutlined,EditOutlined,UserOutlined,ArrowLeftOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import type { InputRef } from 'antd';
 import { FormInstance } from 'antd/lib/form';
@@ -365,7 +344,7 @@ const Page: React.FC = () => {
     <div>
       <title>Petugas</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Petugas</h1>
-      <Card style={{ marginTop: '100px', borderRadius: '20px' }}>
+      <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
         <Search
           placeholder="Telusuri Petugas"
           allowClear
@@ -376,7 +355,7 @@ const Page: React.FC = () => {
         <Button
           type="primary"
           onClick={handleButtonClick}
-          icon={<PlusOutlined className="custom-icon" />}
+          icon={<PlusOutlined style={{ marginTop: '5px'}}/>}
           style={{
             marginLeft: 'auto',
             display: 'flex',
@@ -395,6 +374,7 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={filteredData}
+          pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

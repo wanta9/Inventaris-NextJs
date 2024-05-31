@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown, Image } from 'antd';
+import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown } from 'antd';
 import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
+import { useRouter } from 'next/navigation';
+import { barangRepository } from '#/repository/barang';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -125,6 +127,8 @@ const Page: React.FC = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
   const fontFamily = 'Barlow, sans-serif';
+  const { data: listBarang } = barangRepository.hooks.useBarang();        
+  const router = useRouter();
 
   const menu1 = (
     <Menu>
@@ -135,12 +139,19 @@ const Page: React.FC = () => {
   );
 
 
-  // menu akun
+  
+   // menu akun
+   const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
+
   const menu = (
     <Menu>
-      <Item key="2">
-        <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-        <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
+      <Item key="1" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
+          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
+          Keluar
         </a>
       </Item>
     </Menu>
@@ -312,7 +323,7 @@ const Page: React.FC = () => {
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ }}/>}
+            icon={<PlusOutlined style={{}}/>}
             style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px', fontFamily}}
           >
             <span style={{ marginRight: '10px'}}>
@@ -324,7 +335,7 @@ const Page: React.FC = () => {
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={filteredData}
+          dataSource={listBarang?.data}
           pagination={{ pageSize: 5 }} 
           columns={columns as ColumnTypes}
           style={{ marginTop: '40px' }}
@@ -574,7 +585,7 @@ const Page: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                    <img src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
                       <div>
                           <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
                         <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>

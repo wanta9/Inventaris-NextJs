@@ -6,6 +6,8 @@ import { PlusOutlined,UploadOutlined,DeleteOutlined,EditOutlined,UserOutlined,Ar
 import type { UploadFile } from 'antd';
 import type { InputRef } from 'antd';
 import { FormInstance } from 'antd/lib/form';
+import { Router } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -125,17 +127,19 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  const router = useRouter();
+
+  // menu akun
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
 
   // menu akun
   const menu = (
     <Menu>
-      <Item key="1">
-        <a
-          style={{ color: 'red' }}
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
+      <Item key="1" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
           <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
           Keluar
         </a>
@@ -355,19 +359,23 @@ const Page: React.FC = () => {
         <Button
           type="primary"
           onClick={handleButtonClick}
-          icon={<PlusOutlined style={{ marginTop: '5px'}}/>}
+          icon={<PlusOutlined style={{ marginTop: '10px', marginLeft: '20px'}}/>}
           style={{
             marginLeft: 'auto',
             display: 'flex',
             bottom: '25px',
             right: '20px',
+            width:'200px', 
+            height: '40px',
             backgroundColor: 'white',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
             color: 'black',
           }}
           className="custom-button"
         >
-          Akun Petugas
+          <span style={{ marginLeft: '8px', marginTop: '6px'}}>
+            Akun Petugas
+          </span>
         </Button>
         <Table
           components={components}

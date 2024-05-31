@@ -2,24 +2,37 @@
 
 import React, { useEffect, useState } from 'react';
 import { AudioOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation'; // Import useRouter
-import { Avatar, Button, Input, Table, Card } from 'antd';
+import { useRouter } from 'next/navigation';
+import { Avatar, Button, Input, Table, Card, Menu, Dropdown } from 'antd';
 import type { UploadFile } from 'antd';
+import {ArrowLeftOutlined} from "@ant-design/icons";
+
 
 const { Column } = Table;
 const { Search } = Input;
+const { Item } = Menu;
 
 const Peminjam = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
-  const suffix = (
-    <AudioOutlined
-      style={{
-        fontSize: 16,
-        color: '#1677ff',
-      }}
-    />
+  const router = useRouter();
+
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
+
+  // menu akun
+  const menu = (
+    <Menu>
+      <Item key="1" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
+          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
+          Keluar
+        </a>
+      </Item>
+    </Menu>
   );
 
   interface DataType {
@@ -119,7 +132,7 @@ const Peminjam = () => {
             <Column
               title="Nama"
               key="fotoNama"
-              render={(text, record: DataType) => (
+              render={(record: DataType) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Avatar src={record.foto} />
                   <span style={{ marginLeft: 8 }}>{record.nama}</span>
@@ -142,6 +155,42 @@ const Peminjam = () => {
           </Table>
         </div>
       </Card>
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              style={{
+                width: '175px',
+                height: '50px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="ikon.png"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                />
+                <div>
+                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                    Halo, Elisabet
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </Dropdown>
+      </div>
     </div>
   );
 };

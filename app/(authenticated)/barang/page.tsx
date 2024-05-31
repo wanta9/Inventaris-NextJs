@@ -260,17 +260,17 @@ const Page: React.FC = () => {
   const columns : (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
       title: 'Kode Barang',
-      dataIndex: 'kodeBarang',
+      dataIndex: 'kode',
       editable: true,
     },
     {
       title: 'Nama Barang',
-      dataIndex: 'namaBarang',
+      dataIndex: 'nama',
       editable: true,
     },
     {
       title: 'Letak Barang',
-      dataIndex: 'letakBarang',
+      dataIndex: 'Letak_Barang',
       editable: true,
     },
     {
@@ -307,7 +307,7 @@ const Page: React.FC = () => {
             onSearch={value => handleSearch(value)}
             style={{ width: 300, marginRight: '500px'}}
           />
-          <Dropdown overlay={menu1  } placement="bottomLeft">
+          <Dropdown overlay={menu1} placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
              Letak Barang <DownOutlined />
             </Button>

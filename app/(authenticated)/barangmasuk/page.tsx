@@ -5,6 +5,7 @@ import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, Dat
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
+import { barangMasukRepository } from '#/repository/barangmasuk';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -115,6 +116,7 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
+  const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const fontWeight = '500';
 
   // klik row
@@ -206,12 +208,12 @@ const Page: React.FC = () => {
   const columns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
       title: 'Kode Barang',
-      dataIndex: 'kodeBarang',
+      dataIndex: 'kode',
       editable: false,
     },
     {
       title: 'Nama Barang',
-      dataIndex: 'namaBarang',
+      dataIndex: 'nama',
       editable: false,
     },
     {
@@ -280,7 +282,7 @@ const Page: React.FC = () => {
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={filteredData}
+          dataSource={listBarangMasuk?.data}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },

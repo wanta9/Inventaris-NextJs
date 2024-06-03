@@ -1,13 +1,12 @@
 "use client";
 
 import React from 'react';
-import { HomeOutlined, InboxOutlined, UserOutlined, DropboxOutlined } from '@ant-design/icons';
+import { HomeOutlined, InboxOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 import { useRouter } from "next/navigation";
-import { Card, Row, Col, Avatar } from 'antd';
-
-
+import { Card } from 'antd';
+import styled from 'styled-components';
 
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card;
@@ -16,13 +15,33 @@ interface AuthenticatedLayoutProps {
   children: React.ReactNode
 }
 
+const StyledMenu = styled(Menu)`
+  .ant-menu-item-selected {
+    background-color: rgba(88, 45, 210, 0.33) !important;
+    color: #582DD2 !important;
+  }
+
+  .ant-menu-item-selected .anticon,
+  .ant-menu-item-selected img {
+    color: #582DD2 !important;
+    filter: invert(31%) sepia(66%) saturate(5934%) hue-rotate(242deg) brightness(88%) contrast(101%);
+  }
+
+  .ant-menu-item-selected .ant-menu-title-content {
+    color: #582DD2 !important;
+  }
+
+  .ant-menu-item-selected a {
+    color: #582DD2 !important;
+  }
+`;
+
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
 
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
 
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
@@ -48,7 +67,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
             {/* Judul */}
             <h3 style={{ marginTop: '6px', fontSize: '19px', fontWeight: 'bold' }}>INVENTARIS</h3>
           </div>
-          <Menu
+          <StyledMenu
             mode="inline"
             style={{ padding: '0 25px 20px'}}
             items={menu}

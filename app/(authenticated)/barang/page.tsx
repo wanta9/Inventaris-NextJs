@@ -178,9 +178,14 @@ const Page: React.FC = () => {
     setharga(value);
   };
 
-  const handleButtonClick = () => {
-    setModalVisible(true);
-
+  const handleButtonClick = (type: string) => {
+    if (type === 'barang') {
+      setModalVisible(true);
+      setLetakBarangVisible(false); // Menutup modal tambah letak barang jika ada
+    } else if (type === 'letakBarang') {
+      setLetakBarangVisible(true);
+      setModalVisible(false); // Menutup modal tambah barang jika ada
+    }
   };
   
   const handleModalCancel = () => {
@@ -192,15 +197,15 @@ const Page: React.FC = () => {
   };
   
   const handleSaveModalData = () => {
-    if (!namaBarang || !harga || !deskripsi) {
-      message.error('Semua kolom harus di isi.');
+    if (!namaBarang || !harga || !deskripsi || !letakBarang) {
+      message.error('Semua kolom harus diisi.');
       return;
     }
   
     if (editData) {
       const newData = dataSource.map(item => {
         if (item.key === editData.key) {
-          return { ...item, kodeBarang, namaBarang, letakBarang, harga };
+          return { ...item, kodeBarang, namaBarang, letakBarang, harga, deskripsi };
         }
         return item;
       });
@@ -220,6 +225,12 @@ const Page: React.FC = () => {
       setCount(count + 1);
       setModalVisible(false);
     }
+  
+    // Reset state setelah menyimpan data
+    setNamaBarang('');
+    setharga('');
+    setDeskripsi('');
+    setLetakBarang('');
   };
   
   const handleDelete = (key: string) => {
@@ -305,7 +316,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={value => handleSearch(value)}
-            style={{ width: 300, marginRight: '500px'}}
+            style={{ width: 300, marginRight: '400px'}}
           />
           <Dropdown overlay={menu1} placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
@@ -313,23 +324,24 @@ const Page: React.FC = () => {
             </Button>
           </Dropdown> 
           <Button
-            type="primary"
-            onClick={handleButtonClick}
-            icon={<PlusOutlined />}
-            style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}
-          >
-            Letak Barang
-          </Button>
-          <Button
-            type="primary"
-            onClick={handleButtonClick}
-            icon={<PlusOutlined style={{}}/>}
-            style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px', fontFamily}}
-          >
-            <span style={{ marginRight: '10px'}}>
-            Barang
-            </span>
-          </Button>
+          type="primary"
+          onClick={() => handleButtonClick('letakBarang')}
+          icon={<PlusOutlined />}
+          style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}
+        >
+          Letak Barang
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => handleButtonClick('barang')}
+          icon={<PlusOutlined style={{}}/>}
+          style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px', fontFamily}}
+        >
+          <span style={{ marginRight: '10px'}}>
+          Barang
+          </span>
+        </Button>
+
         </div>
         <Table
           components={components}
@@ -523,62 +535,33 @@ const Page: React.FC = () => {
       </Modal>
       {/* Button Tambah Letak barang */}
       <Modal
-        title="Tambah Letak Barang"
-        visible={letakBarangVisible}
-        centered
-        style={{ textAlign: 'center' }}
-        onCancel={handleModalCancel}
-        footer={[
-          <Button key="cancel" onClick={handleModalCancel}>
-            Batal
-          </Button>,
-          <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2' }}>
-            Simpan
-          </Button>,
-        ]}
-      >
-        <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-          <Col span={6}>
-            <p>Letak Barang</p>
-          </Col>
-          <Col span={18}>
-            <Input
-              value={letakBarang}
-              onChange={(e) => setLetakBarang(e.target.value)}
-              placeholder="Masukkan letak barang"
-              className="uppercase-input"
-            />
-          </Col>
-        </Row>
-      </Modal>
-      <Modal
-        title="Edit Letak Barang"
-        visible={letakBarangEditVisible}
-        centered
-        style={{ textAlign: 'center' }}
-        onCancel={handleModalCancel}
-        footer={[
-          <Button key="cancel" onClick={handleModalCancel}>
-            Batal
-          </Button>,
-          <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2' }}>
-            Simpan
-          </Button>,
-        ]}
-      >
-        <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-          <Col span={6}>
-            <p>Letak Barang</p>
-          </Col>
-          <Col span={18}>
-            <Input
-              value={letakBarang}
-              onChange={(e) => setLetakBarang(e.target.value)}
-              placeholder="Masukkan letak barang"
-              className="uppercase-input"
-            />
-          </Col>
-        </Row>
+      title="Tambah Letak Barang"
+      visible={letakBarangVisible || letakBarangEditVisible}
+      centered
+      style={{ textAlign: 'center' }}
+      onCancel={handleModalCancel}
+      footer={[
+        <Button key="cancel" onClick={handleModalCancel}>
+          Batal
+        </Button>,
+        <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2' }}>
+          Simpan
+        </Button>,
+      ]}
+    >
+      <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
+        <Col span={6}>
+          <p>Letak Barang</p>
+        </Col>
+        <Col span={18}>
+          <Input
+            value={letakBarang}
+            onChange={(e) => setLetakBarang(e.target.value)}
+            placeholder="Masukkan letak barang"
+            className="uppercase-input"
+          />
+        </Col>
+      </Row>
       </Modal>
       <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
               <Dropdown overlay={menu} placement="bottomCenter">

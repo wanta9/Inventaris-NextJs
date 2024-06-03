@@ -5,7 +5,6 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const editpeminjam = () => {
-  const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   return (
@@ -19,13 +18,13 @@ const editpeminjam = () => {
             <img src="kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
           </div>
         </Col>
-        <Col span={12} style={{ paddingLeft: '40px', fontSize: '16px' }}>
+        <Col span={12} style={{ paddingLeft: '40px', marginBottom: '60px'}}>
           <Row style={{ marginBottom: '30px', fontSize: '16px'}}>
             <Col span={9} style={{ fontWeight }}>Kode Barang</Col>
             <Col span={3}>:</Col>
             <Col span={5}>BB00</Col>
           </Row>
-          <Row style={{ marginBottom: '30px'}}>
+          <Row style={{ marginBottom: '30px'}}> 
             <Col span={9} style={{ fontWeight }}>Nama Barang</Col>
             <Col span={3}>:</Col>
             <Col span={5}>Proyektor</Col>
@@ -45,10 +44,10 @@ const editpeminjam = () => {
             <Col span={3}>:</Col>
             <Col span={5}>RPL</Col>
           </Row>
-          <Row style={{ marginBottom: '20px'}}>
+          <Row style={{ marginBottom: '20px', alignItems: 'baseline'}}>
             <Col span={9} style={{ fontWeight }}>Keterangan</Col>
             <Col span={3}>:</Col>
-            <Col span={5}>Bantuan Bansos</Col>
+            <Col span={12} style={{ display: 'flex', alignItems: 'center'}}>Bantuan Bansos</Col>
           </Row>
         </Col>
       </Row>

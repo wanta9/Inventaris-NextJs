@@ -32,7 +32,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     { key: '/letakbarang', icon: <img src="letakbarang.svg"  style={{ width: '18px'}}/>, label: 'Letak Barang' },
     { key: '/barang', icon: <img src='barang.svg' alt='barang Icon' style={{ width: '18px'}}/>, label: 'Barang' },
     { key: '/barangmasuk', icon: <img src="barangmasuk.svg" style={{ width: '18px'}}/>, label: 'Barang Masuk' },
-    { key: '/barangkeluar', icon: <img src="barangkeluar.svg" style={{ width: '18px'}}/>, label: 'Barang Keluar' }
+    { key: '/barangkeluar', icon: <img src="barangkeluar.svg" style={{ width: '18px'}}/>, label: 'Barang Keluar' },
+    { key: '/barangrusak', icon: <img src="barangrusak.svg" style={{ width: '18px'}}/>, label: 'Barang Rusak' }
   ];  
 
   return ( 

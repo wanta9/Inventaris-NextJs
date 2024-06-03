@@ -284,9 +284,9 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>} />
             <Popconfirm title="Hapus Barang" onConfirm={() => handleDelete(record.key)}>
-              <Button type="link" icon={<DeleteOutlined />} />
+              <Button type="link" icon={<DeleteOutlined style={{ color: 'red'}} />} />
             </Popconfirm>
           </span>
         );

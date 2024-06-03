@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker, Dropdown, Image, Menu } from 'antd';
+import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker, Dropdown, Menu } from 'antd';
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
@@ -382,7 +382,7 @@ const Page: React.FC = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Image src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                    <img src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
                       <div>
                           <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
                         <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>

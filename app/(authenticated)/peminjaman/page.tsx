@@ -77,7 +77,7 @@ const peminjaman = () => {
     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
   );
 
-  
+
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
   };

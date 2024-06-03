@@ -76,7 +76,7 @@ const Riwayat = () => {
     <div>
       <div>
         <title>Riwayat</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Riwayat</h1>
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>

@@ -1,11 +1,25 @@
-"use client";
+'use client';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Card, Form, Input, InputRef, Modal, message, Table, Select, DatePicker, Dropdown, Menu } from 'antd';
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  InputRef,
+  Modal,
+  message,
+  Table,
+  Select,
+  DatePicker,
+  Dropdown,
+  Menu,
+} from 'antd';
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 import { barangMasukRepository } from '#/repository/barangmasuk';
+import { useRouter } from 'next/navigation';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -80,11 +94,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit}
-      >
+      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
         {children}
       </div>
     );
@@ -118,18 +128,24 @@ const Page: React.FC = () => {
   const [form] = Form.useForm();
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const fontWeight = '500';
+  const router = useRouter();
 
   // klik row
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3001/detailbarangmasuk?id=${id}`;
   };
 
-  // menu keluar
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
+
   const menu = (
     <Menu>
-      <Item key="2">
-        <a style={{ color: 'red'}} target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-        <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }}/>Keluar
+      <Item key="1" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
+          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
+          Keluar
         </a>
       </Item>
     </Menu>
@@ -139,11 +155,12 @@ const Page: React.FC = () => {
     setSearchText(value);
   };
 
-  const filteredData = dataSource.filter(item =>
-    item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-    // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.jumlah.toLowerCase().includes(searchText.toLowerCase())
+  const filteredData = dataSource.filter(
+    (item) =>
+      item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+      // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.jumlah.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const handleButtonClick = () => {
@@ -162,7 +179,7 @@ const Page: React.FC = () => {
       const values = await form.validateFields();
       const currentDate = new Date();
       if (editData) {
-        const newData = dataSource.map(item => {
+        const newData = dataSource.map((item) => {
           if (item.key === editData.key) {
             return { ...item, ...values };
           }
@@ -176,7 +193,7 @@ const Page: React.FC = () => {
         const newData: Item = {
           key: count.toString(),
           kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0,10),
+          tanggalMasuk: currentDate.toISOString().slice(0, 10),
           ...values,
         };
         setDataSource([...dataSource, newData]);
@@ -191,7 +208,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
-    const index = newData.findIndex(item => row.key === item.key);
+    const index = newData.findIndex((item) => row.key === item.key);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, ...row });
@@ -238,13 +255,17 @@ const Page: React.FC = () => {
       dataIndex: '',
       render: (record: Item) => (
         <span>
-          <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined style={{ color: 'black'}}/>} />
+          <Button
+            type="link"
+            onClick={() => handleEdit(record)}
+            icon={<EditOutlined style={{ color: 'black' }} />}
+          />
         </span>
       ),
     },
   ];
-  
-  const mergedColumns = columns.map(col => {
+
+  const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
@@ -264,20 +285,32 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
-      <Card style={{ marginTop: '100px'}}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}>
-        <Search
-          placeholder="Telusuri Barang"
-          allowClear
-          enterButton
-          onSearch={value => handleSearch(value)}
-          style={{ width: 300, marginRight: '90vh'}}
-        />
-        <Button type="primary" onClick={handleButtonClick} icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px'}}/>} style={{ backgroundColor: 'white',boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', marginRight: '20px', width:'200px', height: '40px'}}>
-         <span style={{ marginRight: '20px', fontFamily}}>
-          Barang Masuk
-          </span>
-        </Button>
+      <Card style={{ marginTop: '100px' }}>
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
+        >
+          <Search
+            placeholder="Telusuri Barang Masuk"
+            allowClear
+            enterButton
+            onSearch={(value) => handleSearch(value)}
+            style={{ width: 300, marginRight: '90vh' }}
+          />
+          <Button
+            type="primary"
+            onClick={handleButtonClick}
+            icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+            style={{
+              backgroundColor: 'white',
+              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+              color: 'black',
+              marginRight: '20px',
+              width: '200px',
+              height: '40px',
+            }}
+          >
+            <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
+          </Button>
         </div>
         <Table
           rowClassName={() => 'editable-row'}
@@ -288,37 +321,43 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px'}}
+          style={{ marginTop: '30px' }}
         />
       </Card>
       <Modal
-      visible={modalVisible || modalEditVisible}
-      title={editData ? <span style={{ fontWeight: 'bold' }}>Edit Barang Masuk</span> : <span style={{ fontWeight: 'bold' }}>Tambah Barang Masuk</span>} 
-      style={{ textAlign: 'center'}}
-      onCancel={handleModalCancel}
-      centered
-      width={900}
-      okText="Simpan"
-      okButtonProps={{ style: { background: '#582DD2' } }}
-      cancelText="Batal"
-      cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-      onOk={handleSaveModalData}
-    >
-        <Form form={form} layout="horizontal" style={{ marginTop : '70px'}}>
+        visible={modalVisible || modalEditVisible}
+        title={
+          editData ? (
+            <span style={{ fontWeight: 'bold' }}>Edit Barang Masuk</span>
+          ) : (
+            <span style={{ fontWeight: 'bold' }}>Tambah Barang Masuk</span>
+          )
+        }
+        style={{ textAlign: 'center' }}
+        onCancel={handleModalCancel}
+        centered
+        width={900}
+        okText="Simpan"
+        okButtonProps={{ style: { background: '#582DD2' } }}
+        cancelText="Batal"
+        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
+        onOk={handleSaveModalData}
+      >
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
                 name="kodeBarang"
                 label="Kode Barang"
-                style={{ textAlign: 'left'}}
+                style={{ textAlign: 'left' }}
                 colon={false}
-                labelAlign='left'
+                labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
               >
                 <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
-                  {dataSource.map(item => (
+                  {dataSource.map((item) => (
                     <Option key={item.key} value={item.kodeBarang}>
                       {`${item.kodeBarang} - ${item.namaBarang}`}
                     </Option>
@@ -329,23 +368,23 @@ const Page: React.FC = () => {
                 name="tanggalMasuk"
                 label="Tanggal Masuk"
                 colon={false}
-                labelAlign='left'
+                labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
-                <DatePicker placeholder= "Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
               <Form.Item
                 name="jumlah"
                 label="Jumlah"
                 colon={false}
-                labelAlign='left'
+                labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input  placeholder= "Jumlah"style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
@@ -354,14 +393,17 @@ const Page: React.FC = () => {
                 label="Ruangan"
                 colon={false}
                 // Agar ke Kiri Teksnya
-                labelAlign='left'
+                labelAlign="left"
                 // Atur Col
                 labelCol={{ span: 5 }}
                 // Atur lebar Input
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
               >
-                <Select placeholder="Pilih Ruangan" style={{ width: '100%', height: '40px', textAlign: 'left'}}>
+                <Select
+                  placeholder="Pilih Ruangan"
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                >
                   <Option value="ruangan1">TKJ</Option>
                   <Option value="ruangan2">RPL</Option>
                   {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
@@ -378,22 +420,44 @@ const Page: React.FC = () => {
             </div>
           </div>
         </Form>
-    </Modal>
-    <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
-              <Dropdown overlay={menu} placement="bottomCenter">
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
-                      <div>
-                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
-                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
-                      </div>
-                    </div>
-                  </Button>
+      </Modal>
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              style={{
+                width: '175px',
+                height: '50px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="ikon.png"
+                  alt="Profile"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                />
+                <div>
+                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                    Halo, Elisabet
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
                 </div>
-              </Dropdown>
-            </div> 
+              </div>
+            </Button>
+          </div>
+        </Dropdown>
+      </div>
     </div>
   );
 };

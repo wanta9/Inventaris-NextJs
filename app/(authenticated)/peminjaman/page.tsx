@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation"; // Import useRouter
 import { Avatar, Button, Input, Table, Card } from "antd";
@@ -130,7 +130,7 @@ const peminjaman = () => {
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={(e) => handleButtonClick(e, record.id)}>
+                <Button type="primary" style={{ width: '70%' }} onClick={(e) => handleButtonClick(e, record.id)}>
                   {status}
                 </Button>
               )}

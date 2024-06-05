@@ -5,8 +5,7 @@ import { AudioOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { Avatar, Button, Input, Table, Card, Menu, Dropdown } from 'antd';
 import type { UploadFile } from 'antd';
-import {ArrowLeftOutlined} from "@ant-design/icons";
-
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { Column } = Table;
 const { Search } = Input;

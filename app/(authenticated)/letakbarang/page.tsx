@@ -14,6 +14,10 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 type EditableTableProps = Parameters<typeof Table>[0];
 
+interface Item {
+  key: string;
+  letakBarang:  string;
+}
 interface DataType {
   key: React.Key;
   letakbarang: string;
@@ -181,12 +185,13 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (record: DataType) =>
-        dataSource.length >= 1 ? (
+      render: (record: DataType) => {
+        return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'balck'}}/>}/>
           </span>
-        ) : null,
+        );
+      },
     },
   ];
 

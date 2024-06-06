@@ -8,7 +8,6 @@ import {
   Input,
   InputRef,
   Modal,
-  message,
   Table,
   Select,
   DatePicker,
@@ -18,7 +17,6 @@ import {
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
-import { barangMasukRepository } from '#/repository/barangmasuk';
 import { useRouter } from 'next/navigation';
 
 const { Option } = Select;
@@ -32,12 +30,13 @@ interface EditableRowProps {
 }
 
 interface Item {
-  key: string;
+  id: string;
   kodeBarang: string;
   namaBarang: string;
   harga: string;
   jumlah: string;
-  tanggalMasuk: string;
+  tanggalRusak: string;
+  status: string;
 }
 
 interface EditableCellProps {
@@ -126,8 +125,7 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
-  const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
-  const fontWeight = '500';
+
   const router = useRouter();
 
   // klik row
@@ -159,7 +157,6 @@ const Page: React.FC = () => {
     (item) =>
       item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
       item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
       item.jumlah.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -180,7 +177,7 @@ const Page: React.FC = () => {
       const currentDate = new Date();
       if (editData) {
         const newData = dataSource.map((item) => {
-          if (item.key === editData.key) {
+          if (item.id === editData.id) {
             return { ...item, ...values };
           }
           return item;
@@ -191,7 +188,7 @@ const Page: React.FC = () => {
       } else {
         const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
         const newData: Item = {
-          key: count.toString(),
+          id: count.toString(),
           kodeBarang: newKodeBarang,
           tanggalMasuk: currentDate.toISOString().slice(0, 10),
           ...values,
@@ -208,7 +205,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
+    const index = newData.findIndex((item) => row.id === item.id);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, ...row });
@@ -234,21 +231,23 @@ const Page: React.FC = () => {
       editable: false,
     },
     {
-      title: 'Harga',
-      dataIndex: 'harga',
-      editable: false,
-      render: (text: string) => `Rp ${text}`,
-    },
-    {
       title: 'Jumlah',
       dataIndex: 'jumlah',
       editable: false,
     },
     {
-      title: 'Tanggal Masuk',
-      dataIndex: 'tanggalMasuk',
+      title: 'Tanggal Rusak',
+      dataIndex: 'tanggalRusak',
       editable: true,
       render: (text: string) => text,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      editable: false,
+      render: (text: string) => (
+        <button></button>
+      ),
     },
     {
       title: '',
@@ -283,18 +282,18 @@ const Page: React.FC = () => {
 
   return (
     <div>
-      <title>Barang Masuk</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
+      <title>Barang Rusak</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
       <Card style={{ marginTop: '100px' }}>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
           <Search
-            placeholder="Telusuri Barang Masuk"
+            placeholder="Telusuri Barang Rusak"
             allowClear
             enterButton
             onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '90vh' }}
+            style={{ width: 300, marginRight: '80vh' }}
           />
           <Button
             type="primary"
@@ -309,13 +308,13 @@ const Page: React.FC = () => {
               height: '40px',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
+            <span style={{ marginRight: '20px', fontFamily }}>Barang Rusak</span>
           </Button>
         </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangMasuk?.data}
+          dataSource={filteredData}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },
@@ -328,9 +327,9 @@ const Page: React.FC = () => {
         visible={modalVisible || modalEditVisible}
         title={
           editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Masuk</span>
+            <span style={{ fontWeight: 'bold' }}>Edit Barang Rusak</span>
           ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Masuk</span>
+            <span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>
           )
         }
         style={{ textAlign: 'center' }}
@@ -343,7 +342,7 @@ const Page: React.FC = () => {
         cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
         onOk={handleSaveModalData}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
@@ -358,22 +357,11 @@ const Page: React.FC = () => {
               >
                 <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
                   {dataSource.map((item) => (
-                    <Option key={item.key} value={item.kodeBarang}>
+                    <Option key={item.id} value={item.kodeBarang}>
                       {`${item.kodeBarang} - ${item.namaBarang}`}
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
-              <Form.Item
-                name="tanggalMasuk"
-                label="Tanggal Masuk"
-                colon={false}
-                labelAlign="left"
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 15 }}
-                rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-              >
-                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
               <Form.Item
                 name="jumlah"
@@ -385,6 +373,17 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="tanggalRusak"
+                label="Tanggal Rusak"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+              >
+                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>

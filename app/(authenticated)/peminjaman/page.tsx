@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation"; // Import useRouter
 import { Avatar, Button, Input, Table, Card } from "antd";
@@ -77,7 +77,7 @@ const peminjaman = () => {
     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
   );
 
-  
+
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
   };
@@ -130,7 +130,7 @@ const peminjaman = () => {
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={(e) => handleButtonClick(e, record.id)}>
+                <Button type="primary" style={{ width: '70%' }} onClick={(e) => handleButtonClick(e, record.id)}>
                   {status}
                 </Button>
               )}

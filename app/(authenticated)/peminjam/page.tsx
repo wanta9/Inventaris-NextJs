@@ -5,8 +5,7 @@ import { AudioOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { Avatar, Button, Input, Table, Card, Menu, Dropdown } from 'antd';
 import type { UploadFile } from 'antd';
-import {ArrowLeftOutlined} from "@ant-design/icons";
-
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -176,10 +175,7 @@ const Peminjam = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                />
+                <img src="ikon.png" alt="icon gambar" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}/>
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
                     Halo, Elisabet

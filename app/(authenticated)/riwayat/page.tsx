@@ -2,16 +2,18 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter
-import { Avatar, Button, Input, Table, Card } from "antd";
+import { Avatar, Button, Input, Table, Card, Select } from "antd";
 import type { UploadFile } from 'antd';
 
 const { Column } = Table;
 const { Search } = Input;
+const { Option } = Select;
 
 const Riwayat = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   interface DataType {
     key: React.Key;
@@ -61,53 +63,77 @@ const Riwayat = () => {
     setData(initialData);
   }, []);
 
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+  };
+
   const handleChangeStatus = (key: React.Key) => {
     // Implement your status change logic here
     console.log("Status changed for:", key);
   };
 
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+  };
+
   const filteredData = data.filter(item =>
-    item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
+    (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
     item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
+    item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())) &&
+    (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
   );
 
   return (
     <div>
       <div>
         <title>Riwayat</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Riwayat</h1>
       </div>
       <Card style={{ marginTop: '100px' }}>
-        <div style={{ marginTop: '20px' }}>
-          
-          <Table dataSource={filteredData} style={{ paddingTop: '40px' }}>
-            <Column
-              title="Nama Peminjam"
-              key="fotonamapeminjam"
-              render={(text, record: DataType) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={record.foto} />
-                  <span style={{ marginLeft: 8 }}>{record.namapeminjam}</span>
-                </div>
-              )}
-            />
-            <Column title="Telepon" dataIndex="telpon" key="telpon" />
-            <Column title="Kode Peminjam" dataIndex="kodepeminjam" key="kodepeminjam" />
-            <Column title="Tanggal Peminjaman" dataIndex="tanggalpeminjaman" key="tanggalpeminjaman" />
-            <Column title="Tanggal Dikembalikan" dataIndex="tanggaldikembalikan" key="tanggaldikembalikan" />
-            <Column
-              title="Status"
-              dataIndex="status"
-              key="status"
-              render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={() => handleChangeStatus(record.key)}>
-                  {status}
-                </Button>
-              )}
-            />
-          </Table>
+        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
+          <Search
+            placeholder="Cari nama, nama pengguna, atau NISN"
+            allowClear
+            onSearch={handleSearch}
+            style={{ width: 300 }}
+          />
+          <Select
+            placeholder="Filter Status"
+            style={{ width: 200 }}
+            onChange={handleStatusFilterChange}
+            allowClear
+          >
+            <Option value="Selesai">Selesai</Option>
+            <Option value="Ditolak">Ditolak</Option>
+            <Option value="Telat">Telat</Option>
+          </Select>
         </div>
+        <Table dataSource={filteredData} style={{ paddingTop: '40px' }}>
+          <Column
+            title="Nama Peminjam"
+            key="fotonamapeminjam"
+            render={(text, record: DataType) => (
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar src={record.foto} />
+                <span style={{ marginLeft: 8 }}>{record.namapeminjam}</span>
+              </div>
+            )}
+          />
+          <Column title="Telepon" dataIndex="telpon" key="telpon" />
+          <Column title="Kode Peminjam" dataIndex="kodepeminjam" key="kodepeminjam" />
+          <Column title="Tanggal Peminjaman" dataIndex="tanggalpeminjaman" key="tanggalpeminjaman" />
+          <Column title="Tanggal Dikembalikan" dataIndex="tanggaldikembalikan" key="tanggaldikembalikan" />
+          <Column
+            title="Status"
+            dataIndex="status"
+            key="status"
+            render={(status: string, record: DataType) => (
+              <Button type="primary" onClick={() => handleChangeStatus(record.key)}>
+                {status}
+              </Button>
+            )}
+          />
+        </Table>
       </Card>
     </div>
   );

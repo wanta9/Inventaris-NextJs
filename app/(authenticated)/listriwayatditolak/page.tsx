@@ -232,7 +232,7 @@ const riwayatditolak = () => {
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '180px',
+                  height: '160px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -277,7 +277,7 @@ const riwayatditolak = () => {
                   </div>
                 </div>
               </Card>
-
+              <h4 style={{ fontWeight, fontFamily, marginLeft: '8px' }}>Alasan Ditolak</h4>
               <Card
                 className="shadow-card"
                 style={{
@@ -292,11 +292,9 @@ const riwayatditolak = () => {
                   border: '1px solid rgba(0, 0, 0, .95)',
                 }}
               >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                </div>
                 <div>
                 <p>
-                    loremipsum dolor sit amet           
+                    oawkoawkowakoakaowkaokwo           
                 </p>
                 </div>                
               </Card>

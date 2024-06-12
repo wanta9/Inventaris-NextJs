@@ -18,6 +18,7 @@ import { EditOutlined, PlusOutlined, ArrowLeftOutlined } from '@ant-design/icons
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 import { useRouter } from 'next/navigation';
+import { barangKeluarRepository } from '#/repository/barangkeluar';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -124,12 +125,13 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
+  const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
 
   const router = useRouter();
 
   // klik row
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/detailbarangmasuk?id=${id}`;
+    window.location.href = `http://localhost:3002/detailbarangkeluar?id=${id}`;
   };
 
   const logout = () => {
@@ -305,7 +307,7 @@ const Page: React.FC = () => {
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={filteredData}
+          dataSource={listBarangKeluar?.data}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },

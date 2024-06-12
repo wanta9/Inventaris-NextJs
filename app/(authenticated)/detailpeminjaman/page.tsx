@@ -7,10 +7,11 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const detailpeminjaman = () => {
-  const [borrowDate, setBorrowDate] = useState(null);
-  const [returnDate, setReturnDate] = useState(null);
-  const [returnedDate, setReturnedDate] = useState(null);
+
+const Detailpeminjaman = () => {
+  const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
+  const [returnDate, setReturnDate] = useState<Date | null>(() => null);
+  const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [status, setStatus] = useState('Pending');
 
   const fontFamily = 'Barlow, sans-serif';
@@ -159,7 +160,7 @@ const detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Peminjaman"
-                      onChange={(date) => setBorrowDate(date)}
+                      onChange={(date: Date | null) => setBorrowDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -181,7 +182,7 @@ const detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Pengembalian"
-                      onChange={(date) => setReturnDate(date)}
+                      onChange={(date: Date | null) => setReturnDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -203,7 +204,7 @@ const detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Dikembalikan"
-                      onChange={(date) => setReturnedDate(date)}
+                      onChange={(date: Date | null) => setReturnedDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -270,4 +271,4 @@ const detailpeminjaman = () => {
   );
 };
 
-export default detailpeminjaman;
+export default Detailpeminjaman;

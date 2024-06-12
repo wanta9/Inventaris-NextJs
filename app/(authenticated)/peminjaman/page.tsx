@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
 import { useEffect, useState } from 'react';
 import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
-import { useRouter } from "next/navigation"; // Import useRouter
-import { Avatar, Button, Input, Table, Card } from "antd";
+import { useRouter } from 'next/navigation'; // Import useRouter
+import { Avatar, Button, Input, Table, Card } from 'antd';
 import type { UploadFile } from 'antd';
 
 const { Column } = Table;
 const { Search } = Input;
 
-const peminjaman = () => {
+const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
@@ -34,7 +34,7 @@ const peminjaman = () => {
       tanggalpeminjaman: '2024-01-01',
       tanggaldikembalikan: '2024-01-15',
       status: 'Diterima',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
     {
       id: '2',
@@ -44,7 +44,7 @@ const peminjaman = () => {
       tanggalpeminjaman: '2024-02-01',
       tanggaldikembalikan: '2024-02-15',
       status: 'Pending',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
     {
       id: '3',
@@ -54,7 +54,7 @@ const peminjaman = () => {
       tanggalpeminjaman: '2024-03-01',
       tanggaldikembalikan: '2024-03-15',
       status: 'Telat',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
   ];
 
@@ -68,15 +68,15 @@ const peminjaman = () => {
 
   const handleChangeStatus = (key: React.Key) => {
     // Implement your status change logic here
-    console.log("Status changed for:", key);
+    console.log('Status changed for:', key);
   };
 
-  const filteredData = data.filter(item =>
-    item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
+  const filteredData = data.filter(
+    (item) =>
+      item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
   );
-
 
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
@@ -95,14 +95,14 @@ const peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-        <Search
-    placeholder="Cari nama, nama pengguna, atau NISN"
-    allowClear
-    onSearch={handleSearch}
-    prefix={<SearchOutlined style={{ marginRight: 8 }} />}
-    style={{ width: 300 }}
-  />
-        <Table
+          <Search
+            placeholder="Cari nama, nama pengguna, atau NISN"
+            allowClear
+            onSearch={handleSearch}
+            prefix={<SearchOutlined style={{ marginRight: 8 }} />}
+            style={{ width: 300 }}
+          />
+          <Table
             dataSource={filteredData}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
@@ -123,14 +123,26 @@ const peminjaman = () => {
             />
             <Column title="Telepon" dataIndex="telpon" key="telpon" />
             <Column title="Kode Peminjam" dataIndex="kodepeminjam" key="kodepeminjam" />
-            <Column title="Tanggal Peminjaman" dataIndex="tanggalpeminjaman" key="tanggalpeminjaman" />
-            <Column title="Tanggal Dikembalikan" dataIndex="tanggaldikembalikan" key="tanggaldikembalikan" />
+            <Column
+              title="Tanggal Peminjaman"
+              dataIndex="tanggalpeminjaman"
+              key="tanggalpeminjaman"
+            />
+            <Column
+              title="Tanggal Dikembalikan"
+              dataIndex="tanggaldikembalikan"
+              key="tanggaldikembalikan"
+            />
             <Column
               title="Status"
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" style={{ width: '70%' }} onClick={(e) => handleButtonClick(e, record.id)}>
+                <Button
+                  type="primary"
+                  style={{ width: '70%' }}
+                  onClick={(e) => handleButtonClick(e, record.id)}
+                >
                   {status}
                 </Button>
               )}
@@ -142,4 +154,4 @@ const peminjaman = () => {
   );
 };
 
-export default peminjaman;
+export default Peminjaman;

@@ -5,6 +5,7 @@ import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { Avatar, Button, Input, Table, Card, Form, Select } from 'antd';
 import type { UploadFile } from 'antd';
+import { peminjamanRepository } from '#/repository/peminjaman';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -14,6 +15,7 @@ const Peminjaman = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const [form] = Form.useForm();
+  const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
 
   interface DataType {
     id: string;
@@ -79,7 +81,7 @@ const Peminjaman = () => {
   const onFinish = (values) => {
     console.log('Form values:', values);
     // Handle form submission logic, e.g., updating the status in the data source
-    const newData = data.map((item) => 
+    const newData = data.map((item) =>
       item.id === values.id ? { ...item, status: values.status } : item
     );
     setData(newData);
@@ -109,7 +111,7 @@ const Peminjaman = () => {
             style={{ width: 300 }}
           />
           <Table
-            dataSource={filteredData}
+            dataSource={listPeminjaman?.data}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),
@@ -128,15 +130,11 @@ const Peminjaman = () => {
               )}
             />
             <Column title="Telepon" dataIndex="telpon" key="telpon" />
-            <Column title="Kode Peminjam" dataIndex="kodepeminjam" key="kodepeminjam" />
-            <Column
-              title="Tanggal Peminjaman"
-              dataIndex="tanggalpeminjaman"
-              key="tanggalpeminjaman"
-            />
+            <Column title="Kode Peminjam" dataIndex="kode" key="kodepeminjam" />
+            <Column title="Tanggal Peminjaman" dataIndex="tanggalPinjam" key="tanggalpeminjaman" />
             <Column
               title="Tanggal Dikembalikan"
-              dataIndex="tanggaldikembalikan"
+              dataIndex="tanggalDikembalikan"
               key="tanggaldikembalikan"
             />
             <Column

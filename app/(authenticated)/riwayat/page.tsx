@@ -83,6 +83,15 @@ const Riwayat = () => {
     (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
   );
 
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3001/riwayatditolak?id=${id}`;
+  };
+
+  const handleButtonClick = (e: any, id: string) => {
+    e.stopPropagation();
+    handleChangeStatus(id);
+  };
+
   return (
     <div>
       <div>

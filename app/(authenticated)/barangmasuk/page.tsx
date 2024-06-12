@@ -32,7 +32,7 @@ interface EditableRowProps {
 }
 
 interface Item {
-  key: string;
+  id: string;
   kodeBarang: string;
   namaBarang: string;
   harga: string;
@@ -180,7 +180,7 @@ const Page: React.FC = () => {
       const currentDate = new Date();
       if (editData) {
         const newData = dataSource.map((item) => {
-          if (item.key === editData.key) {
+          if (item.id === editData.id) {
             return { ...item, ...values };
           }
           return item;
@@ -208,7 +208,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
+    const index = newData.findIndex((item) => row.id === item.id);
     if (index > -1) {
       const item = newData[index];
       newData.splice(index, 1, { ...item, ...row });
@@ -218,7 +218,7 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
 
@@ -253,12 +253,19 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      onCell: () => ({
+        style: { cursor: 'pointer' },
+      }),
       render: (record: Item) => (
         <span>
           <Button
             type="link"
-            onClick={() => handleEdit(record)}
             icon={<EditOutlined style={{ color: 'black' }} />}
+            // Menetapkan onClick khusus untuk tombol Edit
+            onClick={(e) => {
+              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+            }}
           />
         </span>
       ),
@@ -358,7 +365,7 @@ const Page: React.FC = () => {
               >
                 <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
                   {dataSource.map((item) => (
-                    <Option key={item.key} value={item.kodeBarang}>
+                    <Option key={item.id} value={item.kodeBarang}>
                       {`${item.kodeBarang} - ${item.namaBarang}`}
                     </Option>
                   ))}

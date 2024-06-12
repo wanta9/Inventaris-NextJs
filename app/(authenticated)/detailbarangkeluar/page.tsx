@@ -54,7 +54,7 @@ const editpeminjam = () => {
     </Card>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
         <Button style={{ marginTop: '30px', backgroundColor: '#582DD2', color: 'white', width: '20%', height: '50px', borderRadius: '10px'}}>
-          <a href="http://localhost:3001/barangkeluar" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
+          <a href="http://localhost:3002/barangkeluar" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
             <ArrowLeftOutlined style={{ marginRight: '25px' }} />
             Kembali
           </a>

@@ -132,7 +132,7 @@ const Page: React.FC = () => {
 
   // klik row
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/detailbarangmasuk?id=${id}`;
+    window.location.href = `http://localhost:3002/detailbarangrusak?id=${id}`;
   };
 
   const logout = () => {
@@ -217,7 +217,7 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
 
@@ -247,8 +247,8 @@ const Page: React.FC = () => {
       title: 'Status',
       dataIndex: 'Status',
       editable: false,
-      render: (text: string) => <button></button>,
-    },
+      render: (status: string, record: any) => <Button style={{ color: '#5BFF00', backgroundColor: 'rgba(162, 225, 129, 0.3)', borderColor: '#A2E181'}}>{status}</Button>,
+    },    
     {
       title: '',
       dataIndex: '',
@@ -256,8 +256,12 @@ const Page: React.FC = () => {
         <span>
           <Button
             type="link"
-            onClick={() => handleEdit(record)}
             icon={<EditOutlined style={{ color: 'black' }} />}
+            // Menetapkan onClick khusus untuk tombol Edit
+            onClick={(e) => {
+              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+            }}
           />
         </span>
       ),
@@ -293,7 +297,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '80vh' }}
+            style={{ width: 300, marginRight: '90vh' }}
           />
           <Button
             type="primary"

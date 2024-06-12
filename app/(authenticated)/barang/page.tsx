@@ -190,6 +190,7 @@ const Page: React.FC = () => {
   
   const handleModalCancel = () => {
     setModalVisible(false);
+    setLetakBarangVisible(false);
     setModalEditVisible(false);
     setNamaBarang('');
     setharga('');

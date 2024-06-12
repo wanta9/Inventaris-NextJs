@@ -12,8 +12,8 @@ const editpeminjam = () => {
   const fontWeight = '700';
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
-      <title>Barang Masuk</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Detail Barang Masuk</h1>
+      <title>Barang Rusak</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Detail Barang Rusak</h1>
       <Card style={{ width: '80%', marginTop: '40px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}>
       <Row align="middle" justify="center">
         <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
@@ -21,7 +21,7 @@ const editpeminjam = () => {
             <img src="kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
           </div>
         </Col>
-        <Col span={12} style={{ paddingLeft: '40px', marginBottom: '50px'}}>
+        <Col span={12} style={{ paddingLeft: '40px', marginBottom: '30px'}}>
           <Row style={{ marginBottom: '30px', fontSize: '16px'}}>
             <Col span={9} style={{ fontWeight }}>Kode Barang</Col>
             <Col span={3}>:</Col>
@@ -33,19 +33,19 @@ const editpeminjam = () => {
             <Col span={5}>Proyektor</Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
-            <Col span={9} style={{ fontWeight }}>Harga</Col>
-            <Col span={3}>:</Col>
-            <Col span={5}>Rp 3.999.000</Col>
-          </Row>
-          <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Jumlah Barang</Col>
             <Col span={3}>:</Col>
             <Col span={5}>25</Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
-            <Col span={9} style={{ fontWeight }}>Tanggal Masuk</Col>
+            <Col span={9} style={{ fontWeight }}>Tanggal Rusak</Col>
             <Col span={3}>:</Col>
             <Col span={5}>32/03/2024</Col>
+          </Row>
+          <Row style={{ marginBottom: '30px'}}>
+            <Col span={9} style={{ fontWeight }}>Status</Col>
+            <Col span={3}>:</Col>
+            <Col span={5}><Button style={{ color: '#5BFF00', backgroundColor: 'rgba(162, 225, 129, 0.3)', borderColor: '#A2E181'}}>diperbaiki</Button></Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Ruangan</Col>
@@ -55,14 +55,14 @@ const editpeminjam = () => {
           <Row style={{ marginBottom: '20px'}}>
             <Col span={9} style={{ fontWeight }}>Keterangan</Col>
             <Col span={3}>:</Col>
-            <Col span={12} style={{  display: 'flex', alignItems: 'center'}}>Bantuan Bansos</Col>
+            <Col span={12} style={{  display: 'flex', alignItems: 'center'}}>Sudah diperbaiki</Col>
           </Row>
         </Col>
       </Row>
     </Card>
       <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
         <Button style={{ marginTop: '30px', backgroundColor: '#582DD2', color: 'white', width: '20%', height: '50px', borderRadius: '10px'}}>
-          <a href="http://localhost:3002/barangmasuk" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
+          <a href="http://localhost:3002/barangrusak" style={{ fontSize: '15px', marginRight: '20px', fontWeight}}>
             <ArrowLeftOutlined style={{ marginRight: '25px' }} />
             Kembali
           </a>

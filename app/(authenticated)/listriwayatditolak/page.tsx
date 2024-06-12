@@ -7,11 +7,10 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-
-const Detailpeminjaman = () => {
-  const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
-  const [returnDate, setReturnDate] = useState<Date | null>(() => null);
-  const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
+const riwayatditolak = () => {
+  const [borrowDate, setBorrowDate] = useState(null);
+  const [returnDate, setReturnDate] = useState(null);
+  const [returnedDate, setReturnedDate] = useState(null);
   const [status, setStatus] = useState('Pending');
 
   const fontFamily = 'Barlow, sans-serif';
@@ -19,7 +18,7 @@ const Detailpeminjaman = () => {
 
   return (
     <div style={{ marginLeft: '50px' }}>
-      <title>Detail Peminjaman</title>
+      <title>Riwayat Ditolak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Detai Peminjaman</h1>
       <Card
         style={{
@@ -134,7 +133,7 @@ const Detailpeminjaman = () => {
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '200px',
+                  height: '170px',
                   display: 'flex',
                   // flexDirection: 'column',
                   alignItems: 'center',
@@ -160,7 +159,7 @@ const Detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Peminjaman"
-                      onChange={(date: Date | null) => setBorrowDate(date)}
+                      onChange={(date) => setBorrowDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -182,7 +181,7 @@ const Detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Pengembalian"
-                      onChange={(date: Date | null) => setReturnDate(date)}
+                      onChange={(date) => setReturnDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -204,7 +203,7 @@ const Detailpeminjaman = () => {
                     </span>
                     <DatePicker
                       placeholder="Tanggal Dikembalikan"
-                      onChange={(date: Date | null) => setReturnedDate(date)}
+                      onChange={(date) => setReturnedDate(date)}
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
@@ -233,7 +232,7 @@ const Detailpeminjaman = () => {
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '200px',
+                  height: '180px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -278,6 +277,29 @@ const Detailpeminjaman = () => {
                   </div>
                 </div>
               </Card>
+
+              <Card
+                className="shadow-card"
+                style={{
+                  width: '400px',
+                  height: '100px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '10px',
+                  borderRadius: '20px',
+                  border: '1px solid rgba(0, 0, 0, .95)',
+                }}
+              >
+                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                </div>
+                <div>
+                <p>
+                    loremipsum dolor sit amet           
+                </p>
+                </div>                
+              </Card>
             </Col>
           </Row>
         </div>
@@ -286,4 +308,4 @@ const Detailpeminjaman = () => {
   );
 };
 
-export default Detailpeminjaman;
+export default riwayatditolak;

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AudioOutlined, SearchOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation'; // Import useRouter
-import { Avatar, Button, Input, Table, Card } from 'antd';
+import { Avatar, Button, Input, Table, Card, Form, Select } from 'antd';
 import type { UploadFile } from 'antd';
 
 const { Column } = Table;
@@ -13,6 +13,7 @@ const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const [form] = Form.useForm();
 
   interface DataType {
     id: string;
@@ -66,9 +67,23 @@ const Peminjaman = () => {
     setSearchText(value);
   };
 
-  const handleChangeStatus = (key: React.Key) => {
-    // Implement your status change logic here
-    console.log('Status changed for:', key);
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
+  };
+
+  const handleButtonClick = (id: string) => {
+    form.setFieldsValue({ id });
+    // Show the form to update the status
+  };
+
+  const onFinish = (values) => {
+    console.log('Form values:', values);
+    // Handle form submission logic, e.g., updating the status in the data source
+    const newData = data.map((item) => 
+      item.id === values.id ? { ...item, status: values.status } : item
+    );
+    setData(newData);
+    form.resetFields();
   };
 
   const filteredData = data.filter(
@@ -77,15 +92,6 @@ const Peminjaman = () => {
       item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
       item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
   );
-
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/detailpeminjaman?id=${id}`;
-  };
-
-  const handleButtonClick = (e: any, id: string) => {
-    e.stopPropagation();
-    handleChangeStatus(id);
-  };
 
   return (
     <div>
@@ -141,7 +147,10 @@ const Peminjaman = () => {
                 <Button
                   type="primary"
                   style={{ width: '70%' }}
-                  onClick={(e) => handleButtonClick(e, record.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleButtonClick(record.id);
+                  }}
                 >
                   {status}
                 </Button>

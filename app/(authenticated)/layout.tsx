@@ -7,6 +7,7 @@ import { Layout, Menu, theme } from 'antd';
 import { useRouter } from 'next/navigation';
 import { Card } from 'antd';
 import styled from 'styled-components';
+import { akunRepository } from '#/repository/akun';
 
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card;
@@ -39,6 +40,8 @@ const StyledMenu = styled(Menu)`
 
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
+  const { data: akun } = akunRepository.hooks.useAuth();
+  console.log(akun, 'halo');
 
   const {
     token: { colorBgContainer },
@@ -46,12 +49,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
 
   const menu: MenuProps['items'] = [
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
-    { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
-    {
-      key: '/peminjam',
-      icon: <img src="petugas.svg" style={{ width: '18px' }} />,
-      label: 'Peminjam',
-    },
+    // { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
+    // {
+    //   key: '/peminjam',
+    //   icon: <img src="petugas.svg" style={{ width: '18px' }} />,
+    //   label: 'Peminjam',
+    // },
+
     { key: '', label: 'Menu', type: 'group' },
     {
       key: '/letakbarang',
@@ -89,7 +93,21 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       label: 'Riwayat',
     },
   ];
+  const role = akun?.data?.peran?.Role;
+  console.log(role, 'zz');
 
+  if (role === 'admin') {
+    menu.splice(
+      1,
+      0,
+      { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
+      {
+        key: '/peminjam',
+        icon: <img src="petugas.svg" style={{ width: '18px' }} />,
+        label: 'Peminjam',
+      }
+    );
+  }
   return (
     <Layout>
       <Layout>

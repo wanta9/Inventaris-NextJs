@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter
-import { Avatar, Button, Input, Table, Card, Select } from "antd";
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
+import { Avatar, Button, Input, Table, Card, Select } from 'antd';
 import type { UploadFile } from 'antd';
 
 const { Column } = Table;
@@ -19,7 +19,7 @@ const Riwayat = () => {
     key: React.Key;
     namapeminjam: string;
     telpon: string;
-    kodepeminjam: string;
+    kodepeminjaman: string;
     tanggalpeminjaman: string;
     tanggaldikembalikan: string;
     status: string;
@@ -31,31 +31,31 @@ const Riwayat = () => {
       key: '1',
       namapeminjam: 'John Brown',
       telpon: '1234567890',
-      kodepeminjam: 'kode',
+      kodepeminjaman: 'kode',
       tanggalpeminjaman: '2024-01-01',
       tanggaldikembalikan: '2024-01-15',
       status: 'Diterima',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
     {
       key: '2',
       namapeminjam: 'Jim Green',
       telpon: '9876543210',
-      kodepeminjam: 'kode',
+      kodepeminjaman: 'kode',
       tanggalpeminjaman: '2024-02-01',
       tanggaldikembalikan: '2024-02-15',
       status: 'Ditolak',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
     {
       key: '3',
       namapeminjam: 'Joe Black',
       telpon: '5432167890',
-      kodepeminjam: 'kode',
+      kodepeminjaman: 'kode',
       tanggalpeminjaman: '2024-03-01',
       tanggaldikembalikan: '2024-03-15',
       status: 'Pending',
-      foto: "image 5.png",
+      foto: 'image 5.png',
     },
   ];
 
@@ -69,18 +69,19 @@ const Riwayat = () => {
 
   const handleChangeStatus = (key: React.Key) => {
     // Implement your status change logic here
-    console.log("Status changed for:", key);
+    console.log('Status changed for:', key);
   };
 
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value);
   };
 
-  const filteredData = data.filter(item =>
-    (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())) &&
-    (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
+  const filteredData = data.filter(
+    (item) =>
+      (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.kodepeminjaman.toString().toLowerCase().includes(searchText.toLowerCase())) &&
+      (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
   );
 
   const handleRowClick = (id: string) => {
@@ -129,9 +130,17 @@ const Riwayat = () => {
             )}
           />
           <Column title="Telepon" dataIndex="telpon" key="telpon" />
-          <Column title="Kode Peminjam" dataIndex="kodepeminjam" key="kodepeminjam" />
-          <Column title="Tanggal Peminjaman" dataIndex="tanggalpeminjaman" key="tanggalpeminjaman" />
-          <Column title="Tanggal Dikembalikan" dataIndex="tanggaldikembalikan" key="tanggaldikembalikan" />
+          <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjaman" />
+          <Column
+            title="Tanggal Peminjaman"
+            dataIndex="tanggalpeminjaman"
+            key="tanggalpeminjaman"
+          />
+          <Column
+            title="Tanggal Dikembalikan"
+            dataIndex="tanggaldikembalikan"
+            key="tanggaldikembalikan"
+          />
           <Column
             title="Status"
             dataIndex="status"

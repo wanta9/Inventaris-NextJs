@@ -1,8 +1,29 @@
 'use client';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Card, Col, Form, Input, InputRef, Modal, Popconfirm, Row, Table, message, Dropdown } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  InputRef,
+  Modal,
+  Popconfirm,
+  Row,
+  Table,
+  message,
+  Dropdown,
+} from 'antd';
+import {
+  PlusOutlined,
+  UploadOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  DownOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { FormInstance } from 'antd/lib';
 
@@ -10,7 +31,7 @@ const { Search } = Input;
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface DataType {
-  key: string;
+  id: string;
   namapeminjam: string;
   telpon: string;
   kodepeminjam: string;
@@ -106,7 +127,7 @@ const Peminjaman: React.FC = () => {
   };
 
   const filteredData = dataSource.filter(
-    item =>
+    (item) =>
       item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
       item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
       item.kodepeminjam.toLowerCase().includes(searchText.toLowerCase())
@@ -117,7 +138,7 @@ const Peminjaman: React.FC = () => {
     const initialData: DataType[] = [
       // Example data
       {
-        key: '1',
+        id: '1',
         namapeminjam: 'John Doe',
         telpon: '123456789',
         kodepeminjam: '001',
@@ -130,18 +151,18 @@ const Peminjaman: React.FC = () => {
     setDataSource(initialData);
   }, []);
 
-  const isEditing = (record: DataType) => record.key === editingKey;
+  const isEditing = (record: DataType) => console.log(record);
 
   const handleEdit = (record: DataType) => {
     form.setFieldsValue({ ...record });
-    setEditingKey(record.key);
+    setEditingKey(record.id);
   };
 
   const handleSave = async (key: string) => {
     try {
       const row = (await form.validateFields()) as DataType;
       const newData = [...dataSource];
-      const index = newData.findIndex(item => key === item.key);
+      const index = newData.findIndex((item) => key === item.id);
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
@@ -158,7 +179,7 @@ const Peminjaman: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
-    const newData = dataSource.filter(item => item.key !== key);
+    const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
   };
 
@@ -199,10 +220,14 @@ const Peminjaman: React.FC = () => {
       dataIndex: 'status',
       editable: true,
       render: (status: string, record: DataType) => (
-        <Button type="primary" style={{ width: '70%' }} onClick={(e) => {
-          e.stopPropagation();
-          handleEdit(record);
-        }}>
+        <Button
+          type="primary"
+          style={{ width: '70%' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit(record);
+          }}
+        >
           {status}
         </Button>
       ),
@@ -214,7 +239,7 @@ const Peminjaman: React.FC = () => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Button onClick={() => handleSave(record.key)}>Save</Button>
+            <Button onClick={() => handleSave(record.id)}>Save</Button>
             <Popconfirm title="Cancel?" onConfirm={() => setEditingKey(null)}>
               <Button>Cancel</Button>
             </Popconfirm>
@@ -222,7 +247,7 @@ const Peminjaman: React.FC = () => {
         ) : (
           <span>
             <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
-            <Popconfirm title="Delete?" onConfirm={() => handleDelete(record.key)}>
+            <Popconfirm title="Delete?" onConfirm={() => handleDelete(record.id)}>
               <Button type="link" icon={<DeleteOutlined />} />
             </Popconfirm>
           </span>
@@ -231,7 +256,7 @@ const Peminjaman: React.FC = () => {
     },
   ];
 
-  const mergedColumns = columns.map(col => {
+  const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
     }
@@ -251,7 +276,7 @@ const Peminjaman: React.FC = () => {
     <div>
       <div>
         <title>Peminjaman</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjaman</h1>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
@@ -275,7 +300,12 @@ const Peminjaman: React.FC = () => {
             rowClassName="editable-row"
             pagination={{ onChange: () => setEditingKey(null) }}
           />
-          <Button type="primary" onClick={() => setModalVisible(true)} icon={<PlusOutlined />} style={{ marginTop: '16px' }}>
+          <Button
+            type="primary"
+            onClick={() => setModalVisible(true)}
+            icon={<PlusOutlined />}
+            style={{ marginTop: '16px' }}
+          >
             Tambah Peminjam
           </Button>
           <Modal
@@ -283,32 +313,59 @@ const Peminjaman: React.FC = () => {
             visible={modalVisible}
             onCancel={() => setModalVisible(false)}
             onOk={() => {
-              form.validateFields().then(values => {
-                form.resetFields();
-                setDataSource([...dataSource, { ...values, key: dataSource.length.toString() }]);
-                setModalVisible(false);
-              }).catch(info => {
-                console.log('Validate Failed:', info);
-              });
+              form
+                .validateFields()
+                .then((values) => {
+                  form.resetFields();
+                  setDataSource([...dataSource, { ...values, key: dataSource.length.toString() }]);
+                  setModalVisible(false);
+                })
+                .catch((info) => {
+                  console.log('Validate Failed:', info);
+                });
             }}
           >
             <Form form={form} layout="vertical" name="form_in_modal">
-              <Form.Item name="namapeminjam" label="Nama Peminjam" rules={[{ required: true, message: 'Please input the name of the borrower!' }]}>
+              <Form.Item
+                name="namapeminjam"
+                label="Nama Peminjam"
+                rules={[{ required: true, message: 'Please input the name of the borrower!' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="telpon" label="Telepon" rules={[{ required: true, message: 'Please input the phone number!' }]}>
+              <Form.Item
+                name="telpon"
+                label="Telepon"
+                rules={[{ required: true, message: 'Please input the phone number!' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="kodepeminjam" label="Kode Peminjam" rules={[{ required: true, message: 'Please input the borrower code!' }]}>
+              <Form.Item
+                name="kodepeminjam"
+                label="Kode Peminjam"
+                rules={[{ required: true, message: 'Please input the borrower code!' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="tanggalpeminjaman" label="Tanggal Peminjaman" rules={[{ required: true, message: 'Please input the borrowing date!' }]}>
+              <Form.Item
+                name="tanggalpeminjaman"
+                label="Tanggal Peminjaman"
+                rules={[{ required: true, message: 'Please input the borrowing date!' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="tanggaldikembalikan" label="Tanggal Dikembalikan" rules={[{ required: true, message: 'Please input the return date!' }]}>
+              <Form.Item
+                name="tanggaldikembalikan"
+                label="Tanggal Dikembalikan"
+                rules={[{ required: true, message: 'Please input the return date!' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please input the status!' }]}>
+              <Form.Item
+                name="status"
+                label="Status"
+                rules={[{ required: true, message: 'Please input the status!' }]}
+              >
                 <Input />
               </Form.Item>
             </Form>

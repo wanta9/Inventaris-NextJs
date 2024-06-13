@@ -20,6 +20,7 @@ import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import { useRouter } from 'next/navigation';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -132,7 +133,7 @@ const Page: React.FC = () => {
 
   // klik row
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/detailbarangmasuk?id=${id}`;
+    window.location.href = `http://localhost:3002/barangmasuk/${id}`;
   };
 
   const logout = () => {
@@ -232,6 +233,10 @@ const Page: React.FC = () => {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: false,
+      render: (_, record) => {
+        console.log(record);
+        return record.ruanganBarang.barang.nama;
+      },
     },
     {
       title: 'Harga',
@@ -248,7 +253,7 @@ const Page: React.FC = () => {
       title: 'Tanggal Masuk',
       dataIndex: 'tanggalMasuk',
       editable: true,
-      render: (text: string) => text,
+      render: (text: string) => dayjs(text).format('DD-MM-YYYY'),
     },
     {
       title: '',

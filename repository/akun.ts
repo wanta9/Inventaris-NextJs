@@ -8,11 +8,17 @@ const url = {
   loginAkun() {
     return `/akun/login`;
   },
+  authorize() {
+    return `/akun/authorize`;
+  },
 };
 
 const hooks = {
   useAkun() {
     return useSWR(url.getAkun(), http.fetcher);
+  },
+  useAuth() {
+    return useSWR(url.authorize(), http.fetcher);
   },
 };
 

@@ -93,7 +93,7 @@ const Peminjaman = () => {
               )}
             />
             <Column title="Telepon" dataIndex="telpon" key="telpon" />
-            <Column title="Kode Peminjam" dataIndex="kode" key="kodepeminjam" />
+            <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
             <Column title="Tanggal Peminjaman" dataIndex="tanggalPinjam" key="tanggalpeminjaman" />
             <Column
               title="Tanggal Dikembalikan"

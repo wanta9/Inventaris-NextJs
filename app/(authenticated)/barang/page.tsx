@@ -234,7 +234,7 @@ const Page: React.FC = () => {
   };
   
   const handleDelete = (key: string) => {
-    const newData = dataSource.filter(item => item.key !== key);
+    const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
   };
   
@@ -290,6 +290,39 @@ const Page: React.FC = () => {
       editable: true,
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      editable: true,
+      render: (status: string, record: DataType) => (
+        <Button
+          type="primary"
+          style={{ width: '70%' }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleEdit(record);
+          }}
+        >
+          {status}
+        </Button>
+      ),
+    },
+    {
+      title: 'Actions',
+      dataIndex: 'actions',
+      render: (record: DataType) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <span>
+            <Button onClick={() => handleSave(record.id)}>Save</Button>
+            <Popconfirm title="Cancel?" onConfirm={() => setEditingKey(null)}>
+              <Button>Cancel</Button>
+            </Popconfirm>
+          </span>
+        ) : (
+          <span>
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
+            <Popconfirm title="Delete?" onConfirm={() => handleDelete(record.id)}>
+              <Button type="link" icon={<DeleteOutlined />} />
       title: '',
       dataIndex: '',
       render: (record: Item) => {
@@ -297,13 +330,42 @@ const Page: React.FC = () => {
           <span>
             <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>} />
             <Popconfirm title="Hapus Barang" onConfirm={() => handleDelete(record.key)}>
+
               <Button type="link" icon={<DeleteOutlined style={{ color: 'black'}} />} />
+              <Button type="link" icon={<DeleteOutlined style={{ color: 'red'}} />} />
             </Popconfirm>
           </span>
         );
       },
     },
   ];
+
+  const mergedColumns = columns.map((col) => {
+    if (!col.editable) {
+      return col;
+    }
+    return {
+      ...col,
+      onCell: (record: DataType) => ({
+        record,
+        editable: col.editable,
+        dataIndex: col.dataIndex,
+        title: col.title,
+        handleSave: handleSave,
+      }),
+    };
+  });
+
+  return (
+    <div>
+      <div>
+        <title>Peminjaman</title>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
+      </div>
+      <Card style={{ marginTop: '100px' }}>
+        <div style={{ marginTop: '20px' }}>
+          <Search
+            placeholder="Cari nama, nama pengguna, atau NISN"
 
   return (
     <div>
@@ -318,6 +380,90 @@ const Page: React.FC = () => {
             onSearch={value => handleSearch(value)}
             style={{ width: 300, marginRight: '400px'}}
           />
+          <Table
+            components={{
+              body: {
+                row: EditableRow,
+                cell: EditableCell,
+              },
+            }}
+            bordered
+            dataSource={filteredData}
+            columns={mergedColumns}
+            rowClassName="editable-row"
+            pagination={{ onChange: () => setEditingKey(null) }}
+          />
+          <Button
+            type="primary"
+            onClick={() => setModalVisible(true)}
+            icon={<PlusOutlined />}
+            style={{ marginTop: '16px' }}
+          >
+            Tambah Peminjam
+          </Button>
+          <Modal
+            title="Tambah Peminjam"
+            visible={modalVisible}
+            onCancel={() => setModalVisible(false)}
+            onOk={() => {
+              form
+                .validateFields()
+                .then((values) => {
+                  form.resetFields();
+                  setDataSource([...dataSource, { ...values, key: dataSource.length.toString() }]);
+                  setModalVisible(false);
+                })
+                .catch((info) => {
+                  console.log('Validate Failed:', info);
+                });
+            }}
+          >
+            <Form form={form} layout="vertical" name="form_in_modal">
+              <Form.Item
+                name="namapeminjam"
+                label="Nama Peminjam"
+                rules={[{ required: true, message: 'Please input the name of the borrower!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="telpon"
+                label="Telepon"
+                rules={[{ required: true, message: 'Please input the phone number!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="kodepeminjam"
+                label="Kode Peminjam"
+                rules={[{ required: true, message: 'Please input the borrower code!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="tanggalpeminjaman"
+                label="Tanggal Peminjaman"
+                rules={[{ required: true, message: 'Please input the borrowing date!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="tanggaldikembalikan"
+                label="Tanggal Dikembalikan"
+                rules={[{ required: true, message: 'Please input the return date!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="status"
+                label="Status"
+                rules={[{ required: true, message: 'Please input the status!' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Form>
+          </Modal>
+
           <Dropdown overlay={menu1} placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
              Letak Barang <DownOutlined />
@@ -341,7 +487,6 @@ const Page: React.FC = () => {
           Barang
           </span>
         </Button>
-
         </div>
         <Table
           components={components}

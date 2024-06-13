@@ -13,7 +13,6 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   // const params = useParams();
   // const id: string = params?.id;
   const { data: barangMasukById } = barangMasukRepository.hooks.useBarangMasukById(params.id);
-  console.log(barangMasukById);
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';

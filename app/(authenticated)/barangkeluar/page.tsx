@@ -216,7 +216,7 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
 
@@ -247,10 +247,14 @@ const Page: React.FC = () => {
       dataIndex: '',
       render: (record: Item) => (
         <span>
-          <Button
+           <Button
             type="link"
-            onClick={() => handleEdit(record)}
             icon={<EditOutlined style={{ color: 'black' }} />}
+            // Menetapkan onClick khusus untuk tombol Edit
+            onClick={(e) => {
+              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+            }}
           />
         </span>
       ),
@@ -308,12 +312,13 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listBarangKeluar?.data}
+          pagination={{ pageSize: 5 }} 
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '30px' }} 
         />
       </Card>
       <Modal

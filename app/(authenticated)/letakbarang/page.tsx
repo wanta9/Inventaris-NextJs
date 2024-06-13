@@ -188,7 +188,7 @@ const Page: React.FC = () => {
       render: (record: DataType) => {
         return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'balck'}}/>}/>
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>}/>
           </span>
         );
       },

@@ -15,6 +15,7 @@ interface AuthenticatedLayoutProps {
   children: React.ReactNode;
 }
 
+// style Menu Sider
 const StyledMenu = styled(Menu)`
   .ant-menu-item-selected {
     background-color: rgba(88, 45, 210, 0.33) !important;

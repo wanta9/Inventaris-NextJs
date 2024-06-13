@@ -23,11 +23,17 @@ const url = {
   getBarangRusak() {
     return `/barangRusak`;
   },
+  getBarangRusakById(id: string) {
+    return `/barangRusak/${id}`;
+  },
 };
 
 const hooks = {
   useBarangRusak() {
     return useSWR(url.getBarangRusak(), http.fetcher);
+  },
+  useBarangRusakById(id: string) {
+    return useSWR(url.getBarangRusakById(id), http.fetcher);
   },
 };
 

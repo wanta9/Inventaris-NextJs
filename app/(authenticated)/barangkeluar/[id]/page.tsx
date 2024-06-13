@@ -10,6 +10,7 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: barangKeluarById } = barangKeluarRepository.hooks.useBarangKeluarById(params.id);
+  console.log(barangKeluarById, 'barang keluar by id');
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Keluar</title>

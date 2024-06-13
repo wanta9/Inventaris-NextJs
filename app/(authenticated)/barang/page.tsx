@@ -1,23 +1,24 @@
-'use client';
+"use client";
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Avatar, Button, Card, Col, Form, Input, InputRef, Modal, Popconfirm, Row, Table, message, Dropdown } from 'antd';
-import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown } from 'antd';
+import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, DownOutlined } from '@ant-design/icons';
+import { FormInstance } from 'antd/lib/form';
 import { useRouter } from 'next/navigation';
-import { FormInstance } from 'antd/lib';
+import { barangRepository } from '#/repository/barang';
 
 const { Search } = Input;
+const { Item } = Menu;
+
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
-interface DataType {
+interface Item {
   key: string;
-  namapeminjam: string;
-  telpon: string;
-  kodepeminjam: string;
-  tanggalpeminjaman: string;
-  tanggaldikembalikan: string;
-  status: string;
-  foto: string;
+  kodeBarang: string;
+  namaBarang: string;
+  letakBarang: string;
+  harga: string;
+  deskripsi: string;
 }
 
 interface EditableRowProps {
@@ -38,19 +39,20 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
 interface EditableCellProps {
   title: React.ReactNode;
   editable: boolean;
-  children: React.ReactNode;
-  dataIndex: keyof DataType;
-  record: DataType;
-  handleSave: (record: DataType) => void;
+  dataIndex: keyof Item;
+  record: Item;
+  handleSave: (record: Item) => void;
+  handleEdit: (record: Item) => void;
 }
 
-const EditableCell: React.FC<EditableCellProps> = ({
+const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   title,
   editable,
   children,
   dataIndex,
   record,
   handleSave,
+  handleEdit,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -65,6 +67,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   const save = async () => {
     try {
       const values = await form.validateFields();
+
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
@@ -79,7 +82,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
-        rules={[{ required: true, message: `${title} is required.` }]}
+        rules={[
+          {
+            required: true,
+            message: `${title} is required.`,
+          },
+        ]}
       >
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
@@ -93,137 +101,203 @@ const EditableCell: React.FC<EditableCellProps> = ({
   return <td {...restProps}>{childNode}</td>;
 };
 
-const Peminjaman: React.FC = () => {
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [editingKey, setEditingKey] = useState<string | null>(null);
+type EditableTableProps = Parameters<typeof Table>[0];
+interface DataType {
+  key: React.Key;
+  name: string;
+  username: string;
+  telp: string;
+  nip: string;
+}
+
+type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+
+const Page: React.FC = () => {
+  const [dataSource, setDataSource] = useState<Item[]>([]);
+  const [editData, setEditData] = useState<Item | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalEditVisible, setModalEditVisible] = useState(false);
+  const [letakBarangVisible, setLetakBarangVisible] = useState(false);
+  const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
+  const [count, setCount] = useState(0);
+  const [kodeBarang, setKodeBarang] = useState('');
+  const [namaBarang, setNamaBarang] = useState('');
+  const [harga, setharga] = useState('');
+  const [letakBarang, setLetakBarang] = useState('');
+  const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
-  const [form] = Form.useForm();
+  const fontFamily = 'Barlow, sans-serif';
+  const { data: listBarang } = barangRepository.hooks.useBarang();        
   const router = useRouter();
 
+  const menu1 = (
+    <Menu>
+      <Menu.Item key="1">RPL</Menu.Item>
+      <Menu.Item key="2">TKJ</Menu.Item>
+      <Menu.Item key="3">TBSM</Menu.Item>
+    </Menu>
+  );
+
+
+  
+   // menu akun
+   const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
+
+  const menu = (
+    <Menu>
+      <Item key="1" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
+          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
+          Keluar
+        </a>
+      </Item>
+    </Menu>
+  );
+  
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
 
-  const filteredData = dataSource.filter(
-    item =>
-      item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.kodepeminjam.toLowerCase().includes(searchText.toLowerCase())
+  const filteredData = dataSource.filter(item =>
+    item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.letakBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.deskripsi.toLowerCase().includes(searchText.toLowerCase())
   );
 
   useEffect(() => {
-    // Fetch and set initial data here
-    const initialData: DataType[] = [
-      // Example data
-      {
-        key: '1',
-        namapeminjam: 'John Doe',
-        telpon: '123456789',
-        kodepeminjam: '001',
-        tanggalpeminjaman: '2024-06-01',
-        tanggaldikembalikan: '2024-06-10',
-        status: 'Dipinjam',
-        foto: 'https://via.placeholder.com/150',
-      },
-    ];
-    setDataSource(initialData);
-  }, []);
+    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
+  }, [filteredData]);  
+  
 
-  const isEditing = (record: DataType) => record.key === editingKey;
-
-  const handleEdit = (record: DataType) => {
-    form.setFieldsValue({ ...record });
-    setEditingKey(record.key);
+  const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
+    setharga(value);
   };
 
-  const handleSave = async (key: string) => {
-    try {
-      const row = (await form.validateFields()) as DataType;
-      const newData = [...dataSource];
-      const index = newData.findIndex(item => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
-        setEditingKey(null);
-      } else {
-        newData.push(row);
-        setDataSource(newData);
-        setEditingKey(null);
-      }
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
+  const handleButtonClick = (type: string) => {
+    if (type === 'barang') {
+      setModalVisible(true);
+      setLetakBarangVisible(false); // Menutup modal tambah letak barang jika ada
+    } else if (type === 'letakBarang') {
+      setLetakBarangVisible(true);
+      setModalVisible(false); // Menutup modal tambah barang jika ada
     }
   };
-
+  
+  const handleModalCancel = () => {
+    setModalVisible(false);
+    setModalEditVisible(false);
+    setNamaBarang('');
+    setharga('');
+    setDeskripsi('');
+  };
+  
+  const handleSaveModalData = () => {
+    if (!namaBarang || !harga || !deskripsi || !letakBarang) {
+      message.error('Semua kolom harus diisi.');
+      return;
+    }
+  
+    if (editData) {
+      const newData = dataSource.map(item => {
+        if (item.key === editData.key) {
+          return { ...item, kodeBarang, namaBarang, letakBarang, harga, deskripsi };
+        }
+        return item;
+      });
+      setDataSource(newData);
+      setModalEditVisible(false);
+      setEditData(null);
+    } else {
+      const newData: Item = {
+        key: count.toString(),
+        kodeBarang,
+        namaBarang,
+        letakBarang,
+        harga,
+        deskripsi,
+      };
+      setDataSource([...dataSource, newData]);
+      setCount(count + 1);
+      setModalVisible(false);
+    }
+  
+    // Reset state setelah menyimpan data
+    setNamaBarang('');
+    setharga('');
+    setDeskripsi('');
+    setLetakBarang('');
+  };
+  
   const handleDelete = (key: string) => {
     const newData = dataSource.filter(item => item.key !== key);
     setDataSource(newData);
   };
+  
+  
+  const handleEdit = (record: Item) => {
+    setEditData(record);
+    setKodeBarang(record.kodeBarang);
+    setNamaBarang(record.namaBarang);
+    setDeskripsi(record.deskripsi);
+    setDeskripsi(record.harga);
+    setModalEditVisible(true);
+  };
+  
+  
 
-  const columns = [
-    {
-      title: 'Nama Peminjam',
-      dataIndex: 'namapeminjam',
-      editable: true,
-      render: (text: string, record: DataType) => (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar src={record.foto} />
-          <span style={{ marginLeft: 8 }}>{text}</span>
-        </div>
-      ),
+  const handleSave = (row: Item) => {
+    const newData = [...dataSource];
+    const index = newData.findIndex(item => row.key === item.key);
+    newData.splice(index, 1, {
+      ...newData[index],
+      ...row,
+    });
+    setDataSource(newData);
+  };
+
+  const components = {
+    body: {
+      row: EditableRow,
+      cell: EditableCell,
+      handleSave,
     },
+  };
+
+  const columns : (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
-      title: 'Telepon',
-      dataIndex: 'telpon',
-      editable: true,
-    },
-    {
-      title: 'Kode Peminjam',
-      dataIndex: 'kodepeminjam',
-      editable: true,
-    },
-    {
-      title: 'Tanggal Peminjaman',
-      dataIndex: 'tanggalpeminjaman',
+      title: 'Kode Barang',
+      dataIndex: 'kode',
       editable: true,
     },
     {
-      title: 'Tanggal Dikembalikan',
-      dataIndex: 'tanggaldikembalikan',
+      title: 'Nama Barang',
+      dataIndex: 'nama',
       editable: true,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
+      title: 'Letak Barang',
+      dataIndex: 'Letak_Barang',
       editable: true,
-      render: (status: string, record: DataType) => (
-        <Button type="primary" style={{ width: '70%' }} onClick={(e) => {
-          e.stopPropagation();
-          handleEdit(record);
-        }}>
-          {status}
-        </Button>
-      ),
     },
     {
-      title: 'Actions',
-      dataIndex: 'actions',
-      render: (record: DataType) => {
-        const editable = isEditing(record);
-        return editable ? (
+      title: 'Jumlah',
+      dataIndex: 'jumlah',
+      editable: true,
+    },
+    {
+      title: '',
+      dataIndex: '',
+      render: (record: Item) => {
+        return (
           <span>
-            <Button onClick={() => handleSave(record.key)}>Save</Button>
-            <Popconfirm title="Cancel?" onConfirm={() => setEditingKey(null)}>
-              <Button>Cancel</Button>
-            </Popconfirm>
-          </span>
-        ) : (
-          <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
-            <Popconfirm title="Delete?" onConfirm={() => handleDelete(record.key)}>
-              <Button type="link" icon={<DeleteOutlined />} />
+            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>} />
+            <Popconfirm title="Hapus Barang" onConfirm={() => handleDelete(record.key)}>
+              <Button type="link" icon={<DeleteOutlined style={{ color: 'red'}} />} />
             </Popconfirm>
           </span>
         );
@@ -231,92 +305,280 @@ const Peminjaman: React.FC = () => {
     },
   ];
 
-  const mergedColumns = columns.map(col => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: DataType) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave: handleSave,
-      }),
-    };
-  });
-
   return (
     <div>
-      <div>
-        <title>Peminjaman</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjaman</h1>
-      </div>
-      <Card style={{ marginTop: '100px' }}>
-        <div style={{ marginTop: '20px' }}>
-          <Search
-            placeholder="Cari nama, nama pengguna, atau NISN"
+      <title>Barang</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
+      <Card style={{marginTop: '50px', borderRadius: '20px'}}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}>
+        <Search
+            placeholder="Telusuri Barang"
             allowClear
-            onSearch={handleSearch}
-            prefix={<SearchOutlined style={{ marginRight: 8 }} />}
-            style={{ width: 300 }}
+            enterButton
+            onSearch={value => handleSearch(value)}
+            style={{ width: 300, marginRight: '400px'}}
           />
-          <Table
-            components={{
-              body: {
-                row: EditableRow,
-                cell: EditableCell,
-              },
-            }}
-            bordered
-            dataSource={filteredData}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            pagination={{ onChange: () => setEditingKey(null) }}
-          />
-          <Button type="primary" onClick={() => setModalVisible(true)} icon={<PlusOutlined />} style={{ marginTop: '16px' }}>
-            Tambah Peminjam
-          </Button>
-          <Modal
-            title="Tambah Peminjam"
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onOk={() => {
-              form.validateFields().then(values => {
-                form.resetFields();
-                setDataSource([...dataSource, { ...values, key: dataSource.length.toString() }]);
-                setModalVisible(false);
-              }).catch(info => {
-                console.log('Validate Failed:', info);
-              });
-            }}
-          >
-            <Form form={form} layout="vertical" name="form_in_modal">
-              <Form.Item name="namapeminjam" label="Nama Peminjam" rules={[{ required: true, message: 'Please input the name of the borrower!' }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="telpon" label="Telepon" rules={[{ required: true, message: 'Please input the phone number!' }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="kodepeminjam" label="Kode Peminjam" rules={[{ required: true, message: 'Please input the borrower code!' }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="tanggalpeminjaman" label="Tanggal Peminjaman" rules={[{ required: true, message: 'Please input the borrowing date!' }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="tanggaldikembalikan" label="Tanggal Dikembalikan" rules={[{ required: true, message: 'Please input the return date!' }]}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please input the status!' }]}>
-                <Input />
-              </Form.Item>
-            </Form>
-          </Modal>
+          <Dropdown overlay={menu1} placement="bottomLeft">
+            <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
+             Letak Barang <DownOutlined />
+            </Button>
+          </Dropdown> 
+          <Button
+          type="primary"
+          onClick={() => handleButtonClick('letakBarang')}
+          icon={<PlusOutlined />}
+          style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}
+        >
+          Letak Barang
+        </Button>
+        <Button
+          type="primary"
+          onClick={() => handleButtonClick('barang')}
+          icon={<PlusOutlined style={{}}/>}
+          style={{ backgroundColor: 'white', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', color: 'black', height: '40px', width: '200px', fontFamily}}
+        >
+          <span style={{ marginRight: '10px'}}>
+          Barang
+          </span>
+        </Button>
+
         </div>
+        <Table
+          components={components}
+          rowClassName={() => 'editable-row'}
+          bordered
+          dataSource={listBarang?.data}
+          pagination={{ pageSize: 5 }} 
+          columns={columns as ColumnTypes}
+          style={{ marginTop: '40px' }}
+        />
       </Card>
+      <Modal
+        title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
+        style={{ textAlign: 'center' }}
+        centered
+        width={900}
+        visible={modalVisible}
+        onCancel={handleModalCancel}
+        footer={[
+          <Button key="cancel" onClick={handleModalCancel} style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}>
+            Batal
+          </Button>,
+          <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px', backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2' }}>
+            Simpan
+          </Button>,
+        ]}
+        maskStyle={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+          <Row gutter={[24, 24]} style={{ marginTop: '70px'}}>
+            <Col span={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p>Nama Barang</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input
+                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                        placeholder="Nama Barang"
+                        value={namaBarang}
+                        onChange={(e) => setNamaBarang(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p>Harga</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input
+                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                        prefix="Rp"
+                        value={harga}
+                        onChange={handleHargaChange}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p style={{ marginBottom: '80px'}}>Deskripsi</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input.TextArea
+                        style={{ marginBottom: '12px', width: '75%', height: '50%' }}
+                        rows={4}
+                        placeholder="Deskripsi Barang"
+                        value={deskripsi}
+                        onChange={(e) => setDeskripsi(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={8}>
+              <Row>
+                <Col>
+                  <p style={{ marginLeft: '-40px', marginRight: '20px'}}>Unggah Foto</p>
+                </Col>
+                <Col>
+                  <Upload
+                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                    listType="picture"
+                  >
+                    <Button icon={<UploadOutlined />} style={{ marginRight: '50px'}}>Unggah</Button>
+                  </Upload>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+      </Modal>
+      <Modal
+        title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
+        style={{ textAlign: 'center' }}
+        centered
+        width={1000}
+        visible={modalEditVisible}
+        onCancel={handleModalCancel}
+        footer={[
+          <Button key="cancel" onClick={handleModalCancel} style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}>
+            Batal
+          </Button>,
+          <Button key="save" type="primary" onClick={handleSaveModalData} style={{ marginRight: '27px', backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2' }}>
+            Simpan
+          </Button>,
+        ]}
+        maskStyle={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+          <Row gutter={[24, 24]} style={{ marginTop: '70px'}}>
+            <Col span={16}>
+              <Row gutter={[24, 24]}>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p>Nama Barang</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input
+                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
+                        placeholder="Nama Barang"
+                        value={namaBarang}
+                        onChange={(e) => setNamaBarang(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p>Harga</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input
+                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
+                        addonBefore="Rp"
+                        value={harga}
+                        placeholder="harga"
+                        onChange={handleHargaChange}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={24}>
+                  <Row align="middle">
+                    <Col span={6}>
+                      <p>Deskripsi</p>
+                    </Col>
+                    <Col span={18}>
+                      <Input.TextArea
+                        style={{ marginBottom: '12px', width: '100%', height: '80px' }}
+                        placeholder="Deskripsi Barang"
+                        value={deskripsi}
+                        onChange={(e) => setDeskripsi(e.target.value)}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={8}>
+              <Row>
+                <Col span={8}>
+                  <p>Unggah Foto</p>
+                </Col>
+                <Col>
+                  <Upload
+                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                    listType="picture"
+                  >
+                    <Button icon={<UploadOutlined />}>Unggah</Button>
+                  </Upload>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+      </Modal>
+      {/* Button Tambah Letak barang */}
+      <Modal
+      title="Tambah Letak Barang"
+      visible={letakBarangVisible || letakBarangEditVisible}
+      centered
+      style={{ textAlign: 'center' }}
+      onCancel={handleModalCancel}
+      footer={[
+        <Button key="cancel" onClick={handleModalCancel}>
+          Batal
+        </Button>,
+        <Button key="save" type="primary" onClick={handleSaveModalData} style={{ backgroundColor: '#582DD2' }}>
+          Simpan
+        </Button>,
+      ]}
+    >
+      <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
+        <Col span={6}>
+          <p>Letak Barang</p>
+        </Col>
+        <Col span={18}>
+          <Input
+            value={letakBarang}
+            onChange={(e) => setLetakBarang(e.target.value)}
+            placeholder="Masukkan letak barang"
+            className="uppercase-input"
+          />
+        </Col>
+      </Row>
+      </Modal>
+      <div style={{ position: 'absolute', top: '20px', right: '100px', display: 'flex', alignItems: 'center'}}>
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button style={{ width: '175px', height: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img src="ikon.png" alt='Profile' style={{ width: '70px', marginRight: '5px', marginLeft: '-10px'}} />
+                      <div>
+                          <div style={{ fontSize: '12px', color: 'black', marginRight: '20px'}}>Halo, Elisabet</div>
+                        <div  style={{ fontSize: '12px', color: 'grey ', marginRight: '47px'}}>Admin</div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </Dropdown>
+            </div> 
     </div>
   );
 };
-
-export default Peminjaman;
+export default Page;

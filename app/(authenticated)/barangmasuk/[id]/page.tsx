@@ -13,6 +13,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   // const params = useParams();
   // const id: string = params?.id;
   const { data: barangMasukById } = barangMasukRepository.hooks.useBarangMasukById(params.id);
+  console.log(barangMasukById, 'barang masuk by id');
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
@@ -54,14 +55,14 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 Nama Barang
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>Proyektor</Col>
+              <Col span={5}>{barangMasukById?.data?.ruanganBarang?.barang?.nama}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Harga
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>Rp 3.999.000</Col>
+              <Col span={5}>{barangMasukById?.data?.harga}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>

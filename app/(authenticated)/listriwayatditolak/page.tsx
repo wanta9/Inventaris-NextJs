@@ -293,7 +293,7 @@ const riwayatditolak = () => {
                 }}
               >
                 <div>
-                <p>
+                <p style={{ fontWeight, fontFamily, marginLeft: '8px'}}>
                     oawkoawkowakoakaowkaokwo           
                 </p>
                 </div>                

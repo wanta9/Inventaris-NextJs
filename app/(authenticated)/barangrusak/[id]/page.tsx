@@ -5,11 +5,17 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Option } from 'antd/es/mentions';
 import { Select } from 'antd/lib';
+import dynamic from 'next/dynamic';
+import { barangRusakRepository } from '#/repository/barangrusak';
+import dayjs from 'dayjs';
 
-const editpeminjam = () => {
+
+const barangRusak = ({ params }: { params: { id: string } }) => {
+  const { data: barangRusakById } = barangRusakRepository.hooks.useBarangRusakById(params.id);
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
+  const formattedDate = dayjs(barangRusakById?.data?.tanggalRusak).format('DD-MM-YYYY');
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Rusak</title>
@@ -25,7 +31,7 @@ const editpeminjam = () => {
           <Row style={{ marginBottom: '30px', fontSize: '16px'}}>
             <Col span={9} style={{ fontWeight }}>Kode Barang</Col>
             <Col span={3}>:</Col>
-            <Col span={5}>BB00</Col>
+            <Col span={5}>{barangRusakById?.data?.kode}</Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Nama Barang</Col>
@@ -35,17 +41,17 @@ const editpeminjam = () => {
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Jumlah Barang</Col>
             <Col span={3}>:</Col>
-            <Col span={5}>25</Col>
+            <Col span={5}>{barangRusakById?.data?.jumlah}</Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Tanggal Rusak</Col>
             <Col span={3}>:</Col>
-            <Col span={5}>32/03/2024</Col>
+            <Col span={5}>{formattedDate}</Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Status</Col>
             <Col span={3}>:</Col>
-            <Col span={5}><Button style={{ color: '#5BFF00', backgroundColor: 'rgba(162, 225, 129, 0.3)', borderColor: '#A2E181'}}>diperbaiki</Button></Col>
+            <Col span={5}><Button style={{ color: '#5BFF00', backgroundColor: 'rgba(162, 225, 129, 0.3)', borderColor: '#A2E181'}}>{barangRusakById?.data?.status}</Button></Col>
           </Row>
           <Row style={{ marginBottom: '30px'}}>
             <Col span={9} style={{ fontWeight }}>Ruangan</Col>
@@ -55,7 +61,7 @@ const editpeminjam = () => {
           <Row style={{ marginBottom: '20px'}}>
             <Col span={9} style={{ fontWeight }}>Keterangan</Col>
             <Col span={3}>:</Col>
-            <Col span={12} style={{  display: 'flex', alignItems: 'center'}}>Sudah diperbaiki</Col>
+            <Col span={12} style={{  display: 'flex', alignItems: 'center'}}>{barangRusakById?.data?.keterangan}</Col>
           </Row>
         </Col>
       </Row>
@@ -72,4 +78,4 @@ const editpeminjam = () => {
   );
 };
 
-export default editpeminjam;
+export default barangRusak;

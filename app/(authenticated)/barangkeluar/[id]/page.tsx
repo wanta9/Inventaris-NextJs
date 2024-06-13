@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 const BarangKeluar = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
-  const { data: barangKeluarById } = barangKeluarRepository.hooks.useBarangKeluar(params.id);
+  const { data: barangKeluarById } = barangKeluarRepository.hooks.useBarangKeluarById(params.id);
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Keluar</title>
@@ -41,7 +41,7 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
                 Kode Barang
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>{barangKeluarById?.kode}</Col>
+              <Col span={5}>{barangKeluarById?.data?.kode}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
@@ -55,14 +55,14 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
                 Jumlah Barang
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>25</Col>
+              <Col span={5}>{barangKeluarById?.data?.jumlah}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Tanggal Keluar
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>32/03/2024</Col>
+              <Col span={5}>{barangKeluarById?.data?.tanggalKeluar}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
@@ -77,7 +77,7 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
               </Col>
               <Col span={3}>:</Col>
               <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
-                Bantuan Bansos
+                {barangKeluarById?.data?.keterangan}
               </Col>
             </Row>
           </Col>

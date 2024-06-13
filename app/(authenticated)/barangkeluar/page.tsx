@@ -19,6 +19,7 @@ import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 import { useRouter } from 'next/navigation';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -240,7 +241,7 @@ const Page: React.FC = () => {
       title: 'Tanggal Keluar',
       dataIndex: 'tanggalKeluar',
       editable: true,
-      render: (text: string) => text,
+      render: (text: string) => dayjs(text).format('DD-MM-YYYY'),
     },
     {
       title: '',

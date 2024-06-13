@@ -30,7 +30,7 @@ const hooks = {
   useBarangKeluar() {
     return useSWR(url.getBarangKeluar(), http.fetcher);
   },
-  useBarangMasukById(id: string) {
+  useBarangKeluarById(id: string) {
     return useSWR(url.getBarangKeluarById(id), http.fetcher);
   },
 };

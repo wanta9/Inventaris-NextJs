@@ -130,7 +130,13 @@ const Peminjaman: React.FC = () => {
     setDataSource(initialData);
   }, []);
 
-  const isEditing = (record: DataType) => record.key === editingKey;
+  const isEditing = (record: DataType) => {
+    if (!record) {
+      return false;
+    }
+    return record.key === editingKey;
+  };
+  
 
   const handleEdit = (record: DataType) => {
     form.setFieldsValue({ ...record });

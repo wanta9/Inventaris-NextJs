@@ -131,7 +131,7 @@ const Page: React.FC = () => {
 
   // klik row
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/detailbarangkeluar?id=${id}`;
+    window.location.href = `http://localhost:3002/barangkeluar/${id}`;
   };
 
   const logout = () => {

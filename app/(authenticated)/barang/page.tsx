@@ -1,36 +1,9 @@
 "use client";
 
-<<<<<<< HEAD
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  InputRef,
-  Modal,
-  Popconfirm,
-  Row,
-  Table,
-  message,
-  Dropdown,
-} from 'antd';
-import {
-  PlusOutlined,
-  UploadOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  DownOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
-=======
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Card, Col, Form, Input, InputRef, Menu, Modal, Popconfirm, Row, Table, Upload, message, Dropdown } from 'antd';
 import { PlusOutlined, UploadOutlined, DeleteOutlined, EditOutlined, ArrowLeftOutlined, DownOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
 import { useRouter } from 'next/navigation';
 import { barangRepository } from '#/repository/barang';
 
@@ -39,17 +12,6 @@ const { Item } = Menu;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
-<<<<<<< HEAD
-interface DataType {
-  id: string;
-  namapeminjam: string;
-  telpon: string;
-  kodepeminjam: string;
-  tanggalpeminjaman: string;
-  tanggaldikembalikan: string;
-  status: string;
-  foto: string;
-=======
 interface Item {
   key: string;
   kodeBarang: string;
@@ -57,7 +19,6 @@ interface Item {
   letakBarang: string;
   harga: string;
   deskripsi: string;
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
 }
 
 interface EditableRowProps {
@@ -200,57 +161,6 @@ const Page: React.FC = () => {
     setSearchText(value);
   };
 
-<<<<<<< HEAD
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.kodepeminjam.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  useEffect(() => {
-    // Fetch and set initial data here
-    const initialData: DataType[] = [
-      // Example data
-      {
-        id: '1',
-        namapeminjam: 'John Doe',
-        telpon: '123456789',
-        kodepeminjam: '001',
-        tanggalpeminjaman: '2024-06-01',
-        tanggaldikembalikan: '2024-06-10',
-        status: 'Dipinjam',
-        foto: 'https://via.placeholder.com/150',
-      },
-    ];
-    setDataSource(initialData);
-  }, []);
-
-  const isEditing = (record: DataType) => console.log(record);
-
-  const handleEdit = (record: DataType) => {
-    form.setFieldsValue({ ...record });
-    setEditingKey(record.id);
-  };
-
-  const handleSave = async (key: string) => {
-    try {
-      const row = (await form.validateFields()) as DataType;
-      const newData = [...dataSource];
-      const index = newData.findIndex((item) => key === item.id);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
-        setEditingKey(null);
-      } else {
-        newData.push(row);
-        setDataSource(newData);
-        setEditingKey(null);
-      }
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-=======
   const filteredData = dataSource.filter(item =>
     item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
     item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -275,7 +185,6 @@ const Page: React.FC = () => {
     } else if (type === 'letakBarang') {
       setLetakBarangVisible(true);
       setModalVisible(false); // Menutup modal tambah barang jika ada
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
     }
   };
   
@@ -381,41 +290,6 @@ const Page: React.FC = () => {
       editable: true,
     },
     {
-<<<<<<< HEAD
-      title: 'Status',
-      dataIndex: 'status',
-      editable: true,
-      render: (status: string, record: DataType) => (
-        <Button
-          type="primary"
-          style={{ width: '70%' }}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleEdit(record);
-          }}
-        >
-          {status}
-        </Button>
-      ),
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      render: (record: DataType) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Button onClick={() => handleSave(record.id)}>Save</Button>
-            <Popconfirm title="Cancel?" onConfirm={() => setEditingKey(null)}>
-              <Button>Cancel</Button>
-            </Popconfirm>
-          </span>
-        ) : (
-          <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined />} />
-            <Popconfirm title="Delete?" onConfirm={() => handleDelete(record.id)}>
-              <Button type="link" icon={<DeleteOutlined />} />
-=======
       title: '',
       dataIndex: '',
       render: (record: Item) => {
@@ -424,7 +298,6 @@ const Page: React.FC = () => {
             <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>} />
             <Popconfirm title="Hapus Barang" onConfirm={() => handleDelete(record.key)}>
               <Button type="link" icon={<DeleteOutlined style={{ color: 'red'}} />} />
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
             </Popconfirm>
           </span>
         );
@@ -432,34 +305,6 @@ const Page: React.FC = () => {
     },
   ];
 
-<<<<<<< HEAD
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record: DataType) => ({
-        record,
-        editable: col.editable,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        handleSave: handleSave,
-      }),
-    };
-  });
-
-  return (
-    <div>
-      <div>
-        <title>Peminjaman</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
-      </div>
-      <Card style={{ marginTop: '100px' }}>
-        <div style={{ marginTop: '20px' }}>
-          <Search
-            placeholder="Cari nama, nama pengguna, atau NISN"
-=======
   return (
     <div>
       <title>Barang</title>
@@ -468,97 +313,11 @@ const Page: React.FC = () => {
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}>
         <Search
             placeholder="Telusuri Barang"
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
             allowClear
             enterButton
             onSearch={value => handleSearch(value)}
             style={{ width: 300, marginRight: '400px'}}
           />
-<<<<<<< HEAD
-          <Table
-            components={{
-              body: {
-                row: EditableRow,
-                cell: EditableCell,
-              },
-            }}
-            bordered
-            dataSource={filteredData}
-            columns={mergedColumns}
-            rowClassName="editable-row"
-            pagination={{ onChange: () => setEditingKey(null) }}
-          />
-          <Button
-            type="primary"
-            onClick={() => setModalVisible(true)}
-            icon={<PlusOutlined />}
-            style={{ marginTop: '16px' }}
-          >
-            Tambah Peminjam
-          </Button>
-          <Modal
-            title="Tambah Peminjam"
-            visible={modalVisible}
-            onCancel={() => setModalVisible(false)}
-            onOk={() => {
-              form
-                .validateFields()
-                .then((values) => {
-                  form.resetFields();
-                  setDataSource([...dataSource, { ...values, key: dataSource.length.toString() }]);
-                  setModalVisible(false);
-                })
-                .catch((info) => {
-                  console.log('Validate Failed:', info);
-                });
-            }}
-          >
-            <Form form={form} layout="vertical" name="form_in_modal">
-              <Form.Item
-                name="namapeminjam"
-                label="Nama Peminjam"
-                rules={[{ required: true, message: 'Please input the name of the borrower!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="telpon"
-                label="Telepon"
-                rules={[{ required: true, message: 'Please input the phone number!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="kodepeminjam"
-                label="Kode Peminjam"
-                rules={[{ required: true, message: 'Please input the borrower code!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="tanggalpeminjaman"
-                label="Tanggal Peminjaman"
-                rules={[{ required: true, message: 'Please input the borrowing date!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="tanggaldikembalikan"
-                label="Tanggal Dikembalikan"
-                rules={[{ required: true, message: 'Please input the return date!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="status"
-                label="Status"
-                rules={[{ required: true, message: 'Please input the status!' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Form>
-          </Modal>
-=======
           <Dropdown overlay={menu1} placement="bottomLeft">
             <Button style={{ backgroundColor: 'white', color: 'black', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', height: '40px', width: '200px', fontFamily}}>
              Letak Barang <DownOutlined />
@@ -583,7 +342,6 @@ const Page: React.FC = () => {
           </span>
         </Button>
 
->>>>>>> 9b1463a83942ab2936f7b5eae9fca157615d504f
         </div>
         <Table
           components={components}

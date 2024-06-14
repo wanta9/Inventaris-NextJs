@@ -96,7 +96,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   const role = akun?.data?.peran?.Role;
   console.log(role, 'zz');
 
-  if (role === 'admin') {
+  if (role === 'admin' || role === 'peminjam') {
     menu.splice(
       1,
       0,
@@ -108,6 +108,13 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       }
     );
   }
+  if (role === '') {
+    menu.splice(
+    1,
+    0,
+    )
+  }
+
   return (
     <Layout>
       <Layout>

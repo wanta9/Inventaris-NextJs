@@ -21,11 +21,17 @@ const url = {
   getBarangKeluar() {
     return `/barangKeluar`;
   },
+  getBarangKeluarById(id: string) {
+    return `/barangKeluar/${id}`;
+  },
 };
 
 const hooks = {
   useBarangKeluar() {
     return useSWR(url.getBarangKeluar(), http.fetcher);
+  },
+  useBarangKeluarById(id: string) {
+    return useSWR(url.getBarangKeluarById(id), http.fetcher);
   },
 };
 

@@ -250,11 +250,11 @@ const Page: React.FC = () => {
     setNamaBarang('');
     setharga('');
     setDeskripsi('');
-    setLetakBarang('');
+    setLetakBarang('');                                                                                                                                                                                                                                                                                                                                                                                                                               
   };
 
   const handleDelete = (key: string) => {
-    const newData = dataSource.filter((item) => item.id !== key);
+    const newData = dataSource.filter((item) => item.key !== key);
     setDataSource(newData);
   };
 
@@ -318,7 +318,7 @@ const Page: React.FC = () => {
               icon={<EditOutlined style={{ color: 'black' }} />}
             />
             <Popconfirm title="Hapus Barang" onConfirm={() => handleDelete(record.key)}>
-              <Button type="link" icon={<DeleteOutlined style={{ color: 'red' }} />} />
+              <Button type="link" icon={<DeleteOutlined style={{ color: 'black' }} />} />
             </Popconfirm>
           </span>
         );

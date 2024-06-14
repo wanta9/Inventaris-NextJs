@@ -298,7 +298,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '90vh' }}
+            style={{ width: 300, marginRight: '100vh' }}
           />
           <Button
             type="primary"
@@ -446,11 +446,7 @@ const Page: React.FC = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  alt="Profile"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                />
+                <img src="ikon.png" alt="Profile" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}/>
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
                     Halo, Elisabet

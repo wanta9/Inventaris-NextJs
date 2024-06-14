@@ -70,7 +70,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     {
       key: '/koleksi',
       icon: <img src="koleksi.svg" alt="koleksi Icon" style={{ width: '18px' }} />,
-      label: 'Koleksi',
+      label: 'koleksi',
     },
     {
       key: '/barangmasuk',

@@ -56,7 +56,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     //   label: 'Peminjam',
     // },
 
-    { key: '', label: 'Menu', type: 'group' },
+    // { key: '', label: 'Menu', type: 'group' },
     {
       key: '/letakbarang',
       icon: <img src="letakbarang.svg" style={{ width: '18px' }} />,
@@ -66,6 +66,11 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       key: '/barang',
       icon: <img src="barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
       label: 'Barang',
+    },
+    {
+      key: '/koleksi',
+      icon: <img src="koleksi.svg" alt="koleksi Icon" style={{ width: '18px' }} />,
+      label: 'Koleksi',
     },
     {
       key: '/barangmasuk',
@@ -95,19 +100,29 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
   ];
   const role = akun?.data?.peran?.Role;
   console.log(role, 'zz');
-
   if (role === 'admin') {
     menu.splice(
       1,
       0,
       { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
       {
+        key: '/peminjam', 
+        icon: <img src="petugas.svg" style={{ width: '18px' }} />,
+        label: 'Peminjam',
+      },
+    );
+  if (role === '') {
+    menu.splice(
+      1,
+      0,
+      {
         key: '/peminjam',
         icon: <img src="petugas.svg" style={{ width: '18px' }} />,
         label: 'Peminjam',
-      }
+      },
     );
   }
+}
   return (
     <Layout>
       <Layout>

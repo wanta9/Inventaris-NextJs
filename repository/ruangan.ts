@@ -18,11 +18,17 @@ const url = {
   getRuagan() {
     return `/ruangan`;
   },
+  getRuaganById(id: string) {
+    return `/ruangan/${id}`;
+  },
 };
 
 const hooks = {
   useRuangan() {
     return useSWR<ListRuangan>(url.getRuagan(), http.fetcher);
+  },
+  useRuanganById(id: string) {
+    return useSWR(url.getRuaganById(id), http.fetcher);
   },
 };
 

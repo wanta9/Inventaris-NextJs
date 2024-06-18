@@ -22,11 +22,17 @@ const url = {
   getPeminjaman() {
     return `/peminjaman`;
   },
+  getpeminjamanById(id: string) {
+    return `/peminjaman/${id}`;
+  },
 };
 
 const hooks = {
   usePeminjaman() {
     return useSWR(url.getPeminjaman(), http.fetcher);
+  },
+  usepeminjamanById(id: string) {
+    return useSWR(url.getpeminjamanById(id), http.fetcher);
   },
 };
 

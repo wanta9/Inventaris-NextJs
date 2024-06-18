@@ -7,6 +7,7 @@ import type { InputRef } from 'antd';
 import type { FormInstance } from 'antd';
 import { ruanganRepository } from '#/repository/ruangan';
 import { useRouter } from 'next/navigation';
+import { akunRepository } from '#/repository/akun';
 
 const { Item } = Menu;
 
@@ -110,6 +111,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: akun } = akunRepository.hooks.useAuth();
   const router = useRouter();
 
   // menu akun
@@ -118,9 +120,30 @@ const Page: React.FC = () => {
     router.push('/login');
   };
 
+  const profile = () => {
+    router.push('/profile')
+  }
+
+  const role = akun?.data?.peran?.Role;
   const menu = (
     <Menu>
-      <Item key="1" onClick={() => logout()}>
+      {role === 'petugas' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      {role === 'peminjam' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      <Item key="2" onClick={() => logout()}>
         <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
           <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
           Keluar
@@ -128,6 +151,7 @@ const Page: React.FC = () => {
       </Item>
     </Menu>
   );
+  
 
   // handle save modal data
   const handleSaveModalData = () => {

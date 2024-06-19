@@ -28,6 +28,7 @@ import {
 import { FormInstance } from 'antd/lib/form';
 import { useRouter } from 'next/navigation';
 import { barangRepository } from '#/repository/barang';
+import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -149,7 +150,8 @@ const Page: React.FC = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
+  // console.log(listRuanganBarang, 'listRuanganBarang');
   const router = useRouter();
 
   const menu1 = (
@@ -159,6 +161,10 @@ const Page: React.FC = () => {
       <Menu.Item key="3">TBSM</Menu.Item>
     </Menu>
   );
+
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3002/barang/${id}`;
+  };
 
   // menu akun
   const logout = () => {
@@ -250,7 +256,7 @@ const Page: React.FC = () => {
     setNamaBarang('');
     setharga('');
     setDeskripsi('');
-    setLetakBarang('');                                                                                                                                                                                                                                                                                                                                                                                                                               
+    setLetakBarang('');
   };
 
   const handleDelete = (key: string) => {
@@ -290,6 +296,10 @@ const Page: React.FC = () => {
       title: 'Kode Barang',
       dataIndex: 'kode',
       editable: true,
+      // render: (_, record) => {
+      //   console.log(record);
+      //   return record.barang.kode;
+      // },
     },
     {
       title: 'Nama Barang',
@@ -390,7 +400,11 @@ const Page: React.FC = () => {
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarang?.data}
+          dataSource={listRuanganBarang?.data}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record.id),
+            style: { cursor: 'pointer' },
+          })}
           pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '40px' }}

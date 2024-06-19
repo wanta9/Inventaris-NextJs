@@ -350,7 +350,7 @@ const Page: React.FC = () => {
           </Row>
         </Modal>
       </Card>
-      {/* menu info akun */}
+      {role === 'admin' && (
       <div
         style={{
           position: 'absolute',
@@ -364,7 +364,7 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Button
               style={{
-                width: '175px',
+                width: '190px',
                 height: '50px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -375,19 +375,105 @@ const Page: React.FC = () => {
                 <img
                   src="ikon.png"
                   style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                  alt="ikon"
                 />
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, Elisabet
+                    Halo, {akun?.data?.nama}
                   </div>
-                  <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
+                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                    {akun?.data?.peran?.Role}
+                  </div>
                 </div>
               </div>
             </Button>
           </div>
         </Dropdown>
       </div>
-    </div>
+      )}
+      {role === 'petugas' && (
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              style={{
+                width: '190px',
+                height: '50px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="ikon.png"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                  alt="ikon"
+                />
+                <div>
+                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                    Halo, {akun?.data?.nama}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                    {akun?.data?.peran?.Role}
+                  </div>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </Dropdown>
+      </div>
+      )}
+      {role === 'peminjam' && (
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              style={{
+                width: '190px',
+                height: '50px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <img
+                  src="ikon.png"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                  alt="ikon"
+                />
+                <div>
+                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                    Halo, {akun?.data?.nama}
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                    {akun?.data?.peran?.Role}
+                  </div>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </Dropdown>
+      </div>
+      )}
+    </div>  
   );
 };
 

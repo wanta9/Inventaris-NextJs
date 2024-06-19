@@ -364,7 +364,7 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Button
               style={{
-                width: '190px',
+                width: '200px',
                 height: '50px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -460,7 +460,7 @@ const Page: React.FC = () => {
                   alt="ikon"
                 />
                 <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                  <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
                     Halo, {akun?.data?.nama}
                   </div>
                   <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>

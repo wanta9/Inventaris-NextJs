@@ -27,7 +27,6 @@ import {
 } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import { useRouter } from 'next/navigation';
-import { barangRepository } from '#/repository/barang';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 
 const { Search } = Input;
@@ -151,7 +150,7 @@ const Page: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
-  // console.log(listRuanganBarang, 'listRuanganBarang');
+
   const router = useRouter();
 
   const menu1 = (
@@ -186,18 +185,11 @@ const Page: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
-
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.letakBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.deskripsi.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   useEffect(() => {
-    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
-  }, [filteredData]);
+    if (listRuanganBarang != null) {
+      setDataSource(listRuanganBarang.data);
+    } // Menggunakan setDataSource untuk mengatur nilai initialData
+  }, [listRuanganBarang]);
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
@@ -296,20 +288,28 @@ const Page: React.FC = () => {
       title: 'Kode Barang',
       dataIndex: 'kode',
       editable: true,
-      // render: (_, record) => {
-      //   console.log(record);
-      //   return record.barang.kode;
-      // },
+      render: (_, record) => {
+        console.log(record);
+        return record.barang.kode;
+      },
     },
     {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: true,
+      render: (_, record) => {
+        console.log(record);
+        return record.barang.nama;
+      },
     },
     {
       title: 'Letak Barang',
       dataIndex: 'Letak_Barang',
       editable: true,
+      render: (_, record) => {
+        console.log(record);
+        return record.ruangan.Letak_Barang;
+      },
     },
     {
       title: 'Jumlah',

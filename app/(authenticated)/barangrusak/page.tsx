@@ -232,6 +232,10 @@ const Page: React.FC = () => {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: false,
+      render: (_, record) => {
+        console.log(record);
+        return record.ruanganBarang.barang.nama;
+      },
     },
     {
       title: 'Jumlah',

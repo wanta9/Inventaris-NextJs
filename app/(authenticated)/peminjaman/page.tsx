@@ -10,23 +10,55 @@ import { peminjamanRepository } from '#/repository/peminjaman';
 const { Column } = Table;
 const { Search } = Input;
 
+// Definisikan tipe Akun
+interface Akun {
+  id: string;
+  username: string;
+  password: string;
+  nama: string;
+  gambar: string | null;
+  email: string;
+  telp: string;
+  status: string;
+  isOnline: boolean;
+  salt: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+// Definisikan tipe Peminjam
+interface Peminjam {
+  id: string;
+  NISN: number;
+  kelas: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  akun: Akun;
+}
+
+// Definisikan tipe DataType
+interface DataType {
+  id: string;
+  kode: string;
+  tanggalPinjam: string;
+  tanggalPengembalian: string;
+  tanggalDikembalikan: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  peminjam: Peminjam;
+}
+
 const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const [form] = Form.useForm();
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
-
-  interface DataType {
-    id: string;
-    namapeminjam: string;
-    telpon: string;
-    kodepeminjam: string;
-    tanggalpeminjaman: string;
-    tanggaldikembalikan: string;
-    status: string;
-    foto: string;
-  }
+  console.log(listPeminjaman, 'listPeminjaman');
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -51,12 +83,12 @@ const Peminjaman = () => {
     form.resetFields();
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const filteredData = data.filter(
+  //   (item) =>
+  //     item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   return (
     <div>
@@ -87,12 +119,20 @@ const Peminjaman = () => {
               key="fotonamapeminjam"
               render={(text, record: DataType) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={record.foto} />
-                  <span style={{ marginLeft: 8 }}>{record.namapeminjam}</span>
+                  <Avatar src={record.peminjam?.akun?.gambar} />
+                  <span style={{ marginLeft: 8 }}>{record.peminjam?.akun?.nama}</span>
                 </div>
               )}
             />
-            <Column title="Telepon" dataIndex="telpon" key="telpon" />
+            <Column
+              title="Telepon"
+              dataIndex="telpon"
+              key="telpon"
+              render={(text, record: DataType) => {
+                console.log(record);
+                return record.peminjam?.akun?.telp || 'No Telepon';
+              }}
+            />
             <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
             <Column title="Tanggal Peminjaman" dataIndex="tanggalPinjam" key="tanggalpeminjaman" />
             <Column

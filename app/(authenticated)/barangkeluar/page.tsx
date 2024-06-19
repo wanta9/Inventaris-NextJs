@@ -231,6 +231,10 @@ const Page: React.FC = () => {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: false,
+      render: (_, record) => {
+        console.log(record);
+        return record.ruanganBarang.barang.nama;
+      },
     },
     {
       title: 'Jumlah',
@@ -248,7 +252,7 @@ const Page: React.FC = () => {
       dataIndex: '',
       render: (record: Item) => (
         <span>
-           <Button
+          <Button
             type="link"
             icon={<EditOutlined style={{ color: 'black' }} />}
             // Menetapkan onClick khusus untuk tombol Edit
@@ -313,13 +317,13 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listBarangKeluar?.data}
-          pagination={{ pageSize: 5 }} 
+          pagination={{ pageSize: 5 }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }} 
+          style={{ marginTop: '30px' }}
         />
       </Card>
       <Modal

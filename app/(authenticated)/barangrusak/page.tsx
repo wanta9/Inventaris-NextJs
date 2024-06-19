@@ -248,8 +248,18 @@ const Page: React.FC = () => {
       title: 'Status',
       dataIndex: 'Status',
       editable: false,
-      render: (status: string, record: any) => <Button style={{ color: '#5BFF00', backgroundColor: 'rgba(162, 225, 129, 0.3)', borderColor: '#A2E181'}}>{status}</Button>,
-    },    
+      render: (status: string, record: any) => (
+        <Button
+          style={{
+            color: '#5BFF00',
+            backgroundColor: 'rgba(162, 225, 129, 0.3)',
+            borderColor: '#A2E181',
+          }}
+        >
+          {status}
+        </Button>
+      ),
+    },
     {
       title: '',
       dataIndex: '',
@@ -446,7 +456,11 @@ const Page: React.FC = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" alt="Profile" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}/>
+                <img
+                  src="ikon.png"
+                  alt="Profile"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                />
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
                     Halo, Elisabet

@@ -21,6 +21,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
+import { Console } from 'console';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -128,6 +129,7 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  console.log(listBarangMasuk, 'listBarangMasuk');
   const fontWeight = '500';
   const router = useRouter();
 

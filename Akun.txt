@@ -1,0 +1,10 @@
+Admin 	 username: hazel
+      	 password: 12345
+		 
+
+Petugas  username: Ridwan
+      	 password: 12345
+
+		 
+Peminjam username: ronyWijaya
+      	 password: 12345

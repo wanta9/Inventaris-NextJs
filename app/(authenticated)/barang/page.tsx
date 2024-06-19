@@ -151,7 +151,7 @@ const Page: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
-  // console.log(listRuanganBarang, 'listRuanganBarang');
+  console.log(listRuanganBarang, 'listRuanganBarang');
   const router = useRouter();
 
   const menu1 = (

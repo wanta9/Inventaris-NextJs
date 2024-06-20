@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { AudioOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { Avatar, Button, Input, Table, Card, Menu, Dropdown } from 'antd';
+import { Avatar, Button, Input, Table, Card, Menu, Dropdown, Form } from 'antd';
 import type { UploadFile } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { peminjamRepository } from '#/repository/peminjam';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -15,6 +16,7 @@ const Peminjam = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const { data: listPeminjam } = peminjamRepository.hooks.usePeminjam();
   const router = useRouter();
 
   const logout = () => {
@@ -41,45 +43,50 @@ const Peminjam = () => {
     telp: number;
     nisn: string;
     status: string;
-    foto: string;
+    gambar: string;
+    akun: Akun;
   }
 
-  const initialData: DataType[] = [
-    {
-      id: '1',
-      nama: 'John Brown',
-      namapengguna: 'johnny',
-      telp: 123456789,
-      nisn: '1234567890',
-      status: 'Diterima',
-      foto: 'image 5.png',
-    },
-    {
-      id: '2',
-      nama: 'Jim Green',
-      namapengguna: 'jimmy',
-      telp: 987654321,
-      nisn: '0987654321',
-      status: 'Ditolak',
-      foto: 'image 5.png',
-    },
-    {
-      id: '3',
-      nama: 'Joe Black',
-      namapengguna: 'joey',
-      telp: 543216789,
-      nisn: '5432167890',
-      status: 'Pending',
-      foto: 'image 5.png',
-    },
-  ];
+  // const initialData: DataType[] = [
+  //   {
+  //     id: '1',
+  //     nama: 'John Brown',
+  //     namapengguna: 'johnny',
+  //     telp: 123456789,
+  //     nisn: '1234567890',
+  //     status: 'Diterima',
+  //     foto: 'image 5.png',
+  //   },
+  //   {
+  //     id: '2',
+  //     nama: 'Jim Green',
+  //     namapengguna: 'jimmy',
+  //     telp: 987654321,
+  //     nisn: '0987654321',
+  //     status: 'Ditolak',
+  //     foto: 'image 5.png',
+  //   },
+  //   {
+  //     id: '3',
+  //     nama: 'Joe Black',
+  //     namapengguna: 'joey',
+  //     telp: 543216789,
+  //     nisn: '5432167890',
+  //     status: 'Pending',
+  //     foto: 'image 5.png',
+  //   },
+  // ];
 
-  useEffect(() => {
-    setData(initialData);
-  }, []);
+  // useEffect(() => {
+  //   setData(initialData);
+  // }, []);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
+  };
+
+  const handleButtonClick = (telp: string) => {
+    console.log('Button clicked for phone number:', telp);
   };
 
   const handleChangeStatus = (key: string) => {
@@ -95,12 +102,7 @@ const Peminjam = () => {
   );
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/editpeminjam?id=${id}`;
-  };
-
-  const handleButtonClick = (e: any, id: string) => {
-    e.stopPropagation();
-    handleChangeStatus(id);
+    window.location.href = `http://localhost:3002/peminjam/${id}`;
   };
 
   return (
@@ -119,7 +121,7 @@ const Peminjam = () => {
             style={{ width: 300 }}
           />
           <Table
-            dataSource={filteredData}
+            dataSource={listPeminjam?.data}
             style={{ paddingTop: '40px' }}
             pagination={{ pageSize: 5 }}
             onRow={(record) => ({
@@ -131,23 +133,45 @@ const Peminjam = () => {
             <Column
               title="Nama"
               key="fotoNama"
-              render={(record: DataType) => (
+              render={(text, record: DataType) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={record.foto} />
-                  <span style={{ marginLeft: 8 }}>{record.nama}</span>
+                  <Avatar src={record.akun?.gambar} style={{ marginRight: 8 }} />
+                  <span>{record.akun?.nama}</span>
                 </div>
               )}
             />
-            <Column title="Nama Pengguna" dataIndex="namapengguna" key="namapengguna" />
-            <Column title="Telepon" dataIndex="telp" key="telp" />
-            <Column title="NISN" dataIndex="nisn" key="nisn" />
+            <Column
+              title="Nama Pengguna"
+              dataIndex="namapengguna"
+              key="namapengguna"
+              render={(text, record: DataType) => {
+                return record.akun?.username;
+              }}
+            />
+            <Column
+              title="Telepon"
+              dataIndex="telp"
+              key="telp"
+              render={(text, record: DataType) => {
+                return record.akun?.telp;
+              }}
+            />
+            <Column title="NISN" dataIndex="NISN" key="nisn" />
             <Column
               title="Status"
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
-                <Button type="primary" onClick={(e) => handleButtonClick(e, record.id)}>
-                  {status}
+                <Button
+                  type="primary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (record.akun?.telp) {
+                      handleButtonClick(record.akun.status);
+                    }
+                  }}
+                >
+                  {record.akun?.status}
                 </Button>
               )}
             />
@@ -175,7 +199,11 @@ const Peminjam = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" alt="icon gambar" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}/>
+                <img
+                  src="ikon.png"
+                  alt="icon gambar"
+                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                />
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
                     Halo, Elisabet

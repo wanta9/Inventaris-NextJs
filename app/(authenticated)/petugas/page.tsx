@@ -1,13 +1,35 @@
 'use client';
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {Button,Form,Input,Modal,Popconfirm,Table,Upload,message,Row,Col,Card, Dropdown,Menu,} from 'antd';
-import { PlusOutlined,UploadOutlined,DeleteOutlined,EditOutlined,UserOutlined,ArrowLeftOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Popconfirm,
+  Table,
+  Upload,
+  message,
+  Row,
+  Col,
+  Card,
+  Dropdown,
+  Menu,
+} from 'antd';
+import {
+  PlusOutlined,
+  UploadOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  UserOutlined,
+  ArrowLeftOutlined,
+} from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import type { InputRef } from 'antd';
 import { FormInstance } from 'antd/lib/form';
 import { Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
+import { petugasRepository } from '#/repository/petugas';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -127,7 +149,12 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   const router = useRouter();
+
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3002/petugas/${id}`;
+  };
 
   // menu akun
   const logout = () => {
@@ -277,22 +304,31 @@ const Page: React.FC = () => {
       dataIndex: 'name',
       width: '20%',
       editable: true,
+      render: (_, record) => {
+        return record.akun.nama;
+      },
     },
     {
       title: 'Nama Pengguna',
       dataIndex: 'username',
       width: '20%',
       editable: true,
+      render: (_, record) => {
+        return record.akun.username;
+      },
     },
     {
       title: 'Telp',
       dataIndex: 'telp',
       width: '20%',
       editable: true,
+      render: (_, record) => {
+        return record.akun.telp;
+      },
     },
     {
       title: 'NIP',
-      dataIndex: 'nip',
+      dataIndex: 'NIP',
       width: '20%',
       editable: true,
     },
@@ -359,13 +395,13 @@ const Page: React.FC = () => {
         <Button
           type="primary"
           onClick={handleButtonClick}
-          icon={<PlusOutlined style={{ marginTop: '10px', marginLeft: '20px'}}/>}
+          icon={<PlusOutlined style={{ marginTop: '10px', marginLeft: '20px' }} />}
           style={{
             marginLeft: 'auto',
             display: 'flex',
             bottom: '25px',
             right: '20px',
-            width:'200px', 
+            width: '200px',
             height: '40px',
             backgroundColor: 'white',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
@@ -373,16 +409,18 @@ const Page: React.FC = () => {
           }}
           className="custom-button"
         >
-          <span style={{ marginLeft: '8px', marginTop: '6px'}}>
-            Akun Petugas
-          </span>
+          <span style={{ marginLeft: '8px', marginTop: '6px' }}>Akun Petugas</span>
         </Button>
         <Table
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={filteredData}
+          dataSource={listPetugas?.data}
           pagination={{ pageSize: 5 }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record.id),
+            style: { cursor: 'pointer' },
+          })}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

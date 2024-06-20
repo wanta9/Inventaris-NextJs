@@ -330,10 +330,6 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listBarangMasuk?.data}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record.id),
-            style: { cursor: 'pointer' },
-          })}
           columns={mergedColumns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

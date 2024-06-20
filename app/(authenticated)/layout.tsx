@@ -41,7 +41,6 @@ const StyledMenu = styled(Menu)`
 const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) => {
   const router = useRouter();
   const { data: akun } = akunRepository.hooks.useAuth();
-  console.log(akun, 'halo');
 
   const {
     token: { colorBgContainer },
@@ -51,7 +50,6 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     { key: '/dashboard', icon: <HomeOutlined />, label: 'Dashboard' },
   ];
   const role = akun?.data?.peran?.Role;
-  console.log(role, 'zz');
 
   if (role === 'admin') {
     menu.push(
@@ -96,7 +94,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         key: '/riwayat',
         icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
-      },
+      }
     );
   }
   if (role === 'petugas') {
@@ -136,8 +134,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         key: '/riwayat',
         icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
-      },  
-    )
+      }
+    );
   }
   if (role === 'peminjam') {
     menu.push(
@@ -145,12 +143,12 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         key: '/barang',
         icon: <img src="barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Barang',
-      },   
+      },
       {
         key: '/koleksi',
         icon: <img src="koleksi.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Koleksi',
-      },  
+      },
       {
         key: '/peminjaman',
         icon: <img src="peminjaman.svg" style={{ width: '18px' }} />,
@@ -160,8 +158,8 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         key: '/riwayat',
         icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
-      }, 
-    )
+      }
+    );
   }
 
   return (

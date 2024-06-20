@@ -16,6 +16,9 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const formattedDate = dayjs(barangRusakById?.data?.tanggalRusak).format('DD-MM-YYYY');
+  const handleButtonClick = (status: string) => {
+    console.log('Button clicked for phone number:', status);
+  };
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Rusak</title>
@@ -82,9 +85,25 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
                     backgroundColor: 'rgba(162, 225, 129, 0.3)',
                     borderColor: '#A2E181',
                   }}
+                  // type="primary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (barangRusakById?.data?.Status) {
+                      handleButtonClick(barangRusakById?.data?.Status);
+                    }
+                  }}
+                >
+                  {barangRusakById?.data?.Status}
+                </Button>
+                {/* <Button
+                  style={{
+                    color: '#5BFF00',
+                    backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                    borderColor: '#A2E181',
+                  }}
                 >
                   {barangRusakById?.data?.status}
-                </Button>
+                </Button> */}
               </Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>

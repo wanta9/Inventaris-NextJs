@@ -18,11 +18,17 @@ const url = {
   getRuaganBarang() {
     return `/ruanganBarang`;
   },
+  getRuanganBarangById(id: string) {
+    return `/ruanganBarang/${id}`;
+  },
 };
 
 const hooks = {
   useRuanganBarang() {
     return useSWR(url.getRuaganBarang(), http.fetcher);
+  },
+  useRuanganBarangById(id: string) {
+    return useSWR(url.getRuanganBarangById(id), http.fetcher);
   },
 };
 

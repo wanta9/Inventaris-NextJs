@@ -1,19 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { AudioOutlined } from '@ant-design/icons';
+import { AudioOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { Avatar, Button, Input, Table, Card, Menu, Dropdown } from 'antd';
+import { Avatar, Button, Input, Table, Card, Menu, Dropdown, Select } from 'antd';
 import type { UploadFile } from 'antd';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+
 const { Column } = Table;
 const { Search } = Input;
 const { Item } = Menu;
+const { Option } = Select;
 
 const Barangpeminjam = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
   const router = useRouter();
 
   const logout = () => {
@@ -37,6 +39,10 @@ const Barangpeminjam = () => {
     setSearchText(value);
   };
 
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+  };
+
   const filteredData = data.filter(
     (item) =>
       item.nama.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -44,23 +50,30 @@ const Barangpeminjam = () => {
       item.nisn.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/editpeminjam?id=${id}`;
-  };
-
   return (
     <div>
       <div>
         <title>Peminjam</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
       </div>
-      <Search
-            placeholder="Cari nama, nama pengguna, atau NISN"
-            allowClear
-            enterButton
-            onSearch={handleSearch}
-            style={{ width: 300 }}
-          />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <Search
+          placeholder="Cari nama, nama pengguna, atau NISN"
+          allowClear
+          enterButton
+          onSearch={handleSearch}
+          style={{ width: 300 }}
+        />
+        <Select
+          placeholder="Pilih Letak Barang"
+          style={{ width: 200 }}
+          onChange={handleLocationChange}
+        >
+          <Option value="lokasi1">Lokasi 1</Option>
+          <Option value="lokasi2">Lokasi 2</Option>
+          <Option value="lokasi3">Lokasi 3</Option>
+        </Select>
+      </div>
       <div
         style={{
           position: 'absolute',
@@ -70,6 +83,8 @@ const Barangpeminjam = () => {
           alignItems: 'center',
         }}
       >
+        <div>
+        </div>
         <Dropdown overlay={menu} placement="bottomCenter">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Button
@@ -82,7 +97,7 @@ const Barangpeminjam = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" alt="icon gambar" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}/>
+                <img src="ikon.png" alt="icon gambar" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }} />
                 <div>
                   <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
                     Halo, Elisabet
@@ -93,6 +108,15 @@ const Barangpeminjam = () => {
             </Button>
           </div>
         </Dropdown>
+      </div>
+      <div style={{ marginTop: '20px' }}>
+        <Card
+          hoverable
+          style={{ width: 300 }}
+          cover={<img alt="example" src="https://via.placeholder.com/300" />}
+        >
+          <Card.Meta title="Judul Gambar" description="Deskripsi gambar" />
+        </Card>
       </div>
     </div>
   );

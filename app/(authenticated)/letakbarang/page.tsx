@@ -48,7 +48,7 @@ interface EditableCellProps {
   handleEdit: (record: DataType) => void;
 }
 
-const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
+  const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   title,
   editable,
   children,
@@ -112,7 +112,9 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<DataType | null>(null);
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  
   const router = useRouter();
+  const role = akun?.data?.peran?.Role;
 
   // menu akun
   const logout = () => {
@@ -124,7 +126,7 @@ const Page: React.FC = () => {
     router.push('/profile')
   }
 
-  const role = akun?.data?.peran?.Role;
+
   const menu = (
     <Menu>
       {role === 'petugas' && (

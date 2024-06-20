@@ -105,7 +105,7 @@ const Login = () => {
               </span>
             </div>
             <div style={{ textAlign: 'center', paddingTop: '5px' }}>
-              belum mempunyai akun?<a href="http://localhost:3001/register"> Daftar Sekarang</a>
+              belum mempunyai akun?<a href="http://localhost:3002/register"> Daftar Sekarang</a>
             </div>
           </Form.Item>
         </Form>

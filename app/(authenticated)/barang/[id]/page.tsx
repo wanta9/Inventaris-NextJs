@@ -59,7 +59,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <div
               style={{
-                width: '70%',
+                width: '80%',
                 height: '450px',
                 backgroundColor: '#D9D9D9',
                 borderRadius: '20px',
@@ -67,7 +67,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 position: 'absolute',
-                left: '90px',
+                left: '75px',
                 top: '-250px',
                 bottom: '',
               }}

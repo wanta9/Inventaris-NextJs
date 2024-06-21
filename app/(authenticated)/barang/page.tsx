@@ -398,7 +398,7 @@ const Page: React.FC = () => {
               allowClear
               enterButton
               onSearch={(value) => handleSearch(value)}
-              style={{ width: 300, marginRight: '800px' }}
+              style={{ width: 300, marginRight: '400px' }}
             />
             <Dropdown overlay={menu1} placement="bottomLeft">
               <Button

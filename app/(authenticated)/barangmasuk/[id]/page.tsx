@@ -8,6 +8,7 @@ import { Select } from 'antd/lib';
 import { useParams } from 'next/navigation';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import dynamic from 'next/dynamic';
+import dayjs from 'dayjs';
 
 const Editpeminjam = ({ params }: { params: { id: string } }) => {
   // const params = useParams();
@@ -17,6 +18,9 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
+
+  const formattedDate = dayjs(barangMasukById?.data?.tanggalMasuk).format('DD-MM-YYYY');
+
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Masuk</title>
@@ -69,21 +73,21 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 Jumlah Barang
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>25</Col>
+              <Col span={5}>{barangMasukById?.data?.jumlah}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Tanggal Masuk
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>32/03/2024</Col>
+              <Col span={5}>{formattedDate}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Ruangan
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>RPL</Col>
+              <Col span={5}>{barangMasukById?.data?.ruanganBarang?.ruangan?.Letak_Barang}</Col>
             </Row>
             <Row style={{ marginBottom: '20px' }}>
               <Col span={9} style={{ fontWeight }}>
@@ -91,7 +95,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
               </Col>
               <Col span={3}>:</Col>
               <Col span={12} style={{ display: 'flex', alignItems: 'center' }}>
-                Bantuan Bansos
+                {barangMasukById?.data?.keterangan}
               </Col>
             </Row>
           </Col>

@@ -5,12 +5,14 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
 import dynamic from 'next/dynamic';
+import dayjs from 'dayjs';
 
 const BarangKeluar = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: barangKeluarById } = barangKeluarRepository.hooks.useBarangKeluarById(params.id);
   console.log(barangKeluarById, 'barang keluar by id');
+  const formattedDate = dayjs(barangKeluarById?.data?.tanggalMasuk).format('DD-MM-YYYY');
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Keluar</title>
@@ -49,7 +51,7 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
                 Nama Barang
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>Proyektor</Col>
+              <Col span={5}>{barangKeluarById?.data?.ruanganBarang?.barang?.nama}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
@@ -63,14 +65,14 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
                 Tanggal Keluar
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>{barangKeluarById?.data?.tanggalKeluar}</Col>
+              <Col span={5}>{formattedDate}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Ruangan
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>RPL</Col>
+              <Col span={5}>{barangKeluarById?.data?.ruanganBarang?.ruangan?.Letak_Barang}</Col>
             </Row>
             <Row style={{ marginBottom: '20px', alignItems: 'baseline' }}>
               <Col span={9} style={{ fontWeight }}>

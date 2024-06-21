@@ -85,8 +85,8 @@ const Peminjam = () => {
     setSearchText(value);
   };
 
-  const handleButtonClick = (telp: string) => {
-    console.log('Button clicked for phone number:', telp);
+  const handleButtonClick = (status: string) => {
+    console.log('Button clicked for phone number:', status);
   };
 
   const handleChangeStatus = (key: string) => {
@@ -159,14 +159,14 @@ const Peminjam = () => {
             <Column title="NISN" dataIndex="NISN" key="nisn" />
             <Column
               title="Status"
-              dataIndex="status"
+              dataIndex="Status"
               key="status"
               render={(status: string, record: DataType) => (
                 <Button
                   type="primary"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (record.akun?.telp) {
+                    if (record.akun?.status) {
                       handleButtonClick(record.akun.status);
                     }
                   }}

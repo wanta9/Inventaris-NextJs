@@ -152,10 +152,6 @@ const Page: React.FC = () => {
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   const router = useRouter();
 
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/petugas/${id}`;
-  };
-
   // menu akun
   const logout = () => {
     localStorage.removeItem('access_token');
@@ -417,10 +413,6 @@ const Page: React.FC = () => {
           bordered
           dataSource={listPetugas?.data}
           pagination={{ pageSize: 5 }}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record.id),
-            style: { cursor: 'pointer' },
-          })}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

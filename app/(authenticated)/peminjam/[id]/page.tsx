@@ -139,7 +139,7 @@ const Editpeminjam = () => {
               <Row align="middle">
                 <Col span={12}>
                   <img
-                    src="sitmen.png"
+                    src="/sitmen.png"
                     alt="gambar"
                     style={{
                       width: '250px',

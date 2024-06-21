@@ -31,7 +31,7 @@ const hooks = {
   usePeminjaman() {
     return useSWR(url.getPeminjaman(), http.fetcher);
   },
-  usepeminjamanById(id: string) {
+  usePeminjamanById(id: string) {
     return useSWR(url.getpeminjamanById(id), http.fetcher);
   },
 };

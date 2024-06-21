@@ -26,7 +26,7 @@ const Login = () => {
         setError(request.body.message); // Set pesan error
       } else {
         localStorage.setItem('access_token', request.body.data);
-        router.push('/letakbarang');
+        router.push('/dashboard');
       }
       console.log(request);
       // Handle form submission here

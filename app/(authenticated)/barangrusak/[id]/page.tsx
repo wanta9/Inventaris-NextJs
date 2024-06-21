@@ -41,7 +41,7 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <img src="kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
+              <img src="/kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginBottom: '30px' }}>

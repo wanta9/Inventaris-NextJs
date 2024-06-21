@@ -4,18 +4,25 @@ import { FormInstance } from 'antd/lib/form';
 import { Button, Card, Row, Col, Divider, DatePicker, Select } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { peminjamanRepository } from '#/repository/peminjaman';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
-const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
-const [returnDate, setReturnDate] = useState<Date | null>(() => null);
-const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
-const [status, setStatus] = useState('Pending');
+  const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
+  const [returnDate, setReturnDate] = useState<Date | null>(() => null);
+  const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
+  const [status, setStatus] = useState('Pending');
+  const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
+  console.log(peminjamanById, 'barang masuk by id');
 
-const fontFamily = 'Barlow, sans-serif';
-const fontWeight = '500';
+  const handleButtonClick = (status: string) => {
+    console.log('Button clicked for phone number:', status);
+  };
+
+  const fontFamily = 'Barlow, sans-serif';
+  const fontWeight = '500';
 
   return (
     <div style={{ marginLeft: '50px' }}>
@@ -47,7 +54,7 @@ const fontWeight = '500';
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="kk.png" style={{ width: '100px', marginRight: '10px' }} />
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
                   <div>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
                     <div style={{ marginBottom: '5px' }}>RPL</div>
@@ -78,7 +85,7 @@ const fontWeight = '500';
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="kk.png" style={{ width: '100px', marginRight: '10px' }} />
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
                   <div>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
                     <div style={{ marginBottom: '5px' }}>RPL</div>
@@ -108,7 +115,7 @@ const fontWeight = '500';
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="kk.png" style={{ width: '100px', marginRight: '10px' }} />
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
                   <div>
                     <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
                     <div style={{ marginBottom: '5px' }}>RPL</div>
@@ -224,7 +231,22 @@ const fontWeight = '500';
                     >
                       Status
                     </span>
-
+                    <Button
+                      style={{
+                        color: '#5BFF00',
+                        backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                        borderColor: '#A2E181',
+                      }}
+                      // type="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (peminjamanById?.data?.Status) {
+                          handleButtonClick(peminjamanById?.data?.Status);
+                        }
+                      }}
+                    >
+                      {peminjamanById?.data?.Status}
+                    </Button>
                   </div>
                 </div>
               </Card>

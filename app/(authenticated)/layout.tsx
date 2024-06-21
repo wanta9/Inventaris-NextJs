@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { HomeOutlined, InboxOutlined, UserOutlined } from '@ant-design/icons';
+import MyIcon from '../assets/icons/my-icon.svg';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -56,43 +57,43 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       { key: '/petugas', icon: <UserOutlined />, label: 'Petugas' },
       {
         key: '/peminjam',
-        icon: <img src="peminjam.svg" style={{ width: '18px' }} />,
+        icon: <img src="/peminjam.svg" style={{ width: '18px' }} />,
         label: 'Peminjam',
       },
       { key: '', label: 'Menu', type: 'group' },
       {
         key: '/letakbarang',
-        icon: <img src="letakbarang.svg" style={{ width: '18px' }} />,
+        icon: <img src="/letakbarang.svg" style={{ width: '18px' }} />,
         label: 'Letak Barang',
       },
       {
         key: '/barang',
-        icon: <img src="barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
+        icon: <img src="/barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Barang',
       },
       {
         key: '/barangmasuk',
-        icon: <img src="barangmasuk.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangmasuk.svg" style={{ width: '18px' }} />,
         label: 'Barang Masuk',
       },
       {
         key: '/barangkeluar',
-        icon: <img src="barangkeluar.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangkeluar.svg" style={{ width: '18px' }} />,
         label: 'Barang Keluar',
       },
       {
         key: '/barangrusak',
-        icon: <img src="barangrusak.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangrusak.svg" style={{ width: '18px' }} />,
         label: 'Barang Rusak',
       },
       {
         key: '/peminjaman',
-        icon: <img src="peminjaman.svg" style={{ width: '18px' }} />,
+        icon: <img src="/peminjaman.svg" style={{ width: '18px' }} />,
         label: 'Peminjaman',
       },
       {
         key: '/riwayat',
-        icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
+        icon: <img src="/riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
       }
     );
@@ -102,37 +103,37 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
       { key: '', label: 'Menu', type: 'group' },
       {
         key: '/letakbarang',
-        icon: <img src="letakbarang.svg" style={{ width: '18px' }} />,
+        icon: <img src="/letakbarang.svg" style={{ width: '18px' }} />,
         label: 'Letak Barang',
       },
       {
         key: '/barang',
-        icon: <img src="barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
+        icon: <img src="/barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Barang',
       },
       {
         key: '/barangmasuk',
-        icon: <img src="barangmasuk.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangmasuk.svg" style={{ width: '18px' }} />,
         label: 'Barang Masuk',
       },
       {
         key: '/barangkeluar',
-        icon: <img src="barangkeluar.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangkeluar.svg" style={{ width: '18px' }} />,
         label: 'Barang Keluar',
       },
       {
         key: '/barangrusak',
-        icon: <img src="barangrusak.svg" style={{ width: '18px' }} />,
+        icon: <img src="/barangrusak.svg" style={{ width: '18px' }} />,
         label: 'Barang Rusak',
       },
       {
         key: '/peminjaman',
-        icon: <img src="peminjaman.svg" style={{ width: '18px' }} />,
+        icon: <img src="/peminjaman.svg" style={{ width: '18px' }} />,
         label: 'Peminjaman',
       },
       {
         key: '/riwayat',
-        icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
+        icon: <img src="/riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
       }
     );
@@ -141,22 +142,22 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
     menu.push(
       {
         key: '/barang',
-        icon: <img src="barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
+        icon: <img src="/barang.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Barang',
       },
       {
         key: '/koleksi',
-        icon: <img src="koleksi.svg" alt="barang Icon" style={{ width: '18px' }} />,
+        icon: <img src="/koleksi.svg" alt="barang Icon" style={{ width: '18px' }} />,
         label: 'Koleksi',
       },
       {
         key: '/peminjaman',
-        icon: <img src="peminjaman.svg" style={{ width: '18px' }} />,
+        icon: <img src="/peminjaman.svg" style={{ width: '18px' }} />,
         label: 'Peminjaman',
       },
       {
         key: '/riwayat',
-        icon: <img src="riwayat.svg" style={{ width: '18px' }} />,
+        icon: <img src="/riwayat.svg" style={{ width: '18px' }} />,
         label: 'Riwayat',
       }
     );
@@ -168,7 +169,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         <Sider width={250} style={{ background: colorBgContainer }}>
           <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px 5px' }}>
             {/* Logo */}
-            <img src="ikon.png" style={{ width: '80px' }} />
+            <img src="/ikon.png" style={{ width: '80px' }} />
             {/* Judul */}
             <h3 style={{ marginTop: '6px', fontSize: '19px', fontWeight: 'bold' }}>INVENTARIS</h3>
           </div>

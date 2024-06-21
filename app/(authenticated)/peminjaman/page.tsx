@@ -108,7 +108,7 @@ const Peminjaman = () => {
   };
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/detailpeminjaman?id=${id}`;
+    window.location.href = `http://localhost:3002/peminjaman/${id}`;
   };
 
   const handleButtonClick = (id: string) => {

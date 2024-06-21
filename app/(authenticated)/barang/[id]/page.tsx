@@ -20,9 +20,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Masuk</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>
-        Detail Barang Masuk
-      </h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Detail Barang</h1>
       <Card
         style={{ width: '80%', marginTop: '40px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
       >

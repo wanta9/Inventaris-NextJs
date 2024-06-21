@@ -200,7 +200,7 @@ const Peminjam = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
-                  src="ikon.png"
+                  src="/ikon.png"
                   alt="icon gambar"
                   style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
                 />

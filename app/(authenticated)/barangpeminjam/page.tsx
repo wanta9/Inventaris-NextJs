@@ -53,12 +53,12 @@ const Barangpeminjam = () => {
   return (
     <div>
       <div>
-        <title>Peminjam</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
+        <title>Barang</title>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <Search
-          placeholder="Cari nama, nama pengguna, atau NISN"
+          placeholder="Telusuri Barang"
           allowClear
           enterButton
           onSearch={handleSearch}
@@ -112,8 +112,8 @@ const Barangpeminjam = () => {
       <div style={{ marginTop: '20px' }}>
         <Card
           hoverable
-          style={{ width: 300 }}
-          cover={<img alt="example" src="https://via.placeholder.com/300" />}
+          style={{ width: 240 }}
+          cover={<img src="gambar.svg" />}
         >
           <Card.Meta title="Judul Gambar" description="Deskripsi gambar" />
         </Card>

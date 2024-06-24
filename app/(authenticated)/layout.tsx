@@ -185,7 +185,7 @@ const AuthenticatedLayout: React.FC<AuthenticatedLayoutProps> = ({ children }) =
         <Layout
           style={{
             padding: '0 24px 24px',
-            height: 'calc(100vh - 64px)',
+            minHeight: '100vh',
             display: 'flex',
             justifyContent: 'space-between',
           }}

@@ -19,7 +19,7 @@ const Editpeminjam = () => {
   const router = useRouter();
 
   const Kembali = () => {
-    router.push('/letakbarang');
+    router.push('/peminjam');
   };
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>

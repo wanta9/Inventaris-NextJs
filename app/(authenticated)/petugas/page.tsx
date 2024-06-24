@@ -30,6 +30,7 @@ import { FormInstance } from 'antd/lib/form';
 import { Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
+import { log } from 'console';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -150,6 +151,8 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
+  console.log(listPetugas, 'listPetugas');
+
   const router = useRouter();
 
   // menu akun

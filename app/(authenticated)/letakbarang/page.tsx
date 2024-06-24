@@ -17,7 +17,7 @@ type EditableTableProps = Parameters<typeof Table>[0];
 
 interface Item {
   key: string;
-  letakBarang:  string;
+  letakBarang: string;
 }
 interface DataType {
   key: React.Key;
@@ -48,7 +48,7 @@ interface EditableCellProps {
   handleEdit: (record: DataType) => void;
 }
 
-  const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
+const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   title,
   editable,
   children,
@@ -112,8 +112,9 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<DataType | null>(null);
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
-  
+
   const router = useRouter();
+
   const role = akun?.data?.peran?.Role;
 
   // menu akun
@@ -123,9 +124,8 @@ const Page: React.FC = () => {
   };
 
   const profile = () => {
-    router.push('/profile')
-  }
-
+    router.push('/profile');
+  };
 
   const menu = (
     <Menu>
@@ -153,7 +153,6 @@ const Page: React.FC = () => {
       </Item>
     </Menu>
   );
-  
 
   // handle save modal data
   const handleSaveModalData = () => {
@@ -214,7 +213,11 @@ const Page: React.FC = () => {
       render: (record: DataType) => {
         return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record)} icon={<EditOutlined  style={{ color: 'black'}}/>}/>
+            <Button
+              type="link"
+              onClick={() => handleEdit(record)}
+              icon={<EditOutlined style={{ color: 'black' }} />}
+            />
           </span>
         );
       },
@@ -257,24 +260,28 @@ const Page: React.FC = () => {
       <title>Letak Barang</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Letak Barang</h1>
       <Card style={{ width: '30%', marginTop: '100px' }}>
-        <Button
-          type="primary"
-          onClick={() => setModalVisible(true)}
-          icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '20px' }} />}
-          style={{
-            width: '200px',
-            height: '40px',
-            marginBottom: '16px',
-            backgroundColor: 'white',
-            color: 'black',
-            display: 'flex',
-            marginLeft: 'auto',
-            right: '20px',
-            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          <span style={{ marginTop: '4px', marginLeft: '5px' }}>Letak Barang</span>
-        </Button>
+        <>
+          {role === 'admin' && (
+            <Button
+              type="primary"
+              onClick={() => setModalVisible(true)}
+              icon={<PlusOutlined style={{ marginTop: '8px', marginLeft: '20px' }} />}
+              style={{
+                width: '200px',
+                height: '40px',
+                marginBottom: '16px',
+                backgroundColor: 'white',
+                color: 'black',
+                display: 'flex',
+                marginLeft: 'auto',
+                right: '20px',
+                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <span style={{ marginTop: '4px', marginLeft: '5px' }}>Letak Barang</span>
+            </Button>
+          )}
+        </>
         <Table
           components={components}
           rowClassName={() => 'editable-row'}
@@ -353,129 +360,129 @@ const Page: React.FC = () => {
         </Modal>
       </Card>
       {role === 'admin' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '200px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '200px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
       {role === 'petugas' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
       {role === 'peminjam' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>         
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
-    </div>  
+    </div>
   );
 };
 

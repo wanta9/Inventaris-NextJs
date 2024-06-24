@@ -1,1271 +1,146 @@
 'use client';
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  Input,
-  InputRef,
-  Menu,
-  Modal,
-  Popconfirm,
-  Row,
-  Table,
-  Upload,
-  message,
-  Dropdown,
-  Select,
-} from 'antd';
-import {
-  PlusOutlined,
-  UploadOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  DownOutlined,
-  UserOutlined, 
-  ArrowLeftOutlined
-} from '@ant-design/icons';
-import { FormInstance } from 'antd/lib/form';
+import { Button, Card, Col, Divider, Row, Select, Table } from 'antd';
+import React from 'react';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
-import { akunRepository } from '#/repository/akun';
-
-const { Search } = Input;
-const { Item } = Menu;
+import { peminjamRepository } from '#/repository/peminjam';
 const { Option } = Select;
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface Item {
-  key: string;
-  namaBarang: string;
-  letakBarang: string;
-  harga: string;
-  deskripsi: string;
-}
-
-interface EditableRowProps {
-  index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-  const [form] = Form.useForm();
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  );
-};
-
-interface EditableCellProps {
-  title: React.ReactNode;
-  editable: boolean;
-  dataIndex: keyof Item;
-  record: Item;
-  handleSave: (record: Item) => void;
-  handleEdit: (record: Item) => void;
-}
-
-const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  handleEdit,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef<InputRef>(null);
-  const form = useContext(EditableContext)!;
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-  };
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-      </Form.Item>
-    ) : (
-      <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
-        {children}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-interface DataType {
-  key: React.Key;
-  name: string;
-  username: string;
-  telp: string;
-  nip: string;
-}
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
-
-const Page: React.FC = () => {
-  const [dataSource, setDataSource] = useState<Item[]>([]);
-  const [editData, setEditData] = useState<Item | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalEditVisible, setModalEditVisible] = useState(false);
-  const [letakBarangVisible, setLetakBarangVisible] = useState(false);
-  const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
-  const [count, setCount] = useState(0);
-  const [kodeBarang, setKodeBarang] = useState('');
-  const [namaBarang, setNamaBarang] = useState('');
-  const [harga, setharga] = useState('');
-  const [letakBarang, setLetakBarang] = useState('');
-  const [deskripsi, setDeskripsi] = useState('');
-  const [searchText, setSearchText] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
+const Detailbarangpeminjam = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
-  const { data: akun } = akunRepository.hooks.useAuth();
-
+  const fontWeight = '700';
   const router = useRouter();
-  const role = akun?.data?.peran?.Role;
+  const { data: ruanganBarangById } = ruanganBarangRepository.hooks.useRuanganBarangById(params.id);
+  console.log(ruanganBarangById, 'barang masuk by id');
 
-  const menu1 = (
-    <Menu>
-      <Menu.Item key="1">RPL</Menu.Item>
-      <Menu.Item key="2">TKJ</Menu.Item>
-      <Menu.Item key="3">TBSM</Menu.Item>
-    </Menu>
-  );
-
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/barang/${id}`;
-  };
-
-  // menu akun
-  const logout = () => {
-    localStorage.removeItem('access_token');
-    router.push('/login');
-  };
-  
-  const profile = () => {
-    router.push('/profile')
-  }
-
-  const menu = (
-    <Menu>
-      {role === 'petugas' && (
-        <Item key="1" onClick={() => profile()}>
-          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
-            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
-            Profile
-          </a>
-        </Item>
-      )}
-      {role === 'peminjam' && (
-        <Item key="1" onClick={() => profile()}>
-          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
-            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
-            Profile
-          </a>
-        </Item>
-      )}
-      <Item key="2" onClick={() => logout()}>
-        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
-          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
-          Keluar
-        </a>
-      </Item>
-    </Menu>
-  );
-
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-  };
-  useEffect(() => {
-    if (listRuanganBarang != null) {
-      setDataSource(listRuanganBarang.data);
-    } // Menggunakan setDataSource untuk mengatur nilai initialData
-  }, [listRuanganBarang]);
-
-  const handleLocationChange = (value: string) => {
-    setSelectedLocation(value);
-  };
-
-  const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
-    setharga(value);
-  };
-
-  const handleButtonClick = (type: string) => {
-    if (type === 'barang') {
-      setModalVisible(true);
-      setLetakBarangVisible(false); // Menutup modal tambah letak barang jika ada
-    } else if (type === 'letakBarang') {
-      setLetakBarangVisible(true);
-      setModalVisible(false); // Menutup modal tambah barang jika ada
-    }
-  };
-
-  const handleModalCancel = () => {
-    setModalVisible(false);
-    setModalEditVisible(false);
-    setLetakBarangVisible(false);
-    setNamaBarang('');
-    setharga('');
-    setDeskripsi('');
-  };
-
-  const handleSaveModalData = () => {
-    if (!namaBarang || !harga || !deskripsi || !letakBarang) {
-      message.error('Semua kolom harus diisi.');
-      return;
-    }
-
-    if (editData) {
-      const newData = dataSource.map((item) => {
-        if (item.key === editData.key) {
-          return { ...item, kodeBarang, namaBarang, letakBarang, harga, deskripsi };
-        }
-        return item;
-      });
-      setDataSource(newData);
-      setModalEditVisible(false);
-      setEditData(null);
-    } else {
-      const newData: Item = {
-        key: count.toString(),
-        kodeBarang,
-        namaBarang,
-        letakBarang,
-        harga,
-        deskripsi,
-      };
-      setDataSource([...dataSource, newData]);
-      setCount(count + 1);
-      setModalVisible(false);
-    }
-
-    // Reset state setelah menyimpan data
-    setNamaBarang('');
-    setharga('');
-    setDeskripsi('');
-    setLetakBarang('');
-  };
-
-  const handleDelete = (key: string) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
-  };
-
-  const handleEdit = (record: Item) => {
-    setEditData(record);
-    setKodeBarang(record.kodeBarang);
-    setNamaBarang(record.namaBarang);
-    setDeskripsi(record.deskripsi);
-    setDeskripsi(record.harga);
-    setModalEditVisible(true);
-  };
-
-  const handleSave = (row: Item) => {
-    const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
-    newData.splice(index, 1, {
-      ...newData[index],
-      ...row,
-    });
-    setDataSource(newData);
-  };
-
-  const components = {
-    body: {
-      row: EditableRow,
-      cell: EditableCell,
-      handleSave,
-    },
-  };
-
-  const columns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+  const dataSource = [
     {
-      title: 'Kode Barang',
-      dataIndex: 'kode',
-      editable: true,
-      render: (_, record) => {
-        console.log(record);
-        return record.barang.kode;
-      },
+      id: '1',
+      letakBarang: ruanganBarangById?.data?.ruangan?.Letak_Barang,
+      jumlah: ruanganBarangById?.data?.jumlah,
     },
-    {
-      title: 'Nama Barang',
-      dataIndex: 'nama',
-      editable: true,
-      render: (_, record) => {
-        console.log(record);
-        return record.barang.nama;
-      },
-    },
+  ];
+  const Kembali = () => {
+    router.push('/barang');
+  };
+
+  const columns = [
     {
       title: 'Letak Barang',
-      dataIndex: 'Letak_Barang',
-      editable: true,
-      render: (_, record) => {
-        console.log(record);
-        return record.ruangan.Letak_Barang;
-      },
+      dataIndex: 'letakBarang',
+      key: 'letakBarang',
+      // render: (text: string, record: DataType) => {
+      //   console.log(record);
+      //   return record.ruangan.Letak_Barang;
+      // },
     },
     {
       title: 'Jumlah',
       dataIndex: 'jumlah',
-      editable: true,
-    },
-    {
-      title: '',
-      dataIndex: '',
-      render: (record: Item) => {
-        return (
-          <span>
-      <Button
-        type="link"
-        onClick={(e) => {
-          e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-        }}
-        icon={<EditOutlined style={{ color: 'black' }} />}
-      />
-       <Popconfirm
-        title="Hapus Barang"
-        onConfirm={() => handleDelete(record.key)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
-        onCancel={(e) => {
-          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-        }}
-      >
-        <Button
-          type="link"
-          onClick={(e) => {
-            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          }}
-          icon={<DeleteOutlined style={{ color: 'black' }} />}
-        />
-      </Popconfirm>
-          </span>
-        );
-      },
+      key: 'jumlah',
     },
   ];
 
   return (
-    <div>
-    {role === 'admin' && (
-      <div>
-        <title>Barang</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
-        <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
-          <div
-            style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}
-          >
-            <Search
-              placeholder="Telusuri Barang"
-              allowClear
-              enterButton
-              onSearch={(value) => handleSearch(value)}
-              style={{ width: 300, marginRight: '400px' }}
-            />
-            <Dropdown overlay={menu1} placement="bottomLeft">
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  color: 'black',
-                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                  height: '40px',
-                  width: '200px',
-                  fontFamily,
-                }}
-              >
-                Letak Barang <DownOutlined />
-              </Button>
-            </Dropdown>
-            <Button
-              type="primary"
-              onClick={() => handleButtonClick('letakBarang')}
-              icon={<PlusOutlined />}
+    <div style={{ marginLeft: '50px', fontFamily }}>
+      <title>Detail Barang</title>
+      <h1 style={{ fontFamily, fontWeight: 'bold', fontSize: '25px' }}>Detail Barang</h1>
+      <Card
+        style={{
+          width: '80%',
+          height: '700px',
+          marginTop: '50px',
+          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Row align="middle" justify="center">
+          <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
               style={{
-                backgroundColor: 'white',
-                color: 'black',
-                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                height: '40px',
-                width: '200px',
-                fontFamily,
+                width: '80%',
+                height: '450px',
+                backgroundColor: '#D9D9D9',
+                borderRadius: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                left: '75px',
+                top: '-250px',
+                bottom: '',
               }}
             >
-              Letak Barang
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => handleButtonClick('barang')}
-              icon={<PlusOutlined style={{}} />}
-              style={{
-                backgroundColor: 'white',
-                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                color: 'black',
-                height: '40px',
-                width: '200px',
-                fontFamily,
-              }}
-            >
-              <span style={{ marginRight: '10px' }}>Barang</span>
-            </Button>
-          </div>
-          <Table
-            components={components}
-            rowClassName={() => 'editable-row'}
-            bordered
-            dataSource={listRuanganBarang?.data}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record.id),
-              style: { cursor: 'pointer' },
-            })}
-            pagination={{ pageSize: 5 }}
-            columns={columns as ColumnTypes}
-            style={{ marginTop: '40px' }}
-          />
-        </Card>
-        <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
-          style={{ textAlign: 'center' }}
-          centered
-          width={900}
-          visible={modalVisible}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-            <Col span={16}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Nama Barang</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                        placeholder="Nama Barang"
-                        value={namaBarang}
-                        onChange={(e) => setNamaBarang(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Harga</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                        prefix="Rp"
-                        value={harga}
-                        onChange={handleHargaChange}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p style={{ marginBottom: '80px' }}>Deskripsi</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input.TextArea
-                        style={{ marginBottom: '12px', width: '75%', height: '50%' }}
-                        rows={4}
-                        placeholder="Deskripsi Barang"
-                        value={deskripsi}
-                        onChange={(e) => setDeskripsi(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={8}>
-              <Row>
-                <Col>
-                  <p style={{ marginLeft: '-40px', marginRight: '20px' }}>Unggah Foto</p>
-                </Col>
-                <Col>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                  >
-                    <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
-                      Unggah
-                    </Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Modal>
-        <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
-          style={{ textAlign: 'center' }}
-          centered
-          width={1000}
-          visible={modalEditVisible}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-            <Col span={16}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Nama Barang</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                        placeholder="Nama Barang"
-                        value={namaBarang}
-                        onChange={(e) => setNamaBarang(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Harga</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                        addonBefore="Rp"
-                        value={harga}
-                        placeholder="harga"
-                        onChange={handleHargaChange}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Deskripsi</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input.TextArea
-                        style={{ marginBottom: '12px', width: '100%', height: '80px' }}
-                        placeholder="Deskripsi Barang"
-                        value={deskripsi}
-                        onChange={(e) => setDeskripsi(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={8}>
-              <Row>
-                <Col span={8}>
-                  <p>Unggah Foto</p>
-                </Col>
-                <Col>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                  >
-                    <Button icon={<UploadOutlined />}>Unggah</Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Modal>
-        {/* Button Tambah Letak barang */}
-        <Modal
-          title="Tambah Letak Barang"
-          visible={letakBarangVisible || letakBarangEditVisible}
-          centered
-          style={{ textAlign: 'center' }}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ backgroundColor: '#582DD2' }}
-            >
-              Simpan
-            </Button>,
-          ]}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-            <Col span={6}>
-              <p>Letak Barang</p>
-            </Col>
-            <Col span={18}>
-              <Input
-                value={letakBarang}
-                onChange={(e) => setLetakBarang(e.target.value)}
-                placeholder="Masukkan letak barang"
-                className="uppercase-input"
-              />
-            </Col>
-          </Row>
-        </Modal>
-      </div>
-      )}
-    {role === 'petugas' && (
-      <div>
-        <title>Barang</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
-        <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
-          <div
-            style={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', marginBottom: '16px' }}
-          >
-            <Search
-              placeholder="Telusuri Barang"
-              allowClear
-              enterButton
-              onSearch={(value) => handleSearch(value)}
-              style={{ width: 300, marginRight: '400px' }}
-            />
-            <Dropdown overlay={menu1} placement="bottomLeft">
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  color: 'black',
-                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                  height: '40px',
-                  width: '200px',
-                  fontFamily,
-                }}
-              >
-                Letak Barang <DownOutlined />
-              </Button>
-            </Dropdown>
-            <Button
-              type="primary"
-              onClick={() => handleButtonClick('letakBarang')}
-              icon={<PlusOutlined />}
-              style={{
-                backgroundColor: 'white',
-                color: 'black',
-                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                height: '40px',
-                width: '200px',
-                fontFamily,
-              }}
-            >
-              Letak Barang
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => handleButtonClick('barang')}
-              icon={<PlusOutlined style={{}} />}
-              style={{
-                backgroundColor: 'white',
-                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                color: 'black',
-                height: '40px',
-                width: '200px',
-                fontFamily,
-              }}
-            >
-              <span style={{ marginRight: '10px' }}>Barang</span>
-            </Button>
-          </div>
-          <Table
-            components={components}
-            rowClassName={() => 'editable-row'}
-            bordered
-            dataSource={listRuanganBarang?.data}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record.id),
-              style: { cursor: 'pointer' },
-            })}
-            pagination={{ pageSize: 5 }}
-            columns={columns as ColumnTypes}
-            style={{ marginTop: '40px' }}
-          />
-        </Card>
-        <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
-          style={{ textAlign: 'center' }}
-          centered
-          width={900}
-          visible={modalVisible}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-            <Col span={16}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Nama Barang</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                        placeholder="Nama Barang"
-                        value={namaBarang}
-                        onChange={(e) => setNamaBarang(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Harga</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                        prefix="Rp"
-                        value={harga}
-                        onChange={handleHargaChange}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p style={{ marginBottom: '80px' }}>Deskripsi</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input.TextArea
-                        style={{ marginBottom: '12px', width: '75%', height: '50%' }}
-                        rows={4}
-                        placeholder="Deskripsi Barang"
-                        value={deskripsi}
-                        onChange={(e) => setDeskripsi(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={8}>
-              <Row>
-                <Col>
-                  <p style={{ marginLeft: '-40px', marginRight: '20px' }}>Unggah Foto</p>
-                </Col>
-                <Col>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                  >
-                    <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
-                      Unggah
-                    </Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Modal>
-        <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
-          style={{ textAlign: 'center' }}
-          centered
-          width={1000}
-          visible={modalEditVisible}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-            <Col span={16}>
-              <Row gutter={[24, 24]}>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Nama Barang</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                        placeholder="Nama Barang"
-                        value={namaBarang}
-                        onChange={(e) => setNamaBarang(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Harga</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input
-                        style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                        addonBefore="Rp"
-                        value={harga}
-                        placeholder="harga"
-                        onChange={handleHargaChange}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-                <Col span={24}>
-                  <Row align="middle">
-                    <Col span={6}>
-                      <p>Deskripsi</p>
-                    </Col>
-                    <Col span={18}>
-                      <Input.TextArea
-                        style={{ marginBottom: '12px', width: '100%', height: '80px' }}
-                        placeholder="Deskripsi Barang"
-                        value={deskripsi}
-                        onChange={(e) => setDeskripsi(e.target.value)}
-                      />
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </Col>
-            <Col span={8}>
-              <Row>
-                <Col span={8}>
-                  <p>Unggah Foto</p>
-                </Col>
-                <Col>
-                  <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                  >
-                    <Button icon={<UploadOutlined />}>Unggah</Button>
-                  </Upload>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Modal>
-        {/* Button Tambah Letak barang */}
-        <Modal
-          title="Tambah Letak Barang"
-          visible={letakBarangVisible || letakBarangEditVisible}
-          centered
-          style={{ textAlign: 'center' }}
-          onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ backgroundColor: '#582DD2' }}
-            >
-              Simpan
-            </Button>,
-          ]}
-        >
-          <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-            <Col span={6}>
-              <p>Letak Barang</p>
-            </Col>
-            <Col span={18}>
-              <Input
-                value={letakBarang}
-                onChange={(e) => setLetakBarang(e.target.value)}
-                placeholder="Masukkan letak barang"
-                className="uppercase-input"
-              />
-            </Col>
-          </Row>
-        </Modal>
-      </div>
-      )}
-      
-      {/* barang peminjam */}
-      {role === 'peminjam ' && (
-        <div>
-        <div>
-          <title>Peminjam</title>
-          <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Search
-            placeholder="Cari nama, nama pengguna, atau NISN"
-            allowClear
-            enterButton
-            onSearch={handleSearch}
-            style={{ width: 300 }}
-          />
-          <Select
-            placeholder="Pilih Letak Barang"
-            style={{ width: 200 }}
-            onChange={handleLocationChange}
-          >
-            <Option value="lokasi1">Lokasi 1</Option>
-            <Option value="lokasi2">Lokasi 2</Option>
-            <Option value="lokasi3">Lokasi 3</Option>
-          </Select>
-        </div>
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <div>
-          </div>
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '175px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="ikon.png" alt="icon gambar" style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }} />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, Elisabet
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
-                  </div>
-                </div>
-              </Button>
+              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
             </div>
-          </Dropdown>
-        </div>
-        <div style={{ marginTop: '20px' }}>
-          <Card
-            hoverable
-            style={{ width: 300 }}
-            cover={<img alt="example" src="https://via.placeholder.com/300" />}
+          </Col>
+          <Col span={12} style={{ paddingLeft: '40px', marginTop: '5px' }}>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight }}>
+                Nama Barang
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight }}>
+                Harga
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight }}>
+                Stok Keseluruhan
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+            </Row>
+            <Row style={{ marginBottom: '100px' }}>
+            </Row>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '-50px', marginBottom: '20px' }}>
+          <Col
+            push={1}
+            span={24}
+            style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '20px' }}
           >
-            <Card.Meta title="Judul Gambar" description="Deskripsi gambar" />
-          </Card>
-        </div>
-      </div>
-      )}
-      {/* tutup  */}
-
-      {/* menu inpo */}
-      {role === 'admin' && (
+            Deskripsi
+          </Col>
+        </Row>
+        <Row>
+          <Col push={1} span={23} style={{ fontWeight, fontFamily, fontSize: '17px' }}>
+            {ruanganBarangById?.data?.barang?.deskripsi}
+          </Col>
+        </Row>
+      </Card>
       <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
+        style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}
+        onClick={() => Kembali()}
       >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '200px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
-                  </div>
-                </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
+        <Button
+          style={{
+            marginTop: '30px',
+            backgroundColor: '#582DD2',
+            color: 'white',
+            width: '20%',
+            height: '50px',
+            borderRadius: '10px',
+          }}
+        >
+          <a
+            href="http://localhost:3002/barang"
+            style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
+          >
+            <ArrowLeftOutlined style={{ marginRight: '25px' }} />
+            Kembali
+          </a>
+        </Button>
       </div>
-      )}
-      {role === 'petugas' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
-                  </div>
-                </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
-      </div>
-      )}
-      {role === 'peminjam' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
-                  </div>
-                </div>
-              </div>
-            </Button>
-          </div>         
-        </Dropdown>
-      </div>
-      )}
-       {role === 'peminjam' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
-                  </div>
-                </div>
-              </div>
-            </Button>
-          </div>         
-        </Dropdown>
-      </div>
-      )}
     </div>
   );
 };
-export default Page;
+
+export default Detailbarangpeminjam;

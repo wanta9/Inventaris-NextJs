@@ -5,10 +5,10 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
-
+import { peminjamRepository } from '#/repository/peminjam';
 const { Option } = Select;
 
-const Detailbarang = ({ params }: { params: { id: string } }) => {
+const Detailbarangpeminjam = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const router = useRouter();
@@ -76,13 +76,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginTop: '5px' }}>
-            <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
-              <Col span={9} style={{ fontWeight }}>
-                Kode Barang
-              </Col>
-              <Col span={2}>:</Col>
-              <Col span={5}>{ruanganBarangById?.data?.barang?.kode}</Col>
-            </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Nama Barang
@@ -105,19 +98,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
             </Row>
             <Row style={{ marginBottom: '100px' }}>
-              <Col span={24}>
-                <Table
-                  dataSource={dataSource}
-                  columns={columns}
-                  // pagination={{ pageSize: 3 }}
-                  scroll={{ y: 200 }}
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                  }}
-                  bordered
-                />
-              </Col>
             </Row>
           </Col>
         </Row>
@@ -163,4 +143,4 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   );
 };
 
-export default Detailbarang;
+export default Detailbarangpeminjam;

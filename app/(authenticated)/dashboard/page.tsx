@@ -42,6 +42,8 @@ const Page = () => {
   const [selectText, setSelectText] = useState('Tahun Ini');
   const allowedYears = ['2024', '2023', '2022'];
   const router = useRouter();
+  const fontFamily = 'Barlow, sans-serif';
+  const fontWeight = '800';
   // const chartRef = useRef<HTMLCanvasElement>(null);
 
   // tahun
@@ -252,13 +254,33 @@ const Page = () => {
           <Col>
             <Card
               className="shadow-card"
-              style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}
+              style={{
+                width: '300px',
+                height: '150px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+                <div
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    backgroundColor: '#F5DEB3', // Ubah warna background sesuai kebutuhan
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '-30px',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img src="/dshbarang.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>20</div>
-                  <div>Barang</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>30</div>
+                  <div style={{ fontFamily, color: 'grey' }}>Barang</div>
                 </div>
               </div>
             </Card>
@@ -269,10 +291,24 @@ const Page = () => {
               style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+              <div
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    backgroundColor: '#fff0e0', // Ubah warna background sesuai kebutuhan
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '30px',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>3</div>
-                  <div>Peminjam</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily}}>8</div>
+                  <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
                 </div>
               </div>
             </Card>
@@ -283,10 +319,24 @@ const Page = () => {
               style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+              <div
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    borderRadius: '50%',
+                    backgroundColor: '#e0f7e9', // Ubah warna background sesuai kebutuhan
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '30px',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img src="/dshaktif.svg" style={{ width: '50%', height: '60%' }} />
+                </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>5</div>
-                  <div>Aktif</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>5</div>
+                  <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
                 </div>
               </div>
             </Card>
@@ -487,22 +537,31 @@ const Page = () => {
               className="shadow-card"
               style={{ width: '300px', height: '500px', padding: '50px 20px 0' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
+              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#B2C7FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px'}}
+                >
+                  <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>10</div>
                   <div style={{ color: 'grey' }}>Barang Masuk</div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
+              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#E1E1E1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px' }}
+                >
+                  <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>4</div>
                   <div style={{ color: 'grey' }}>Barang Keluar</div>
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src="ikon.png" style={{ width: '100px', marginRight: '10px' }} />
+              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#F0C7C7', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px' }}
+                >
+                  <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold' }}>2</div>
                   <div style={{ color: 'grey' }}>Barang Rusak</div>

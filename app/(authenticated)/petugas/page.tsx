@@ -37,7 +37,7 @@ const { Item } = Menu;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
-  key: string;
+  id: string;
   name: string;
   username: string;
   telp: string;
@@ -337,8 +337,8 @@ const Page: React.FC = () => {
       render: (_, record) =>
         dataSource.length >= 1 ? (
           <span>
-            <Button type="link" onClick={() => handleEdit(record.key)} icon={<EditOutlined />} />
-            <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.key)}>
+            <Button type="link" onClick={() => handleEdit(record.id)} icon={<EditOutlined />} />
+            <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.id)}>
               <DeleteOutlined />
             </Popconfirm>
           </span>

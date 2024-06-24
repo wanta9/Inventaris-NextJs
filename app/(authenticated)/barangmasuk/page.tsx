@@ -132,7 +132,6 @@ const Page: React.FC = () => {
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listBarangMasuk, 'listBarangMasuk');
-  const fontWeight = '500';
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
 

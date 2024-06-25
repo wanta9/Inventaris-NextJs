@@ -23,6 +23,7 @@ import {
   UploadOutlined,
   DeleteOutlined,
   EditOutlined,
+  RightOutlined,
   DownOutlined,
   UserOutlined,
   ArrowLeftOutlined,
@@ -160,6 +161,12 @@ const Page: React.FC = () => {
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  const [openDropdown, setOpenDropdown] = useState(false);
+
+  const handleDropdownClick = () => {
+    setOpenDropdown(!openDropdown);
+  };
 
   const menu1 = (
     <Menu>
@@ -417,7 +424,12 @@ const Page: React.FC = () => {
                     fontFamily,
                   }}
                 >
-                  Letak Barang <DownOutlined />
+                  Letak Barang{' '}
+                  {openDropdown ? (
+                    <DownOutlined style={{ fontSize: '12px' }} />
+                  ) : (
+                    <RightOutlined style={{ fontSize: '12px' }} />
+                  )}
                 </Button>
               </Dropdown>
               <Button
@@ -731,7 +743,12 @@ const Page: React.FC = () => {
                 onSearch={(value) => handleSearch(value)}
                 style={{ width: 300 }}
               />
-              <Dropdown overlay={menu1} placement="bottomLeft">
+              <Dropdown
+                overlay={menu1}
+                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
+                visible={openDropdown}
+                onVisibleChange={setOpenDropdown}
+              >
                 <Button
                   style={{
                     backgroundColor: 'white',
@@ -739,11 +756,17 @@ const Page: React.FC = () => {
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',
-                    fontFamily,
-                    marginLeft: '10px', // Add margin here
+                    fontFamily: 'inherit',
+                    marginLeft: '10px', // Margin here
                   }}
+                  onClick={handleDropdownClick}
                 >
-                  Letak Barang <DownOutlined />
+                  Letak Barang{' '}
+                  {openDropdown ? (
+                    <DownOutlined style={{ fontSize: '12px' }} />
+                  ) : (
+                    <RightOutlined style={{ fontSize: '12px' }} />
+                  )}
                 </Button>
               </Dropdown>
             </div>

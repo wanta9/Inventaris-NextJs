@@ -15,6 +15,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const { data: ruanganBarangById } = ruanganBarangRepository.hooks.useRuanganBarangById(params.id);
   console.log(ruanganBarangById, 'barang masuk by id');
 
+  const deskripsi = ruanganBarangById?.data?.barang?.deskripsi || '';
+
+  // Menghitung jumlah kata dalam deskripsi
+  const wordCount = deskripsi.split(' ').length;
+
   const dataSource = [
     {
       id: '1',
@@ -131,7 +136,18 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           </Col>
         </Row>
         <Row>
-          <Col push={1} span={23} style={{ fontWeight, fontFamily, fontSize: '17px' }}>
+          <Col
+            push={1}
+            span={23}
+            style={{
+              fontWeight,
+              fontFamily,
+              fontSize: '17px',
+              overflowY: wordCount > 100 ? 'scroll' : 'visible',
+              maxHeight: wordCount > 100 ? '100px' : 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
             {ruanganBarangById?.data?.barang?.deskripsi}
           </Col>
         </Row>

@@ -1,25 +1,31 @@
-/*@tailwind base;*//* global.css */
+/*@tailwind base;*/
+/* global.css */
 /* global.css */
 
+.scrollable {
+  max-height: 300px; /* Tentukan tinggi maksimal sesuai kebutuhan */
+  overflow-y: auto;
+  padding-right: 10px; /* Tambahan untuk scrollbar agar tidak menutupi teks */
+}
+
 .login-page {
-  background-color: #582DD2;
+  background-color: #582dd2;
 }
 
 .register-page {
-  background-color: #582DD2;
+  background-color: #582dd2;
 }
-
 
 @tailwind components;
 @tailwind utilities;
 
 /* Petugas style */
 .shadow-card {
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 /* modal letak barang */
 .uppercase-input {
   text-transform: uppercase;
 }
-/* modal letak barang */ 
+/* modal letak barang */

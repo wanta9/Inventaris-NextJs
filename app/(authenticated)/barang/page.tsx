@@ -360,7 +360,7 @@ const Page: React.FC = () => {
           e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
           handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
         }}
-        icon={<EditOutlined style={{ color: 'black' }} />}
+        icon={ <img src="/logoEdit.svg" style={{ width: '18px', height: '18px' }}/>}
       />
        <Popconfirm
         title="Hapus Barang"

@@ -5,6 +5,7 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
+import { akunRepository } from '#/repository/akun';
 
 const { Option } = Select;
 
@@ -14,6 +15,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { data: ruanganBarangById } = ruanganBarangRepository.hooks.useRuanganBarangById(params.id);
   console.log(ruanganBarangById, 'barang masuk by id');
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
 
   const dataSource = [
     {
@@ -76,6 +79,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginTop: '5px' }}>
+          {role === 'admin' && (
             <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Kode Barang
@@ -83,6 +87,17 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               <Col span={2}>:</Col>
               <Col span={5}>{ruanganBarangById?.data?.barang?.kode}</Col>
             </Row>
+            )}
+            
+          {role === 'petugas' && (
+            <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
+              <Col span={9} style={{ fontWeight }}>
+                Kode Barang
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.kode}</Col>
+            </Row>
+            )}
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>
                 Nama Barang
@@ -106,17 +121,32 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Row>
             <Row style={{ marginBottom: '100px' }}>
               <Col span={24}>
-                <Table
-                  dataSource={dataSource}
-                  columns={columns}
-                  // pagination={{ pageSize: 3 }}
-                  scroll={{ y: 200 }}
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                  }}
-                  bordered
-                />
+                {role === 'admin' && (
+                                  <Table
+                                  dataSource={dataSource}
+                                  columns={columns}
+                                  // pagination={{ pageSize: 3 }}
+                                  scroll={{ y: 200 }}
+                                  style={{
+                                    width: '100%',
+                                    height: '200px',
+                                  }}
+                                  bordered
+                                />
+                )}
+                {role === 'petugas' && (
+                                  <Table
+                                  dataSource={dataSource}
+                                  columns={columns}
+                                  // pagination={{ pageSize: 3 }}
+                                  scroll={{ y: 200 }}
+                                  style={{
+                                    width: '100%',
+                                    height: '200px',
+                                  }}
+                                  bordered
+                                />
+                )}
               </Col>
             </Row>
           </Col>
@@ -135,6 +165,25 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             {ruanganBarangById?.data?.barang?.deskripsi}
           </Col>
         </Row>
+        {role === 'peminjam' && (
+        <Button
+          style={{
+            marginTop: '30px',
+            backgroundColor: '#582DD2',
+            color: 'white',
+            width: '10%',
+            height: '50px',
+            borderRadius: '10px',
+          }}
+        >
+          <a
+            href="http://localhost:3002/barang"
+            style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
+          >
+            Pinjam
+          </a>
+        </Button>
+        )}
       </Card>
       <div
         style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}

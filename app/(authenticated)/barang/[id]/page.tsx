@@ -27,6 +27,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       jumlah: ruanganBarangById?.data?.jumlah,
     },
   ];
+
+  let totalHeight = 0;
+  dataSource.forEach((item) => {
+    // Misalnya, asumsikan setiap item memiliki tinggi 50px
+    totalHeight += 50; // Sesuaikan dengan tinggi sesungguhnya dari masing-masing item
+  });
+
+  // Tentukan apakah perlu menampilkan scroll vertikal
+  const scrollY = totalHeight > 200 ? { y: 200 } : {};
   const Kembali = () => {
     router.push('/barang');
   };
@@ -114,8 +123,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 <Table
                   dataSource={dataSource}
                   columns={columns}
-                  // pagination={{ pageSize: 3 }}
-                  scroll={{ y: 200 }}
+                  scroll={scrollY}
                   style={{
                     width: '100%',
                     height: '200px',

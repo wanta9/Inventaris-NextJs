@@ -2,12 +2,6 @@
 /* global.css */
 /* global.css */
 
-.scrollable {
-  max-height: 300px; /* Tentukan tinggi maksimal sesuai kebutuhan */
-  overflow-y: auto;
-  padding-right: 10px; /* Tambahan untuk scrollbar agar tidak menutupi teks */
-}
-
 .login-page {
   background-color: #582dd2;
 }

@@ -33,6 +33,7 @@ import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
+import { ruanganRepository } from '#/repository/ruangan';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -157,6 +158,8 @@ const Page: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  console.log(listRuanganBarang, 'listRuanganBarang');
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -170,9 +173,9 @@ const Page: React.FC = () => {
 
   const menu1 = (
     <Menu>
-      <Menu.Item key="1">RPL</Menu.Item>
-      <Menu.Item key="2">TKJ</Menu.Item>
-      <Menu.Item key="3">TBSM</Menu.Item>
+      {listRuangan?.data?.map((item) => {
+        return <Menu.Item key={item?.id}>{item?.Letak_Barang} </Menu.Item>;
+      })}
     </Menu>
   );
 

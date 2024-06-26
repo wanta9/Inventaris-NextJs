@@ -19,7 +19,7 @@ const riwayatditolak = () => {
   return (
     <div style={{ marginLeft: '50px' }}>
       <title>Riwayat Ditolak</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Detai Peminjaman</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Riwayat</h1>
       <Card
         style={{
           marginTop: '30px',
@@ -223,7 +223,22 @@ const riwayatditolak = () => {
                     >
                       Status
                     </span>
-
+                    <Button
+                      style={{
+                        color: '#5BFF00',
+                        backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                        borderColor: '#A2E181',
+                      }}
+                      // type="primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (barangById?.data?.Status) {
+                          handleButtonClick(barangById?.data?.Status);
+                        }
+                      }}
+                    >
+                      tes
+                    </Button>
                   </div>
                 </div>
               </Card>

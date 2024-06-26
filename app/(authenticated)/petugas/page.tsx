@@ -127,7 +127,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-  key: React.Key;
+  id: React.Key;
   name: string;
   username: string;
   telp: string;
@@ -152,6 +152,10 @@ const Page: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   console.log(listPetugas, 'listPetugas');
+  const [form] = Form.useForm();
+  const fontFamily = 'Barlow, sans-serif';
+  const fontWeight = '700';
+
 
   const router = useRouter();
 
@@ -226,69 +230,49 @@ const Page: React.FC = () => {
   };
 
   const handleSaveModalData = () => {
-    if (!nama || !nip || !telp || !namaPengguna || !sandi || !konfirmasiSandi) {
-      // Menampilkan pesan kesalahan di sebelah input yang kosong
-      if (!nama) {
-        message.error('Nama harus diisi.');
-      }
-      if (!nip) {
-        message.error('NIP harus diisi.');
-      }
-      if (!telp) {
-        message.error('Nomor telepon harus diisi.');
-      }
-      if (!namaPengguna) {
-        message.error('Nama pengguna harus diisi.');
-      }
-      if (!sandi) {
-        message.error('sandi harus diisi.');
-      }
-      if (!konfirmasiSandi) {
-        message.error('konfirmasi Sandi harus diisi.');
-      }
-      return;
-    }
-
-    if (editData) {
-      const newData = dataSource.map((item) => {
-        if (item.key === editData.key) {
-          return { ...item, name: nama, username: namaPengguna, telp, nip };
+    // Validasi input kosong
+    form
+      .validateFields()
+      .then((values) => {
+        // Jika semua field tervalidasi
+        if (editData) {
+          // Jika dalam mode edit, update data yang ada
+          const newData = dataSource.map((item) =>
+            item.id === editData.id
+              ? { ...item, name: values.nama, username: values.namaPengguna, telp: values.telp, nip: values.nip }
+              : item
+          );
+          setDataSource(newData);
+          setEditData(null);
+          setModalEditVisible(false);
+        } else {
+          // Jika tidak dalam mode edit, tambahkan data baru
+          const newData = {
+            id: count.toString(),
+            name: values.nama,
+            username: values.namaPengguna,
+            telp: values.telp,
+            nip: values.nip,
+          };
+          setDataSource([...dataSource, newData]);
+          setCount(count + 1);
+          setModalVisible(false);
         }
-        return item;
+        // Reset form setelah penyimpanan berhasil
+        form.resetFields();
+      })
+      .catch((error) => {
+        // Menampilkan pesan error jika ada validasi yang gagal
+        console.error('Validation failed:', error);
       });
-      setDataSource(newData);
-      setModalEditVisible(false);
-      setEditData(null);
-      // Reset state nilai input setelah penyimpanan berhasil
-      setNama('');
-      setNamaPengguna('');
-      setNIP('');
-      setTelp('');
-    } else {
-      const newData: DataType = {
-        key: count.toString(),
-        name: nama,
-        username: namaPengguna,
-        telp: telp,
-        nip: nip,
-      };
-      setDataSource([...dataSource, newData]);
-      setCount(count + 1);
-      setModalVisible(false);
-      setModalEditVisible(false);
-      // Reset state nilai input setelah penyimpanan berhasil
-      setNamaPengguna('');
-      setNIP('');
-      setTelp('');
-    }
   };
-
+  
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
+    const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
   };
 
-  const handleEdit = (record: DataType) => {
+  const handleEdit = (record: Item) => {
     setEditData(record);
     setNama(record.name);
     setNamaPengguna(record.username);
@@ -334,16 +318,36 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (_, record) =>
-        dataSource.length >= 1 ? (
+      render: (record: Item) => {
+        return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record.id)} icon={<EditOutlined />} />
-            <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.id)}>
-              <DeleteOutlined />
-            </Popconfirm>
+      <Button
+        type="link"
+        onClick={(e) => {
+          e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+          handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+        }}
+        icon={ <img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }}/>}
+      />
+       <Popconfirm
+        title="Hapus Barang"
+        onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
+        onCancel={(e) => {
+          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+        }}
+      >
+        <Button
+          type="link"
+          onClick={(e) => {
+            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+          }}
+          icon={ <img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }}/>}
+        />
+      </Popconfirm>
           </span>
-        ) : null,
-    },
+        );
+      },
+    }, 
   ];
 
   const columns = defaultColumns.map((col) => {
@@ -363,7 +367,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: DataType) => {
     const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
+    const index = newData.findIndex((item) => row.id === item.id);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
@@ -420,221 +424,228 @@ const Page: React.FC = () => {
           style={{ marginTop: '30px' }}
         />
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Akun Petugas</div>}
+          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px'}}>Buat Akun Petugas</div>}
           style={{ textAlign: 'center' }}
           centered
-          width={900}
+          width={1100}
           visible={modalVisible}
           onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
+          footer={null}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama</p>
-                  </Col>
-                  <Col>
+          <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSaveModalData}
+          initialValues={{ nama: '', nip: '', telp: '', namaPengguna: '', sandi: '', konfirmasiSandi: '' }}
+        >
+
+        <div style={{ marginTop: '90px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col push={2} span={10}>
+                  <Form.Item
+                    label="Nama"
+                    name="nama"
+                    rules={[{ required: true, message: 'Nama harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
                       placeholder="Nama"
-                      value={nama}
                       onChange={(e) => setNama(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>NIP</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nip"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
                       placeholder="NIP"
-                      value={nip}
                       onChange={(e) => setNIP(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Telp</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px'}}
                       placeholder="Telp"
-                      value={telp}
                       onChange={(e) => setTelp(e.target.value)}
                       maxLength={12}
                     />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={8}>
-                    <p>Unggah Foto</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
                       action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
                       fileList={fileList}
                       onChange={handleChange}
+                      style={{ width: '100%' }}
                     >
-                      <Button icon={<UploadOutlined />}>Unggah</Button>
+                      <Button style={{ top: '-30px', marginRight: '90px'}} icon={<UploadOutlined />}>Unggah</Button>
                     </Upload>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama Pengguna</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                </Col>
+                <Col push={2} span={11}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="namaPengguna"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                   style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Nama Pengguna"
-                      value={namaPengguna}
                       onChange={(e) => setNamaPengguna(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p style={{ right: '20px' }}>Sandi</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Sandi"
+                    name="sandi"
+                    rules={[{ required: true, message: 'Sandi harus di isi' }]}
+                   style={{ fontWeight , fontFamily, marginBottom: '-10px'}}
+                  > 
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Sandi"
-                      value={sandi}
                       onChange={(e) => setSandi(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Konfirmasi Sandi</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Konfirmasi Sandi"
+                    name="konfirmasiSandi"
+                    style={{ fontWeight , fontFamily }}
+                    rules={[
+                      { required: true, message: 'Konfirmasi Sandi harus di isi' },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue('sandi') === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('Konfirmasi Sandi harus sama dengan Sandi.'));
+                        },
+                      }),
+                    ]}
+                  >
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Konfirmasi Sandi"
-                      value={konfirmasiSandi}
                       onChange={(e) => setKonfirmasiSandi(e.target.value)}
                     />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{ width: '100px', height: '35px', backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                >
+                  Batal
+                </Button>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: '100px', height: '35px',backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2', marginRight: '50px' }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
+
         <Modal
           title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Akun Petugas</div>}
           style={{ textAlign: 'center' }}
-          width={900}
+          width={700}
           centered
           visible={modalEditVisible}
           onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ marginRight: '27px' }}
-            >
-              Simpan
-            </Button>,
-          ]}
+          footer={null}
           maskStyle={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
           }}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama Pengguna</p>
-                  </Col>
-                  <Col span={16}>
+          <Form
+            layout="horizontal"
+            onFinish={handleSaveModalData}
+            initialValues={{
+              namaPengguna,
+              nip,
+              telp,
+            }}
+          >
+            <div style={{ marginTop: '70px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col push={2} span={14}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="namaPengguna"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Nama Pengguna"
-                      value={namaPengguna}
                       onChange={(e) => setNamaPengguna(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>NIP</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nip"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="NIP"
-                      value={nip}
                       onChange={(e) => setNIP(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Telp</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Telp"
-                      value={telp}
                       onChange={(e) => setTelp(e.target.value)}
                       maxLength={12}
                     />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{ backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                >
+                  Batal
+                </Button>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginRight: '27px' }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
       </Card>
       <div

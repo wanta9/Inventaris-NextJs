@@ -505,7 +505,7 @@ const Page = () => {
 
         <Row>
           <Col flex="auto">
-            <Card className="shadow-card" style={{ height: '500px', marginRight: '50px' }}>
+            <Card className="shadow-card" style={{ height: '550px', marginRight: '50px' }}>
               <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px' }}>
                 Jumlah Peminjaman
               </h1>

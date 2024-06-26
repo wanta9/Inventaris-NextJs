@@ -5,6 +5,7 @@ import { Button, Card, Row, Col, Divider, DatePicker, Select } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
+import { barangRepository } from '#/repository/barang';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -14,8 +15,8 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
   const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [status, setStatus] = useState('Pending');
-  const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
-  console.log(peminjamanById, 'barang masuk by id');
+  const { data: barangById } = barangRepository.hooks.useBarang(params.id);
+  console.log(barangById, 'barang masuk by id');
 
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for phone number:', status);
@@ -27,7 +28,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   return (
     <div style={{ marginLeft: '50px' }}>
       <title>Detail Peminjaman</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Detai Peminjaman</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Koleksi</h1>
       <Card
         style={{
           marginTop: '30px',
@@ -240,12 +241,12 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       // type="primary"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (peminjamanById?.data?.Status) {
-                          handleButtonClick(peminjamanById?.data?.Status);
+                        if (barangById?.data?.Status) {
+                          handleButtonClick(barangById?.data?.Status);
                         }
                       }}
                     >
-                      {peminjamanById?.data?.Status}
+                      {barangById?.data?.Status}
                     </Button>
                   </div>
                 </div>

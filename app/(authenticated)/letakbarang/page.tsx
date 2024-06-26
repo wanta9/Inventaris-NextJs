@@ -216,7 +216,7 @@ const Page: React.FC = () => {
             <Button
               type="link"
               onClick={() => handleEdit(record)}
-              icon={<EditOutlined style={{ color: 'black' }} />}
+              icon={ <img src="/logoEdit.svg" style={{ width: '18px', height: '18px', marginLeft: '22px' }}/>}
             />
           </span>
         );

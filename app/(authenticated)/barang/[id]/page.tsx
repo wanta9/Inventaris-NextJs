@@ -126,20 +126,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Row>
             <Row style={{ marginBottom: '100px' }}>
               <Col span={24}>
-                {role === 'admin' && (
-                                  <Table
-                                  dataSource={dataSource}
-                                  columns={columns}
-                                  // pagination={{ pageSize: 3 }}
-                                  scroll={{ y: 200 }}
-                                  style={{
-                                    width: '100%',
-                                    height: '200px',
-                                  }}
-                                  bordered
-                                />
-                )}
-                {role === 'petugas' && (
+              {(role === 'admin' || role === 'petugas') && (
                                   <Table
                                   dataSource={dataSource}
                                   columns={columns}

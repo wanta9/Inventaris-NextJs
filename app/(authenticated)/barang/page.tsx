@@ -33,14 +33,8 @@ import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
-<<<<<<< HEAD
-import { ruanganRepository } from '#/repository/ruangan';
-import { barangRepository } from '#/repository/barang';
-=======
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
-
->>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -162,7 +156,12 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [letakBarangVisible, setLetakBarangVisible] = useState(false);
   const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
-  const [createBarang, setcreateBarang] = useState<createBarang>({nama:"", harga:"", deskripsi:"", gambar: ""});
+  const [createBarang, setcreateBarang] = useState<createBarang>({
+    nama: '',
+    harga: '',
+    deskripsi: '',
+    gambar: '',
+  });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
   const [namaBarang, setNamaBarang] = useState('');
@@ -174,13 +173,7 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-<<<<<<< HEAD
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
-  console.log(listRuanganBarang, 'listRuanganBarang');
-=======
-  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
->>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -287,14 +280,14 @@ const Page: React.FC = () => {
         nama: values.nama,
         harga: values.harga,
         deskripsi: values.deskripsi,
-        gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
-        kondisi: "baik",
+        gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
+        kondisi: 'baik',
       };
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
-        message.success("Data berhasil disimpan!");
+        message.success('Data berhasil disimpan!');
       }
       console.log(request);
     } catch (error) {
@@ -305,7 +298,6 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -315,15 +307,15 @@ const Page: React.FC = () => {
       const processUpload = await barangRepository.api.uploadBarang(file);
       setcreateBarang((createBarang) => ({
         ...createBarang,
-        gambar: processUpload?.body?.data?.filename
+        gambar: processUpload?.body?.data?.filename,
       }));
-      console.log(processUpload, "create");
-      message.success("Gambar Berhasil Di Unggah!")
+      console.log(processUpload, 'create');
+      message.success('Gambar Berhasil Di Unggah!');
     } catch (e) {
-      console.log(e, "ini catch e");
+      console.log(e, 'ini catch e');
       // setTimeout(message.eror("Gambar Gagal Di Unggah"))
     }
-  }
+  };
 
   const handleDelete = (key: string) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -393,7 +385,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={ <img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }}/>}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
           </span>
         );
@@ -543,7 +535,9 @@ const Page: React.FC = () => {
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           placeholder="Nama Barang"
                           value={createBarang.nama}
-                          onChange={(e) => setcreateBarang({...createBarang, nama: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, nama: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -558,7 +552,9 @@ const Page: React.FC = () => {
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           prefix="Rp"
                           value={createBarang.harga}
-                          onChange={(e) => setcreateBarang({...createBarang, harga: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, harga: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -574,7 +570,9 @@ const Page: React.FC = () => {
                           rows={4}
                           placeholder="Deskripsi Barang"
                           // value={createBarang.deskripsi}
-                          onChange={(e) => setcreateBarang({...createBarang, deskripsi: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, deskripsi: e.target.value })
+                          }
                           // onChange={(e) => console.log(e.target.value, "deskripsi")}
                         />
                       </Col>
@@ -590,7 +588,7 @@ const Page: React.FC = () => {
                   <Col>
                     <Upload
                       listType="picture"
-                      beforeUpload={ () => false }
+                      beforeUpload={() => false}
                       onChange={(args) => handleChange(args)}
                     >
                       <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
@@ -1102,7 +1100,7 @@ const Page: React.FC = () => {
                     width: 240,
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',   
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                   }}
                   cover={
                     <div

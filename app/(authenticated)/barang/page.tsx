@@ -34,6 +34,7 @@ import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
 import { ruanganRepository } from '#/repository/ruangan';
+import { barangRepository } from '#/repository/barang';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -157,7 +158,7 @@ const Page: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
+  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'listRuanganBarang');
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -331,27 +332,18 @@ const Page: React.FC = () => {
       title: 'Kode Barang',
       dataIndex: 'kode',
       editable: true,
-      render: (_, record) => {
-        console.log(record);
-        return record.barang.kode;
-      },
     },
     {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: true,
-      render: (_, record) => {
-        console.log(record);
-        return record.barang.nama;
-      },
     },
     {
       title: 'Letak Barang',
       dataIndex: 'Letak_Barang',
       editable: true,
       render: (_, record) => {
-        console.log(record);
-        return record.ruangan.Letak_Barang;
+        return record.ruanganBarang?.ruangan?.Letak_Barang;
       },
     },
     {
@@ -416,7 +408,12 @@ const Page: React.FC = () => {
                 onSearch={(value) => handleSearch(value)}
                 style={{ width: 300, marginRight: '400px' }}
               />
-              <Dropdown overlay={menu1} placement="bottomLeft">
+              <Dropdown
+                overlay={menu1}
+                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
+                visible={openDropdown}
+                onVisibleChange={setOpenDropdown}
+              >
                 <Button
                   style={{
                     backgroundColor: 'white',
@@ -424,8 +421,10 @@ const Page: React.FC = () => {
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',
-                    fontFamily,
+                    fontFamily: 'inherit',
+                    marginLeft: '10px', // Margin here
                   }}
+                  onClick={handleDropdownClick}
                 >
                   Letak Barang{' '}
                   {openDropdown ? (

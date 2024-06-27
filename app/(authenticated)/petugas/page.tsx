@@ -134,6 +134,12 @@ interface DataType {
   telp: string;
   nip: string;
 }
+interface createBarang {
+  nama: string;
+  nip: string;
+  telp: string;
+  namaPengguna: string;
+}
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
@@ -146,7 +152,7 @@ const Page: React.FC = () => {
   const [namaPengguna, setNamaPengguna] = useState('');
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [createBarang, setcreateBarang] = useState<createBarang>({nama:"", nip:"", telp:"", namaPengguna: ""});
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -193,29 +199,23 @@ const Page: React.FC = () => {
       item.nip.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleChange = (info: any) => {
-    let fileList = [...info.fileList];
+  // const handleChange = async (args: any) => {
+  //   const file = args.file;
 
-    // Limit to one file
-    fileList = fileList.slice(-1);
-
-    // Handle upload status
-    fileList = fileList.map((file) => {
-      if (file.response) {
-        // Handle server response
-        if (file.response.status === 'success') {
-          file.url = file.response.url; // Set URL if upload is successful
-        } else {
-          // Show error message if upload fails
-          message.error(`${file.name} upload failed: ${file.response.message}`);
-          fileList = [];
-        }
-      }
-      return file;
-    });
-
-    setFileList(fileList);
-  };
+  //   try {
+  //     const createBarang = { file };
+  //     const processUpload = await barangRepository.api.uploadBarang(file);
+  //     setcreateBarang((createBarang) => ({
+  //       ...createBarang,
+  //       gambar: processUpload?.body?.data?.filename
+  //     }));
+  //     console.log(processUpload, "create");
+  //     message.success("Gambar Berhasil Di Unggah!")
+  //   } catch (e) {
+  //     console.log(e, "ini catch e");
+  //     // setTimeout(message.eror("Gambar Gagal Di Unggah"))
+  //   }
+  // }
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -433,7 +433,7 @@ const Page: React.FC = () => {
           title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px'}}>Buat Akun Petugas</div>}
           style={{ textAlign: 'center' }}
           centered
-          width={1100}
+          width={1000}
           visible={modalVisible}
           onCancel={handleModalCancel}
           footer={null}
@@ -447,7 +447,7 @@ const Page: React.FC = () => {
 
         <div style={{ marginTop: '90px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
-                <Col push={2} span={10}>
+                <Col push={1} span={10}>
                   <Form.Item
                     label="Nama"
                     name="nama"
@@ -487,13 +487,11 @@ const Page: React.FC = () => {
                   </Form.Item>
                   <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
-                      fileList={fileList}
-                      onChange={handleChange}
-                      style={{ width: '100%' }}
+                      beforeUpload={ () => false }
+                      // onChange={(args) => handleChange(args)}
                     >
-                      <Button style={{ top: '-30px', marginRight: '90px'}} icon={<UploadOutlined />}>Unggah</Button>
+                      <Button style={{ top: '-30px', marginRight: '50px'}} icon={<UploadOutlined />}>Unggah</Button>
                     </Upload>
                   </Form.Item>
                 </Col>

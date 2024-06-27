@@ -33,12 +33,9 @@ import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
-<<<<<<< HEAD
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
-=======
-import { ruanganRepository } from '#/repository/ruangan';
->>>>>>> 2579050f441063e78c3e9b907d99cd49a5d16678
+
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -173,8 +170,6 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
-  console.log(listRuanganBarang, 'listRuanganBarang');
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -188,9 +183,9 @@ const Page: React.FC = () => {
 
   const menu1 = (
     <Menu>
-      {listRuangan?.data?.map((item) => {
-        return <Menu.Item key={item?.id}>{item?.Letak_Barang} </Menu.Item>;
-      })}
+      <Menu.Item key="1">RPL</Menu.Item>
+      <Menu.Item key="2">TKJ</Menu.Item>
+      <Menu.Item key="3">TBSM</Menu.Item>
     </Menu>
   );
 
@@ -281,23 +276,25 @@ const Page: React.FC = () => {
         nama: values.nama,
         harga: values.harga,
         deskripsi: values.deskripsi,
-        gambar: values.gambar,
+        gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
+        kondisi: "baik",
       };
-      const request = await barangRepository.api.barang({...createBarang, kondisi: "baik", jumlah: "0"});
+      const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
-
+        message.success("Data berhasil disimpan!");
       }
       console.log(request);
-      // Handle form submission here
     } catch (error) {
       console.log(error);
-      message.error('Terjadi kesalahan saat login.');
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -305,8 +302,11 @@ const Page: React.FC = () => {
     try {
       const createBarang = { file };
       const processUpload = await barangRepository.api.uploadBarang(file);
-      setcreateBarang({...createBarang, gambar: processUpload?.body?.data?.filename})
-      console.log(processUpload, "create")
+      setcreateBarang((createBarang) => ({
+        ...createBarang,
+        gambar: processUpload?.body?.data?.filename
+      }));
+      console.log(processUpload, "create");
       message.success("Gambar Berhasil Di Unggah!")
     } catch (e) {
       console.log(e, "ini catch e");

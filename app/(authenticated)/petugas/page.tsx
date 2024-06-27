@@ -15,6 +15,7 @@ import {
   Card,
   Dropdown,
   Menu,
+  Avatar,
 } from 'antd';
 import {
   PlusOutlined,
@@ -288,7 +289,12 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.akun.nama;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            <Avatar src={record.peminjam?.akun?.gambar} />
+            <span style={{ marginLeft: 8 }}>{record.akun.nama}</span>
+          </div>
+        );
       },
     },
     {

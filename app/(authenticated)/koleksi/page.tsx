@@ -49,20 +49,56 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px'}}>Lorem Ipsum</div>
-                  <div style={{ marginBottom: '5px', marginLeft: '20px' }}>RPL</div>
+                  <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
+                  <div style={{ display: 'flex' }}>
+                  {/* Kotak 1 */}
                   <Card
                     style={{
-                      width: '80px',
+                      width: '50px',
                       height: '30px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0px',  // Melancipkan sudut card
                       marginLeft: '20px',
                     }}
                   >
-                    <h4>7</h4>
+                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
                   </Card>
+
+                  {/* Kotak 2 */}
+                  <Card
+                    style={{
+                      width: '60px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <h4 style={{ margin: 0 }}>7</h4>
+                  </Card>
+                  {/* Kotak 3 */}
+                  <Card
+                    style={{
+                      width: '50px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
+                  </Card>
+                </div>
+                  <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  </div>
                 </div>
               </div>
               </Card>
@@ -74,29 +110,65 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   display: 'flex',
                   alignItems: 'center',
                   marginBottom: '20px',
-                  borderRadius: '20px',
+                  borderRadius: '0px',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ backgroundColor: 'rgba(128, 128, 128, 0.5)', padding: '10px', borderRadius: '20px' }}>
-                  <img src="/kk.png" style={{ width: '100px', marginRight: '5px' }} />
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }} />
                 </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
-                  <div style={{ marginBottom: '5px', marginLeft: '20px' }}>RPL</div>
+                  <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
+                  <div style={{ display: 'flex' }}>
+                  {/* Kotak 1 */}
                   <Card
                     style={{
-                      width: '80px',
+                      width: '50px',
                       height: '30px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0px',  // Melancipkan sudut card
                       marginLeft: '20px',
                     }}
                   >
-                    <h4>7</h4>
+                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
                   </Card>
+
+                  {/* Kotak 2 */}
+                  <Card
+                    style={{
+                      width: '60px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <h4 style={{ margin: 0 }}>7</h4>
+                  </Card>
+                  {/* Kotak 3 */}
+                  <Card
+                    style={{
+                      width: '50px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
+                  </Card>
+                </div>
+                  <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  </div>
                 </div>
               </div>
               </Card>
@@ -107,29 +179,65 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   height: '180px',
                   display: 'flex',
                   alignItems: 'center',
-                  borderRadius: '20px',
+                  borderRadius: '0',
                 }}
               >
                <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{ backgroundColor: 'rgba(128, 128, 128, 0.5)', padding: '10px', borderRadius: '20px' }}>
-                  <img src="/kk.png" style={{ width: '100px', marginRight: '5px' }} />
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '5px', marginLeft: '10px' }} />
                 </div>
                 <div>
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
-                  <div style={{ marginBottom: '5px', marginLeft: '20px'  }}>RPL</div>
+                  <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
+                  <div style={{ display: 'flex' }}>
+                  {/* Kotak 1 */}
                   <Card
                     style={{
-                      width: '80px',
+                      width: '50px',
                       height: '30px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0px',  // Melancipkan sudut card
                       marginLeft: '20px',
                     }}
                   >
-                    <h4>7</h4>
+                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
                   </Card>
+
+                  {/* Kotak 2 */}
+                  <Card
+                    style={{
+                      width: '60px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <h4 style={{ margin: 0 }}>7</h4>
+                  </Card>
+                  {/* Kotak 3 */}
+                  <Card
+                    style={{
+                      width: '50px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '0',
+                    }}
+                  >
+                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
+                  </Card>
+                </div>
+                  <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  </div>
                 </div>
               </div>
               </Card>
@@ -149,7 +257,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 }}
               >
                 <div>
-                  <h1>Masukkan Tanggal</h1>
+                  <p style={{ fontSize: '20px' , fontWeight ,marginTop: '-20px', marginBottom: '20px'}}>Masukkan Tanggal</p>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <div

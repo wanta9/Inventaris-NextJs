@@ -15,30 +15,18 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
   const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [status, setStatus] = useState('Pending');
-  const { data: barangById } = barangRepository.hooks.useBarang(params.id);
-  console.log(barangById, 'barang masuk by id');
 
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for phone number:', status);
   };
 
   const fontFamily = 'Barlow, sans-serif';
-  const fontWeight = '500';
+  const fontWeight = '700';
 
   return (
     <div style={{ marginLeft: '50px' }}>
-      <title>Detail Peminjaman</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Koleksi</h1>
-      <Card
-        style={{
-          marginTop: '30px',
-          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          width: '70%',
-          borderRadius: '20px',
-          padding: '20px',
-          // margin: '0 auto',
-        }}
-      >
+      <title>Koleksi</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '20px' }}>Koleksi</h1>
         <div>
           <Row>
             {/* Kolom Kiri dengan 3 Kartu */}
@@ -46,94 +34,104 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
               <Card
                 className="shadow-card"
                 style={{
-                  width: '400px',
-                  height: '150px',
+                  width: '650px',
+                  height: '180px',
                   display: 'flex',
                   alignItems: 'center',
-                  marginBottom: '10px',
+                  marginBottom: '20px',
                   borderRadius: '20px',
+                  marginTop: '40px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
-                  <div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
-                    <div style={{ marginBottom: '5px' }}>RPL</div>
-                    <Card
-                      style={{
-                        width: '80px',
-                        height: '30px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      }}
-                    >
-                      <h4>7</h4>
-                    </Card>
-                  </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ backgroundColor: 'rgba(128, 128, 128, 0.5)', padding: '10px', borderRadius: '20px' }}>
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }} />
                 </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px'}}>Lorem Ipsum</div>
+                  <div style={{ marginBottom: '5px', marginLeft: '20px' }}>RPL</div>
+                  <Card
+                    style={{
+                      width: '80px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <h4>7</h4>
+                  </Card>
+                </div>
+              </div>
               </Card>
               <Card
                 className="shadow-card"
                 style={{
-                  width: '400px',
-                  height: '150px',
+                  width: '650px',
+                  height: '180px',
                   display: 'flex',
                   alignItems: 'center',
-                  marginBottom: '10px',
+                  marginBottom: '20px',
                   borderRadius: '20px',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
-                  <div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
-                    <div style={{ marginBottom: '5px' }}>RPL</div>
-                    <Card
-                      style={{
-                        width: '80px',
-                        height: '30px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      }}
-                    >
-                      <h4>7</h4>
-                    </Card>
-                  </div>
+                <div style={{ backgroundColor: 'rgba(128, 128, 128, 0.5)', padding: '10px', borderRadius: '20px' }}>
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '5px' }} />
                 </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
+                  <div style={{ marginBottom: '5px', marginLeft: '20px' }}>RPL</div>
+                  <Card
+                    style={{
+                      width: '80px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <h4>7</h4>
+                  </Card>
+                </div>
+              </div>
               </Card>
               <Card
                 className="shadow-card"
                 style={{
-                  width: '400px',
-                  height: '150px',
+                  width: '650px',
+                  height: '180px',
                   display: 'flex',
                   alignItems: 'center',
                   borderRadius: '20px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
-                  <div>
-                    <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Lorem Ipsum</div>
-                    <div style={{ marginBottom: '5px' }}>RPL</div>
-                    <Card
-                      style={{
-                        width: '80px',
-                        height: '30px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      }}
-                    >
-                      <h4>7</h4>
-                    </Card>
-                  </div>
+               <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ backgroundColor: 'rgba(128, 128, 128, 0.5)', padding: '10px', borderRadius: '20px' }}>
+                  <img src="/kk.png" style={{ width: '100px', marginRight: '5px' }} />
                 </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
+                  <div style={{ marginBottom: '5px', marginLeft: '20px'  }}>RPL</div>
+                  <Card
+                    style={{
+                      width: '80px',
+                      height: '30px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+                      marginLeft: '20px',
+                    }}
+                  >
+                    <h4>7</h4>
+                  </Card>
+                </div>
+              </div>
               </Card>
             </Col>
             {/* Kolom Kanan dengan 2 Kartu */}
@@ -142,16 +140,17 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '200px',
+                  height: '300px',
                   display: 'flex',
-                  // flexDirection: 'column',
-                  alignItems: 'center',
                   marginBottom: '10px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
                   borderRadius: '20px',
                   padding: '20px',
+                  marginTop: '40px',
                 }}
               >
+                <div>
+                  <h1>Masukkan Tanggal</h1>
+                </div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <div
                     style={{
@@ -162,7 +161,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     }}
                   >
                     <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      style={{ marginRight: '10px', minWidth: '150px', fontFamily }}
                     >
                       Tanggal Peminjaman:
                     </span>
@@ -172,6 +171,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       style={{
                         width: 'calc(100% - 160px)',
                         border: '1px solid rgba(0, 0, 0, .50)',
+                        marginBottom: '10px',
                       }}
                     />
                   </div>
@@ -184,7 +184,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     }}
                   >
                     <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      style={{ marginRight: '10px', minWidth: '150px', fontFamily }}
                     >
                       Tanggal Pengembalian:
                     </span>
@@ -197,114 +197,14 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       }}
                     />
                   </div>
-                  <div
-                    style={{
-                      marginBottom: '10px',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                    >
-                      Tanggal Dikembalikan:
-                    </span>
-                    <DatePicker
-                      placeholder="Tanggal Dikembalikan"
-                      onChange={(date: Date | null) => setReturnedDate(date)}
-                      style={{
-                        width: 'calc(100% - 160px)',
-                        border: '1px solid rgba(0, 0, 0, .50)',
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      marginBottom: '10px',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                    >
-                      Status
-                    </span>
-                    <Button
-                      style={{
-                        color: '#5BFF00',
-                        backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                        borderColor: '#A2E181',
-                      }}
-                      // type="primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (barangById?.data?.Status) {
-                          handleButtonClick(barangById?.data?.Status);
-                        }
-                      }}
-                    >
-                      {barangById?.data?.Status}
-                    </Button>
-                  </div>
                 </div>
-              </Card>
-
-              <Card
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '200px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '10px',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                }}
-              >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
-                    Data Peminjam
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>RonyWjy</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>Rony Wijaya</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>222310404</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>08588828xxx</div>
-                  </div>
-                </div>
+                <Button style={{ width: '140px', height: '45px', backgroundColor: '#582DD2', color: 'white', marginTop: '30px', marginLeft: '90px'}}>
+                  <p style={{ fontSize: '20px', fontWeight, fontFamily }}>Pinjam</p>
+                </Button>
               </Card>
             </Col>
           </Row>
         </div>
-      </Card>
     </div>
   );
 };

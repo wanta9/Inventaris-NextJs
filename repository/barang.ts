@@ -24,6 +24,9 @@ const url = {
   getBarang() {
     return `/barang`;
   },
+  uploadBarang() {
+    return `/upload/barang`
+  }
 };
 
 const hooks = {
@@ -36,6 +39,11 @@ const api = {
   barang(data: any) {
     return http.post(url.getBarang()).send(data);
   },
+  uploadBarang(data: any) {
+    const formData = new FormData();
+    formData.append("foto", data);
+    return http.post(url.uploadBarang()).send(formData);
+  }
 };
 
 export const barangRepository = {

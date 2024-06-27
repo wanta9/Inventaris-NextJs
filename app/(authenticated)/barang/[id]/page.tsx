@@ -235,7 +235,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col
               push={1}
               span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '20px' }}
+              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
             >
               Deskripsi
             </Col>
@@ -267,7 +267,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             >
               <Button
                 style={{
-                  marginTop: '30px',
+                  marginTop: '40px',
                   backgroundColor: '#582DD2',
                   color: 'white',
                   width: '10%',
@@ -277,7 +277,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               >
                 <a
                   href="http://localhost:3002/barang"
-                  style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
+                  style={{ fontSize: '15px', fontWeight }}
                 >
                   Pinjam
                 </a>

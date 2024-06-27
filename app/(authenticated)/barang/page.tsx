@@ -33,14 +33,27 @@ import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
+<<<<<<< HEAD
 import { ruanganRepository } from '#/repository/ruangan';
 import { barangRepository } from '#/repository/barang';
+=======
+import { barangRepository } from '#/repository/barang';
+import { argv } from 'process';
+
+>>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
 
 const { Search } = Input;
 const { Item } = Menu;
 const { Option } = Select;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
+
+interface createBarang {
+  nama: string;
+  harga: string;
+  deskripsi: string;
+  gambar: string;
+}
 
 interface Item {
   key: string;
@@ -149,6 +162,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [letakBarangVisible, setLetakBarangVisible] = useState(false);
   const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
+  const [createBarang, setcreateBarang] = useState<createBarang>({nama:"", harga:"", deskripsi:"", gambar: ""});
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
   const [namaBarang, setNamaBarang] = useState('');
@@ -157,10 +171,16 @@ const Page: React.FC = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
+<<<<<<< HEAD
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'listRuanganBarang');
+=======
+  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
+>>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -174,9 +194,9 @@ const Page: React.FC = () => {
 
   const menu1 = (
     <Menu>
-      {listRuangan?.data?.map((item) => {
-        return <Menu.Item key={item?.id}>{item?.Letak_Barang} </Menu.Item>;
-      })}
+      <Menu.Item key="1">RPL</Menu.Item>
+      <Menu.Item key="2">TKJ</Menu.Item>
+      <Menu.Item key="3">TBSM</Menu.Item>
     </Menu>
   );
 
@@ -258,42 +278,52 @@ const Page: React.FC = () => {
     setDeskripsi('');
   };
 
-  const handleSaveModalData = () => {
-    if (!namaBarang || !harga || !deskripsi || !letakBarang) {
-      message.error('Semua kolom harus diisi.');
-      return;
-    }
-
-    if (editData) {
-      const newData = dataSource.map((item) => {
-        if (item.key === editData.key) {
-          return { ...item, kodeBarang, namaBarang, letakBarang, harga, deskripsi };
-        }
-        return item;
-      });
-      setDataSource(newData);
-      setModalEditVisible(false);
-      setEditData(null);
-    } else {
-      const newData: Item = {
-        key: count.toString(),
-        kodeBarang,
-        namaBarang,
-        letakBarang,
-        harga,
-        deskripsi,
+  const handleSaveModalData = async (values: any) => {
+    console.log('Received values of form: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        nama: values.nama,
+        harga: values.harga,
+        deskripsi: values.deskripsi,
+        gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
+        kondisi: "baik",
       };
-      setDataSource([...dataSource, newData]);
-      setCount(count + 1);
-      setModalVisible(false);
+      const request = await barangRepository.api.barang(data);
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success("Data berhasil disimpan!");
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+    } finally {
+      setLoading(false);
     }
-
-    // Reset state setelah menyimpan data
-    setNamaBarang('');
-    setharga('');
-    setDeskripsi('');
-    setLetakBarang('');
   };
+  
+
+  const handleChange = async (args: any) => {
+    const file = args.file;
+
+    try {
+      const createBarang = { file };
+      const processUpload = await barangRepository.api.uploadBarang(file);
+      setcreateBarang((createBarang) => ({
+        ...createBarang,
+        gambar: processUpload?.body?.data?.filename
+      }));
+      console.log(processUpload, "create");
+      message.success("Gambar Berhasil Di Unggah!")
+    } catch (e) {
+      console.log(e, "ini catch e");
+      // setTimeout(message.eror("Gambar Gagal Di Unggah"))
+    }
+  }
 
   const handleDelete = (key: string) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -363,23 +393,8 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<EditOutlined style={{ color: 'black' }} />}
+              icon={ <img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }}/>}
             />
-            <Popconfirm
-              title="Hapus Barang"
-              onConfirm={() => handleDelete(record.key)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
-              onCancel={(e) => {
-                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-              }}
-            >
-              <Button
-                type="link"
-                onClick={(e) => {
-                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                }}
-                icon={<DeleteOutlined style={{ color: 'black' }} />}
-              />
-            </Popconfirm>
           </span>
         );
       },
@@ -527,8 +542,8 @@ const Page: React.FC = () => {
                         <Input
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
+                          value={createBarang.nama}
+                          onChange={(e) => setcreateBarang({...createBarang, nama: e.target.value})}
                         />
                       </Col>
                     </Row>
@@ -542,8 +557,8 @@ const Page: React.FC = () => {
                         <Input
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           prefix="Rp"
-                          value={harga}
-                          onChange={handleHargaChange}
+                          value={createBarang.harga}
+                          onChange={(e) => setcreateBarang({...createBarang, harga: e.target.value})}
                         />
                       </Col>
                     </Row>
@@ -558,8 +573,9 @@ const Page: React.FC = () => {
                           style={{ marginBottom: '12px', width: '75%', height: '50%' }}
                           rows={4}
                           placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
+                          // value={createBarang.deskripsi}
+                          onChange={(e) => setcreateBarang({...createBarang, deskripsi: e.target.value})}
+                          // onChange={(e) => console.log(e.target.value, "deskripsi")}
                         />
                       </Col>
                     </Row>
@@ -573,8 +589,9 @@ const Page: React.FC = () => {
                   </Col>
                   <Col>
                     <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
+                      beforeUpload={ () => false }
+                      onChange={(args) => handleChange(args)}
                     >
                       <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
                         Unggah
@@ -631,7 +648,7 @@ const Page: React.FC = () => {
                       </Col>
                       <Col span={18}>
                         <Input
-                          style={{ marginBottom: '12px', width: '100%', height: '40px' }}
+                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           placeholder="Nama Barang"
                           value={namaBarang}
                           onChange={(e) => setNamaBarang(e.target.value)}
@@ -646,8 +663,8 @@ const Page: React.FC = () => {
                       </Col>
                       <Col span={18}>
                         <Input
-                          style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                          addonBefore="Rp"
+                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                          prefix="Rp"
                           value={harga}
                           placeholder="harga"
                           onChange={handleHargaChange}
@@ -662,7 +679,7 @@ const Page: React.FC = () => {
                       </Col>
                       <Col span={18}>
                         <Input.TextArea
-                          style={{ marginBottom: '12px', width: '100%', height: '80px' }}
+                          style={{ marginBottom: '12px', width: '75%', height: '80px' }}
                           placeholder="Deskripsi Barang"
                           value={deskripsi}
                           onChange={(e) => setDeskripsi(e.target.value)}
@@ -1085,7 +1102,7 @@ const Page: React.FC = () => {
                     width: 240,
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',   
                   }}
                   cover={
                     <div

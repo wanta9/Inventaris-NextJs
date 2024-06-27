@@ -146,6 +146,7 @@ const riwayatditolak = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <div
                     style={{
+                      marginTop: '10px',
                       marginBottom: '10px',
                       width: '100%',
                       display: 'flex',
@@ -230,12 +231,6 @@ const riwayatditolak = () => {
                         borderColor: '#A2E181',
                       }}
                       // type="primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (barangById?.data?.Status) {
-                          handleButtonClick(barangById?.data?.Status);
-                        }
-                      }}
                     >
                       tes
                     </Button>
@@ -257,7 +252,7 @@ const riwayatditolak = () => {
                   border: '1px solid rgba(0, 0, 0, .95)',
                 }}
               >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '10px' }}>
                   <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
                     Data Peminjam
                   </div>

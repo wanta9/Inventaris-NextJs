@@ -6,6 +6,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
 
 const { Option } = Select;
 
@@ -13,7 +14,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const router = useRouter();
-  const { data: ruanganBarangById } = ruanganBarangRepository.hooks.useRuanganBarangById(params.id);
+  const { data: ruanganBarangById } = barangRepository.hooks.useBarangById(params.id);
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
@@ -100,38 +101,30 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     Kode Barang
                   </Col>
                   <Col span={2}>:</Col>
-                  <Col span={5}>{ruanganBarangById?.data?.barang?.kode}</Col>
+                  <Col span={5}>{ruanganBarangById?.data?.kode}</Col>
                 </Row>
               )}
-
-              <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
-                <Col span={9} style={{ fontWeight }}>
-                  Kode Barang
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.kode}</Col>
-              </Row>
 
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
                   Nama Barang
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.harga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
                   Stok Keseluruhan
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
               </Row>
               <Row style={{ marginBottom: '100px' }}>
                 <Col span={24}>
@@ -172,7 +165,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 whiteSpace: 'pre-wrap',
               }}
             >
-              {ruanganBarangById?.data?.barang?.deskripsi}
+              {ruanganBarangById?.data?.deskripsi}
             </Col>
           </Row>
         </Card>
@@ -275,10 +268,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   borderRadius: '10px',
                 }}
               >
-                <a
-                  href="http://localhost:3002/barang"
-                  style={{ fontSize: '15px', fontWeight }}
-                >
+                <a href="http://localhost:3002/barang" style={{ fontSize: '15px', fontWeight }}>
                   Pinjam
                 </a>
               </Button>

@@ -35,6 +35,7 @@ import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
+import { ruanganRepository } from '#/repository/ruangan';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -174,6 +175,9 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  console.log(listRuangan, 'list ruangan');
+
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -187,9 +191,9 @@ const Page: React.FC = () => {
 
   const menu1 = (
     <Menu>
-      <Menu.Item key="1">RPL</Menu.Item>
-      <Menu.Item key="2">TKJ</Menu.Item>
-      <Menu.Item key="3">TBSM</Menu.Item>
+      {listRuangan?.data?.map((ruangan) => (
+        <Menu.Item key={ruangan.id}>{ruangan.Letak_Barang}</Menu.Item>
+      ))}
     </Menu>
   );
 
@@ -277,11 +281,12 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
-        nama: values.nama,
-        harga: values.harga,
-        deskripsi: values.deskripsi,
+        nama: createBarang.nama,
+        harga: createBarang.harga,
+        deskripsi: createBarang.deskripsi,
         gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
         kondisi: 'baik',
+        jumlah: 0,
       };
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
@@ -365,7 +370,10 @@ const Page: React.FC = () => {
       dataIndex: 'Letak_Barang',
       editable: true,
       render: (_, record) => {
-        return record.ruanganBarang?.ruangan?.Letak_Barang;
+        if (record.ruanganBarang && record.ruanganBarang.length > 0) {
+          return record.ruanganBarang[0].ruangan.Letak_Barang;
+        }
+        return null;
       },
     },
     {

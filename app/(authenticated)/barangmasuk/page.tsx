@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { Console } from 'console';
 import { akunRepository } from '#/repository/akun';
+import { ruanganRepository } from '#/repository/ruangan';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -130,6 +131,7 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listBarangMasuk, 'listBarangMasuk');
   const router = useRouter();
@@ -440,9 +442,11 @@ const Page: React.FC = () => {
                   placeholder="Pilih Ruangan"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  <Option value="ruangan1">TKJ</Option>
-                  <Option value="ruangan2">RPL</Option>
-                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+                  {listRuangan?.data?.map((ruangan) => (
+                    <Option key={ruangan.id} value={ruangan.id}>
+                      {ruangan.Letak_Barang}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item

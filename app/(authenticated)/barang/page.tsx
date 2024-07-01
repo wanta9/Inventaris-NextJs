@@ -35,7 +35,11 @@ import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
+<<<<<<< HEAD
 
+=======
+import { ruanganRepository } from '#/repository/ruangan';
+>>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -157,7 +161,12 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [letakBarangVisible, setLetakBarangVisible] = useState(false);
   const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
-  const [createBarang, setcreateBarang] = useState<createBarang>({nama:"", harga:"", deskripsi:"", gambar: ""});
+  const [createBarang, setcreateBarang] = useState<createBarang>({
+    nama: '',
+    harga: '',
+    deskripsi: '',
+    gambar: '',
+  });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
   const [namaBarang, setNamaBarang] = useState('');
@@ -169,7 +178,14 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
+<<<<<<< HEAD
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
+=======
+  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  console.log(listRuanganBarang, 'list ruangan');
+
+>>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -183,9 +199,9 @@ const Page: React.FC = () => {
 
   const menu1 = (
     <Menu>
-      <Menu.Item key="1">RPL</Menu.Item>
-      <Menu.Item key="2">TKJ</Menu.Item>
-      <Menu.Item key="3">TBSM</Menu.Item>
+      {listRuangan?.data?.map((ruangan) => (
+        <Menu.Item key={ruangan.id}>{ruangan.Letak_Barang}</Menu.Item>
+      ))}
     </Menu>
   );
 
@@ -276,14 +292,20 @@ const Page: React.FC = () => {
         nama: createBarang.nama,
         harga: createBarang.harga,
         deskripsi: createBarang.deskripsi,
+<<<<<<< HEAD
         gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
         kondisi: "baik",
+=======
+        gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
+        kondisi: 'baik',
+        jumlah: 0,
+>>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
       };
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
-        message.success("Data berhasil disimpan!");
+        message.success('Data berhasil disimpan!');
       }
       console.log(request);
     } catch (error) {
@@ -294,7 +316,6 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -302,14 +323,23 @@ const Page: React.FC = () => {
     try {
       const createBarang = { file };
       const processUpload = await barangRepository.api.uploadBarang(file);
+<<<<<<< HEAD
       setcreateBarang((createBarang) => ({...createBarang,gambar: processUpload?.body?.data?.filenameS}));
       console.log(processUpload, "create");
       message.success("Gambar Berhasil Di Unggah!")
+=======
+      setcreateBarang((createBarang) => ({
+        ...createBarang,
+        gambar: processUpload?.body?.data?.filename,
+      }));
+      console.log(processUpload, 'create');
+      message.success('Gambar Berhasil Di Unggah!');
+>>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
     } catch (e) {
-      console.log(e, "ini catch e");
+      console.log(e, 'ini catch e');
       // setTimeout(message.eror("Gambar Gagal Di Unggah"))
     }
-  }
+  };
 
   const handleDelete = (key: string) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -359,7 +389,10 @@ const Page: React.FC = () => {
       dataIndex: 'Letak_Barang',
       editable: true,
       render: (_, record) => {
-        return record.ruanganBarang?.ruangan?.Letak_Barang;
+        if (record.ruanganBarang && record.ruanganBarang.length > 0) {
+          return record.ruanganBarang[0].ruangan.Letak_Barang;
+        }
+        return null;
       },
     },
     {
@@ -379,7 +412,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={ <img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }}/>}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
           </span>
         );
@@ -529,7 +562,9 @@ const Page: React.FC = () => {
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           placeholder="Nama Barang"
                           value={createBarang.nama}
-                          onChange={(e) => setcreateBarang({...createBarang, nama: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, nama: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -544,7 +579,9 @@ const Page: React.FC = () => {
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           prefix="Rp"
                           value={createBarang.harga}
-                          onChange={(e) => setcreateBarang({...createBarang, harga: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, harga: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -560,7 +597,9 @@ const Page: React.FC = () => {
                           rows={4}
                           placeholder="Deskripsi Barang"
                           // value={createBarang.deskripsi}
-                          onChange={(e) => setcreateBarang({...createBarang, deskripsi: e.target.value})}
+                          onChange={(e) =>
+                            setcreateBarang({ ...createBarang, deskripsi: e.target.value })
+                          }
                           // onChange={(e) => console.log(e.target.value, "deskripsi")}
                         />
                       </Col>
@@ -576,7 +615,7 @@ const Page: React.FC = () => {
                   <Col>
                     <Upload
                       listType="picture"
-                      beforeUpload={ () => false }
+                      beforeUpload={() => false}
                       onChange={(args) => handleChange(args)}
                     >
                       <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
@@ -1088,7 +1127,7 @@ const Page: React.FC = () => {
                     width: 240,
                     borderRadius: '12px',
                     overflow: 'hidden',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',   
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                   }}
                   cover={
                     <div

@@ -23,6 +23,8 @@ import { useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
 import { Console } from 'console';
 import { akunRepository } from '#/repository/akun';
+import { ruanganRepository } from '#/repository/ruangan';
+import { barangRepository } from '#/repository/barang';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -130,6 +132,9 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  const { data: listBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listBarangMasuk, 'listBarangMasuk');
   const router = useRouter();
@@ -392,10 +397,13 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
               >
-                <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
-                  {dataSource.map((item) => (
-                    <Option key={item.id} value={item.kodeBarang}>
-                      {`${item.kodeBarang} - ${item.namaBarang}`}
+                <Select
+                  placeholder="Pilih Kode Barang"
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                >
+                  {listBarang?.data?.map((barang) => (
+                    <Option key={barang.id} value={barang.id}>
+                      {barang.kode}
                     </Option>
                   ))}
                 </Select>
@@ -440,9 +448,11 @@ const Page: React.FC = () => {
                   placeholder="Pilih Ruangan"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  <Option value="ruangan1">TKJ</Option>
-                  <Option value="ruangan2">RPL</Option>
-                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+                  {listRuangan?.data?.map((ruangan) => (
+                    <Option key={ruangan.id} value={ruangan.id}>
+                      {ruangan.Letak_Barang}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item

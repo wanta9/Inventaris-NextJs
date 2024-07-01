@@ -152,7 +152,12 @@ const Page: React.FC = () => {
   const [namaPengguna, setNamaPengguna] = useState('');
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
-  const [createBarang, setcreateBarang] = useState<createBarang>({nama:"", nip:"", telp:"", namaPengguna: ""});
+  const [createBarang, setcreateBarang] = useState<createBarang>({
+    nama: '',
+    nip: '',
+    telp: '',
+    namaPengguna: '',
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -162,7 +167,6 @@ const Page: React.FC = () => {
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
-
 
   const router = useRouter();
 
@@ -240,7 +244,13 @@ const Page: React.FC = () => {
           // Jika dalam mode edit, update data yang ada
           const newData = dataSource.map((item) =>
             item.id === editData.id
-              ? { ...item, name: values.nama, username: values.namaPengguna, telp: values.telp, nip: values.nip }
+              ? {
+                  ...item,
+                  name: values.nama,
+                  username: values.namaPengguna,
+                  telp: values.telp,
+                  nip: values.nip,
+                }
               : item
           );
           setDataSource(newData);
@@ -267,7 +277,7 @@ const Page: React.FC = () => {
         console.error('Validation failed:', error);
       });
   };
-  
+
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
@@ -290,8 +300,8 @@ const Page: React.FC = () => {
       editable: true,
       render: (_, record) => {
         return (
-          <div style={{ display: 'flex', alignItems: 'center'}}>
-            <Avatar src={record.peminjam?.akun?.gambar} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar src={record.akun?.gambar} />
             <span style={{ marginLeft: 8 }}>{record.akun.nama}</span>
           </div>
         );
@@ -327,33 +337,33 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
-      <Button
-        type="link"
-        onClick={(e) => {
-          e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-        }}
-        icon={ <img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }}/>}
-      />
-       <Popconfirm
-        title="Hapus Barang"
-        onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
-        onCancel={(e) => {
-          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-        }}
-      >
-        <Button
-          type="link"
-          onClick={(e) => {
-            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          }}
-          icon={ <img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }}/>}
-        />
-      </Popconfirm>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+            <Popconfirm
+              title="Hapus Barang"
+              onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
+              onCancel={(e) => {
+                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+              }}
+            >
+              <Button
+                type="link"
+                onClick={(e) => {
+                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                }}
+                icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+              />
+            </Popconfirm>
           </span>
         );
       },
-    }, 
+    },
   ];
 
   const columns = defaultColumns.map((col) => {
@@ -430,7 +440,11 @@ const Page: React.FC = () => {
           style={{ marginTop: '30px' }}
         />
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px'}}>Buat Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Buat Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           centered
           width={1000}
@@ -439,23 +453,35 @@ const Page: React.FC = () => {
           footer={null}
         >
           <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSaveModalData}
-          initialValues={{ nama: '', nip: '', telp: '', namaPengguna: '', sandi: '', konfirmasiSandi: '' }}
-        >
-
-        <div style={{ marginTop: '90px', marginRight: '70px' }}>
+            form={form}
+            layout="vertical"
+            onFinish={handleSaveModalData}
+            initialValues={{
+              nama: '',
+              nip: '',
+              telp: '',
+              namaPengguna: '',
+              sandi: '',
+              konfirmasiSandi: '',
+            }}
+          >
+            <div style={{ marginTop: '90px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
                 <Col push={1} span={10}>
                   <Form.Item
                     label="Nama"
                     name="nama"
                     rules={[{ required: true, message: 'Nama harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="Nama"
                       onChange={(e) => setNama(e.target.value)}
                     />
@@ -464,10 +490,16 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nip"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="NIP"
                       onChange={(e) => setNIP(e.target.value)}
                     />
@@ -476,10 +508,16 @@ const Page: React.FC = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px'}}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="Telp"
                       onChange={(e) => setTelp(e.target.value)}
                       maxLength={12}
@@ -488,10 +526,15 @@ const Page: React.FC = () => {
                   <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
                       listType="picture"
-                      beforeUpload={ () => false }
+                      beforeUpload={() => false}
                       // onChange={(args) => handleChange(args)}
                     >
-                      <Button style={{ top: '-30px', marginRight: '50px'}} icon={<UploadOutlined />}>Unggah</Button>
+                      <Button
+                        style={{ top: '-30px', marginRight: '50px' }}
+                        icon={<UploadOutlined />}
+                      >
+                        Unggah
+                      </Button>
                     </Upload>
                   </Form.Item>
                 </Col>
@@ -500,10 +543,16 @@ const Page: React.FC = () => {
                     label="Nama Pengguna"
                     name="namaPengguna"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                   style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Nama Pengguna"
                       onChange={(e) => setNamaPengguna(e.target.value)}
                     />
@@ -512,10 +561,16 @@ const Page: React.FC = () => {
                     label="Sandi"
                     name="sandi"
                     rules={[{ required: true, message: 'Sandi harus di isi' }]}
-                   style={{ fontWeight , fontFamily, marginBottom: '-10px'}}
-                  > 
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input.Password
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Sandi"
                       onChange={(e) => setSandi(e.target.value)}
                     />
@@ -523,7 +578,7 @@ const Page: React.FC = () => {
                   <Form.Item
                     label="Konfirmasi Sandi"
                     name="konfirmasiSandi"
-                    style={{ fontWeight , fontFamily }}
+                    style={{ fontWeight, fontFamily }}
                     rules={[
                       { required: true, message: 'Konfirmasi Sandi harus di isi' },
                       ({ getFieldValue }) => ({
@@ -531,13 +586,21 @@ const Page: React.FC = () => {
                           if (!value || getFieldValue('sandi') === value) {
                             return Promise.resolve();
                           }
-                          return Promise.reject(new Error('Konfirmasi Sandi harus sama dengan Sandi.'));
+                          return Promise.reject(
+                            new Error('Konfirmasi Sandi harus sama dengan Sandi.')
+                          );
                         },
                       }),
                     ]}
                   >
                     <Input.Password
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Konfirmasi Sandi"
                       onChange={(e) => setKonfirmasiSandi(e.target.value)}
                     />
@@ -550,7 +613,14 @@ const Page: React.FC = () => {
                 <Button
                   key="cancel"
                   onClick={handleModalCancel}
-                  style={{ width: '100px', height: '35px', backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
                 >
                   Batal
                 </Button>
@@ -558,7 +628,14 @@ const Page: React.FC = () => {
                   key="save"
                   type="primary"
                   htmlType="submit"
-                  style={{ width: '100px', height: '35px',backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2', marginRight: '50px' }}
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: '#582DD2',
+                    color: 'white',
+                    borderColor: '#582DD2',
+                    marginRight: '50px',
+                  }}
                 >
                   Simpan
                 </Button>
@@ -635,16 +712,16 @@ const Page: React.FC = () => {
                 <Button
                   key="cancel"
                   onClick={handleModalCancel}
-                  style={{ backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                  style={{
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
                 >
                   Batal
                 </Button>
-                <Button
-                  key="save"
-                  type="primary"
-                  htmlType="submit"
-                  style={{ marginRight: '27px' }}
-                >
+                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '27px' }}>
                   Simpan
                 </Button>
               </div>

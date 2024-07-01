@@ -244,7 +244,7 @@ const Page: React.FC = () => {
 
   // const handleChange = async (args: any) => {
   //   const file = args.file;
-  
+
   //   try {
   //     const processUpload = await barangMasukRepository.api.barangMasuk(file);
   //     setcreatebarangMasuk((createbarangMasuk) => ({
@@ -260,7 +260,6 @@ const Page: React.FC = () => {
   //     message.error('Gambar Gagal Di Unggah!');
   //   }
   // };
-  
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
@@ -427,7 +426,7 @@ const Page: React.FC = () => {
                   placeholder="Pilih Kode Barang"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  {listBarang?.data?.map((barang:any) => (
+                  {listBarang?.data?.map((barang: any) => (
                     <Option key={barang.id} value={barang.id}>
                       {barang.kode}
                     </Option>
@@ -443,8 +442,12 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
-                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} 
-                 value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk) : null}
+                <DatePicker
+                  placeholder="Tanggal Masuk"
+                  style={{ width: '100%', height: '40px' }}
+                  value={
+                    createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk) : null
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -456,8 +459,10 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
-                 value={createbarangMasuk.jumlah}
+                <Input
+                  placeholder="Jumlah"
+                  style={{ width: '100%', height: '40px' }}
+                  value={createbarangMasuk.jumlah}
                 />
               </Form.Item>
             </div>
@@ -491,9 +496,7 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} 
-                 value={createbarangMasuk.keterangan}
-                />
+                <TextArea rows={4} style={{ width: '100%' }} value={createbarangMasuk.keterangan} />
               </Form.Item>
             </div>
           </div>

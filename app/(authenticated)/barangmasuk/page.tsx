@@ -45,8 +45,6 @@ interface Item {
   tanggalMasuk: string;
 }
 interface createbarangMasuk {
-  nama: string;
-  harga: string;
   jumlah: string;
   keterangan: string;
   tanggalMasuk: string;
@@ -139,8 +137,6 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const [createbarangMasuk, setcreatebarangMasuk] = useState<createbarangMasuk>({
-    nama: '',
-    harga: '',
     keterangan: '',
     jumlah: '',
     tanggalMasuk: '',
@@ -226,9 +222,7 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
-        nama: createbarangMasuk.nama,
-        harga: createbarangMasuk.harga,
-        deskripsi: createbarangMasuk.keterangan,
+        keterangan: createbarangMasuk.keterangan,
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,
       };
@@ -248,24 +242,24 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleChange = async (args: any) => {
-    const file = args.file;
+  // const handleChange = async (args: any) => {
+  //   const file = args.file;
   
-    try {
-      const processUpload = await barangMasukRepository.api.barangMasuk(file);
-      setcreatebarangMasuk((createbarangMasuk) => ({
-        ...createbarangMasuk,
-        tanggalMasuk: createbarangMasuk.tanggalMasuk, // Jika sudah ada nilainya di state
-        jumlah: createbarangMasuk.jumlah,             // Jika sudah ada nilainya di state
-        keterangan: createbarangMasuk.keterangan      // Jika sudah ada nilainya di state
-      }));
-      console.log(processUpload, 'create');
-      message.success('Gambar Berhasil Di Unggah!');
-    } catch (e) {
-      console.log(e, 'ini catch e');
-      message.error('Gambar Gagal Di Unggah!');
-    }
-  };
+  //   try {
+  //     const processUpload = await barangMasukRepository.api.barangMasuk(file);
+  //     setcreatebarangMasuk((createbarangMasuk) => ({
+  //       ...createbarangMasuk,
+  //       tanggalMasuk: createbarangMasuk.tanggalMasuk, // Jika sudah ada nilainya di state
+  //       jumlah: createbarangMasuk.jumlah,             // Jika sudah ada nilainya di state
+  //       keterangan: createbarangMasuk.keterangan      // Jika sudah ada nilainya di state
+  //     }));
+  //     console.log(processUpload, 'create');
+  //     message.success('Gambar Berhasil Di Unggah!');
+  //   } catch (e) {
+  //     console.log(e, 'ini catch e');
+  //     message.error('Gambar Gagal Di Unggah!');
+  //   }
+  // };
   
 
   const handleSave = (row: Item) => {
@@ -433,7 +427,7 @@ const Page: React.FC = () => {
                   placeholder="Pilih Kode Barang"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  {listBarang?.data?.map((barang) => (
+                  {listBarang?.data?.map((barang:any) => (
                     <Option key={barang.id} value={barang.id}>
                       {barang.kode}
                     </Option>

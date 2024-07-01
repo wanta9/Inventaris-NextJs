@@ -45,9 +45,12 @@ interface Item {
   tanggalMasuk: string;
 }
 interface createbarangMasuk {
+  harga: string;
   jumlah: string;
   keterangan: string;
   tanggalMasuk: string;
+  barangid: string;
+  ruanganid: string;
 }
 
 interface EditableCellProps {
@@ -128,6 +131,9 @@ type EditableTableProps = Parameters<typeof Table>[0];
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const Page: React.FC = () => {
+  const [tanggalMasuk, settanggalMasuk] = useState('');
+  const [jumlah, setjumlah] = useState('');
+  const [keterangan, setketerangan] = useState('');
   const fontFamily = 'Barlow, sans-serif';
   const [searchText, setSearchText] = useState('');
   const [dataSource, setDataSource] = useState<Item[]>([]);
@@ -137,9 +143,12 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const [createbarangMasuk, setcreatebarangMasuk] = useState<createbarangMasuk>({
+    barangid: '',
+    ruanganid: '',
     keterangan: '',
     jumlah: '',
     tanggalMasuk: '',
+    harga: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -151,6 +160,11 @@ const Page: React.FC = () => {
   console.log(listBarangMasuk, 'listBarangMasuk');
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  // handle tanggalMasuk
+  const handleDateChange = (date: any, dateString : any) => {
+    setcreatebarangMasuk({ ...createbarangMasuk, tanggalMasuk: dateString });
+  };
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -216,16 +230,19 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async (values: any) => {
+  const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
     try {
       setLoading(true);
       setError(null);
       const data = {
+        // barangid: createbarangMasuk.kodearang,
         keterangan: createbarangMasuk.keterangan,
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,
+        harga: 0,
       };
+      console.log(values, 'data');
       const request = await barangMasukRepository.api.barangMasuk(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
@@ -392,25 +409,14 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Masuk</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Masuk</span>
-          )
-        }
-        style={{ textAlign: 'center' }}
-        onCancel={handleModalCancel}
-        centered
-        width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
-      >
-        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
+            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
+            style={{ textAlign: 'center' }}
+            centered
+            width={900}
+            visible={modalVisible}
+            onCancel={handleModalCancel}
+          >
+        <Form onFinish={onFinish} form={form} layout="horizontal" style={{ marginTop: '70px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
@@ -422,6 +428,7 @@ const Page: React.FC = () => {
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
+                
               >
                 <Select
                   placeholder="Pilih Kode Barang"
@@ -433,6 +440,7 @@ const Page: React.FC = () => {
                     </Option>
                   ))}
                 </Select>
+                
               </Form.Item>
               <Form.Item
                 name="tanggalMasuk"
@@ -444,9 +452,11 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
                 <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} 
-                 value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk) : null}
-                />
-              </Form.Item>
+                value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD') : null}
+                onChange={handleDateChange}
+                format="YYYY-MM-DD"
+              />
+                    </Form.Item>
               <Form.Item
                 name="jumlah"
                 label="Jumlah"
@@ -458,6 +468,9 @@ const Page: React.FC = () => {
               >
                 <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
                  value={createbarangMasuk.jumlah}
+                 onChange={(e) =>
+                  setcreatebarangMasuk({ ...createbarangMasuk, jumlah: e.target.value })
+                }
                 />
               </Form.Item>
             </div>
@@ -493,8 +506,16 @@ const Page: React.FC = () => {
               >
                 <TextArea rows={4} style={{ width: '100%' }} 
                  value={createbarangMasuk.keterangan}
+                 onChange={(e) =>
+                  setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
+                }
                 />
               </Form.Item>
+              <Form.Item wrapperCol={{ offset: 8, span: 16}}>
+              <Button type="primary" htmlType="submit" style={{  backgroundColor: '#582DD2', display: 'absolute', marginRight: '-200px', marginBottom: '-40px' }}>
+                <span>Simpan</span>
+              </Button>
+            </Form.Item>
             </div>
           </div>
         </Form>

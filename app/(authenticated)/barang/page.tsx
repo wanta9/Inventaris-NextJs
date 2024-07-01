@@ -176,7 +176,7 @@ const Page: React.FC = () => {
   const fontFamily = 'Barlow, sans-serif';
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
-  console.log(listRuangan, 'list ruangan');
+  console.log(listRuanganBarang, 'list ruangan');
 
   const { data: akun } = akunRepository.hooks.useAuth();
 

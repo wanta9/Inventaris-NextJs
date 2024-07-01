@@ -44,6 +44,11 @@ interface Item {
   jumlah: string;
   tanggalMasuk: string;
 }
+interface createbarangMasuk {
+  jumlah: string;
+  keterangan: string;
+  tanggalMasuk: string;
+}
 
 interface EditableCellProps {
   title: React.ReactNode;
@@ -131,6 +136,13 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
+  const [createbarangMasuk, setcreatebarangMasuk] = useState<createbarangMasuk>({
+    keterangan: '',
+    jumlah: '',
+    tanggalMasuk: '',
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
@@ -204,37 +216,51 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const handleSaveModalData = async (values: any) => {
+    console.log('Received values of form: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+        keterangan: createbarangMasuk.keterangan,
+        jumlah: createbarangMasuk.jumlah,
+        tanggalMasuk: createbarangMasuk.tanggalMasuk,
+      };
+      const request = await barangMasukRepository.api.barangMasuk(data);
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          key: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-        setModalVisible(false);
+        message.success('Data berhasil disimpan!');
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  // const handleChange = async (args: any) => {
+  //   const file = args.file;
+  
+  //   try {
+  //     const processUpload = await barangMasukRepository.api.barangMasuk(file);
+  //     setcreatebarangMasuk((createbarangMasuk) => ({
+  //       ...createbarangMasuk,
+  //       tanggalMasuk: createbarangMasuk.tanggalMasuk, // Jika sudah ada nilainya di state
+  //       jumlah: createbarangMasuk.jumlah,             // Jika sudah ada nilainya di state
+  //       keterangan: createbarangMasuk.keterangan      // Jika sudah ada nilainya di state
+  //     }));
+  //     console.log(processUpload, 'create');
+  //     message.success('Gambar Berhasil Di Unggah!');
+  //   } catch (e) {
+  //     console.log(e, 'ini catch e');
+  //     message.error('Gambar Gagal Di Unggah!');
+  //   }
+  // };
+  
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
@@ -401,7 +427,7 @@ const Page: React.FC = () => {
                   placeholder="Pilih Kode Barang"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  {listBarang?.data?.map((barang) => (
+                  {listBarang?.data?.map((barang:any) => (
                     <Option key={barang.id} value={barang.id}>
                       {barang.kode}
                     </Option>
@@ -417,7 +443,9 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
-                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} 
+                 value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk) : null}
+                />
               </Form.Item>
               <Form.Item
                 name="jumlah"
@@ -428,7 +456,9 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+                 value={createbarangMasuk.jumlah}
+                />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
@@ -461,7 +491,9 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} />
+                <TextArea rows={4} style={{ width: '100%' }} 
+                 value={createbarangMasuk.keterangan}
+                />
               </Form.Item>
             </div>
           </div>

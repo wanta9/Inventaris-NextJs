@@ -35,11 +35,7 @@ import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
-<<<<<<< HEAD
-
-=======
 import { ruanganRepository } from '#/repository/ruangan';
->>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -178,14 +174,10 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-<<<<<<< HEAD
-  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
-=======
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
 
->>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -292,14 +284,9 @@ const Page: React.FC = () => {
         nama: createBarang.nama,
         harga: createBarang.harga,
         deskripsi: createBarang.deskripsi,
-<<<<<<< HEAD
-        gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
-        kondisi: "baik",
-=======
         gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
         kondisi: 'baik',
         jumlah: 0,
->>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
       };
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
@@ -323,18 +310,12 @@ const Page: React.FC = () => {
     try {
       const createBarang = { file };
       const processUpload = await barangRepository.api.uploadBarang(file);
-<<<<<<< HEAD
-      setcreateBarang((createBarang) => ({...createBarang,gambar: processUpload?.body?.data?.filenameS}));
-      console.log(processUpload, "create");
-      message.success("Gambar Berhasil Di Unggah!")
-=======
       setcreateBarang((createBarang) => ({
         ...createBarang,
         gambar: processUpload?.body?.data?.filename,
       }));
       console.log(processUpload, 'create');
       message.success('Gambar Berhasil Di Unggah!');
->>>>>>> e2fbd13618a479dd66abe10459540e1ea9c8e32a
     } catch (e) {
       console.log(e, 'ini catch e');
       // setTimeout(message.eror("Gambar Gagal Di Unggah"))

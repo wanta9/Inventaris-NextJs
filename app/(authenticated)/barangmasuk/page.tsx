@@ -49,8 +49,8 @@ interface createbarangMasuk {
   jumlah: string;
   keterangan: string;
   tanggalMasuk: string;
-  barangid: string;
-  ruanganid: string;
+  barangId: string;
+  ruanganId: string;
 }
 
 interface EditableCellProps {
@@ -143,8 +143,8 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const [createbarangMasuk, setcreatebarangMasuk] = useState<createbarangMasuk>({
-    barangid: '',
-    ruanganid: '',
+    barangId: '',
+    ruanganId: '',
     keterangan: '',
     jumlah: '',
     tanggalMasuk: '',
@@ -236,13 +236,13 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
-        // barangid: createbarangMasuk.kodearang,
+        barangid: createbarangMasuk.barangId,
+        ruanganid: createbarangMasuk.ruanganId,
         keterangan: createbarangMasuk.keterangan,
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,
         harga: 0,
       };
-      console.log(values, 'data');
       const request = await barangMasukRepository.api.barangMasuk(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
@@ -254,6 +254,7 @@ const Page: React.FC = () => {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log()
     } finally {
       setLoading(false);
     }
@@ -409,14 +410,14 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
-            style={{ textAlign: 'center' }}
-            centered
-            width={900}
-            visible={modalVisible}
-            onCancel={handleModalCancel}
-          >
-        <Form onFinish={onFinish} form={form} layout="horizontal" style={{ marginTop: '70px' }}>
+        title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Masuk</div>}
+        style={{ textAlign: 'center' }}
+        centered
+        width={900}
+        visible={modalVisible}
+        onCancel={handleModalCancel}
+      >
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}  onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
@@ -428,7 +429,6 @@ const Page: React.FC = () => {
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
-                
               >
                 <Select
                   placeholder="Pilih Kode Barang"
@@ -440,7 +440,6 @@ const Page: React.FC = () => {
                     </Option>
                   ))}
                 </Select>
-                
               </Form.Item>
               <Form.Item
                 name="tanggalMasuk"
@@ -451,12 +450,14 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
-                <DatePicker placeholder="Tanggal Masuk" style={{ width: '100%', height: '40px' }} 
-                value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD') : null}
-                onChange={handleDateChange}
-                format="YYYY-MM-DD"
-              />
-                    </Form.Item>
+                <DatePicker 
+                  placeholder="Tanggal Masuk" 
+                  style={{ width: '100%', height: '40px' }} 
+                  value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD') : null}
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
+                />
+              </Form.Item>
               <Form.Item
                 name="jumlah"
                 label="Jumlah"
@@ -466,24 +467,23 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
-                 value={createbarangMasuk.jumlah}
-                 onChange={(e) =>
-                  setcreatebarangMasuk({ ...createbarangMasuk, jumlah: e.target.value })
-                }
+                <Input 
+                  placeholder="Jumlah" 
+                  style={{ width: '100%', height: '40px' }} 
+                  value={createbarangMasuk.jumlah}
+                  onChange={(e) =>
+                    setcreatebarangMasuk({ ...createbarangMasuk, jumlah: e.target.value })
+                  }
                 />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="ruangan"
+                name="ruanganId"
                 label="Ruangan"
                 colon={false}
-                // Agar ke Kiri Teksnya
                 labelAlign="left"
-                // Atur Col
                 labelCol={{ span: 5 }}
-                // Atur lebar Input
                 wrapperCol={{ span: 8 }}
                 rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
               >
@@ -504,18 +504,39 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} 
-                 value={createbarangMasuk.keterangan}
-                 onChange={(e) =>
-                  setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
-                }
+                <TextArea 
+                  rows={4} 
+                  style={{ width: '100%' }} 
+                  value={createbarangMasuk.keterangan}
+                  onChange={(e) =>
+                    setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
+                  }
                 />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 8, span: 16}}>
-              <Button type="primary" htmlType="submit" style={{  backgroundColor: '#582DD2', display: 'absolute', marginRight: '-200px', marginBottom: '-40px' }}>
-                <span>Simpan</span>
-              </Button>
-            </Form.Item>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  style={{ 
+                    backgroundColor: '#582DD2', 
+                    display: 'absolute', 
+                    marginRight: '-150px', 
+                    marginBottom: '-40px' 
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button 
+                  type="default" 
+                  onClick={handleModalCancel} 
+                  style={{ 
+                    display: 'absolute', 
+                    marginBottom: '-40px' 
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
             </div>
           </div>
         </Form>

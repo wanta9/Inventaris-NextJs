@@ -33,14 +33,9 @@ import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import Meta from 'antd/es/card/Meta';
-<<<<<<< HEAD
-import { ruanganRepository } from '#/repository/ruangan';
-import { barangRepository } from '#/repository/barang';
-=======
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
 
->>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -174,13 +169,7 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-<<<<<<< HEAD
-  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
-  console.log(listRuanganBarang, 'listRuanganBarang');
-=======
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarang();
->>>>>>> fe21190668d271eddf1a4ebf8cf1e786ae62d7de
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -284,9 +273,9 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
-        nama: values.nama,
-        harga: values.harga,
-        deskripsi: values.deskripsi,
+        nama: createBarang.nama,
+        harga: createBarang.harga,
+        deskripsi: createBarang.deskripsi,
         gambar: createBarang.gambar,  // Menggunakan gambar yang diunggah
         kondisi: "baik",
       };
@@ -313,10 +302,7 @@ const Page: React.FC = () => {
     try {
       const createBarang = { file };
       const processUpload = await barangRepository.api.uploadBarang(file);
-      setcreateBarang((createBarang) => ({
-        ...createBarang,
-        gambar: processUpload?.body?.data?.filename
-      }));
+      setcreateBarang((createBarang) => ({...createBarang,gambar: processUpload?.body?.data?.filenameS}));
       console.log(processUpload, "create");
       message.success("Gambar Berhasil Di Unggah!")
     } catch (e) {

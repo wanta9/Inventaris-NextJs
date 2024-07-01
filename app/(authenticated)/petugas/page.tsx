@@ -159,7 +159,7 @@ const Page: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   console.log(listPetugas, 'listPetugas');
-  const [form] = Form.useForm();
+  const [form] = Form.useForm(); 
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
 
@@ -170,6 +170,10 @@ const Page: React.FC = () => {
   const logout = () => {
     localStorage.removeItem('access_token');
     router.push('/login');
+  };
+
+  const handleRowClick = (id: string) => {
+    window.location.href = `http://localhost:3002/petugas/${id}`;
   };
 
   // menu akun
@@ -426,6 +430,10 @@ const Page: React.FC = () => {
           bordered
           dataSource={listPetugas?.data}
           pagination={{ pageSize: 5 }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record.id),
+            style: { cursor: 'pointer' },
+          })}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

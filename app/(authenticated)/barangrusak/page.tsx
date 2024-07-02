@@ -370,14 +370,93 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Rusak</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>
-          )
-        }
+        visible={modalEditVisible}
+        title={<span style={{ fontWeight: 'bold' }}>Edit Barang Rusak</span>}
+        style={{ textAlign: 'center' }}
+        onCancel={handleModalCancel}
+        centered
+        width={900}
+        okText="Simpan"
+        okButtonProps={{ style: { background: '#582DD2' } }}
+        cancelText="Batal"
+        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
+        onOk={handleSaveModalData}
+      >
+        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ flex: 1, marginRight: '16px' }}>
+            <Form.Item
+                name="jumlah"
+                label="Jumlah"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="jumlah1"
+                label="Jumlah barang rusak"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="jumlah2"
+                label="Jumlah barang perbaikan"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="tanggalRusak"
+                label="Tanggal Rusak"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+              >
+                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+            </div>
+            <div style={{ flex: 1 }}>
+            <Form.Item
+                name="tanggalPerbaikan"
+                label="Tanggal Perbaikan"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+              >
+                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+              </Form.Item>
+              <Form.Item
+                name="keterangan"
+                label="Keterangan"
+                colon={false}
+                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+              >
+                <TextArea rows={4} style={{ width: '100%', height: '170px' }} />
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </Modal>
+      <Modal
+        visible={modalVisible}
+        title={<span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>}
         style={{ textAlign: 'center' }}
         onCancel={handleModalCancel}
         centered

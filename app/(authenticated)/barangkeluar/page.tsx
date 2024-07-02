@@ -259,7 +259,8 @@ const Page: React.FC = () => {
       editable: false,
       render: (_, record) => {
         console.log(record);
-        return record.ruanganBarang.barang.nama;
+        const namaBarang = record?.ruanganBarang?.barang?.nama;
+        return namaBarang ? namaBarang : 'data belum ada';
       },
     },
     {

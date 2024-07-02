@@ -297,6 +297,9 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      onCell: () => ({
+        style: { cursor: 'pointer' },
+      }),
       render: (record: Item) => (
         <span>
           <Button

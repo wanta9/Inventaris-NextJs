@@ -11,6 +11,9 @@ const url = {
   authorize() {
     return `/akun/authorize`;
   },
+  uploadBarang() {
+    return `/upload/akun`;
+  },
 };
 
 const hooks = {
@@ -25,6 +28,11 @@ const hooks = {
 const api = {
   login(data: any) {
     return http.post(url.loginAkun()).send(data);
+  },
+  uploadBarang(data: any) {
+    const formData = new FormData();
+    formData.append('foto', data);
+    return http.post(url.uploadBarang()).send(formData);
   },
 };
 

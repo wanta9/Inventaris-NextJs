@@ -13,6 +13,7 @@ import {
   DatePicker,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
@@ -32,6 +33,16 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface EditableRowProps {
   index: number;
+}
+
+interface createbarangRusak {
+  barangId: string;
+  ruanganId: string;
+  jumlah: string;
+  tanggalRusak: string;
+  tanggalPerbaikan: string;
+  keterangan: string;
+  status: string;
 }
 
 interface Item {
@@ -129,14 +140,29 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
+  const [createbarangRusak, setcreatebarangRusak] = useState<createbarangRusak>({
+    barangId: '',
+    ruanganId: '',
+    jumlah: '',
+    tanggalRusak: '',
+    tanggalPerbaikan: 'null',
+    keterangan: '',
+    status: 'Rusak',
+  });
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  const handleDateChange = (date: any, dateString: any) => {
+    setcreatebarangRusak({ ...createbarangRusak, tanggalRusak: dateString });
+  };
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -201,35 +227,35 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
+        jumlah: createbarangRusak.jumlah,
+        tanggalRusak: createbarangRusak.tanggalRusak,
+        keterangan: createbarangRusak.keterangan,
+        status: 'Rusak',
+        tanggalPerbaikan: null,
+      };
+      const request = await barangRusakRepository.api.barangRusak(data);
+      if (request.status === 400) {
+        setError(request.body.message); 
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          id: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        message.success('Data berhasil disimpan!');
         setModalVisible(false);
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log()
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -376,11 +402,7 @@ const Page: React.FC = () => {
         onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
+        footer={null}
       >
         <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -458,20 +480,16 @@ const Page: React.FC = () => {
         visible={modalVisible}
         title={<span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>}
         style={{ textAlign: 'center' }}
-        onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
+        footer={null}
         cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
-                name="kodeBarang"
+                name="barangId"
                 label="Kode Barang"
                 style={{ textAlign: 'left' }}
                 colon={false}
@@ -500,7 +518,12 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+                value={createbarangRusak.jumlah}
+                onChange={(e) =>
+                setcreatebarangRusak({ ...createbarangRusak, jumlah: e.target.value })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"
@@ -511,12 +534,22 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker
+                  placeholder="Tanggal Rusak"
+                  style={{ width: '100%', height: '40px' }}
+                  value={
+                    createbarangRusak.tanggalRusak
+                      ? dayjs(createbarangRusak.tanggalRusak, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
+                />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="ruangan"
+                name="ruanganId"
                 label="Ruangan"
                 colon={false}
                 // Agar ke Kiri Teksnya
@@ -544,7 +577,36 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} />
+                <TextArea rows={4} style={{ width: '100%' }} 
+                value={createbarangRusak.keterangan}
+                onChange={(e) =>
+                setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })
+                }
+                />
+              </Form.Item>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    marginRight: '-150px',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
               </Form.Item>
             </div>
           </div>

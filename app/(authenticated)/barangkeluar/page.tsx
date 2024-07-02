@@ -13,6 +13,7 @@ import {
   DatePicker,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { EditOutlined, PlusOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
@@ -30,6 +31,10 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface EditableRowProps {
   index: number;
+}
+
+interface createBarangKeluar {
+
 }
 
 interface Item {
@@ -129,6 +134,8 @@ const Page: React.FC = () => {
   const [form] = Form.useForm();
   const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -195,35 +202,28 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+      };
+      const request = await barangKeluarRepository.api.barangKeluar(data);
+      if (request.status === 400) {
+        setError(request.body.message); 
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          id: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        message.success('Data berhasil disimpan!');
         setModalVisible(false);
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log()
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -349,23 +349,13 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Keluar</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Keluar</span>
-          )
-        }
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Keluar</div>}
+        visible={modalVisible}
         style={{ textAlign: 'center' }}
         onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
+        footer={null}
       >
         <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>

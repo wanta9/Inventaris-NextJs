@@ -231,13 +231,13 @@ const Page: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log('Received values of form: ', values);
+    console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
       const data = {
-        barangid: createbarangMasuk.barangId,
-        ruanganid: createbarangMasuk.ruanganId,
+        barangid: values.barangId,
+        ruanganid: values.ruanganId,
         keterangan: createbarangMasuk.keterangan,
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,

@@ -162,12 +162,13 @@ const Page: React.FC = () => {
   const role = akun?.data?.peran?.Role;
 
   // handle tanggalMasuk
-  const handleDateChange = (date: any, dateString : any) => {
+  const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangMasuk({ ...createbarangMasuk, tanggalMasuk: dateString });
   };
 
   // klik row
   const handleRowClick = (id: string) => {
+    console.log(id, 'ini record');
     window.location.href = `http://localhost:3002/barangmasuk/${id}`;
   };
 
@@ -236,8 +237,8 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
-        barangid: values.barangId,
-        ruanganid: values.ruanganId,
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
         keterangan: createbarangMasuk.keterangan,
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,
@@ -248,37 +249,18 @@ const Page: React.FC = () => {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Data berhasil disimpan!');
+        setModalVisible(false);
       }
       console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Terjadi kesalahan saat menyimpan data.');
-      console.log()
+      console.log();
     } finally {
       setLoading(false);
     }
   };
-
-  // const handleChange = async (args: any) => {
-  //   const file = args.file;
-  
-  //   try {
-  //     const processUpload = await barangMasukRepository.api.barangMasuk(file);
-  //     setcreatebarangMasuk((createbarangMasuk) => ({
-  //       ...createbarangMasuk,
-  //       tanggalMasuk: createbarangMasuk.tanggalMasuk, // Jika sudah ada nilainya di state
-  //       jumlah: createbarangMasuk.jumlah,             // Jika sudah ada nilainya di state
-  //       keterangan: createbarangMasuk.keterangan      // Jika sudah ada nilainya di state
-  //     }));
-  //     console.log(processUpload, 'create');
-  //     message.success('Gambar Berhasil Di Unggah!');
-  //   } catch (e) {
-  //     console.log(e, 'ini catch e');
-  //     message.error('Gambar Gagal Di Unggah!');
-  //   }
-  // };
-  
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
@@ -307,7 +289,6 @@ const Page: React.FC = () => {
       dataIndex: 'nama',
       editable: false,
       render: (_, record) => {
-        console.log(record);
         return record.ruanganBarang.barang.nama;
       },
     },
@@ -315,7 +296,15 @@ const Page: React.FC = () => {
       title: 'Harga',
       dataIndex: 'harga',
       editable: false,
-      render: (text: string) => `Rp ${text}`,
+      render: (_, record) => {
+        const formatRupiah = (number: number) => {
+          return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
+            number
+          );
+        };
+        const hargaFormatted = formatRupiah(record.ruanganBarang.barang.harga);
+        return hargaFormatted;
+      },
     },
     {
       title: 'Jumlah',
@@ -401,10 +390,12 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listBarangMasuk?.data}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record.id),
-            style: { cursor: 'pointer' },
-          })}
+          onRow={(record) => {
+            return {
+              onClick: () => handleRowClick(record.id),
+              style: { cursor: 'pointer' },
+            };
+          }}
           columns={mergedColumns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />
@@ -413,15 +404,16 @@ const Page: React.FC = () => {
         title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Masuk</div>}
         style={{ textAlign: 'center' }}
         centered
+        footer={null}
         width={900}
         visible={modalVisible}
         onCancel={handleModalCancel}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}  onFinish={onFinish}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
-                name="kodeBarang"
+                name="barangId"
                 label="Kode Barang"
                 style={{ textAlign: 'left' }}
                 colon={false}
@@ -434,7 +426,7 @@ const Page: React.FC = () => {
                   placeholder="Pilih Kode Barang"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  {listBarang?.data?.map((barang:any) => (
+                  {listBarang?.data?.map((barang: any) => (
                     <Option key={barang.id} value={barang.id}>
                       {barang.kode}
                     </Option>
@@ -450,10 +442,14 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
               >
-                <DatePicker 
-                  placeholder="Tanggal Masuk" 
-                  style={{ width: '100%', height: '40px' }} 
-                  value={createbarangMasuk.tanggalMasuk ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD') : null}
+                <DatePicker
+                  placeholder="Tanggal Masuk"
+                  style={{ width: '100%', height: '40px' }}
+                  value={
+                    createbarangMasuk.tanggalMasuk
+                      ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+                      : null
+                  }
                   onChange={handleDateChange}
                   format="YYYY-MM-DD"
                 />
@@ -467,9 +463,9 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input 
-                  placeholder="Jumlah" 
-                  style={{ width: '100%', height: '40px' }} 
+                <Input
+                  placeholder="Jumlah"
+                  style={{ width: '100%', height: '40px' }}
                   value={createbarangMasuk.jumlah}
                   onChange={(e) =>
                     setcreatebarangMasuk({ ...createbarangMasuk, jumlah: e.target.value })
@@ -504,9 +500,9 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea 
-                  rows={4} 
-                  style={{ width: '100%' }} 
+                <TextArea
+                  rows={4}
+                  style={{ width: '100%' }}
                   value={createbarangMasuk.keterangan}
                   onChange={(e) =>
                     setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
@@ -514,24 +510,24 @@ const Page: React.FC = () => {
                 />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
-                  style={{ 
-                    backgroundColor: '#582DD2', 
-                    display: 'absolute', 
-                    marginRight: '-150px', 
-                    marginBottom: '-40px' 
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    marginRight: '-150px',
+                    marginBottom: '-40px',
                   }}
                 >
                   <span>Simpan</span>
                 </Button>
-                <Button 
-                  type="default" 
-                  onClick={handleModalCancel} 
-                  style={{ 
-                    display: 'absolute', 
-                    marginBottom: '-40px' 
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    marginBottom: '-40px',
                   }}
                 >
                   <span>Batal</span>

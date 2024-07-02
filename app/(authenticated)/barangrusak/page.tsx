@@ -21,6 +21,8 @@ import { useRouter } from 'next/navigation';
 import { barangRusakRepository } from '#/repository/barangrusak';
 import dayjs from 'dayjs';
 import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
+import { ruanganRepository } from '#/repository/ruangan';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -129,6 +131,8 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
+  const { data: listBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -257,7 +261,7 @@ const Page: React.FC = () => {
       editable: false,
       render: (_, record) => {
         console.log(record);
-        return record.ruanganBarang.barang.nama;
+        return record.ruanganBarang.barang;
       },
     },
     {
@@ -394,7 +398,7 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah1"
-                label="Jumlah barang rusak"
+                label={<span>Jumlah barang<br />rusak</span>}
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -405,7 +409,7 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah2"
-                label="Jumlah barang perbaikan"
+                label={<span>Jumlah barang<br />perbaikan</span>}
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -423,20 +427,20 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} disabled />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
             <Form.Item
                 name="tanggalPerbaikan"
-                label="Tanggal Perbaikan"
+                label={<span>Tanggal<br />perbaikan</span>}
                 colon={false}
                 labelAlign="left"
-                labelCol={{ span: 7 }}
+                labelCol={{ span: 6 }}
                 wrapperCol={{ span: 15 }}
-                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Perbaikan" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
               <Form.Item
                 name="keterangan"
@@ -476,10 +480,13 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
               >
-                <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
-                  {dataSource.map((item) => (
-                    <Option key={item.id} value={item.kodeBarang}>
-                      {`${item.kodeBarang} - ${item.namaBarang}`}
+                <Select
+                  placeholder="Pilih Kode Barang"
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                >
+                  {listBarang?.data?.map((barang: any) => (
+                    <Option key={barang.id} value={barang.id}>
+                      {barang.kode}
                     </Option>
                   ))}
                 </Select>
@@ -524,9 +531,11 @@ const Page: React.FC = () => {
                   placeholder="Pilih Ruangan"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  <Option value="ruangan1">TKJ</Option>
-                  <Option value="ruangan2">RPL</Option>
-                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+                  {listRuangan?.data?.map((ruangan) => (
+                    <Option key={ruangan.id} value={ruangan.id}>
+                      {ruangan.Letak_Barang}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item

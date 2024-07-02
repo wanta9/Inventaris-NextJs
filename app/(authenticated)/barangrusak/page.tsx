@@ -261,7 +261,7 @@ const Page: React.FC = () => {
       editable: false,
       render: (_, record) => {
         console.log(record);
-        return record.ruanganBarang.barang.nama;
+        return record.ruanganBarang.barang;
       },
     },
     {
@@ -398,7 +398,7 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah1"
-                label="Jumlah barang rusak"
+                label={<span>Jumlah barang<br />rusak</span>}
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -409,7 +409,7 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah2"
-                label="Jumlah barang perbaikan"
+                label={<span>Jumlah barang<br />perbaikan</span>}
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -427,20 +427,20 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} disabled />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
             <Form.Item
                 name="tanggalPerbaikan"
-                label="Tanggal Perbaikan"
+                label={<span>Tanggal<br />perbaikan</span>}
                 colon={false}
                 labelAlign="left"
-                labelCol={{ span: 7 }}
+                labelCol={{ span: 6 }}
                 wrapperCol={{ span: 15 }}
-                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker placeholder="Tanggal Perbaikan" style={{ width: '100%', height: '40px' }} />
               </Form.Item>
               <Form.Item
                 name="keterangan"

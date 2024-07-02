@@ -3,10 +3,9 @@
 import React, { useState } from "react";
 import { Button, Card, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { akunRepository } from "#/repository/akun";
 import Password from "antd/es/input/Password";
-import { create } from "domain";
 
 interface createAkun {
     namaPengguna: string;
@@ -21,7 +20,7 @@ interface createAkun {
 const Register = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    // const router = useRouter();
     const [createAkun, setcreateAkun] = useState<createAkun>({
     namaPengguna: '',
     nisn: '',
@@ -52,7 +51,7 @@ const Register = () => {
         setError(request.body.message); 
       } else {
         message.success('Register Berhasil!');
-        router.push('/login');
+        // router.push('/login');
       }
       console.log(request);
     } catch (error) {
@@ -105,7 +104,7 @@ const Register = () => {
                     <Form.Item
                         label="NISN"
                         name="nisn"
-                        rules={[{ type: 'integer', message: 'Masukkan NISN yang benar!' }]}
+                        rules={[{ type: 'string', message: 'Masukkan NISN yang benar!' }]}
                     >
                         <Input prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px' }} />} type="text"                       
                         value={createAkun.nisn}
@@ -136,7 +135,7 @@ const Register = () => {
                     <Form.Item
                         label="Nomer Telp"
                         name="nomertelp"
-                        rules={[{ type: 'integer', message: 'Masukkan nomor telepon yang benar!' }]}
+                        rules={[{ type: 'string', message: 'Masukkan nomor telepon yang benar!' }]}
                     >
                         <Input prefix={<img src="/icntelpon.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
                         value={createAkun.telp}

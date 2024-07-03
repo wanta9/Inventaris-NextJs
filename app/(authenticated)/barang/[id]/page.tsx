@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, Card, Col, Divider, Row, Select, Table } from 'antd';
-import React from 'react';
+import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input } from 'antd';
+import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
@@ -49,10 +49,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       title: 'Letak Barang',
       dataIndex: 'letakBarang',
       key: 'letakBarang',
-      // render: (text: string, record: DataType) => {
-      //   console.log(record);
-      //   return record.ruangan.Letak_Barang;
-      // },
     },
     {
       title: 'Jumlah',
@@ -60,6 +56,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       key: 'jumlah',
     },
   ];
+
+  // Modal state and handlers
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
@@ -267,15 +278,38 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   height: '50px',
                   borderRadius: '10px',
                 }}
+                onClick={showModal}
               >
-                <a href="http://localhost:3002/barang" style={{ fontSize: '15px', fontWeight }}>
-                  Pinjam
-                </a>
+                Pinjam
               </Button>
             </Col>
           </Row>
         </Card>
       )}
+
+      <Modal
+        title="Pinjam Barang"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Pinjam"
+        cancelText="Batal"
+      >
+        <Form>
+          <Form.Item label="Nama Barang">
+            <Input value={ruanganBarangById?.data?.barang?.nama} disabled />
+          </Form.Item>
+          <Form.Item label="Jumlah">
+            <Input type="number" min={1} max={ruanganBarangById?.data?.barang?.jumlah} />
+          </Form.Item>
+          <Form.Item label="Tanggal Pinjam">
+            <Input type="date" />
+          </Form.Item>
+          <Form.Item label="Tanggal Kembali">
+            <Input type="date" />
+          </Form.Item>
+        </Form>
+      </Modal>
 
       <div
         style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}

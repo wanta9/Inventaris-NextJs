@@ -39,7 +39,7 @@ interface EditableRowProps {
 interface createbarangRusak {
   barangId: string;
   ruanganId: string;
-  jumlah: string;
+  jumlah: number;
   tanggalRusak: string;
   tanggalPerbaikan: string;
   keterangan: string;
@@ -144,7 +144,7 @@ const Page: React.FC = () => {
   const [createbarangRusak, setcreatebarangRusak] = useState<createbarangRusak>({
     barangId: '',
     ruanganId: '',
-    jumlah: '',
+    jumlah: 0,
     tanggalRusak: '',
     tanggalPerbaikan: 'null',
     keterangan: '',
@@ -549,9 +549,9 @@ const Page: React.FC = () => {
                 <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
                 value={createbarangRusak.jumlah}
                 onChange={(e) =>
-                setcreatebarangRusak({ ...createbarangRusak, jumlah: e.target.value })
+                setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
                 }
-                />
+                />s
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"

@@ -13,6 +13,7 @@ import {
   DatePicker,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { EditOutlined, PlusOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
@@ -34,13 +35,21 @@ interface EditableRowProps {
   index: number;
 }
 
+interface createbarangKeluar {
+  barangId: string;
+  ruanganId: string;
+  jumlah: string;
+  tanggalKeluar: string;
+  keterangan: string;
+}
+
 interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
   harga: string;
   jumlah: string;
-  tanggalMasuk: string;
+  tanggalKeluar: string;
 }
 
 interface EditableCellProps {
@@ -129,13 +138,26 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [form] = Form.useForm();
+  const [createbarangKeluar, setcreatebarangKeluar] = useState<createbarangKeluar>({
+    barangId: '',
+    ruanganId: '',
+    jumlah: '',
+    tanggalKeluar: '',
+    keterangan: '',
+  });
   const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  const handleDateChange = (date: any, dateString: any) => {
+    setcreatebarangKeluar({ ...createbarangKeluar, tanggalKeluar: dateString });
+  };
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -199,35 +221,33 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
+        jumlah: createbarangKeluar.jumlah,
+        tanggalKeluar: createbarangKeluar.tanggalKeluar,
+        keterangan: createbarangKeluar.keterangan,
+      };
+      const request = await barangKeluarRepository.api.barangKeluar(data);
+      if (request.status === 400) {
+        setError(request.body.message); 
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          id: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        message.success('Data berhasil disimpan!');
         setModalVisible(false);
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log()
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -277,6 +297,9 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      onCell: () => ({
+        style: { cursor: 'pointer' },
+      }),
       render: (record: Item) => (
         <span>
           <Button
@@ -354,29 +377,19 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Keluar</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Keluar</span>
-          )
-        }
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Keluar</div>}
+        visible={modalVisible}
         style={{ textAlign: 'center' }}
         onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
+        footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
-                name="kodeBarang"
+                name="barangId"
                 label="Kode Barang"
                 style={{ textAlign: 'left' }}
                 colon={false}
@@ -405,7 +418,12 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+                value={createbarangKeluar.jumlah}
+                onChange={(e) =>
+                setcreatebarangKeluar({ ...createbarangKeluar, jumlah: e.target.value })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="tanggalKeluar"
@@ -419,12 +437,19 @@ const Page: React.FC = () => {
                 <DatePicker
                   placeholder="Tanggal Keluar"
                   style={{ width: '100%', height: '40px' }}
+                  value={
+                    createbarangKeluar.tanggalKeluar
+                      ? dayjs(createbarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
                 />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="ruangan"
+                name="ruanganId"
                 label="Ruangan"
                 colon={false}
                 // Agar ke Kiri Teksnya
@@ -452,7 +477,36 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} />
+                <TextArea rows={4} style={{ width: '100%' }} 
+                value={createbarangKeluar.keterangan}
+                onChange={(e) =>
+                setcreatebarangKeluar({ ...createbarangKeluar, keterangan: e.target.value })
+                }
+                />
+              </Form.Item>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    marginRight: '-150px',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
               </Form.Item>
             </div>
           </div>

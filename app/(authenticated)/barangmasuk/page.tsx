@@ -46,7 +46,7 @@ interface Item {
 }
 interface createbarangMasuk {
   harga: string;
-  jumlah: string;
+  jumlah: number;
   keterangan: string;
   tanggalMasuk: string;
   barangId: string;
@@ -146,7 +146,7 @@ const Page: React.FC = () => {
     barangId: '',
     ruanganId: '',
     keterangan: '',
-    jumlah: '',
+    jumlah: 0,
     tanggalMasuk: '',
     harga: '',
   });
@@ -232,7 +232,7 @@ const Page: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log('Received values of form: ', values);
+    console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
@@ -468,7 +468,7 @@ const Page: React.FC = () => {
                   style={{ width: '100%', height: '40px' }}
                   value={createbarangMasuk.jumlah}
                   onChange={(e) =>
-                    setcreatebarangMasuk({ ...createbarangMasuk, jumlah: e.target.value })
+                    setcreatebarangMasuk({ ...createbarangMasuk, jumlah: Number(e.target.value) })
                   }
                 />
               </Form.Item>

@@ -24,6 +24,7 @@ import dayjs from 'dayjs';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
+import { Console } from 'console';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -151,6 +152,8 @@ const Page: React.FC = () => {
   });
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
+  console.log(listBarangRusak, 'listBarangRusak');
+
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -287,7 +290,7 @@ const Page: React.FC = () => {
       editable: false,
       render: (_, record) => {
         console.log(record);
-        return record.ruanganBarang.barang;
+        return record.ruanganBarang.barang.nama;
       },
     },
     {
@@ -407,7 +410,7 @@ const Page: React.FC = () => {
         <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
-            <Form.Item
+              <Form.Item
                 name="jumlah"
                 label="Jumlah"
                 colon={false}
@@ -420,7 +423,13 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah1"
-                label={<span>Jumlah barang<br />rusak</span>}
+                label={
+                  <span>
+                    Jumlah barang
+                    <br />
+                    rusak
+                  </span>
+                }
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -431,7 +440,13 @@ const Page: React.FC = () => {
               </Form.Item>
               <Form.Item
                 name="jumlah2"
-                label={<span>Jumlah barang<br />perbaikan</span>}
+                label={
+                  <span>
+                    Jumlah barang
+                    <br />
+                    perbaikan
+                  </span>
+                }
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
@@ -449,20 +464,33 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} disabled />
+                <DatePicker
+                  placeholder="Tanggal Rusak"
+                  style={{ width: '100%', height: '40px' }}
+                  disabled
+                />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
-            <Form.Item
+              <Form.Item
                 name="tanggalPerbaikan"
-                label={<span>Tanggal<br />perbaikan</span>}
+                label={
+                  <span>
+                    Tanggal
+                    <br />
+                    perbaikan
+                  </span>
+                }
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
               >
-                <DatePicker placeholder="Tanggal Perbaikan" style={{ width: '100%', height: '40px' }} />
+                <DatePicker
+                  placeholder="Tanggal Perbaikan"
+                  style={{ width: '100%', height: '40px' }}
+                />
               </Form.Item>
               <Form.Item
                 name="keterangan"

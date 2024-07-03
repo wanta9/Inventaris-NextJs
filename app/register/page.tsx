@@ -104,7 +104,7 @@ const Register = () => {
                     <Form.Item
                         label="NISN"
                         name="nisn"
-                        rules={[{ type: 'string', message: 'Masukkan NISN yang benar!' }]}
+                        rules={[{ required: true, type: 'string', message: 'Masukkan NISN yang benar!' }]}
                     >
                         <Input prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px' }} />} type="text"                       
                         value={createAkun.nisn}
@@ -115,6 +115,7 @@ const Register = () => {
                     <Form.Item
                         label="Nama Lengkap"
                         name="namalengkap"
+                        rules={[{ required: true, type: 'string', message: 'Masukkan Nama Lengkap yang benar!' }]}
                     >
                     <Input prefix={<img src="/icnnamalengkap.svg" style={{ width: '19px', height: '19px' }} />} type="text"                           
                         value={createAkun.namaPengguna}
@@ -125,6 +126,7 @@ const Register = () => {
                     <Form.Item
                         label="Kelas"
                         name="kelas"
+                        rules={[{ required: true, type: 'string', message: 'Masukkan Kelas yang benar!' }]}
                     >
                         <Input prefix={<img src="/icnkelas.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
                         value={createAkun.kelas}
@@ -135,7 +137,7 @@ const Register = () => {
                     <Form.Item
                         label="Nomer Telp"
                         name="nomertelp"
-                        rules={[{ type: 'string', message: 'Masukkan nomor telepon yang benar!' }]}
+                        rules={[{ required: true, type: 'string', message: 'Masukkan Nomer Telp yang benar!' }]}
                     >
                         <Input prefix={<img src="/icntelpon.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
                         value={createAkun.telp}

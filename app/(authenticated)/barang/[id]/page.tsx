@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input } from 'antd';
+import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input, Space, InputNumber } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
+import { values } from 'mobx';
 
 const { Option } = Select;
 
@@ -290,25 +291,108 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       <Modal
         title="Pinjam Barang"
         visible={isModalVisible}
+        width={1300}
+        centered
         onOk={handleOk}
         onCancel={handleCancel}
         okText="Pinjam"
         cancelText="Batal"
       >
-        <Form>
-          <Form.Item label="Nama Barang">
-            <Input value={ruanganBarangById?.data?.barang?.nama} disabled />
-          </Form.Item>
-          <Form.Item label="Jumlah">
-            <Input type="number" min={1} max={ruanganBarangById?.data?.barang?.jumlah} />
-          </Form.Item>
-          <Form.Item label="Tanggal Pinjam">
-            <Input type="date" />
-          </Form.Item>
-          <Form.Item label="Tanggal Kembali">
-            <Input type="date" />
-          </Form.Item>
-        </Form>
+        <Row align="middle" justify="center">
+            <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
+              <div
+                style={{
+                  width: '80%',
+                  height: '400px',
+                  backgroundColor: '#D9D9D9',
+                  borderRadius: '20px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'absolute',
+                  left: '75px',
+                  top: '-80px',
+                  bottom: '',
+                }}
+              >
+                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+              </div>
+            </Col>
+            <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col span={9} style={{ fontWeight, fontFamily }}>
+                  Nama Barang
+                </Col>
+                <Col span={2}>:</Col>
+                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col span={9} style={{ fontWeight, fontFamily }}>
+                  Harga
+                </Col>
+                <Col span={2}>:</Col>
+                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col span={9} style={{ fontWeight, fontFamily }}>
+                  Stok Keseluruhan
+                </Col>
+                <Col span={2}>:</Col>
+                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '200px', marginBottom: '20px' }}>
+            <Col
+              push={1}
+              span={24}
+              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
+            >
+              Pilih Ruangan
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              push={1}
+              span={23}
+              style={{
+                fontWeight,
+                fontFamily,
+                fontSize: '17px',
+                whiteSpace: 'pre-wrap',
+              }}
+            >
+              <Button
+                style={{
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  width: '8%',
+                  height: '40px',
+                  borderRadius: '10px',
+                }}
+              >
+                Pinjam
+              </Button>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <Col
+              push={1}
+              span={24}
+              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
+            >
+              Tentukan Jumlah
+            </Col>
+          </Row>
+          <Col>
+          <Row>
+          <Space>
+      <Button onClick={() => onchange(values - 1)}>-</Button>
+      <InputNumber min={1} value={values} onChange={onchange} />
+      <Button onClick={() => onchange(values + 1)}>+</Button>
+    </Space>
+          </Row>
+          </Col>
       </Modal>
 
       <div

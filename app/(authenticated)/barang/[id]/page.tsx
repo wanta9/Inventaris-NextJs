@@ -18,6 +18,14 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
+  const harga = ruanganBarangById?.data?.harga;
+
+  // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
+  const formattedHarga = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(harga);
 
   const deskripsi = ruanganBarangById?.data?.barang?.deskripsi || '';
 
@@ -117,7 +125,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.harga}</Col>
+                <Col span={5}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
@@ -206,21 +214,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   Nama Barang
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight, fontFamily }}>
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+                <Col span={5}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight, fontFamily }}>
                   Stok Keseluruhan
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
               </Row>
             </Col>
           </Row>
@@ -246,7 +254,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 whiteSpace: 'pre-wrap',
               }}
             >
-              {ruanganBarangById?.data?.barang?.deskripsi}
+              {ruanganBarangById?.data?.deskripsi}
             </Col>
           </Row>
           <Row>

@@ -3,32 +3,47 @@
 import React, { useState } from "react";
 import { Button, Card, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { akunRepository } from "#/repository/akun";
-import Password from "antd/es/input/Password";
+
+export enum statusBarang {
+    Aktif = 'aktif',
+    TidakAktif = 'tidak aktif',
+    Pending = 'pending',
+    Diterima = 'ditrima',
+    Ditolak = 'ditolak',
+  }
 
 interface createAkun {
-    namaPengguna: string;
+    peranId: string;
+    username: string;
     nisn: string;
     password: string;
-    namaLengkap: string;
+    nama: string;
     kelas: string;
     telp: string;
     gambar: string;
+    status: statusBarang;
+    isOnline: boolean;
+    email: string;
   }
 
 const Register = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    // const router = useRouter();
+    const router = useRouter();
     const [createAkun, setcreateAkun] = useState<createAkun>({
-    namaPengguna: '',
+    peranId: '4a114c02-5909-4f63-b88b-27ae49b701ac',
+    username: '',
     nisn: '',
     password: '',
-    namaLengkap: '',
+    nama: '',
     kelas: '',
     telp: '',
-    gambar: '',
+    gambar: 'null',
+    email: 'null',
+    status: statusBarang.Pending,
+    isOnline: true,
       });
 
     const onFinish = async (values: any) => {
@@ -37,21 +52,24 @@ const Register = () => {
       setLoading(true);
       setError(null);
       const data = {
-        namaPengguna: createAkun.namaPengguna,
+        username: createAkun.username,
         nisn: createAkun.nisn,
         password: createAkun.password,
-        namaLengkap: createAkun.namaLengkap,
+        nama: createAkun.nama,
         kelas: createAkun.kelas,
         telp: createAkun.telp,
         gambar: createAkun.gambar,
+        status: createAkun.status,
+        peranId: createAkun.peranId,
+        email: values.email,
       };
 
-      const request = await akunRepository.api.login(data);
+      const request = await akunRepository.api.akun(data);
       if (request.status === 400) {
         setError(request.body.message); 
       } else {
         message.success('Register Berhasil!');
-        // router.push('/login');
+        router.push('/login');
       }
       console.log(request);
     } catch (error) {
@@ -74,15 +92,15 @@ const Register = () => {
                 <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
                     <Form.Item
                         label="Nama Pengguna"
-                        name="namapengguna"
+                        name="username"
                         rules={[{ required: true, message: 'Masukkan Nama yang benar!' }]}
                         style={{ marginLeft: '40px', marginBottom: '5px'}}
                         wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<UserOutlined />} type="text"                           
-                        value={createAkun.namaPengguna}
+                        value={createAkun.username}
                          onChange={(e) =>
-                            setcreateAkun({ ...createAkun, namaPengguna: e.target.value })
+                            setcreateAkun({ ...createAkun, username: e.target.value })
                         }/>
                     </Form.Item>
                     <Form.Item
@@ -122,15 +140,15 @@ const Register = () => {
                     </Form.Item>
                     <Form.Item
                         label="Nama Lengkap"
-                        name="namalengkap"
+                        name="nama"
                         rules={[{ required: true, type: 'string', message: 'Masukkan Nama Lengkap yang benar!' }]}
                         style={{ marginLeft: '40px', marginBottom: '5px'}}
                         wrapperCol={{ span: 20 }}
                     >
                     <Input prefix={<img src="/icnnamalengkap.svg" style={{ width: '19px', height: '19px' }} />} type="text"                           
-                        value={createAkun.namaPengguna}
+                        value={createAkun.nama}
                          onChange={(e) =>
-                            setcreateAkun({ ...createAkun, namaPengguna: e.target.value })
+                            setcreateAkun({ ...createAkun, nama: e.target.value })
                         }/>
                     </Form.Item>
                     <Form.Item

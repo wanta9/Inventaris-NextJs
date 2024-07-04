@@ -276,7 +276,7 @@ const Page: React.FC = () => {
   };
 
   const handleSaveModalData = async (values: any) => {
-    console.log('Received values of form: ', values);
+    console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
@@ -292,13 +292,13 @@ const Page: React.FC = () => {
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
-        message.success('Data berhasil disimpan!');
+        message.success('Berhasil Menambahkan Barang!');
       }
       console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error('Terjadi kesalahan saat menyimpan data.');
+      message.error('Gagal Menambahkan Barang');
     } finally {
       setLoading(false);
     }
@@ -421,7 +421,7 @@ const Page: React.FC = () => {
                 allowClear
                 enterButton
                 onSearch={(value) => handleSearch(value)}
-                style={{ width: 300, marginRight: '400px' }}
+                style={{ width: 300, marginRight: '500px' }}
               />
               <Dropdown
                 overlay={menu1}
@@ -432,7 +432,7 @@ const Page: React.FC = () => {
                 <Button
                   style={{
                     backgroundColor: 'white',
-                    color: 'black',
+                    color: 'black',fontWeight
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',

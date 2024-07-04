@@ -176,10 +176,6 @@ const Page: React.FC = () => {
     router.push('/login');
   };
 
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/petugas/${id}`;
-  };
-
   // menu akun
   const menu = (
     <Menu>
@@ -440,10 +436,6 @@ const Page: React.FC = () => {
           bordered
           dataSource={listPetugas?.data}
           pagination={{ pageSize: 5 }}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record.id),
-            style: { cursor: 'pointer' },
-          })}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />

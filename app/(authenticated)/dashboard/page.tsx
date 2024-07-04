@@ -26,6 +26,7 @@ import {
 import Chart from 'chart.js/auto';
 import type { UploadFile } from 'antd';
 import { useRouter } from 'next/navigation';
+import { akunRepository } from '#/repository/akun';
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -58,6 +59,8 @@ const Page = () => {
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '800';
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
   // const chartRef = useRef<HTMLCanvasElement>(null);
 
   // tahun
@@ -75,10 +78,31 @@ const Page = () => {
     router.push('/login');
   };
 
+
+  const profile = () => {
+    router.push('/profile');
+  };
+
   // menu akun
   const menu = (
     <Menu>
-      <Item key="1" onClick={() => logout()}>
+      {role === 'petugas' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      {role === 'peminjam' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      <Item key="2" onClick={() => logout()}>
         <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
           <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
           Keluar
@@ -403,7 +427,7 @@ const Page = () => {
             marginRight: '0',
             display: 'absolute',
             bottom: '-60px',
-            right: '-300px',
+            right: '-70px',
             width: '200px',
             height: '40px',
             backgroundColor: 'white',

@@ -29,6 +29,9 @@ const api = {
   login(data: any) {
     return http.post(url.loginAkun()).send(data);
   },
+  akun(data: any) {
+    return http.post(url.getAkun()).send(data);
+  },
   uploadBarang(data: any) {
     const formData = new FormData();
     formData.append('foto', data);

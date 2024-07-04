@@ -432,7 +432,8 @@ const Page: React.FC = () => {
                 <Button
                   style={{
                     backgroundColor: 'white',
-                    color: 'black',fontWeight
+                    color: 'black',
+                    fontWeight: 'bold',
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',

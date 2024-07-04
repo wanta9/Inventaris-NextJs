@@ -89,7 +89,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         <Card
           style={{
             width: '80%',
-            height: '700px',
+            height: '600px',
             marginTop: '50px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
@@ -193,107 +193,93 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
       {role === 'peminjam' && (
         <Card
-          style={{
-            width: '80%',
-            height: '700px',
-            marginTop: '50px',
-            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          <Row align="middle" justify="center">
-            <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <div
-                style={{
-                  width: '80%',
-                  height: '400px',
-                  backgroundColor: '#D9D9D9',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  left: '75px',
-                  top: '-80px',
-                  bottom: '',
-                }}
-              >
-                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
-              </div>
-            </Col>
-            <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Nama Barang
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Harga
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{formattedHarga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '200px', marginBottom: '20px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
-            >
-              Deskripsi
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={1}
-              span={23}
+        style={{
+          width: '80%',
+          height: 'auto',
+          marginTop: '50px',
+          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Row align="middle" justify="center" gutter={[16, 16]}>
+          <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
               style={{
-                fontWeight,
-                fontFamily,
-                fontSize: '17px',
-                overflowY: wordCount > 100 ? 'scroll' : 'visible',
-                maxHeight: wordCount > 100 ? '100px' : 'auto',
-                whiteSpace: 'pre-wrap',
+                width: '80%',
+                height: '400px',
+                backgroundColor: '#D9D9D9',
+                borderRadius: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative', // Changed from 'absolute' to 'relative'
+                marginTop: '10px', // Adjusted positioning for different screen sizes
               }}
             >
-              {ruanganBarangById?.data?.deskripsi}
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={21}
-              span={23}
+              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+            </div>
+          </Col>
+          <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Nama Barang
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Harga
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{formattedHarga}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Stok Keseluruhan
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
+            Deskripsi
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            span={24}
+            style={{
+              fontWeight,
+              fontFamily,
+              fontSize: '17px',
+              overflowY: wordCount > 100 ? 'scroll' : 'visible',
+              maxHeight: wordCount > 100 ? '100px' : 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {ruanganBarangById?.data?.deskripsi}
+          </Col>
+        </Row>
+        <Row justify="end" style={{ marginTop: '20px' }}>
+          <Col>
+            <Button
               style={{
-                fontWeight,
-                fontFamily,
+                backgroundColor: '#582DD2',
+                color: 'white',
+                width: '150px',
+                height: '50px',
+                borderRadius: '10px',
               }}
+              onClick={showModal}
             >
-              <Button
-                style={{
-                  marginTop: '40px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  width: '10%',
-                  height: '50px',
-                  borderRadius: '10px',
-                }}
-                onClick={showModal}
-              >
-                Pinjam
-              </Button>
-            </Col>
-          </Row>
-        </Card>
+              Pinjam
+            </Button>
+          </Col>
+        </Row>
+      </Card>
+      
       )}
 
       <Modal

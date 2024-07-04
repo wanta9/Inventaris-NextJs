@@ -1122,14 +1122,14 @@ const Page: React.FC = () => {
                       }}
                     >
                       <img
-                        src={listRuanganBarang?.data[0]?.barang?.gambar}
+                        src={listRuanganBarang?.data[0]?.gambar}
                         alt="Gambar Barang"
                         style={{ width: '100%' }}
                       />
                     </div>
                   }
                 >
-                  <Meta title={listRuanganBarang?.data[0]?.barang?.nama} description={null} />
+                  <Meta title={listRuanganBarang?.data[0].nama} description={null} />
                   <div
                     style={{
                       marginTop: '8px',
@@ -1138,7 +1138,7 @@ const Page: React.FC = () => {
                       justifyContent: 'flex-end',
                     }}
                   >
-                    {listRuanganBarang?.data[0]?.barang?.jumlah}
+                    {listRuanganBarang?.data[0]?.jumlah}
                   </div>
                 </Card>
               </div>

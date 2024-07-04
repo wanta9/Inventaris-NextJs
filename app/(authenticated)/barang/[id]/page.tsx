@@ -1,12 +1,13 @@
 'use client';
 
-import { Button, Card, Col, Divider, Row, Select, Table } from 'antd';
-import React from 'react';
+import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input, Space, InputNumber } from 'antd';
+import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
+import { values } from 'mobx';
 
 const { Option } = Select;
 
@@ -18,6 +19,14 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
+  const harga = ruanganBarangById?.data?.harga;
+
+  // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
+  const formattedHarga = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(harga);
 
   const deskripsi = ruanganBarangById?.data?.barang?.deskripsi || '';
 
@@ -49,10 +58,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       title: 'Letak Barang',
       dataIndex: 'letakBarang',
       key: 'letakBarang',
-      // render: (text: string, record: DataType) => {
-      //   console.log(record);
-      //   return record.ruangan.Letak_Barang;
-      // },
     },
     {
       title: 'Jumlah',
@@ -60,6 +65,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       key: 'jumlah',
     },
   ];
+
+  // Modal state and handlers
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
@@ -69,7 +89,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         <Card
           style={{
             width: '80%',
-            height: '700px',
+            height: '600px',
             marginTop: '50px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
@@ -117,7 +137,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.harga}</Col>
+                <Col span={5}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
@@ -173,14 +193,106 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
       {role === 'peminjam' && (
         <Card
-          style={{
-            width: '80%',
-            height: '700px',
-            marginTop: '50px',
-            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          <Row align="middle" justify="center">
+        style={{
+          width: '80%',
+          height: 'auto',
+          marginTop: '50px',
+          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Row align="middle" justify="center" gutter={[16, 16]}>
+          <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+              style={{
+                width: '80%',
+                height: '400px',
+                backgroundColor: '#D9D9D9',
+                borderRadius: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'relative', // Changed from 'absolute' to 'relative'
+                marginTop: '10px', // Adjusted positioning for different screen sizes
+              }}
+            >
+              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+            </div>
+          </Col>
+          <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Nama Barang
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Harga
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{formattedHarga}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col xs={9} style={{ fontWeight, fontFamily }}>
+                Stok Keseluruhan
+              </Col>
+              <Col xs={2}>:</Col>
+              <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
+            Deskripsi
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            span={24}
+            style={{
+              fontWeight,
+              fontFamily,
+              fontSize: '17px',
+              overflowY: wordCount > 100 ? 'scroll' : 'visible',
+              maxHeight: wordCount > 100 ? '100px' : 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {ruanganBarangById?.data?.deskripsi}
+          </Col>
+        </Row>
+        <Row justify="end" style={{ marginTop: '20px' }}>
+          <Col>
+            <Button
+              style={{
+                backgroundColor: '#582DD2',
+                color: 'white',
+                width: '150px',
+                height: '50px',
+                borderRadius: '10px',
+              }}
+              onClick={showModal}
+            >
+              Pinjam
+            </Button>
+          </Col>
+        </Row>
+      </Card>
+      
+      )}
+
+      <Modal
+        title="Pinjam Barang"
+        visible={isModalVisible}
+        width={1300}
+        centered
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Pinjam"
+        cancelText="Batal"
+      >
+        <Row align="middle" justify="center">
             <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
               <div
                 style={{
@@ -230,7 +342,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               span={24}
               style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
             >
-              Deskripsi
+              Pilih Ruangan
             </Col>
           </Row>
           <Row>
@@ -241,41 +353,41 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 fontWeight,
                 fontFamily,
                 fontSize: '17px',
-                overflowY: wordCount > 100 ? 'scroll' : 'visible',
-                maxHeight: wordCount > 100 ? '100px' : 'auto',
                 whiteSpace: 'pre-wrap',
-              }}
-            >
-              {ruanganBarangById?.data?.barang?.deskripsi}
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={21}
-              span={23}
-              style={{
-                fontWeight,
-                fontFamily,
               }}
             >
               <Button
                 style={{
-                  marginTop: '40px',
                   backgroundColor: '#582DD2',
                   color: 'white',
-                  width: '10%',
-                  height: '50px',
+                  width: '8%',
+                  height: '40px',
                   borderRadius: '10px',
                 }}
               >
-                <a href="http://localhost:3002/barang" style={{ fontSize: '15px', fontWeight }}>
-                  Pinjam
-                </a>
+                Pinjam
               </Button>
             </Col>
           </Row>
-        </Card>
-      )}
+          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
+            <Col
+              push={1}
+              span={24}
+              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
+            >
+              Tentukan Jumlah
+            </Col>
+          </Row>
+          <Col>
+          <Row>
+          <Space>
+      <Button onClick={() => onchange(values - 1)}>-</Button>
+      <InputNumber min={1} value={values} onChange={onchange} />
+      <Button onClick={() => onchange(values + 1)}>+</Button>
+    </Space>
+          </Row>
+          </Col>
+      </Modal>
 
       <div
         style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}

@@ -1,24 +1,38 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, Divider, DatePicker, Select } from 'antd';
+import { Button, Card, Row, Col, DatePicker, Modal } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
 
 const { RangePicker } = DatePicker;
-const { Option } = Select;
 
 const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
-  const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
-  const [returnDate, setReturnDate] = useState<Date | null>(() => null);
-  const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
+  const [borrowDate, setBorrowDate] = useState<Date | null>(null);
+  const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [returnedDate, setReturnedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState('Pending');
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
   console.log(peminjamanById, 'barang masuk by id');
 
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for status:', status);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    // Add logic here to handle the rejection
+    console.log('Rejected');
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
   };
 
   const fontFamily = 'Barlow, sans-serif';
@@ -229,20 +243,31 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     >
                       Status
                     </span>
-                      <Button
-                        style={{
-                          color: '#FF0000',
-                          backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                          borderColor: '#FF0000',
-                          marginRight: '10px',
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleButtonClick('Rejected');
-                        }}
-                      >
-                        Tolak
-                      </Button>
+                    <Button
+                      style={{
+                        color: '#FF0000',
+                        backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                        borderColor: '#FF0000',
+                        marginRight: '10px',
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        showModal();
+                      }}
+                    >
+                      Tolak
+                    </Button>
+
+                    <Modal
+                      title="Alasan Ditolak"
+                      visible={isModalVisible}
+                      onOk={handleOk}
+                      onCancel={handleCancel}
+                      okText="Kirim"
+                    >
+                      <p></p>
+                    </Modal>
+
                     <Button
                       style={{
                         color: '#5BFF00',

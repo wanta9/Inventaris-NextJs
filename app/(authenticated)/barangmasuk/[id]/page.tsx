@@ -20,6 +20,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const fontWeight = '700';
 
   const formattedDate = dayjs(barangMasukById?.data?.tanggalMasuk).format('DD-MM-YYYY');
+
   const harga = barangMasukById?.data?.ruanganBarang?.barang?.harga;
 
   // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah

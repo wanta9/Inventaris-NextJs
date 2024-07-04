@@ -245,7 +245,7 @@ const Page: React.FC = () => {
         harga: 0,
       };
       const request = await barangMasukRepository.api.barangMasuk(data);
-      if (request.status === 400) {
+      if (request.status === 400) { 
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Data berhasil disimpan!');

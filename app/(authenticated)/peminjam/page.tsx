@@ -44,7 +44,7 @@ const Peminjam = () => {
     nisn: string;
     status: string;
     gambar: string;
-    akun: Akun;
+    akun: string;
   }
 
   // const initialData: DataType[] = [

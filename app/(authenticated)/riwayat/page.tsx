@@ -15,19 +15,6 @@ const Riwayat = () => {
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-  };
-
-  const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/detailriwayat?id=${id}`;
-  };
-
-  const handleButtonClick = (id: string) => {
-    form.setFieldsValue({ id });
-    // Show the form to update the status
-  };
-
 
   interface DataType {
     key: React.Key;

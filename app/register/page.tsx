@@ -65,17 +65,19 @@ const Register = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-            <Card style={{ width: '90%', maxWidth: 400, padding: 20 }}>
-                <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                    <img src="ikon.png" alt="logo" style={{ width: 100 }} />
-                    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>Pendaftaran</div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Card  style={{ width: '25%', marginTop: '70px', height: '800px'}}>
+                                <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                    <img src="ikon.png" alt="logo" style={{ width: 100, marginTop: '-30px' }} />
+                    <div style={{ fontSize: 18, fontWeight: 'bold' }}>PENDAFTARAN</div>
                 </div>
                 <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
                     <Form.Item
                         label="Nama Pengguna"
                         name="namapengguna"
                         rules={[{ required: true, message: 'Masukkan Nama yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<UserOutlined />} type="text"                           
                         value={createAkun.namaPengguna}
@@ -87,6 +89,8 @@ const Register = () => {
                         label="Sandi"
                         name="sandi"
                         rules={[{ required: true, message: 'Masukkan sandi!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input.Password prefix={<LockOutlined />} type="text"                           
                         value={createAkun.password}
@@ -98,6 +102,8 @@ const Register = () => {
                         label="Konfirmasi Sandi"
                         name="konfirmasisandi"
                         rules={[{ required: true, message: 'Masukkan sandi yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input.Password prefix={<LockOutlined />} type="password" />
                     </Form.Item>
@@ -105,6 +111,8 @@ const Register = () => {
                         label="NISN"
                         name="nisn"
                         rules={[{ required: true, type: 'string', message: 'Masukkan NISN yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px' }} />} type="text"                       
                         value={createAkun.nisn}
@@ -116,6 +124,8 @@ const Register = () => {
                         label="Nama Lengkap"
                         name="namalengkap"
                         rules={[{ required: true, type: 'string', message: 'Masukkan Nama Lengkap yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                     <Input prefix={<img src="/icnnamalengkap.svg" style={{ width: '19px', height: '19px' }} />} type="text"                           
                         value={createAkun.namaPengguna}
@@ -127,6 +137,8 @@ const Register = () => {
                         label="Kelas"
                         name="kelas"
                         rules={[{ required: true, type: 'string', message: 'Masukkan Kelas yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<img src="/icnkelas.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
                         value={createAkun.kelas}
@@ -138,6 +150,8 @@ const Register = () => {
                         label="Nomer Telp"
                         name="nomertelp"
                         rules={[{ required: true, type: 'string', message: 'Masukkan Nomer Telp yang benar!' }]}
+                        style={{ marginLeft: '40px', marginBottom: '5px'}}
+                        wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<img src="/icntelpon.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
                         value={createAkun.telp}
@@ -151,7 +165,7 @@ const Register = () => {
                             block
                             loading={loading}
                             htmlType="submit"
-                            style={{ background: '#582DD2' }}
+                            style={{ background: '#582DD2', width: '329px', marginLeft: '40px', marginTop: '20px' }}
                         >
                             Daftar
                         </Button>
@@ -164,7 +178,7 @@ const Register = () => {
               }}
             >
               <hr
-                style={{ borderTop: '1px solid #ccc', width: '100%', margin: '0', padding: '0' }}
+                style={{ borderTop: '1px solid #ccc', width: '76%', marginLeft:'40px', padding: '0' }}
               />
               <span
                 style={{

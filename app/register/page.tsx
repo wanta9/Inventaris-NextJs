@@ -155,6 +155,33 @@ const Register = () => {
                         >
                             Daftar
                         </Button>
+                        <div
+              style={{
+                textAlign: 'center',
+                position: 'relative',
+                margin: '20px 0',
+                marginTop: '30px',
+              }}
+            >
+              <hr
+                style={{ borderTop: '1px solid #ccc', width: '100%', margin: '0', padding: '0' }}
+              />
+              <span
+                style={{
+                  backgroundColor: '#fff',
+                  position: 'absolute',
+                  top: '-10px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  padding: '0 10px',
+                }}
+              >
+                ATAU
+              </span>
+            </div>
+            <div style={{ textAlign: 'center', paddingTop: '5px' }}>
+              sudah mempunyai akun?<a href="http://localhost:3002/login"> Log in</a>
+            </div>
                     </Form.Item>
                 </Form>
             </Card>

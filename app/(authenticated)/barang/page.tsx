@@ -53,7 +53,7 @@ interface createBarang {
 interface Item {
   key: string;
   kodeBarang: string;
-  namaBarang: string;
+  nama: string;
   letakBarang: string;
   harga: string;
   deskripsi: string;
@@ -184,6 +184,12 @@ const Page: React.FC = () => {
   const role = akun?.data?.peran?.Role;
 
   const [openDropdown, setOpenDropdown] = useState(false);
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
   const handleDropdownClick = () => {
     setOpenDropdown(!openDropdown);
@@ -330,9 +336,9 @@ const Page: React.FC = () => {
   const handleEdit = (record: Item) => {
     setEditData(record);
     setKodeBarang(record.kodeBarang);
-    setNamaBarang(record.namaBarang);
+    setNamaBarang(record.nama);
+    setharga(record.harga);
     setDeskripsi(record.deskripsi);
-    setDeskripsi(record.harga);
     setModalEditVisible(true);
   };
 
@@ -671,7 +677,7 @@ const Page: React.FC = () => {
                         <Input
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           prefix="Rp"
-                          value={harga}
+                          value={harga ? ` ${formatRupiah(harga)}` : ''}
                           placeholder="harga"
                           onChange={handleHargaChange}
                         />
@@ -977,7 +983,7 @@ const Page: React.FC = () => {
                       <Col span={18}>
                         <Input
                           style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                          addonBefore="Rp"
+                          prefix="Rp"
                           value={harga}
                           placeholder="harga"
                           onChange={handleHargaChange}

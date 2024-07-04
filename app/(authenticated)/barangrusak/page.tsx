@@ -246,7 +246,7 @@ const Page: React.FC = () => {
       };
       const request = await barangRusakRepository.api.barangRusak(data);
       if (request.status === 400) {
-        setError(request.body.message); 
+        setError(request.body.message);
       } else {
         message.success('Data berhasil disimpan!');
         setModalVisible(false);
@@ -256,7 +256,7 @@ const Page: React.FC = () => {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Terjadi kesalahan saat menyimpan data.');
-      console.log()
+      console.log();
     } finally {
       setLoading(false);
     }
@@ -512,6 +512,7 @@ const Page: React.FC = () => {
         width={900}
         footer={null}
         cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
+        onCancel={handleModalCancel}
       >
         <Form form={form} layout="horizontal" style={{ marginTop: '50px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -546,12 +547,14 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
-                value={createbarangRusak.jumlah}
-                onChange={(e) =>
-                setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
-                }
-                />s
+                <Input
+                  placeholder="Jumlah"
+                  style={{ width: '100%', height: '40px' }}
+                  value={createbarangRusak.jumlah}
+                  onChange={(e) =>
+                    setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
+                  }
+                />
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"
@@ -605,11 +608,13 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} 
-                value={createbarangRusak.keterangan}
-                onChange={(e) =>
-                setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })
-                }
+                <TextArea
+                  rows={4}
+                  style={{ width: '100%' }}
+                  value={createbarangRusak.keterangan}
+                  onChange={(e) =>
+                    setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })
+                  }
                 />
               </Form.Item>
               <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

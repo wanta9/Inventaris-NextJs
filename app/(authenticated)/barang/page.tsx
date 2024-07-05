@@ -43,6 +43,9 @@ const { Option } = Select;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
+interface createLetakbarang {
+  Letak_Barang: string;
+}
 interface createBarang {
   nama: string;
   harga: string;
@@ -157,6 +160,9 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [letakBarangVisible, setLetakBarangVisible] = useState(false);
   const [letakBarangEditVisible, setLetakBarangEditVisible] = useState(false);
+  const [createLetakbarang, setcreateLetakbarang] = useState<createLetakbarang>({
+    Letak_Barang: '',
+  });
   const [createBarang, setcreateBarang] = useState<createBarang>({
     nama: '',
     harga: '',
@@ -177,7 +183,7 @@ const Page: React.FC = () => {
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
-
+  const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
@@ -275,34 +281,57 @@ const Page: React.FC = () => {
     setDeskripsi('');
   };
 
-  const handleSaveModalData = async (values: any) => {
+  const handleSaveModalData = async (type: 'barang' | 'letakBarang', values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
-      const data = {
-        nama: createBarang.nama,
-        harga: createBarang.harga,
-        deskripsi: createBarang.deskripsi,
-        gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
-        kondisi: 'baik',
-        jumlah: 0,
-      };
-      const request = await barangRepository.api.barang(data);
-      if (request.status === 400) {
-        setError(request.body.message); // Set pesan error
-      } else {
-        message.success('Berhasil Menambahkan Barang!');
+  
+      if (type === 'letakBarang') {
+        // Logic for adding letak barang
+        const data = {
+          LetakBarang: createLetakbarang.Letak_Barang,
+        };
+        const request = await ruanganRepository.api.ruangan(data);
+        if (request.status === 400) {
+          setError(request.body.message); // Set pesan error
+        } else {
+          message.success('Berhasil Menambahkan Letak Barang!');
+          setModalVisible(false);
+        }
+        console.log(request);
+      } else if (type === 'barang') {
+        // Logic for adding barang
+        const data = {
+          nama: createBarang.nama,
+          harga: createBarang.harga,
+          deskripsi: createBarang.deskripsi,
+          gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
+          kondisi: 'baik',
+          jumlah: 0,
+        };
+        const request = await barangRepository.api.barang(data);
+        if (request.status === 400) {
+          setError(request.body.message); // Set pesan error
+        } else {
+          message.success('Berhasil Menambahkan Barang!');
+          setModalVisible(false);
+        }
+        console.log(request);
       }
-      console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error('Gagal Menambahkan Barang');
+      message.error(type === 'letakBarang' ? 'Gagal Menambahkan Letak Barang' : 'Gagal Menambahkan Barang');
     } finally {
       setLoading(false);
     }
   };
+  
+  // Usage examples
+  const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
+  const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
+  
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -432,7 +461,7 @@ const Page: React.FC = () => {
                 <Button
                   style={{
                     backgroundColor: 'white',
-                    color: 'black',fontWeight
+                    color: 'black',
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',
@@ -615,28 +644,7 @@ const Page: React.FC = () => {
             width={1000}
             visible={modalEditVisible}
             onCancel={handleModalCancel}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSaveModalData}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
+            footer={null}
             maskStyle={{
               display: 'flex',
               justifyContent: 'center',
@@ -735,7 +743,7 @@ const Page: React.FC = () => {
           >
             <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
               <Col span={6}>
-                <p>Letak Barang</p>
+                <p>Nama Ruangan</p>
               </Col>
               <Col span={18}>
                 <Input

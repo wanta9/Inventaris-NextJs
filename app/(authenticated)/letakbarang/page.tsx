@@ -370,25 +370,14 @@ const Page: React.FC = () => {
 
         <Modal
           title="Edit Letak Barang"
+          style={{ textAlign: 'center' }}
           visible={modalEditVisible}
           centered
           onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ backgroundColor: '#582DD2' }}
-            >
-              Simpan
-            </Button>,
-          ]}
+          footer={null}
         >
-          <Form layout="vertical">
-            <Form.Item label="Nama Ruangan">
+          <Form layout="horizontal">
+            <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
@@ -396,6 +385,33 @@ const Page: React.FC = () => {
                 className="uppercase-input"
               />
             </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    top: '10px',
+                    right: '-125px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    left: '-25px',
+                    top: '10px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
           </Form>
         </Modal>
       </Card>

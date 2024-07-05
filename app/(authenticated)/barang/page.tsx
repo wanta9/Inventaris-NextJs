@@ -477,6 +477,10 @@ const Page: React.FC = () => {
                   style={{
                     backgroundColor: 'white',
                     color: 'black',
+<<<<<<< HEAD
+                    fontWeight,
+=======
+>>>>>>> ba1e586be195f6979f79edd4172a7b025b4338bb
                     boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     height: '40px',
                     width: '200px',

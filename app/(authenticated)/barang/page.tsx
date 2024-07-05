@@ -189,7 +189,7 @@ const Page: React.FC = () => {
   const role = akun?.data?.peran?.Role;
 
   const [openDropdown, setOpenDropdown] = useState(false);
-  const formatRupiah = (number) => {
+  const formatRupiah = (number: any) => {
     return new Intl.NumberFormat('id-ID', {
       style: 'decimal',
       minimumFractionDigits: 0,

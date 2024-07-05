@@ -555,9 +555,14 @@ const Page: React.FC = () => {
           <DatePicker
             placeholder="Tanggal Masuk"
             style={{ width: '100%', height: '40px' }}
-            value={tanggalMasuk}
-            onChange={(e) => settanggalMasuk(e.target.value)}
-            />
+            value={
+            createbarangMasuk.tanggalMasuk
+              ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+              : null
+          }
+            onChange={handleDateChange}
+            format="YYYY-MM-DD"
+          />
           </Form.Item>        
       </Modal>
       {role === 'admin' && (

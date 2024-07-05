@@ -25,6 +25,7 @@ import { Console } from 'console';
 import { akunRepository } from '#/repository/akun';
 import { ruanganRepository } from '#/repository/ruangan';
 import { barangRepository } from '#/repository/barang';
+import { relative } from 'path';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -539,9 +540,11 @@ const Page: React.FC = () => {
       </Modal>
       <Modal
       centered
-      title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang Masuk</div>}
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Edit Barang Masuk</div>}
+      style={{ textAlign: 'center'}}
       visible={modalEditVisible}
       onCancel={handleModalCancel}
+      footer={null}
       >
       <Form.Item
         name="tanggalMasuk"
@@ -549,8 +552,9 @@ const Page: React.FC = () => {
         colon={false}
         labelAlign="left"
         labelCol={{ span: 7 }}
-        wrapperCol={{ span: 15 }}
+        wrapperCol={{ span: 16 }}
         rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+        style={{  marginTop: '60px'}}
         >
           <DatePicker
             placeholder="Tanggal Masuk"
@@ -563,7 +567,53 @@ const Page: React.FC = () => {
             onChange={handleDateChange}
             format="YYYY-MM-DD"
           />
-          </Form.Item>        
+          </Form.Item>     
+          <Form.Item
+                name="keterangan"
+                label="Keterangan"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 16 }}
+                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+              >
+                <TextArea
+                  rows={4}
+                  style={{ width: '100%', marginLeft: '20px' }}
+                  value={createbarangMasuk.keterangan}
+                  onChange={(e) =>
+                    setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
+                  }
+                />
+              </Form.Item>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '90px',
+                    backgroundColor: '#582DD2',
+                    position: 'absolute',
+                    left: '360px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    position: 'absolute',
+                    left: '290px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
       </Modal>
       {role === 'admin' && (
         <div

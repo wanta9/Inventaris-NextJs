@@ -381,10 +381,10 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           <Col>
           <Row>
           <Space>
-      <Button onClick={() => onchange(values - 1)}>-</Button>
-      <InputNumber min={1} value={values} onChange={onchange} />
-      <Button onClick={() => onchange(values + 1)}>+</Button>
-    </Space>
+            <Button onClick={() => onchange(values - 1)}>-</Button>
+            <InputNumber min={1} value={values} onChange={onchange} />
+            <Button onClick={() => onchange(values + 1)}>+</Button>
+          </Space>
           </Row>
           </Col>
       </Modal>

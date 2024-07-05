@@ -43,6 +43,7 @@ interface Item {
   harga: string;
   jumlah: string;
   tanggalMasuk: string;
+  keterangan: string;
 }
 interface createbarangMasuk {
   harga: string;
@@ -59,6 +60,7 @@ interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   handleSave: (record: Item) => void;
+  handleEdit: (record: Item) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -68,17 +70,12 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   dataIndex,
   record,
   handleSave,
+  handleEdit,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
   const inputRef = useRef<InputRef>(null);
   const form = useContext(EditableContext)!;
-
-  useEffect(() => {
-    if (editing) {
-      inputRef.current?.focus();
-    }
-  }, [editing]);
 
   const toggleEdit = () => {
     setEditing(!editing);
@@ -127,6 +124,7 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   );
 };
 
+
 type EditableTableProps = Parameters<typeof Table>[0];
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
@@ -165,6 +163,7 @@ const Page: React.FC = () => {
   const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangMasuk({ ...createbarangMasuk, tanggalMasuk: dateString });
   };
+
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -227,6 +226,8 @@ const Page: React.FC = () => {
   const handleModalCancel = () => {
     setModalVisible(false);
     setModalEditVisible(false);
+    settanggalMasuk('');
+    setketerangan('');
     form.resetFields();
     setEditData(null);
   };
@@ -274,7 +275,8 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
-    form.setFieldsValue(record.id);
+    settanggalMasuk(record.tanggalMasuk);
+    setketerangan(record.keterangan);
     setModalEditVisible(true);
   };
 
@@ -316,26 +318,24 @@ const Page: React.FC = () => {
       dataIndex: 'tanggalMasuk',
       editable: true,
       render: (text: string) => dayjs(text).format('DD-MM-YYYY'),
-    },
+    },   
     {
       title: '',
       dataIndex: '',
-      onCell: () => ({
-        style: { cursor: 'pointer' },
-      }),
-      render: (record: Item) => (
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ color: 'black' }} />}
-            // Menetapkan onClick khusus untuk tombol Edit
-            onClick={(e) => {
-              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-            }}
-          />
-        </span>
-      ),
+      render: (record: Item) => {
+        return (
+          <span>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+          </span>
+        );
+      },
     },
   ];
 
@@ -536,6 +536,29 @@ const Page: React.FC = () => {
             </div>
           </div>
         </Form>
+      </Modal>
+      <Modal
+      centered
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang Masuk</div>}
+      visible={modalEditVisible}
+      onCancel={handleModalCancel}
+      >
+      <Form.Item
+        name="tanggalMasuk"
+        label="Tanggal Masuk"
+        colon={false}
+        labelAlign="left"
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 15 }}
+        rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+        >
+          <DatePicker
+            placeholder="Tanggal Masuk"
+            style={{ width: '100%', height: '40px' }}
+            value={tanggalMasuk}
+            onChange={(e) => settanggalMasuk(e.target.value)}
+            />
+          </Form.Item>        
       </Modal>
       {role === 'admin' && (
         <div

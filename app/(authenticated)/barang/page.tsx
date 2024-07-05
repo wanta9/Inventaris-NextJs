@@ -56,7 +56,7 @@ interface createBarang {
 interface Item {
   key: string;
   kodeBarang: string;
-  namaBarang: string;
+  nama: string;
   letakBarang: string;
   harga: string;
   deskripsi: string;
@@ -173,7 +173,6 @@ const Page: React.FC = () => {
   const [kodeBarang, setKodeBarang] = useState('');
   const [namaBarang, setNamaBarang] = useState('');
   const [harga, setharga] = useState('');
-  const [letakBarang, setLetakBarang] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -190,6 +189,12 @@ const Page: React.FC = () => {
   const role = akun?.data?.peran?.Role;
 
   const [openDropdown, setOpenDropdown] = useState(false);
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
   const handleDropdownClick = () => {
     setOpenDropdown(!openDropdown);
@@ -281,56 +286,66 @@ const Page: React.FC = () => {
     setDeskripsi('');
   };
 
-  const handleSaveModalData = async (type: 'barang' | 'letakBarang', values: any) => {
+  const handleSaveBarang = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
   
-      if (type === 'letakBarang') {
-        // Logic for adding letak barang
-        const data = {
-          LetakBarang: createLetakbarang.Letak_Barang,
-        };
-        const request = await ruanganRepository.api.ruangan(data);
-        if (request.status === 400) {
-          setError(request.body.message); // Set pesan error
-        } else {
-          message.success('Berhasil Menambahkan Letak Barang!');
-          setModalVisible(false);
-        }
-        console.log(request);
-      } else if (type === 'barang') {
-        // Logic for adding barang
-        const data = {
-          nama: createBarang.nama,
-          harga: createBarang.harga,
-          deskripsi: createBarang.deskripsi,
-          gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
-          kondisi: 'baik',
-          jumlah: 0,
-        };
-        const request = await barangRepository.api.barang(data);
-        if (request.status === 400) {
-          setError(request.body.message); // Set pesan error
-        } else {
-          message.success('Berhasil Menambahkan Barang!');
-          setModalVisible(false);
-        }
-        console.log(request);
+      const data = {
+        nama: createBarang.nama,
+        harga: createBarang.harga,
+        deskripsi: createBarang.deskripsi,
+        gambar: createBarang.gambar, // Menggunakan gambar yang diunggah
+        kondisi: 'baik',
+        jumlah: 0,
+      };
+      const request = await barangRepository.api.barang(data);
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('Berhasil Menambahkan Barang!');
+        setModalVisible(false);
       }
+      console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error(type === 'letakBarang' ? 'Gagal Menambahkan Letak Barang' : 'Gagal Menambahkan Barang');
+      message.error('Gagal Menambahkan Barang');
     } finally {
       setLoading(false);
     }
   };
   
-  // Usage examples
-  const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
-  const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
+  const handleSaveLetakBarang = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+  
+      const data = {
+        Letak_Barang: createLetakbarang.Letak_Barang,
+      };
+      const request = await ruanganRepository.api.ruangan(data);
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('Berhasil Menambahkan Letak Barang!');
+        setLetakBarangVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Menambahkan Letak Barang');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // // Usage examples
+  // const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
+  // const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
   
 
   const handleChange = async (args: any) => {
@@ -359,9 +374,9 @@ const Page: React.FC = () => {
   const handleEdit = (record: Item) => {
     setEditData(record);
     setKodeBarang(record.kodeBarang);
-    setNamaBarang(record.namaBarang);
+    setNamaBarang(record.nama);
+    setharga(record.harga);
     setDeskripsi(record.deskripsi);
-    setDeskripsi(record.harga);
     setModalEditVisible(true);
   };
 
@@ -466,7 +481,7 @@ const Page: React.FC = () => {
                     height: '40px',
                     width: '200px',
                     fontFamily: 'inherit',
-                    marginLeft: '10px', // Margin here
+                    marginLeft: '10px', 
                   }}
                   onClick={handleDropdownClick}
                 >
@@ -541,7 +556,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveModalData}
+                onClick={handleSaveBarang}
                 style={{
                   marginRight: '27px',
                   backgroundColor: '#582DD2',
@@ -642,8 +657,6 @@ const Page: React.FC = () => {
             style={{ textAlign: 'center' }}
             centered
             width={1000}
-            visible={modalEditVisible}
-            onCancel={handleModalCancel}
             footer={null}
             maskStyle={{
               display: 'flex',
@@ -679,7 +692,7 @@ const Page: React.FC = () => {
                         <Input
                           style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                           prefix="Rp"
-                          value={harga}
+                          value={harga ? ` ${formatRupiah(harga)}` : ''}
                           placeholder="harga"
                           onChange={handleHargaChange}
                         />
@@ -734,7 +747,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveModalData}
+                onClick={handleSaveLetakBarang}
                 style={{ backgroundColor: '#582DD2' }}
               >
                 Simpan
@@ -747,8 +760,10 @@ const Page: React.FC = () => {
               </Col>
               <Col span={18}>
                 <Input
-                  value={letakBarang}
-                  onChange={(e) => setLetakBarang(e.target.value)}
+                value={createLetakbarang.Letak_Barang}
+                onChange={(e) =>
+                 setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
+                }
                   placeholder="Masukkan letak barang"
                   className="uppercase-input"
                 />
@@ -835,7 +850,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveModalData}
+                onClick={handleSaveBarang}
                 style={{
                   marginRight: '27px',
                   backgroundColor: '#582DD2',
@@ -941,7 +956,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveModalData}
+                onClick={handleSaveBarang}
                 style={{
                   marginRight: '27px',
                   backgroundColor: '#582DD2',
@@ -985,7 +1000,7 @@ const Page: React.FC = () => {
                       <Col span={18}>
                         <Input
                           style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                          addonBefore="Rp"
+                          prefix="Rp"
                           value={harga}
                           placeholder="harga"
                           onChange={handleHargaChange}
@@ -1041,7 +1056,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveModalData}
+                onClick={handleSaveLetakBarang}
                 style={{ backgroundColor: '#582DD2' }}
               >
                 Simpan
@@ -1054,8 +1069,10 @@ const Page: React.FC = () => {
               </Col>
               <Col span={18}>
                 <Input
-                  value={letakBarang}
-                  onChange={(e) => setLetakBarang(e.target.value)}
+                value={createLetakbarang.Letak_Barang}
+                onChange={(e) =>
+                 setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
+                }
                   placeholder="Masukkan letak barang"
                   className="uppercase-input"
                 />

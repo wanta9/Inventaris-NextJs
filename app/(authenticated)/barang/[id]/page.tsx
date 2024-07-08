@@ -1,27 +1,35 @@
 'use client';
 
-import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input, Space, InputNumber } from 'antd';
 import React, { useState } from 'react';
+import { Button, Card, Col, Modal, Row, Table, Space, InputNumber } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
-import { values } from 'mobx';
 
-const { Option } = Select;
+const { Meta } = Card;
+
 
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const router = useRouter();
   const { data: ruanganBarangById } = barangRepository.hooks.useBarangById(params.id);
-  console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const harga = ruanganBarangById?.data?.harga;
 
-  // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
+  const [values, setValues] = useState(1);
+  const [count, setCount] = useState(0);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  const decrement = () => {
+    setCount(count - 1);
+  };
+
   const formattedHarga = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
@@ -30,7 +38,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const deskripsi = ruanganBarangById?.data?.barang?.deskripsi || '';
 
-  // Menghitung jumlah kata dalam deskripsi
   const wordCount = deskripsi.split(' ').length;
 
   const dataSource = [
@@ -43,12 +50,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   let totalHeight = 0;
   dataSource.forEach((item) => {
-    // Misalnya, asumsikan setiap item memiliki tinggi 50px
-    totalHeight += 50; // Sesuaikan dengan tinggi sesungguhnya dari masing-masing item
+    totalHeight += 50;
   });
 
-  // Tentukan apakah perlu menampilkan scroll vertikal
   const scrollY = totalHeight > 200 ? { y: 200 } : {};
+
   const Kembali = () => {
     router.push('/barang');
   };
@@ -66,7 +72,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
-  // Modal state and handlers
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -151,7 +156,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <Table
                     dataSource={dataSource}
                     columns={columns}
-                    // pagination={{ pageSize: 3 }}
                     scroll={{ y: 200 }}
                     style={{
                       width: '100%',
@@ -193,76 +197,74 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
       {role === 'peminjam' && (
         <Card
-        style={{
-          width: '80%',
-          height: 'auto',
-          marginTop: '50px',
-          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Row align="middle" justify="center" gutter={[16, 16]}>
-          <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-            <div
-              style={{
-                width: '80%',
-                height: '400px',
-                backgroundColor: '#D9D9D9',
-                borderRadius: '20px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative', // Changed from 'absolute' to 'relative'
-                marginTop: '10px', // Adjusted positioning for different screen sizes
-              }}
+          style={{
+            width: '80%',
+            height: 'auto',
+            marginTop: '50px',
+            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Row align="middle" justify="center" gutter={[16, 16]}>
+            <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+              <div
+                style={{
+                  width: '80%',
+                  height: '400px',
+                  backgroundColor: '#D9D9D9',
+                  borderRadius: '20px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative',
+                  marginTop: '10px',
+                }}
+              >
+                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+              </div>
+            </Col>
+            <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Nama Barang
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Harga
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{formattedHarga}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Stok Keseluruhan
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '-10px', marginBottom: '20px' }}>
+            <Col
+              push={1}
+              span={24}
+              style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '20px' }}
             >
-              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
-            </div>
-          </Col>
-          <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Nama Barang
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
-            </Row>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Harga
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{formattedHarga}</Col>
-            </Row>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Stok Keseluruhan
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
-            Deskripsi
-          </Col>
-        </Row>
-        <Row>
-          <Col
-            span={24}
-            style={{
-              fontWeight,
-              fontFamily,
-              fontSize: '17px',
-              overflowY: wordCount > 100 ? 'scroll' : 'visible',
-              maxHeight: wordCount > 100 ? '100px' : 'auto',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {ruanganBarangById?.data?.deskripsi}
-          </Col>
-        </Row>
-        <Row justify="end" style={{ marginTop: '20px' }}>
+              Deskripsi
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              push={1}
+              span={23}
+              style={{ fontWeight, fontFamily, fontSize: '17px', whiteSpace: 'pre-wrap' }}
+            >
+              {ruanganBarangById?.data?.deskripsi}
+            </Col>
+          </Row>
+          <Row justify="end" style={{ marginTop: '20px' }}>
           <Col>
             <Button
               style={{
@@ -380,11 +382,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           </Row>
           <Col>
           <Row>
-          <Space>
-      <Button onClick={() => onchange(values - 1)}>-</Button>
-      <InputNumber min={1} value={values} onChange={onchange} />
-      <Button onClick={() => onchange(values + 1)}>+</Button>
-    </Space>
+
           </Row>
           </Col>
       </Modal>

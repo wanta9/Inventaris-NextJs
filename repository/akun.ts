@@ -11,7 +11,7 @@ const url = {
   authorize() {
     return `/akun/authorize`;
   },
-  uploadBarang() {
+  uploadAkun() {
     return `/upload/akun`;
   },
 };
@@ -32,11 +32,12 @@ const api = {
   akun(data: any) {
     return http.post(url.getAkun()).send(data);
   },
-  uploadBarang(data: any) {
+  uploadAkun(data: any) {
     const formData = new FormData();
     formData.append('foto', data);
-    return http.post(url.uploadBarang()).send(formData);
+    return http.post(url.uploadAkun()).send(formData);
   },
+
 };
 
 export const akunRepository = {

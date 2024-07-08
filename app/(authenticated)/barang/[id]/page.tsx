@@ -382,7 +382,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           </Row>
           <Col>
           <Row>
-
           </Row>
           </Col>
       </Modal>

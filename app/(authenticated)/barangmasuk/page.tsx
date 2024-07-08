@@ -554,7 +554,7 @@ const Page: React.FC = () => {
         labelCol={{ span: 7 }}
         wrapperCol={{ span: 16 }}
         rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-        style={{  marginTop: '60px'}}
+        style={{  marginTop: '60px', marginLeft: '20px'}}
         >
           <DatePicker
             placeholder="Tanggal Masuk"
@@ -576,6 +576,7 @@ const Page: React.FC = () => {
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 16 }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+                style={{ marginLeft: '20px' }}
               >
                 <TextArea
                   rows={4}

@@ -10,14 +10,14 @@ export enum statusBarang {
     Aktif = 'aktif',
     TidakAktif = 'tidak aktif',
     Pending = 'pending',
-    Diterima = 'ditrima',
+    Diterima = 'diterima',
     Ditolak = 'ditolak',
   }
 
 interface createAkun {
     peranId: string;
     username: string;
-    nisn: string;
+    nomorInduk: string;
     password: string;
     nama: string;
     kelas: string;
@@ -35,7 +35,7 @@ const Register = () => {
     const [createAkun, setcreateAkun] = useState<createAkun>({
     peranId: '4a114c02-5909-4f63-b88b-27ae49b701ac',
     username: '',
-    nisn: '',
+    nomorInduk: '',
     password: '',
     nama: '',
     kelas: '',
@@ -53,7 +53,7 @@ const Register = () => {
       setError(null);
       const data = {
         username: createAkun.username,
-        nisn: createAkun.nisn,
+        nomorInduk: createAkun.nomorInduk,
         password: createAkun.password,
         nama: createAkun.nama,
         kelas: createAkun.kelas,
@@ -127,15 +127,15 @@ const Register = () => {
                     </Form.Item>
                     <Form.Item
                         label="NISN"
-                        name="nisn"
+                        name="nomorInduk"
                         rules={[{ required: true, type: 'string', message: 'Masukkan NISN yang benar!' }]}
                         style={{ marginLeft: '40px', marginBottom: '5px'}}
                         wrapperCol={{ span: 20 }}
                     >
                         <Input prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px' }} />} type="text"                       
-                        value={createAkun.nisn}
+                        value={createAkun.nomorInduk}
                          onChange={(e) =>
-                            setcreateAkun({ ...createAkun, nisn: e.target.value })
+                            setcreateAkun({ ...createAkun, nomorInduk: e.target.value })
                         }/> 
                     </Form.Item>
                     <Form.Item

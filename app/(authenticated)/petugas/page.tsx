@@ -33,17 +33,29 @@ import { useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
 import { akunRepository } from '#/repository/akun';
+import { create } from 'domain';
 
 const { Search } = Input;
 const { Item } = Menu;
 
+export enum statusBarang {
+  Aktif = 'aktif',
+  TidakAktif = 'tidak aktif',
+  Pending = 'pending',
+  Diterima = 'diterima',
+  Ditolak = 'ditolak',
+}
+
 interface createAkunpetugas {
+  peranId: string;
   nama: string;
   nomorInduk: string;
   telp: string;
   gambar: string;
   username: string;
-  sandi: string;
+  password: string;
+  status: statusBarang;
+  kelas: string;
 }
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -160,12 +172,15 @@ const Page: React.FC = () => {
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
+    peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
+    status: statusBarang.Aktif,
     nama: '',
+    kelas: '',
     nomorInduk: '',
     telp: '',
     gambar: '',
     username: '',
-    sandi: '',
+    password: '',
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -212,24 +227,6 @@ const Page: React.FC = () => {
       item.nip.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  // const handleChange = async (args: any) => {
-  //   const file = args.file;
-
-  //   try {
-  //     const createBarang = { file };
-  //     const processUpload = await barangRepository.api.uploadBarang(file);
-  //     setcreateBarang((createBarang) => ({
-  //       ...createBarang,
-  //       gambar: processUpload?.body?.data?.filename
-  //     }));
-  //     console.log(processUpload, "create");
-  //     message.success("Gambar Berhasil Di Unggah!")
-  //   } catch (e) {
-  //     console.log(e, "ini catch e");
-  //     // setTimeout(message.eror("Gambar Gagal Di Unggah"))
-  //   }
-  // }
-
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -249,16 +246,19 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
+        peranId: createAkunpetugas.peranId,
+        status: createAkunpetugas.status,
         nama: createAkunpetugas.nama,
         nomorInduk: createAkunpetugas.nomorInduk,
         telp: createAkunpetugas.telp,
         gambar: createAkunpetugas.gambar,
         username: createAkunpetugas.username,
-        sandi: createAkunpetugas.sandi,
+        password: createAkunpetugas.password,
+        kelas: createAkunpetugas.kelas,
       };
-      const request = await akunRepository.api.uploadAkun(data);
+      const request = await akunRepository.api.akun(data);
       if (request.status === 400) { 
-        setError(request.body.message); // Set pesan error
+        setError(request.body.message); 
       } else {
         message.success('Berhasil Menambah Petugas!');
         setModalVisible(false);
@@ -584,7 +584,7 @@ const Page: React.FC = () => {
                   </Form.Item>
                   <Form.Item
                     label="Sandi"
-                    name="sandi"
+                    name="password"
                     rules={[{ required: true, message: 'Sandi harus di isi' }]}
                     style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
@@ -597,9 +597,9 @@ const Page: React.FC = () => {
                         top: '-35px',
                       }}
                       placeholder="Sandi"
-                      value={createAkunpetugas.sandi}
+                      value={createAkunpetugas.password}
                       onChange={(e) =>
-                        setcreateAkunpetugas({ ...createAkunpetugas, sandi: e.target.value })
+                        setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
                       }
                     />
                   </Form.Item>
@@ -611,7 +611,7 @@ const Page: React.FC = () => {
                       { required: true, message: 'Konfirmasi Sandi harus di isi' },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (!value || getFieldValue('sandi') === value) {
+                          if (!value || getFieldValue('password') === value) {
                             return Promise.resolve();
                           }
                           return Promise.reject(

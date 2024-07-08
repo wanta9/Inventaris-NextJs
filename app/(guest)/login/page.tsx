@@ -108,6 +108,8 @@ const Login = () => {
               belum mempunyai akun?<a href="http://localhost:3002/register"> Daftar Sekarang</a>
             </div>
           </Form.Item>
+
+          
         </Form>
       </Card>
       <div className="login-page">

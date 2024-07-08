@@ -58,7 +58,7 @@ const Page = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
-  const fontWeight = '800';
+  const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   // const chartRef = useRef<HTMLCanvasElement>(null);

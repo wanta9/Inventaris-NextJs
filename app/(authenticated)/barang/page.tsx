@@ -182,10 +182,13 @@ const Page: React.FC = () => {
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
-  const fontWeight = '700';
+  const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
+<<<<<<< HEAD
   const data = Array.isArray(listRuanganBarang?.data) ? listRuanganBarang.data : [];
 
+=======
+>>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
 
@@ -282,9 +285,7 @@ const Page: React.FC = () => {
     setModalVisible(false);
     setModalEditVisible(false);
     setLetakBarangVisible(false);
-    setNamaBarang('');
-    setharga('');
-    setDeskripsi('');
+    setEditData(null);
   };
 
   const handleSaveBarang = async (values: any) => {
@@ -344,9 +345,12 @@ const Page: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
   // // Usage examples
   // const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
   // const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
+=======
+>>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -580,7 +584,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p>Nama Barang</p>
+                        <p style={{ fontWeight }}>Nama Barang</p>
                       </Col>
                       <Col span={18}>
                         <Input
@@ -597,7 +601,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p>Harga</p>
+                        <p style={{ fontWeight }} >Harga</p>
                       </Col>
                       <Col span={18}>
                         <Input
@@ -614,7 +618,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p style={{ marginBottom: '80px' }}>Deskripsi</p>
+                        <p style={{ marginBottom: '80px', fontWeight }}>Deskripsi</p>
                       </Col>
                       <Col span={18}>
                         <Input.TextArea
@@ -635,7 +639,7 @@ const Page: React.FC = () => {
               <Col span={8}>
                 <Row>
                   <Col>
-                    <p style={{ marginLeft: '-40px', marginRight: '20px' }}>Unggah Foto</p>
+                    <p style={{ marginLeft: '-40px', marginRight: '20px', fontWeight }}>Unggah Foto</p>
                   </Col>
                   <Col>
                     <Upload
@@ -653,11 +657,25 @@ const Page: React.FC = () => {
             </Row>
           </Modal>
           <Modal
-            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
+            title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Edit Barang</div>}
             style={{ textAlign: 'center' }}
             centered
+            visible={modalEditVisible}
+            onCancel={handleModalCancel}
             width={1000}
-            footer={null}
+            footer={[
+              <Button key="cancel" onClick={handleModalCancel} style={{ borderColor: 'black' }}>
+                Batal
+              </Button>,
+              <Button
+                key="save"
+                type="primary"
+                onClick={handleSaveLetakBarang}
+                style={{ backgroundColor: '#582DD2' }}
+              >
+                Simpan
+              </Button>,
+            ]}
             maskStyle={{
               display: 'flex',
               justifyContent: 'center',
@@ -671,11 +689,11 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p>Nama Barang</p>
+                        <p style={{ fontWeight }}>Nama Barang</p>
                       </Col>
                       <Col span={18}>
                         <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                          style={{ marginBottom: '12px', width: '75%', height: '40px', borderColor: 'black' }}
                           placeholder="Nama Barang"
                           value={namaBarang}
                           onChange={(e) => setNamaBarang(e.target.value)}
@@ -686,11 +704,11 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p>Harga</p>
+                        <p style={{ fontWeight }}>Harga</p>
                       </Col>
                       <Col span={18}>
                         <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                          style={{ marginBottom: '12px', width: '75%', height: '40px', borderColor: 'black'  }}
                           prefix="Rp"
                           value={harga ? ` ${formatRupiah(harga)}` : ''}
                           placeholder="harga"
@@ -702,11 +720,11 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p>Deskripsi</p>
+                        <p style={{ fontWeight }}>Deskripsi</p>
                       </Col>
                       <Col span={18}>
                         <Input.TextArea
-                          style={{ marginBottom: '12px', width: '75%', height: '80px' }}
+                          style={{ marginBottom: '12px', width: '75%', height: '80px', borderColor: 'black'  }}
                           placeholder="Deskripsi Barang"
                           value={deskripsi}
                           onChange={(e) => setDeskripsi(e.target.value)}
@@ -719,14 +737,14 @@ const Page: React.FC = () => {
               <Col span={8}>
                 <Row>
                   <Col span={8}>
-                    <p>Unggah Foto</p>
+                    <p style={{ fontWeight }} >Unggah Foto</p>
                   </Col>
                   <Col>
                     <Upload
                       action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
                     >
-                      <Button icon={<UploadOutlined />}>Unggah</Button>
+                      <Button style={{ color: 'black', borderColor: 'black'}} icon={<UploadOutlined /> }>Unggah</Button>
                     </Upload>
                   </Col>
                 </Row>
@@ -741,7 +759,7 @@ const Page: React.FC = () => {
             style={{ textAlign: 'center' }}
             onCancel={handleModalCancel}
             footer={[
-              <Button key="cancel" onClick={handleModalCancel}>
+              <Button key="cancel" onClick={handleModalCancel} style={{ borderColor: 'black'}}>
                 Batal
               </Button>,
               <Button
@@ -938,6 +956,7 @@ const Page: React.FC = () => {
               </Col>
             </Row>
           </Modal>
+<<<<<<< HEAD
           <Modal
             title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
             style={{ textAlign: 'center' }}
@@ -1080,6 +1099,9 @@ const Page: React.FC = () => {
             </Row>
           </Modal>
         </div>
+=======
+        </div>  
+>>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
       )}
       {role === 'peminjam' && (
         <div>
@@ -1167,7 +1189,6 @@ const Page: React.FC = () => {
         </div>
       )}
       {/* tutup  */}
-
       {/* menu inpo */}
       {role === 'admin' && (
         <div

@@ -32,9 +32,31 @@ import { Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
+import { akunRepository } from '#/repository/akun';
+import { create } from 'domain';
 
 const { Search } = Input;
 const { Item } = Menu;
+
+export enum statusBarang {
+  Aktif = 'aktif',
+  TidakAktif = 'tidak aktif',
+  Pending = 'pending',
+  Diterima = 'diterima',
+  Ditolak = 'ditolak',
+}
+
+interface createAkunpetugas {
+  peranId: string;
+  nama: string;
+  nomorInduk: string;
+  telp: string;
+  gambar: string;
+  username: string;
+  password: string;
+  status: statusBarang;
+  kelas: string;
+}
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
@@ -134,29 +156,31 @@ interface DataType {
   telp: string;
   nip: string;
 }
-interface createBarang {
-  nama: string;
-  nip: string;
-  telp: string;
-  namaPengguna: string;
-}
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const Page: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
+  const [username, setusername] = useState('');
   const [telp, setTelp] = useState('');
   const [namaPengguna, setNamaPengguna] = useState('');
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
-  const [createBarang, setcreateBarang] = useState<createBarang>({
+  const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
+    peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
+    status: statusBarang.Aktif,
     nama: '',
-    nip: '',
+    kelas: '',
+    nomorInduk: '',
     telp: '',
-    namaPengguna: '',
+    gambar: '',
+    username: '',
+    password: '',
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -167,6 +191,8 @@ const Page: React.FC = () => {
   const [form] = Form.useForm(); 
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
 
   const router = useRouter();
 
@@ -203,24 +229,6 @@ const Page: React.FC = () => {
       item.nip.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  // const handleChange = async (args: any) => {
-  //   const file = args.file;
-
-  //   try {
-  //     const createBarang = { file };
-  //     const processUpload = await barangRepository.api.uploadBarang(file);
-  //     setcreateBarang((createBarang) => ({
-  //       ...createBarang,
-  //       gambar: processUpload?.body?.data?.filename
-  //     }));
-  //     console.log(processUpload, "create");
-  //     message.success("Gambar Berhasil Di Unggah!")
-  //   } catch (e) {
-  //     console.log(e, "ini catch e");
-  //     // setTimeout(message.eror("Gambar Gagal Di Unggah"))
-  //   }
-  // }
-
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -234,48 +242,38 @@ const Page: React.FC = () => {
     setTelp('');
   };
 
-  const handleSaveModalData = () => {
-    // Validasi input kosong
-    form
-      .validateFields()
-      .then((values) => {
-        // Jika semua field tervalidasi
-        if (editData) {
-          // Jika dalam mode edit, update data yang ada
-          const newData = dataSource.map((item) =>
-            item.id === editData.id
-              ? {
-                  ...item,
-                  name: values.nama,
-                  username: values.namaPengguna,
-                  telp: values.telp,
-                  nip: values.nip,
-                }
-              : item
-          );
-          setDataSource(newData);
-          setEditData(null);
-          setModalEditVisible(false);
-        } else {
-          // Jika tidak dalam mode edit, tambahkan data baru
-          const newData = {
-            id: count.toString(),
-            name: values.nama,
-            username: values.namaPengguna,
-            telp: values.telp,
-            nip: values.nip,
-          };
-          setDataSource([...dataSource, newData]);
-          setCount(count + 1);
-          setModalVisible(false);
-        }
-        // Reset form setelah penyimpanan berhasil
-        form.resetFields();
-      })
-      .catch((error) => {
-        // Menampilkan pesan error jika ada validasi yang gagal
-        console.error('Validation failed:', error);
-      });
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        peranId: createAkunpetugas.peranId,
+        status: createAkunpetugas.status,
+        nama: createAkunpetugas.nama,
+        nomorInduk: createAkunpetugas.nomorInduk,
+        telp: createAkunpetugas.telp,
+        gambar: createAkunpetugas.gambar,
+        username: createAkunpetugas.username,
+        password: createAkunpetugas.password,
+        kelas: createAkunpetugas.kelas,
+      };
+      const request = await akunRepository.api.akun(data);
+      if (request.status === 400) { 
+        setError(request.body.message); 
+      } else {
+        message.success('Berhasil Menambah Petugas!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Menambah Petugas!');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = (key: React.Key) => {
@@ -286,7 +284,7 @@ const Page: React.FC = () => {
   const handleEdit = (record: Item) => {
     setEditData(record);
     setNama(record.name);
-    setNamaPengguna(record.username);
+    setusername(record.username);
     setNIP(record.nip);
     setTelp(record.telp);
     setModalEditVisible(true);
@@ -399,6 +397,24 @@ const Page: React.FC = () => {
     },
   };
 
+  const handleChange = async (args: any) => {
+    const file = args.file;
+
+    try {
+      const createBarang = { file };
+      const processUpload = await akunRepository.api.uploadAkun(file);
+      setcreateAkunpetugas((createAkunpetugas: any) => ({
+        ...createAkunpetugas,
+        gambar: processUpload?.body?.data?.filename,
+      }));
+      console.log(processUpload, 'create');
+      message.success('Gambar Berhasil Di Unggah!');
+    } catch (e) {
+      console.log(e, 'ini catch e');
+      // setTimeout(message.eror("Gambar Gagal Di Unggah"))
+    }
+  };
+
   return (
     <div>
       <title>Petugas</title>
@@ -455,12 +471,12 @@ const Page: React.FC = () => {
           <Form
             form={form}
             layout="vertical"
-            onFinish={handleSaveModalData}
+            onFinish={onFinish}
             initialValues={{
               nama: '',
               nip: '',
               telp: '',
-              namaPengguna: '',
+              username: '',
               sandi: '',
               konfirmasiSandi: '',
             }}
@@ -475,6 +491,7 @@ const Page: React.FC = () => {
                     style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
+                      placeholder="Nama"
                       style={{
                         width: '300px',
                         height: '45px',
@@ -482,13 +499,15 @@ const Page: React.FC = () => {
                         top: '-35px',
                         marginLeft: '100px',
                       }}
-                      placeholder="Nama"
-                      onChange={(e) => setNama(e.target.value)}
+                      value={createAkunpetugas.nama}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item
                     label="NIP"
-                    name="nip"
+                    name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
                     style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
@@ -500,8 +519,11 @@ const Page: React.FC = () => {
                         top: '-35px',
                         marginLeft: '100px',
                       }}
+                      value={createAkunpetugas.nomorInduk}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                      }
                       placeholder="NIP"
-                      onChange={(e) => setNIP(e.target.value)}
                     />
                   </Form.Item>
                   <Form.Item
@@ -519,15 +541,17 @@ const Page: React.FC = () => {
                         marginLeft: '100px',
                       }}
                       placeholder="Telp"
-                      onChange={(e) => setTelp(e.target.value)}
-                      maxLength={12}
+                      value={createAkunpetugas.telp}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
                       listType="picture"
                       beforeUpload={() => false}
-                      // onChange={(args) => handleChange(args)}
+                      onChange={(args) => handleChange(args)}
                     >
                       <Button
                         style={{ top: '-30px', marginRight: '50px' }}
@@ -541,7 +565,7 @@ const Page: React.FC = () => {
                 <Col push={2} span={11}>
                   <Form.Item
                     label="Nama Pengguna"
-                    name="namaPengguna"
+                    name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
                     style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
@@ -553,13 +577,16 @@ const Page: React.FC = () => {
                         marginLeft: '150px',
                         top: '-35px',
                       }}
-                      placeholder="Nama Pengguna"
-                      onChange={(e) => setNamaPengguna(e.target.value)}
+                      placeholder="Nama Pengguna"   
+                      value={createAkunpetugas.username}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item
                     label="Sandi"
-                    name="sandi"
+                    name="password"
                     rules={[{ required: true, message: 'Sandi harus di isi' }]}
                     style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
@@ -572,7 +599,10 @@ const Page: React.FC = () => {
                         top: '-35px',
                       }}
                       placeholder="Sandi"
-                      onChange={(e) => setSandi(e.target.value)}
+                      value={createAkunpetugas.password}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item
@@ -583,7 +613,7 @@ const Page: React.FC = () => {
                       { required: true, message: 'Konfirmasi Sandi harus di isi' },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (!value || getFieldValue('sandi') === value) {
+                          if (!value || getFieldValue('password') === value) {
                             return Promise.resolve();
                           }
                           return Promise.reject(
@@ -660,9 +690,9 @@ const Page: React.FC = () => {
         >
           <Form
             layout="horizontal"
-            onFinish={handleSaveModalData}
+            onFinish={onFinish}
             initialValues={{
-              namaPengguna,
+              username,
               nip,
               telp,
             }}
@@ -672,24 +702,30 @@ const Page: React.FC = () => {
                 <Col push={2} span={14}>
                   <Form.Item
                     label="Nama Pengguna"
-                    name="namaPengguna"
+                    name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Nama Pengguna"
-                      onChange={(e) => setNamaPengguna(e.target.value)}
+                      value={createAkunpetugas.username}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item
                     label="NIP"
-                    name="nip"
+                    name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="NIP"
-                      onChange={(e) => setNIP(e.target.value)}
+                      value={createAkunpetugas.nomorInduk}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                      }
                     />
                   </Form.Item>
                   <Form.Item
@@ -700,7 +736,10 @@ const Page: React.FC = () => {
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Telp"
-                      onChange={(e) => setTelp(e.target.value)}
+                      value={createAkunpetugas.telp}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                      }
                       maxLength={12}
                     />
                   </Form.Item>
@@ -729,42 +768,130 @@ const Page: React.FC = () => {
           </Form>
         </Modal>
       </Card>
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '175px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '90px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, Elisabet
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
-                </div>
+                </Button>
               </div>
-            </Button>
+            </Dropdown>
           </div>
-        </Dropdown>
-      </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+        </div>
+        )}
     </div>
   );
 };

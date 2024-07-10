@@ -50,9 +50,12 @@ interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
-  harga: string;
-  jumlah: string;
+  Jumlah: number;
   tanggalRusak: string;
+  jmlBarangDiperbaiki: number;
+  jmlbarangrusak: number;
+  keterangan: string;
+  tanggalPerbaikan: string;
   status: string;
 }
 
@@ -62,6 +65,7 @@ interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   handleSave: (record: Item) => void;
+  handleEdit: (record: Item) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -71,6 +75,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   dataIndex,
   record,
   handleSave,
+  handleEdit,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -159,6 +164,13 @@ const Page: React.FC = () => {
   const { data: akun } = akunRepository.hooks.useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [Jumlah, setJumlah] = useState('');
+  const [jmlbarangrusak, setjmlbarangrusak] = useState('');
+  const [jmlBarangDiperbaiki, setjmlbarangdiperbaiki] = useState<string>('');
+  const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
+  const [keterangan, setketerangan] = useState('');
+  
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -211,13 +223,16 @@ const Page: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+  };
 
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.jumlah.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const filteredData = dataSource.filter(
+  //   (item) =>
+  //     item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.jumlah.toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -274,6 +289,10 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    // setJumlah(record.Jumlah);
+    // setjmlbarangrusak(record.jmlbarangrusak);
+    // setjmlbarangDiperbaiki(record.jmlbarangdiperbaiki);
+    setketerangan(record.keterangan);
     form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
@@ -323,19 +342,20 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (record: Item) => (
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ color: 'black' }} />}
-            // Menetapkan onClick khusus untuk tombol Edit
-            onClick={(e) => {
-              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-            }}
-          />
-        </span>
-      ),
+      render: (record: Item) => {
+        return (
+          <span>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+          </span>
+        );
+      },
     },
   ];
 
@@ -400,16 +420,16 @@ const Page: React.FC = () => {
       </Card>
       <Modal
         visible={modalEditVisible}
-        title={<span style={{ fontWeight: 'bold' }}>Edit Barang Rusak</span>}
-        style={{ textAlign: 'center' }}
+        title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang Rusak</span>}
+        style={{ textAlign: 'center'}}
         onCancel={handleModalCancel}
         centered
         width={900}
         footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ flex: 1, marginRight: '16px' }}>
+            <div style={{ flex: 1 }}>
               <Form.Item
                 name="jumlah"
                 label="Jumlah"
@@ -417,9 +437,10 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
               </Form.Item>
               <Form.Item
                 name="jumlah1"
@@ -434,9 +455,10 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} value={jmlbarangrusak} onChange={(e) => setjmlbarangrusak(e.target.value)}/>
               </Form.Item>
               <Form.Item
                 name="jumlah2"
@@ -451,9 +473,10 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"
@@ -462,6 +485,7 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
                 <DatePicker
@@ -483,22 +507,61 @@ const Page: React.FC = () => {
                 }
                 colon={false}
                 labelAlign="left"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 15 }}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 17 }}
+                style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
+                
               >
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
-                  style={{ width: '100%', height: '40px' }}
+                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
+                  value={jmlBarangDiperbaiki}
+                  onChange={(date, dateString: any) => {
+                    setjmlbarangdiperbaiki(dateString);
+                    form.setFieldsValue({ tanggalPerbaikan: date });
+                  }}
                 />
               </Form.Item>
               <Form.Item
                 name="keterangan"
                 label="Keterangan"
                 colon={false}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 17 }}
+                style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%', height: '170px' }} />
+                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}/>
+              </Form.Item>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '90px',
+                    backgroundColor: '#582DD2',
+                    position: 'absolute',
+                    left: '310px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    width: '90px',
+                    position: 'absolute',
+                    left: '210px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
               </Form.Item>
             </div>
           </div>
@@ -506,15 +569,14 @@ const Page: React.FC = () => {
       </Modal>
       <Modal
         visible={modalVisible}
-        title={<span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>}
+        title={<span style={{ fontWeight: 'bold', fontSize: '20px' }}>Tambah Barang Rusak</span>}
         style={{ textAlign: 'center' }}
         centered
         width={900}
         footer={null}
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
         onCancel={handleModalCancel}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }} onFinish={onFinish}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
@@ -529,17 +591,17 @@ const Page: React.FC = () => {
               >
                 <Select
                   placeholder="Pilih Kode Barang"
-                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                  style={{ width: '100%', height: '40px', textAlign: 'left', borderColor: 'black'}}
                 >
                   {listBarang?.data?.map((barang: any) => (
-                    <Option key={barang.id} value={barang.id}>
+                    <Option key={barang.id} value={barang.id} >
                       {barang.kode}
                     </Option>
                   ))}
                 </Select>
               </Form.Item>
               <Form.Item
-                name="jumlah"
+                name="jumlah" 
                 label="Jumlah"
                 colon={false}
                 labelAlign="left"
@@ -549,25 +611,27 @@ const Page: React.FC = () => {
               >
                 <Input
                   placeholder="Jumlah"
-                  style={{ width: '100%', height: '40px' }}
+                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
                   value={createbarangRusak.jumlah}
                   onChange={(e) =>
                     setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
                   }
                 />
               </Form.Item>
-              <Form.Item
+            </div>
+            <div style={{ flex: 1 }}>
+            <Form.Item
                 name="tanggalRusak"
                 label="Tanggal Rusak"
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
-                wrapperCol={{ span: 15 }}
+                wrapperCol={{ span: 16 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
                 <DatePicker
                   placeholder="Tanggal Rusak"
-                  style={{ width: '100%', height: '40px' }}
+                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
                   value={
                     createbarangRusak.tanggalRusak
                       ? dayjs(createbarangRusak.tanggalRusak, 'YYYY-MM-DD')
@@ -577,55 +641,34 @@ const Page: React.FC = () => {
                   format="YYYY-MM-DD"
                 />
               </Form.Item>
-            </div>
-            <div style={{ flex: 1 }}>
-              <Form.Item
-                name="ruanganId"
-                label="Ruangan"
-                colon={false}
-                // Agar ke Kiri Teksnya
-                labelAlign="left"
-                // Atur Col
-                labelCol={{ span: 5 }}
-                // Atur lebar Input
-                wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
-              >
-                <Select
-                  placeholder="Pilih Ruangan"
-                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
-                >
-                  {listRuangan?.data?.map((ruangan) => (
-                    <Option key={ruangan.id} value={ruangan.id}>
-                      {ruangan.Letak_Barang}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
               <Form.Item
                 name="keterangan"
                 label="Keterangan"
                 colon={false}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
                 <TextArea
                   rows={4}
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', borderColor: 'black', marginLeft: '35px' }}
                   value={createbarangRusak.keterangan}
                   onChange={(e) =>
                     setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })
                   }
                 />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
                 <Button
                   type="primary"
                   htmlType="submit"
                   style={{
+                    width: '90px',
                     backgroundColor: '#582DD2',
-                    display: 'absolute',
-                    marginRight: '-150px',
-                    marginBottom: '-40px',
+                    position: 'absolute',
+                    left: '330px',
                   }}
                 >
                   <span>Simpan</span>
@@ -634,8 +677,11 @@ const Page: React.FC = () => {
                   type="default"
                   onClick={handleModalCancel}
                   style={{
-                    display: 'absolute',
-                    marginBottom: '-40px',
+                    width: '90px',
+                    position: 'absolute',
+                    left: '230px',
+                    borderColor: 'black',
+                    color: 'black',
                   }}
                 >
                   <span>Batal</span>

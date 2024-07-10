@@ -184,7 +184,6 @@ const Page: React.FC = () => {
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
-
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
 
@@ -281,9 +280,6 @@ const Page: React.FC = () => {
     setModalVisible(false);
     setModalEditVisible(false);
     setLetakBarangVisible(false);
-    setNamaBarang('');
-    setharga('');
-    setDeskripsi('');
     setEditData(null);
   };
 
@@ -343,11 +339,7 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
-  // // Usage examples
-  // const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
-  // const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
-  
+
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -1046,7 +1038,6 @@ const Page: React.FC = () => {
         </div>
       )}
       {/* tutup  */}
-
       {/* menu inpo */}
       {role === 'admin' && (
         <div

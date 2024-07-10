@@ -15,7 +15,7 @@ import {
   Dropdown,
   Menu,
 } from 'antd';
-import { EditOutlined, PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
+import { PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import TextArea from 'antd/es/input/TextArea';
 import { barangMasukRepository } from '#/repository/barangmasuk';

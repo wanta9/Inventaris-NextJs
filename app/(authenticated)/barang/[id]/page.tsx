@@ -208,15 +208,16 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
               <div
                 style={{
-                  width: '80%',
-                  height: '400px',
+                  width: '70%',
+                  height: '300px',
                   backgroundColor: '#D9D9D9',
                   borderRadius: '20px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                   position: 'relative',
-                  marginTop: '10px',
+                  marginTop: '30px',
+                  marginLeft: '-40px',
                 }}
               >
                 <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
@@ -224,25 +225,25 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Col>
             <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
               <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Nama Barang
                 </Col>
                 <Col xs={2}>:</Col>
-                <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{ruanganBarangById?.data?.nama}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Harga
                 </Col>
                 <Col xs={2}>:</Col>
-                <Col xs={13}>{formattedHarga}</Col>
+                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Stok Keseluruhan
                 </Col>
                 <Col xs={2}>:</Col>
-                <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{ruanganBarangById?.data?.jumlah}</Col>
               </Row>
             </Col>
           </Row>
@@ -250,7 +251,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col
               push={1}
               span={24}
-              style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '20px' }}
+              style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '40px', marginLeft: '10px' }}
             >
               Deskripsi
             </Col>
@@ -259,7 +260,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col
               push={1}
               span={23}
-              style={{ fontWeight, fontFamily, fontSize: '17px', whiteSpace: 'pre-wrap' }}
+              style={{ fontWeight, fontFamily, fontSize: '17px', whiteSpace: 'pre-wrap', marginLeft: '10px' }}
             >
               {ruanganBarangById?.data?.deskripsi}
             </Col>
@@ -285,7 +286,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       )}
 
       <Modal
-        title="Pinjam Barang"
         visible={isModalVisible}
         width={1300}
         centered
@@ -316,21 +316,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Col>
             <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
               <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
+                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Nama Barang
                 </Col>
                 <Col span={2}>:</Col>
                 <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
+                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
                 <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
+                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
                   Stok Keseluruhan
                 </Col>
                 <Col span={2}>:</Col>

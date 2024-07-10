@@ -1,20 +1,7 @@
 'use client';
 
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Modal,
-  Row,
-  Select,
-  Table,
-  Form,
-  Input,
-  Space,
-  InputNumber,
-} from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Button, Card, Col, Modal, Row, Table, Space, InputNumber } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
@@ -22,18 +9,18 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { values } from 'mobx';
 
-const { Option } = Select;
+// const { Option } = Select;
 
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const router = useRouter();
   const { data: ruanganBarangById } = barangRepository.hooks.useBarangById(params.id);
-
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const harga = ruanganBarangById?.data?.harga;
+
   const [ruanganNames, setRuanganNames] = useState<string[]>([]);
 
   useEffect(() => {
@@ -42,6 +29,14 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       setRuanganNames(names);
     }
   }, [ruanganBarangById]);
+
+  const [value, setValue] = useState(1);
+
+  const handleChange = (newValue) => {
+    if (newValue >= 1) {
+      setValue(newValue);
+    }
+  };
 
   // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
   const formattedHarga = new Intl.NumberFormat('id-ID', {
@@ -101,14 +96,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-  };
-
-  const [value, setValue] = useState(1);
-
-  const handleChange = (newValue) => {
-    if (newValue >= 1) {
-      setValue(newValue);
-    }
   };
 
   return (
@@ -241,8 +228,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  position: 'relative', // Changed from 'absolute' to 'relative'
-                  marginTop: '10px', // Adjusted positioning for different screen sizes
+                  position: 'relative',
+                  marginTop: '10px',
                 }}
               >
                 <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
@@ -272,22 +259,20 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               </Row>
             </Col>
           </Row>
-          <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
-            <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
+          <Row style={{ marginTop: '-10px', marginBottom: '20px' }}>
+            <Col
+              push={1}
+              span={24}
+              style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '20px' }}
+            >
               Deskripsi
             </Col>
           </Row>
           <Row>
             <Col
-              span={24}
-              style={{
-                fontWeight,
-                fontFamily,
-                fontSize: '17px',
-                overflowY: wordCount > 100 ? 'scroll' : 'visible',
-                maxHeight: wordCount > 100 ? '100px' : 'auto',
-                whiteSpace: 'pre-wrap',
-              }}
+              push={1}
+              span={23}
+              style={{ fontWeight, fontFamily, fontSize: '17px', whiteSpace: 'pre-wrap' }}
             >
               {ruanganBarangById?.data?.deskripsi}
             </Col>
@@ -413,11 +398,14 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         </Row>
         <Col>
           <Row>
-            <Space>
-              <Button onClick={() => handleChange(value - 1)}>-</Button>
-              <InputNumber min={1} value={value} onChange={handleChange} controls={false} />
-              <Button onClick={() => handleChange(value + 1)}>+</Button>
-            </Space>
+            <Button onClick={() => handleChange(value - 1)}>-</Button>
+            <InputNumber
+              min={1}
+              value={value}
+              onChange={handleChange}
+              className="custom-input-number" // Apply the custom CSS class
+            />
+            <Button onClick={() => handleChange(value + 1)}>+</Button>
           </Row>
         </Col>
       </Modal>

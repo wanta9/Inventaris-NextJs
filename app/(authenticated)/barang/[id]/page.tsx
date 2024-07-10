@@ -1,7 +1,20 @@
 'use client';
 
-import { Button, Card, Col, Divider, Modal, Row, Select, Table, Form, Input, Space, InputNumber } from 'antd';
-import React, { useState } from 'react';
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Modal,
+  Row,
+  Select,
+  Table,
+  Form,
+  Input,
+  Space,
+  InputNumber,
+} from 'antd';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import { ruanganBarangRepository } from '#/repository/ruanganbarang';
@@ -16,10 +29,19 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontWeight = '700';
   const router = useRouter();
   const { data: ruanganBarangById } = barangRepository.hooks.useBarangById(params.id);
+
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const harga = ruanganBarangById?.data?.harga;
+  const [ruanganNames, setRuanganNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (ruanganBarangById?.data?.ruanganBarang) {
+      const names = ruanganBarangById.data.ruanganBarang.map((item) => item.ruangan.Letak_Barang);
+      setRuanganNames(names);
+    }
+  }, [ruanganBarangById]);
 
   // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
   const formattedHarga = new Intl.NumberFormat('id-ID', {
@@ -79,6 +101,14 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const [value, setValue] = useState(1);
+
+  const handleChange = (newValue) => {
+    if (newValue >= 1) {
+      setValue(newValue);
+    }
   };
 
   return (
@@ -193,93 +223,92 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
       {role === 'peminjam' && (
         <Card
-        style={{
-          width: '80%',
-          height: 'auto',
-          marginTop: '50px',
-          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <Row align="middle" justify="center" gutter={[16, 16]}>
-          <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-            <div
+          style={{
+            width: '80%',
+            height: 'auto',
+            marginTop: '50px',
+            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <Row align="middle" justify="center" gutter={[16, 16]}>
+            <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+              <div
+                style={{
+                  width: '80%',
+                  height: '400px',
+                  backgroundColor: '#D9D9D9',
+                  borderRadius: '20px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'relative', // Changed from 'absolute' to 'relative'
+                  marginTop: '10px', // Adjusted positioning for different screen sizes
+                }}
+              >
+                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+              </div>
+            </Col>
+            <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Nama Barang
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Harga
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{formattedHarga}</Col>
+              </Row>
+              <Row style={{ marginBottom: '30px' }}>
+                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                  Stok Keseluruhan
+                </Col>
+                <Col xs={2}>:</Col>
+                <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
+              Deskripsi
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              span={24}
               style={{
-                width: '80%',
-                height: '400px',
-                backgroundColor: '#D9D9D9',
-                borderRadius: '20px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative', // Changed from 'absolute' to 'relative'
-                marginTop: '10px', // Adjusted positioning for different screen sizes
+                fontWeight,
+                fontFamily,
+                fontSize: '17px',
+                overflowY: wordCount > 100 ? 'scroll' : 'visible',
+                maxHeight: wordCount > 100 ? '100px' : 'auto',
+                whiteSpace: 'pre-wrap',
               }}
             >
-              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
-            </div>
-          </Col>
-          <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Nama Barang
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
-            </Row>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Harga
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{formattedHarga}</Col>
-            </Row>
-            <Row style={{ marginBottom: '30px' }}>
-              <Col xs={9} style={{ fontWeight, fontFamily }}>
-                Stok Keseluruhan
-              </Col>
-              <Col xs={2}>:</Col>
-              <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <Col span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
-            Deskripsi
-          </Col>
-        </Row>
-        <Row>
-          <Col
-            span={24}
-            style={{
-              fontWeight,
-              fontFamily,
-              fontSize: '17px',
-              overflowY: wordCount > 100 ? 'scroll' : 'visible',
-              maxHeight: wordCount > 100 ? '100px' : 'auto',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {ruanganBarangById?.data?.deskripsi}
-          </Col>
-        </Row>
-        <Row justify="end" style={{ marginTop: '20px' }}>
-          <Col>
-            <Button
-              style={{
-                backgroundColor: '#582DD2',
-                color: 'white',
-                width: '150px',
-                height: '50px',
-                borderRadius: '10px',
-              }}
-              onClick={showModal}
-            >
-              Pinjam
-            </Button>
-          </Col>
-        </Row>
-      </Card>
-      
+              {ruanganBarangById?.data?.deskripsi}
+            </Col>
+          </Row>
+          <Row justify="end" style={{ marginTop: '20px' }}>
+            <Col>
+              <Button
+                style={{
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  width: '150px',
+                  height: '50px',
+                  borderRadius: '10px',
+                }}
+                onClick={showModal}
+              >
+                Pinjam
+              </Button>
+            </Col>
+          </Row>
+        </Card>
       )}
 
       <Modal
@@ -293,100 +322,104 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         cancelText="Batal"
       >
         <Row align="middle" justify="center">
-            <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <div
-                style={{
-                  width: '80%',
-                  height: '400px',
-                  backgroundColor: '#D9D9D9',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  left: '75px',
-                  top: '-80px',
-                  bottom: '',
-                }}
-              >
-                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
-              </div>
-            </Col>
-            <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Nama Barang
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Harga
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '200px', marginBottom: '20px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
-            >
-              Pilih Ruangan
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={1}
-              span={23}
+          <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
               style={{
-                fontWeight,
-                fontFamily,
-                fontSize: '17px',
-                whiteSpace: 'pre-wrap',
+                width: '80%',
+                height: '400px',
+                backgroundColor: '#D9D9D9',
+                borderRadius: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                left: '75px',
+                top: '-80px',
+                bottom: '',
               }}
             >
+              <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+            </div>
+          </Col>
+          <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight, fontFamily }}>
+                Nama Barang
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight, fontFamily }}>
+                Harga
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight, fontFamily }}>
+                Stok Keseluruhan
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '200px', marginBottom: '20px' }}>
+          <Col
+            push={1}
+            span={24}
+            style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
+          >
+            Pilih Ruangan
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            push={1}
+            span={23}
+            style={{
+              fontWeight,
+              fontFamily,
+              fontSize: '17px',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {ruanganNames.map((name, index) => (
               <Button
+                key={index}
                 style={{
                   backgroundColor: '#582DD2',
                   color: 'white',
                   width: '8%',
                   height: '40px',
                   borderRadius: '10px',
+                  marginBottom: '10px',
                 }}
               >
-                Pinjam
+                {name}
               </Button>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
-            >
-              Tentukan Jumlah
-            </Col>
-          </Row>
-          <Col>
-          <Row>
-          <Space>
-      <Button onClick={() => onchange(values - 1)}>-</Button>
-      <InputNumber min={1} value={values} onChange={onchange} />
-      <Button onClick={() => onchange(values + 1)}>+</Button>
-    </Space>
-          </Row>
+            ))}
           </Col>
+        </Row>
+        <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <Col
+            push={1}
+            span={24}
+            style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
+          >
+            Tentukan Jumlah
+          </Col>
+        </Row>
+        <Col>
+          <Row>
+            <Space>
+              <Button onClick={() => handleChange(value - 1)}>-</Button>
+              <InputNumber min={1} value={value} onChange={handleChange} controls={false} />
+              <Button onClick={() => handleChange(value + 1)}>+</Button>
+            </Space>
+          </Row>
+        </Col>
       </Modal>
 
       <div

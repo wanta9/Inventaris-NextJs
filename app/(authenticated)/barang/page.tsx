@@ -184,6 +184,7 @@ const Page: React.FC = () => {
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
+  const data = Array.isArray(listRuanganBarang?.data) ? listRuanganBarang.data : [];
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -291,7 +292,7 @@ const Page: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-  
+
       const data = {
         nama: createBarang.nama,
         harga: createBarang.harga,
@@ -316,13 +317,13 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   const handleSaveLetakBarang = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
-  
+
       const data = {
         Letak_Barang: createLetakbarang.Letak_Barang,
       };
@@ -342,11 +343,10 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   // // Usage examples
   // const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
   // const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
-  
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -481,7 +481,7 @@ const Page: React.FC = () => {
                     height: '40px',
                     width: '200px',
                     fontFamily: 'inherit',
-                    marginLeft: '10px', 
+                    marginLeft: '10px',
                   }}
                   onClick={handleDropdownClick}
                 >
@@ -760,10 +760,10 @@ const Page: React.FC = () => {
               </Col>
               <Col span={18}>
                 <Input
-                value={createLetakbarang.Letak_Barang}
-                onChange={(e) =>
-                 setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
-                }
+                  value={createLetakbarang.Letak_Barang}
+                  onChange={(e) =>
+                    setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
+                  }
                   placeholder="Masukkan letak barang"
                   className="uppercase-input"
                 />
@@ -1069,10 +1069,10 @@ const Page: React.FC = () => {
               </Col>
               <Col span={18}>
                 <Input
-                value={createLetakbarang.Letak_Barang}
-                onChange={(e) =>
-                 setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
-                }
+                  value={createLetakbarang.Letak_Barang}
+                  onChange={(e) =>
+                    setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
+                  }
                   placeholder="Masukkan letak barang"
                   className="uppercase-input"
                 />
@@ -1120,14 +1120,13 @@ const Page: React.FC = () => {
             </Dropdown>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-            {listRuanganBarang?.data.map((item, index) => (
+            {data.map((item, index) => (
               <div
                 key={index}
                 onClick={() => handleRowClick(item.id)}
                 style={{ cursor: 'pointer' }}
               >
                 <Card
-                  key={index}
                   hoverable
                   style={{
                     width: 240,
@@ -1146,15 +1145,11 @@ const Page: React.FC = () => {
                         height: '160px',
                       }}
                     >
-                      <img
-                        src={listRuanganBarang?.data[0]?.gambar}
-                        alt="Gambar Barang"
-                        style={{ width: '100%' }}
-                      />
+                      <img src={item.gambar} alt="Gambar Barang" style={{ width: '100%' }} />
                     </div>
                   }
                 >
-                  <Meta title={listRuanganBarang?.data[0].nama} description={null} />
+                  <Meta title={item.nama} description={null} />
                   <div
                     style={{
                       marginTop: '8px',
@@ -1163,7 +1158,7 @@ const Page: React.FC = () => {
                       justifyContent: 'flex-end',
                     }}
                   >
-                    {listRuanganBarang?.data[0]?.jumlah}
+                    {item.jumlah}
                   </div>
                 </Card>
               </div>

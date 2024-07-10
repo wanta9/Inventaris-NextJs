@@ -148,6 +148,7 @@ const Peminjam = () => {
                 return record.akun?.username;
               }}
             />
+
             <Column
               title="Telepon"
               dataIndex="telp"

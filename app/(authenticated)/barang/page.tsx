@@ -184,11 +184,6 @@ const Page: React.FC = () => {
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
-<<<<<<< HEAD
-  const data = Array.isArray(listRuanganBarang?.data) ? listRuanganBarang.data : [];
-
-=======
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
 
@@ -345,12 +340,6 @@ const Page: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-  // // Usage examples
-  // const handleAddLetakBarang = (values: any) => handleSaveModalData('letakBarang', values);
-  // const handleAddBarang = (values: any) => handleSaveModalData('barang', values);
-=======
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
 
   const handleChange = async (args: any) => {
     const file = args.file;
@@ -956,152 +945,7 @@ const Page: React.FC = () => {
               </Col>
             </Row>
           </Modal>
-<<<<<<< HEAD
-          <Modal
-            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang</div>}
-            style={{ textAlign: 'center' }}
-            centered
-            width={1000}
-            visible={modalEditVisible}
-            onCancel={handleModalCancel}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSaveBarang}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
-            maskStyle={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                          placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '100%', height: '40px' }}
-                          prefix="Rp"
-                          value={harga}
-                          placeholder="harga"
-                          onChange={handleHargaChange}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{ marginBottom: '12px', width: '100%', height: '80px' }}
-                          placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row>
-                  <Col span={8}>
-                    <p>Unggah Foto</p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture"
-                    >
-                      <Button icon={<UploadOutlined />}>Unggah</Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Modal>
-          {/* Button Tambah Letak barang */}
-          <Modal
-            title="Tambah Letak Barang"
-            visible={letakBarangVisible || letakBarangEditVisible}
-            centered
-            style={{ textAlign: 'center' }}
-            onCancel={handleModalCancel}
-            footer={[
-              <Button key="cancel" onClick={handleModalCancel}>
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSaveLetakBarang}
-                style={{ backgroundColor: '#582DD2' }}
-              >
-                Simpan
-              </Button>,
-            ]}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-              <Col span={6}>
-                <p>Letak Barang</p>
-              </Col>
-              <Col span={18}>
-                <Input
-                  value={createLetakbarang.Letak_Barang}
-                  onChange={(e) =>
-                    setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
-                  }
-                  placeholder="Masukkan letak barang"
-                  className="uppercase-input"
-                />
-              </Col>
-            </Row>
-          </Modal>
-        </div>
-=======
         </div>  
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
       )}
       {role === 'peminjam' && (
         <div>

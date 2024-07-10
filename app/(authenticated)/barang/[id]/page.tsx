@@ -403,6 +403,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               min={1}
               value={value}
               onChange={handleChange}
+              controls={false}
               className="custom-input-number" // Apply the custom CSS class
             />
             <Button onClick={() => handleChange(value + 1)}>+</Button>

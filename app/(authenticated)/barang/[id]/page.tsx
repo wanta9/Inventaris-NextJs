@@ -1,6 +1,5 @@
 'use client';
 
-<<<<<<< HEAD
 import {
   Button,
   Card,
@@ -16,23 +15,22 @@ import {
   InputNumber,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-=======
-import React, { useState } from 'react';
-import { Button, Card, Col, Modal, Row, Table, Space, InputNumber } from 'antd';
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
+import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
+import { values } from 'mobx';
 
-const { Meta } = Card;
-
+const { Option } = Select;
 
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const router = useRouter();
   const { data: ruanganBarangById } = barangRepository.hooks.useBarangById(params.id);
+
+  console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const harga = ruanganBarangById?.data?.harga;
@@ -45,17 +43,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     }
   }, [ruanganBarangById]);
 
-  const [values, setValues] = useState(1);
-  const [count, setCount] = useState(0);
-
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  const decrement = () => {
-    setCount(count - 1);
-  };
-
+  // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
   const formattedHarga = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
@@ -64,6 +52,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const deskripsi = ruanganBarangById?.data?.barang?.deskripsi || '';
 
+  // Menghitung jumlah kata dalam deskripsi
   const wordCount = deskripsi.split(' ').length;
 
   const dataSource = [
@@ -76,11 +65,12 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   let totalHeight = 0;
   dataSource.forEach((item) => {
-    totalHeight += 50;
+    // Misalnya, asumsikan setiap item memiliki tinggi 50px
+    totalHeight += 50; // Sesuaikan dengan tinggi sesungguhnya dari masing-masing item
   });
 
+  // Tentukan apakah perlu menampilkan scroll vertikal
   const scrollY = totalHeight > 200 ? { y: 200 } : {};
-
   const Kembali = () => {
     router.push('/barang');
   };
@@ -98,6 +88,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
+  // Modal state and handlers
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -190,6 +181,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <Table
                     dataSource={dataSource}
                     columns={columns}
+                    // pagination={{ pageSize: 3 }}
                     scroll={{ y: 200 }}
                     style={{
                       width: '100%',
@@ -242,26 +234,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
               <div
                 style={{
-<<<<<<< HEAD
                   width: '80%',
                   height: '400px',
-=======
-                  width: '70%',
-                  height: '300px',
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
                   backgroundColor: '#D9D9D9',
                   borderRadius: '20px',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-<<<<<<< HEAD
                   position: 'relative', // Changed from 'absolute' to 'relative'
                   marginTop: '10px', // Adjusted positioning for different screen sizes
-=======
-                  position: 'relative',
-                  marginTop: '30px',
-                  marginLeft: '-40px',
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
                 }}
               >
                 <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
@@ -269,7 +250,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Col>
             <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
               <Row style={{ marginBottom: '30px' }}>
-<<<<<<< HEAD
                 <Col xs={9} style={{ fontWeight, fontFamily }}>
                   Nama Barang
                 </Col>
@@ -309,50 +289,10 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 whiteSpace: 'pre-wrap',
               }}
             >
-=======
-                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Nama Barang
-                </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{ruanganBarangById?.data?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Harga
-                </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{formattedHarga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13} style={{ fontWeight, fontFamily, fontSize: '15px' }}>{ruanganBarangById?.data?.jumlah}</Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '-10px', marginBottom: '20px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '40px', marginLeft: '10px' }}
-            >
-              Deskripsi
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={1}
-              span={23}
-              style={{ fontWeight, fontFamily, fontSize: '17px', whiteSpace: 'pre-wrap', marginLeft: '10px' }}
-            >
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
               {ruanganBarangById?.data?.deskripsi}
             </Col>
           </Row>
           <Row justify="end" style={{ marginTop: '20px' }}>
-<<<<<<< HEAD
             <Col>
               <Button
                 style={{
@@ -369,28 +309,10 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Col>
           </Row>
         </Card>
-=======
-          <Col>
-            <Button
-              style={{
-                backgroundColor: '#582DD2',
-                color: 'white',
-                width: '150px',
-                height: '50px',
-                borderRadius: '10px',
-              }}
-              onClick={showModal}
-            >
-              Pinjam
-            </Button>
-          </Col>
-        </Row>
-      </Card>
-      
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
       )}
 
       <Modal
+        title="Pinjam Barang"
         visible={isModalVisible}
         width={1300}
         centered
@@ -400,67 +322,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         cancelText="Batal"
       >
         <Row align="middle" justify="center">
-<<<<<<< HEAD
           <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <div
-=======
-            <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <div
-                style={{
-                  width: '80%',
-                  height: '400px',
-                  backgroundColor: '#D9D9D9',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  left: '75px',
-                  top: '-80px',
-                  bottom: '',
-                }}
-              >
-                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
-              </div>
-            </Col>
-            <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Nama Barang
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Harga
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight, fontFamily, fontSize: '18px' }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '200px', marginBottom: '20px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
-            >
-              Pilih Ruangan
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={1}
-              span={23}
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
               style={{
                 width: '80%',
                 height: '400px',
@@ -536,25 +399,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               >
                 {name}
               </Button>
-<<<<<<< HEAD
             ))}
-=======
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight, fontFamily, fontSize: '20px', marginTop: '30px' }}
-            >
-              Tentukan Jumlah
-            </Col>
-          </Row>
-          <Col>
-          <Row>
-                
-          </Row>
->>>>>>> 2fa309227b923e582c4e27b5983c447c3eae87d0
           </Col>
         </Row>
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>

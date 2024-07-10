@@ -32,7 +32,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const [value, setValue] = useState(1);
 
-  const handleChange = (newValue) => {
+  const handleChange = (newValue: any) => {
     if (newValue >= 1) {
       setValue(newValue);
     }

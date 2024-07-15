@@ -95,7 +95,7 @@ const Peminjam = () => {
     <div>
       <div>
         <title>Peminjam</title>
-        <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjam</h1>
+        <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '45px' }}>Peminjam</h1>
       </div>
       <Card style={{ marginTop: '50px' }}>
         <div style={{ marginTop: '20px' }}>

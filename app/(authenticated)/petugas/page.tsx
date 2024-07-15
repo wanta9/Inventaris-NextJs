@@ -202,7 +202,7 @@ const Page: React.FC = () => {
     localStorage.removeItem('access_token');
     router.push('/login');
   };
-  
+
     // style button search
     useEffect(() => {
       if (searchRef.current) {
@@ -430,7 +430,7 @@ const Page: React.FC = () => {
   return (
     <div>
       <title>Petugas</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Petugas</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '45px' }}>Petugas</h1>
       <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
         <div ref={searchRef}>
         <Search

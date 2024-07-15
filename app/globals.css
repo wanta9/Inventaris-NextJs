@@ -22,4 +22,19 @@
 .uppercase-input {
   text-transform: uppercase;
 }
+
+/* search style */
+.custom-search .ant-input {
+  height: 30px; /* Atur tinggi input */
+  line-height: 40px; /* Agar teks terpusat */
+}
+.custom-search .ant-input-search-button {
+  height: 40px; /* Atur tinggi tombol pencarian */
+  line-height: 40px; /* Agar ikon terpusat */
+}
+
+
+
+
+
 /* modal letak barang */

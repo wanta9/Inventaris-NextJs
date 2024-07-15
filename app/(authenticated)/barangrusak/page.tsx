@@ -170,10 +170,22 @@ const Page: React.FC = () => {
   const [jmlBarangDiperbaiki, setjmlbarangdiperbaiki] = useState<string>('');
   const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
   const [keterangan, setketerangan] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
   
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  // style button search
+  useEffect(() => {
+  if (searchRef.current) {
+    const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+    if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+       searchButton.style.backgroundColor = '#582DD2';
+       searchButton.style.borderColor = '#582DD2';
+      }
+    }
+  }, []);
 
   const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangRusak({ ...createbarangRusak, tanggalRusak: dateString });
@@ -383,13 +395,16 @@ const Page: React.FC = () => {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
+          <div ref={searchRef}>
           <Search
-            placeholder="Telusuri Barang Rusak"
+            placeholder="Telusuri Barang Masuk"
+            className="custom-search"
             allowClear
             enterButton
-            onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '100vh' }}
+            onSearch={() => {}}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
           />
+          </div>
           <Button
             type="primary"
             onClick={handleButtonClick}

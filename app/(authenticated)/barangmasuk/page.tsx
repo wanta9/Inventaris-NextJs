@@ -219,14 +219,14 @@ const Page: React.FC = () => {
     setSearchText(value);
   };
 
-  const listBarangMasukFilter = data.filter(
-    (item) =>
-      (item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.Letak_Barang.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.jumlah.toString().toLowerCase().includes(searchText.toLowerCase())) &&
-        item.keterangan.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const listBarangMasukFilter = data.filter(
+  //   (item) =>
+  //     (item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.Letak_Barang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.jumlah.toString().toLowerCase().includes(searchText.toLowerCase())) &&
+  //       item.keterangan.toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   const handleButtonClick = () => {
     setModalVisible(true);

@@ -18,6 +18,7 @@ const Peminjam = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const { data: listPeminjam } = peminjamRepository.hooks.usePeminjam();
+  console.log(listPeminjam, 'list peminjam');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const router = useRouter();

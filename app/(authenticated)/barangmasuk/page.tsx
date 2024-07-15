@@ -216,7 +216,7 @@ const Page: React.FC = () => {
     (item) =>
       item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
       item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
       item.jumlah.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -390,7 +390,7 @@ const Page: React.FC = () => {
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangMasuk?.data}
+          dataSource={filteredData.length > 0 ? filteredData : listBarangMasuk?.data}
           onRow={(record) => {
             return {
               onClick: () => handleRowClick(record.id),

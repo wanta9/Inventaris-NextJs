@@ -1,10 +1,11 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, DatePicker, Modal } from 'antd';
+import { Button, Card, Row, Col, DatePicker, Modal, Form } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
+import TextArea from 'antd/es/input/TextArea';
 
 const { RangePicker } = DatePicker;
 
@@ -23,12 +24,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
   const showModal = () => {
     setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-    // Add logic here to handle the rejection
-    console.log('Rejected');
   };
 
   const handleCancel = () => {
@@ -260,12 +255,39 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
                     <Modal
                       title="Alasan Ditolak"
+                      style={{ textAlign: 'center' }}
                       visible={isModalVisible}
-                      onOk={handleOk}
+                      centered
                       onCancel={handleCancel}
-                      okText="Kirim"
+                      footer={null}
                     >
-                      <p></p>
+                      <TextArea style={{ marginTop: '20px', height: '100px' }}/>
+                      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                      <Button
+                        type="default"
+                        onClick={handleCancel}
+                        style={{
+                          marginTop: '20px',
+                          marginRight: '10px',
+                          marginBottom: '-20px',
+                          borderColor: 'black',
+                        }}
+                      >
+                        <span>Batal</span>
+                      </Button>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          style={{
+                            backgroundColor: '#582DD2',
+                            marginRight: '-165px',
+                            marginTop: '20px',
+                            marginBottom: '-20px',
+                          }}
+                        >
+                          <span>Simpan</span>
+                        </Button>
+                    </Form.Item>
                     </Modal>
 
                     <Button

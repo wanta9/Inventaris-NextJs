@@ -52,13 +52,12 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   // Menghitung jumlah kata dalam deskripsi
   const wordCount = deskripsi.split(' ').length;
 
-  const dataSource = [
-    {
-      id: '1',
-      letakBarang: ruanganBarangById?.data?.ruangan?.Letak_Barang,
-      jumlah: ruanganBarangById?.data?.jumlah,
-    },
-  ];
+  const dataSource =
+    ruanganBarangById?.data?.ruanganBarang?.map((item, index) => ({
+      key: index.toString(), // Key perlu string, bisa menggunakan index
+      Letak_Barang: item.ruangan.Letak_Barang,
+      jumlah: item.jumlah,
+    })) || [];
 
   let totalHeight = 0;
   dataSource.forEach((item) => {
@@ -68,15 +67,12 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   // Tentukan apakah perlu menampilkan scroll vertikal
   const scrollY = totalHeight > 200 ? { y: 200 } : {};
-  const Kembali = () => {
-    router.push('/barang');
-  };
 
   const columns = [
     {
       title: 'Letak Barang',
-      dataIndex: 'letakBarang',
-      key: 'letakBarang',
+      dataIndex: 'Letak_Barang',
+      key: 'Letak_Barang',
     },
     {
       title: 'Jumlah',
@@ -85,6 +81,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
+<<<<<<< HEAD
+  const Kembali = () => {
+    router.push('/barang');
+  };
+
+  // Modal state and handlers
+  const [isModalVisible, setIsModalVisible] = useState(false);
+=======
+>>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
 
   const handleModalCancel = () => {
     setModalVisible(false);
@@ -129,15 +134,13 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               </div>
             </Col>
             <Col span={12} style={{ paddingLeft: '40px', marginTop: '5px' }}>
-              {role === 'admin' && (
-                <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
-                  <Col span={9} style={{ fontWeight }}>
-                    Kode Barang
-                  </Col>
-                  <Col span={2}>:</Col>
-                  <Col span={5}>{ruanganBarangById?.data?.kode}</Col>
-                </Row>
-              )}
+              <Row style={{ marginBottom: '30px', fontSize: '16px', marginTop: '20px' }}>
+                <Col span={9} style={{ fontWeight }}>
+                  Kode Barang
+                </Col>
+                <Col span={2}>:</Col>
+                <Col span={5}>{ruanganBarangById?.data?.kode}</Col>
+              </Row>
 
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>
@@ -165,8 +168,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <Table
                     dataSource={dataSource}
                     columns={columns}
-                    // pagination={{ pageSize: 3 }}
-                    scroll={{ y: 200 }}
+                    pagination={false} // Nonaktifkan paginasi jika tidak diperlukan
+                    scroll={scrollY} // Atur scroll vertikal berdasarkan kebutuhan
                     style={{
                       width: '100%',
                       height: '200px',

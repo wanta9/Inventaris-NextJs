@@ -118,7 +118,6 @@ const Page = () => {
     router.push('/login');
   };
 
-
   const profile = () => {
     router.push('/profile');
   };
@@ -161,7 +160,13 @@ const Page = () => {
           // Jika dalam mode edit, update data yang ada
           const newData = dataSource.map((item) =>
             item.id === editData.id
-              ? { ...item, name: values.nama, username: values.namaPengguna, telp: values.telp, nip: values.nip }
+              ? {
+                  ...item,
+                  name: values.nama,
+                  username: values.namaPengguna,
+                  telp: values.telp,
+                  nip: values.nip,
+                }
               : item
           );
           setDataSource(newData);
@@ -408,7 +413,7 @@ const Page = () => {
               style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div
+                <div
                   style={{
                     width: '80px',
                     height: '80px',
@@ -424,8 +429,13 @@ const Page = () => {
                   <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
+<<<<<<< HEAD
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>8</div>
+                  <div style={{ fontFamily, color: 'grey' }}>Peminjam</div>
+=======
                   <div style={{ fontSize: '30px', fontWeight, fontFamily}}>{listPeminjam?.data?.length}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
+>>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>
@@ -436,7 +446,7 @@ const Page = () => {
               style={{ width: '300px', height: '150px', display: 'flex', alignItems: 'center' }}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div
+                <div
                   style={{
                     width: '80px',
                     height: '80px',
@@ -452,38 +462,47 @@ const Page = () => {
                   <img src="/dshaktif.svg" style={{ width: '50%', height: '60%' }} />
                 </div>
                 <div>
+<<<<<<< HEAD
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>5</div>
+                  <div style={{ fontFamily, color: 'grey' }}>Aktif</div>
+=======
                   <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{jumlahAktif}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
+>>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>
           </Col>
           {/* button Tambah akun petugas */}
           <Button
-          type="primary"
-          onClick={handleButtonClick}
-          icon={<PlusOutlined style={{ marginTop: '5px' }} />}
-          style={{
-            marginRight: '0',
-            display: 'absolute',
-            bottom: '-60px',
-            right: '-70px',
-            width: '200px',
-            height: '40px',
-            backgroundColor: 'white',
-            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-            color: 'black',
-          }}
-          className="custom-button"
-        >
-          <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
-        </Button>
+            type="primary"
+            onClick={handleButtonClick}
+            icon={<PlusOutlined style={{ marginTop: '5px' }} />}
+            style={{
+              marginRight: '0',
+              display: 'absolute',
+              bottom: '-60px',
+              right: '-70px',
+              width: '200px',
+              height: '40px',
+              backgroundColor: 'white',
+              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+              color: 'black',
+            }}
+            className="custom-button"
+          >
+            <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
+          </Button>
         </Row>
 
         {/* Pop up Tambah Akun Petugas */}
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px'}}>Buat Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Buat Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           centered
           width={1000}
@@ -492,23 +511,35 @@ const Page = () => {
           footer={null}
         >
           <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSaveModalData}
-          initialValues={{ nama: '', nip: '', telp: '', namaPengguna: '', sandi: '', konfirmasiSandi: '' }}
-        >
-
-        <div style={{ marginTop: '90px', marginRight: '70px' }}>
+            form={form}
+            layout="vertical"
+            onFinish={handleSaveModalData}
+            initialValues={{
+              nama: '',
+              nip: '',
+              telp: '',
+              namaPengguna: '',
+              sandi: '',
+              konfirmasiSandi: '',
+            }}
+          >
+            <div style={{ marginTop: '90px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
                 <Col push={1} span={10}>
                   <Form.Item
                     label="Nama"
                     name="nama"
                     rules={[{ required: true, message: 'Nama harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="Nama"
                       onChange={(e) => setNama(e.target.value)}
                     />
@@ -517,10 +548,16 @@ const Page = () => {
                     label="NIP"
                     name="nip"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="NIP"
                       onChange={(e) => setNIP(e.target.value)}
                     />
@@ -529,10 +566,16 @@ const Page = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px'}}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="Telp"
                       onChange={(e) => setTelp(e.target.value)}
                       maxLength={12}
@@ -541,10 +584,15 @@ const Page = () => {
                   <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
                       listType="picture"
-                      beforeUpload={ () => false }
+                      beforeUpload={() => false}
                       // onChange={(args) => handleChange(args)}
                     >
-                      <Button style={{ top: '-30px', marginRight: '50px'}} icon={<UploadOutlined />}>Unggah</Button>
+                      <Button
+                        style={{ top: '-30px', marginRight: '50px' }}
+                        icon={<UploadOutlined />}
+                      >
+                        Unggah
+                      </Button>
                     </Upload>
                   </Form.Item>
                 </Col>
@@ -553,10 +601,16 @@ const Page = () => {
                     label="Nama Pengguna"
                     name="namaPengguna"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                   style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Nama Pengguna"
                       onChange={(e) => setNamaPengguna(e.target.value)}
                     />
@@ -565,10 +619,16 @@ const Page = () => {
                     label="Sandi"
                     name="sandi"
                     rules={[{ required: true, message: 'Sandi harus di isi' }]}
-                   style={{ fontWeight , fontFamily, marginBottom: '-10px'}}
-                  > 
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input.Password
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Sandi"
                       onChange={(e) => setSandi(e.target.value)}
                     />
@@ -576,7 +636,7 @@ const Page = () => {
                   <Form.Item
                     label="Konfirmasi Sandi"
                     name="konfirmasiSandi"
-                    style={{ fontWeight , fontFamily }}
+                    style={{ fontWeight, fontFamily }}
                     rules={[
                       { required: true, message: 'Konfirmasi Sandi harus di isi' },
                       ({ getFieldValue }) => ({
@@ -584,13 +644,21 @@ const Page = () => {
                           if (!value || getFieldValue('sandi') === value) {
                             return Promise.resolve();
                           }
-                          return Promise.reject(new Error('Konfirmasi Sandi harus sama dengan Sandi.'));
+                          return Promise.reject(
+                            new Error('Konfirmasi Sandi harus sama dengan Sandi.')
+                          );
                         },
                       }),
                     ]}
                   >
                     <Input.Password
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Konfirmasi Sandi"
                       onChange={(e) => setKonfirmasiSandi(e.target.value)}
                     />
@@ -603,7 +671,14 @@ const Page = () => {
                 <Button
                   key="cancel"
                   onClick={handleModalCancel}
-                  style={{ width: '100px', height: '35px', backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
                 >
                   Batal
                 </Button>
@@ -611,7 +686,14 @@ const Page = () => {
                   key="save"
                   type="primary"
                   htmlType="submit"
-                  style={{ width: '100px', height: '35px',backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2', marginRight: '50px' }}
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: '#582DD2',
+                    color: 'white',
+                    borderColor: '#582DD2',
+                    marginRight: '50px',
+                  }}
                 >
                   Simpan
                 </Button>
@@ -659,7 +741,18 @@ const Page = () => {
               style={{ width: '300px', height: '500px', padding: '50px 20px 0' }}
             >
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
-              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#B2C7FF', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px'}}
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#B2C7FF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '10px',
+                    marginRight: '30px',
+                  }}
                 >
                   <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
@@ -669,7 +762,18 @@ const Page = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
-              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#E1E1E1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px' }}
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#E1E1E1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '10px',
+                    marginRight: '30px',
+                  }}
                 >
                   <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
@@ -679,7 +783,18 @@ const Page = () => {
                 </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: '#F0C7C7', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '10px', marginRight: '30px' }}
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#F0C7C7',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginLeft: '10px',
+                    marginRight: '30px',
+                  }}
                 >
                   <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
@@ -703,130 +818,130 @@ const Page = () => {
             alignItems: 'center',
           }}
         >
-        {/* menu inpo */}
-        {role === 'admin' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '-20px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '200px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </Dropdown>
-          </div>
-        )}
-        {role === 'petugas' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '-20px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '200px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
+          {/* menu inpo */}
+          {role === 'admin' && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '-20px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button
+                    style={{
+                      width: '200px',
+                      height: '50px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img
+                        src="ikon.png"
+                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        alt="ikon"
+                      />
+                      <div>
+                        <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                          Halo, {akun?.data?.nama}
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                          {akun?.data?.peran?.Role}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Button>
-              </div>
-            </Dropdown>
-          </div>
-        )}
-        {role === 'peminjam' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '10px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '190px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
+                  </Button>
+                </div>
+              </Dropdown>
+            </div>
+          )}
+          {role === 'petugas' && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '-20px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button
+                    style={{
+                      width: '200px',
+                      height: '50px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img
+                        src="ikon.png"
+                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        alt="ikon"
+                      />
+                      <div>
+                        <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                          Halo, {akun?.data?.nama}
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                          {akun?.data?.peran?.Role}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Button>
-              </div>
-            </Dropdown>
-        </div>
-        )}
+                  </Button>
+                </div>
+              </Dropdown>
+            </div>
+          )}
+          {role === 'peminjam' && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '10px',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <Dropdown overlay={menu} placement="bottomCenter">
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Button
+                    style={{
+                      width: '190px',
+                      height: '50px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <img
+                        src="ikon.png"
+                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        alt="ikon"
+                      />
+                      <div>
+                        <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                          Halo, {akun?.data?.nama}
+                        </div>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                          {akun?.data?.peran?.Role}
+                        </div>
+                      </div>
+                    </div>
+                  </Button>
+                </div>
+              </Dropdown>
+            </div>
+          )}
         </div>
       </div>
     </>

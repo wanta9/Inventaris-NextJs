@@ -149,7 +149,7 @@ const Peminjaman = () => {
       <div>
         <title>Peminjaman</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjaman</h1>
-      </div>
+      </div> 
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
           <div ref={searchRef}>
@@ -195,12 +195,6 @@ const Peminjaman = () => {
               title="Tanggal Peminjaman"
               dataIndex="tanggalPinjam"
               key="tanggalpeminjaman"
-              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
-            />
-            <Column
-              title="Tanggal Dikembalikan"
-              dataIndex="tanggalDikembalikan"
-              key="tanggaldikembalikan"
               render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
             />
             <Column

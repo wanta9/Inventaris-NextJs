@@ -429,13 +429,8 @@ const Page = () => {
                   <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-<<<<<<< HEAD
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>8</div>
-                  <div style={{ fontFamily, color: 'grey' }}>Peminjam</div>
-=======
                   <div style={{ fontSize: '30px', fontWeight, fontFamily}}>{listPeminjam?.data?.length}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
->>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>
@@ -462,13 +457,8 @@ const Page = () => {
                   <img src="/dshaktif.svg" style={{ width: '50%', height: '60%' }} />
                 </div>
                 <div>
-<<<<<<< HEAD
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>5</div>
-                  <div style={{ fontFamily, color: 'grey' }}>Aktif</div>
-=======
                   <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{jumlahAktif}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
->>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>

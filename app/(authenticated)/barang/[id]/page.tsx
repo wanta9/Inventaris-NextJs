@@ -81,15 +81,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
-<<<<<<< HEAD
-  const Kembali = () => {
-    router.push('/barang');
-  };
-
-  // Modal state and handlers
-  const [isModalVisible, setIsModalVisible] = useState(false);
-=======
->>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
 
   const handleModalCancel = () => {
     setModalVisible(false);

@@ -175,6 +175,7 @@ const Page: React.FC = () => {
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
@@ -193,6 +194,17 @@ const Page: React.FC = () => {
       minimumFractionDigits: 0,
     }).format(number);
   };
+
+    // style button search
+    useEffect(() => {
+      if (searchRef.current) {
+        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+          searchButton.style.backgroundColor = '#582DD2'
+          searchButton.style.borderColor = '#582DD2';
+        }
+      }
+    }, []);
 
   const handleDropdownClick = () => {
     setOpenDropdown(!openDropdown);
@@ -454,13 +466,16 @@ const Page: React.FC = () => {
                 marginBottom: '16px',
               }}
             >
-              <Search
-                placeholder="Telusuri Barang"
-                allowClear
-                enterButton
-                onSearch={(value) => handleSearch(value)}
-                style={{ width: 300, marginRight: '500px' }}
-              />
+              <div ref={searchRef}>
+                <Search
+                  placeholder="Telusuri Barang Masuk"
+                  className="custom-search"
+                  allowClear
+                  enterButton
+                  onSearch={() => {}}
+                  style={{ width: 300, marginRight: '500px', height: '40px' }}
+                />
+              </div>
               <Dropdown
                 overlay={menu1}
                 placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
@@ -818,13 +833,16 @@ const Page: React.FC = () => {
                 marginBottom: '16px',
               }}
             >
-              <Search
-                placeholder="Telusuri Barang"
-                allowClear
-                enterButton
-                onSearch={(value) => handleSearch(value)}
-                style={{ width: 300 }}
-              />
+              <div ref={searchRef}>
+                <Search
+                  placeholder="Telusuri Barang Masuk"
+                  className="custom-search"
+                  allowClear
+                  enterButton
+                  onSearch={() => {}}
+                  style={{ width: 300, marginRight: '950px', height: '40px' }}
+                />
+              </div>
               <Dropdown
                 overlay={menu1}
                 placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
@@ -978,26 +996,45 @@ const Page: React.FC = () => {
         <div>
           <div>
             <title>Barang</title>
-            <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
+            <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Barang</h1>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Search
-              placeholder="Telusuri Barang"
-              allowClear
-              enterButton
-              onSearch={handleSearch}
-              style={{ width: 300, marginBottom: '40px' }}
-            />
-            <Select
-              placeholder="Pilih Letak Barang"
-              style={{ width: 200 }}
-              onChange={handleLocationChange}
-              allowClear
-            >
-              <Option value="lokasi1">Lokasi 1</Option>
-              <Option value="lokasi2">Lokasi 2</Option>
-              <Option value="lokasi3">Lokasi 3</Option>
-            </Select>
+          <div ref={searchRef}>
+                <Search
+                  placeholder="Telusuri Barang "
+                  className="custom-search"
+                  allowClear
+                  enterButton
+                  onSearch={() => {}}
+                  style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
+                />
+              </div>
+              <Dropdown
+                overlay={menu1}
+                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
+                visible={openDropdown}
+                onVisibleChange={setOpenDropdown}
+              >
+                <Button
+                  style={{
+                    backgroundColor: 'white',
+                    color: 'black',
+                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                    height: '40px',
+                    width: '200px',
+                    fontFamily: 'inherit',
+                    marginRight: '40px',
+                  }}
+                  onClick={handleDropdownClick}
+                >
+                  Letak Barang{' '}
+                  {openDropdown ? (
+                    <DownOutlined style={{ fontSize: '12px' }} />
+                  ) : (
+                    <RightOutlined style={{ fontSize: '12px' }} />
+                  )}
+                </Button>
+              </Dropdown>
           </div>
           <div
             style={{
@@ -1026,6 +1063,7 @@ const Page: React.FC = () => {
                     borderRadius: '12px',
                     overflow: 'hidden',
                     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                    marginTop: '30px',
                   }}
                   cover={
                     <div

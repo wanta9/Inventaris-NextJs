@@ -45,6 +45,7 @@ interface Item {
   jumlah: string;
   tanggalMasuk: string;
   keterangan: string;
+  Letak_Barang: string;
 }
 interface createbarangMasuk {
   harga: string;
@@ -135,6 +136,8 @@ const Page: React.FC = () => {
   const [keterangan, setketerangan] = useState('');
   const fontFamily = 'Barlow, sans-serif';
   const [searchText, setSearchText] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const [data, setData] = useState<Item[]>([]);
   const [dataSource, setDataSource] = useState<Item[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -208,17 +211,22 @@ const Page: React.FC = () => {
     </Menu>
   );
 
+  useEffect(() => {
+    setData(listBarangMasuk?.data || []);
+  }, []);
+
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
 
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      // item.harga.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.jumlah.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const listBarangMasukFilter = data.filter(
+  //   (item) =>
+  //     (item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.Letak_Barang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.jumlah.toString().toLowerCase().includes(searchText.toLowerCase())) &&
+  //       item.keterangan.toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -263,6 +271,17 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  // style button search
+  useEffect(() => {
+    if (searchRef.current) {
+      const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+      if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2';
+        searchButton.style.borderColor = '#582DD2';
+      }
+    }
+  }, []);
 
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
@@ -364,13 +383,16 @@ const Page: React.FC = () => {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
-          <Search
-            placeholder="Telusuri Barang Masuk"
-            allowClear
-            enterButton
-            onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '100vh' }}
-          />
+          <div ref={searchRef}>
+            <Search
+              placeholder="Telusuri Barang Masuk"
+              className="custom-search"
+              allowClear
+              enterButton
+              onSearch={() => {}}
+              style={{ width: 300, marginRight: '950px', height: '40px' }}
+            />
+          </div>
           <Button
             type="primary"
             onClick={handleButtonClick}

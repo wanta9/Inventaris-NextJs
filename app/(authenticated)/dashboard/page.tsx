@@ -27,6 +27,11 @@ import Chart from 'chart.js/auto';
 import type { UploadFile } from 'antd';
 import { useRouter } from 'next/navigation';
 import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
+import { peminjamRepository } from '#/repository/peminjam';
+import { barangRusakRepository } from '#/repository/barangrusak';
+import { barangMasukRepository } from '#/repository/barangmasuk';
+import { barangKeluarRepository } from '#/repository/barangkeluar';
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -54,13 +59,48 @@ const Page = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedYear, setSelectedYear] = useState('thisYear');
   const [selectText, setSelectText] = useState('Tahun Ini');
+  // State untuk menyimpan status online dalam bentuk angka
+  const [jumlahAktif, setJumlahAktif] = useState(0);
   const allowedYears = ['2024', '2023', '2022'];
   const router = useRouter();
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
+  console.log(akun, 'akun');
+  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
+  console.log(listRuanganBarang, 'list ruangan');
+  const { data: listPeminjam } = peminjamRepository.hooks.usePeminjam();
+  console.log(listPeminjam, 'list peminjam');
+  const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  console.log(listBarangMasuk, 'barang masuk');
+  const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+  console.log(listBarangKeluar, 'barang keluar');
+  const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
+  console.log(listBarangRusak, 'listBarangRusak');
+
+
   const role = akun?.data?.peran?.Role;
+
+  const Jumlah = listRuanganBarang?.data?.length;
+
+  const barangMasuk =  listBarangMasuk?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangKeluar =  listBarangKeluar?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangRusak =  listBarangRusak?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+
+  useEffect(() => {
+    if (akun) {
+      // Jika akun adalah array, hitung jumlah akun yang aktif
+      if (Array.isArray(akun)) {
+        const aktifCount = akun.filter(item => item.isOnline).length;
+        setJumlahAktif(aktifCount);
+      } else {
+        // Jika akun adalah objek tunggal, cek status isOnline
+        setJumlahAktif(akun.isOnline ? 1 : 0);
+      }
+    }
+  }, [akun]);
+
   // const chartRef = useRef<HTMLCanvasElement>(null);
 
   // tahun
@@ -361,7 +401,7 @@ const Page = () => {
                   <img src="/dshbarang.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>30</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{Jumlah}</div>
                   <div style={{ fontFamily, color: 'grey' }}>Barang</div>
                 </div>
               </div>
@@ -389,8 +429,13 @@ const Page = () => {
                   <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
+<<<<<<< HEAD
                   <div style={{ fontSize: '30px', fontWeight, fontFamily }}>8</div>
                   <div style={{ fontFamily, color: 'grey' }}>Peminjam</div>
+=======
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily}}>{listPeminjam?.data?.length}</div>
+                  <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
+>>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>
@@ -417,8 +462,13 @@ const Page = () => {
                   <img src="/dshaktif.svg" style={{ width: '50%', height: '60%' }} />
                 </div>
                 <div>
+<<<<<<< HEAD
                   <div style={{ fontSize: '30px', fontWeight, fontFamily }}>5</div>
                   <div style={{ fontFamily, color: 'grey' }}>Aktif</div>
+=======
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{jumlahAktif}</div>
+                  <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
+>>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
                 </div>
               </div>
             </Card>
@@ -707,7 +757,7 @@ const Page = () => {
                   <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>10</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangMasuk}</div>
                   <div style={{ color: 'grey' }}>Barang Masuk</div>
                 </div>
               </div>
@@ -728,7 +778,7 @@ const Page = () => {
                   <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>4</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangKeluar}</div>
                   <div style={{ color: 'grey' }}>Barang Keluar</div>
                 </div>
               </div>
@@ -749,7 +799,7 @@ const Page = () => {
                   <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>2</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangRusak}</div>
                   <div style={{ color: 'grey' }}>Barang Rusak</div>
                 </div>
               </div>

@@ -11,6 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        
       </head>
       <body>
         <Script src="/api/env" strategy={'beforeInteractive'}></Script>

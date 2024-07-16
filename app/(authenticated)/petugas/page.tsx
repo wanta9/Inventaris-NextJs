@@ -186,6 +186,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   console.log(listPetugas, 'listPetugas');
   const [form] = Form.useForm(); 
@@ -201,6 +202,17 @@ const Page: React.FC = () => {
     localStorage.removeItem('access_token');
     router.push('/login');
   };
+
+    // style button search
+    useEffect(() => {
+      if (searchRef.current) {
+        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+          searchButton.style.backgroundColor = '#582DD2';
+          searchButton.style.borderColor = '#582DD2';
+        }
+      }
+    }, []);
 
   // menu akun
   const menu = (
@@ -418,15 +430,18 @@ const Page: React.FC = () => {
   return (
     <div>
       <title>Petugas</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Petugas</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '45px' }}>Petugas</h1>
       <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
+        <div ref={searchRef}>
         <Search
-          placeholder="Telusuri Petugas"
-          allowClear
-          enterButton
-          onSearch={(value) => handleSearch(value)}
-          style={{ width: 300 }}
-        />
+            placeholder="Telusuri Barang Masuk"
+            className="custom-search"
+            allowClear
+            enterButton
+            onSearch={() => {}}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
+          />
+        </div>
         <Button
           type="primary"
           onClick={handleButtonClick}

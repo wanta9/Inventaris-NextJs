@@ -1,7 +1,7 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, Divider, DatePicker, Select } from 'antd';
+import { Button, Card, Row, Col, Divider, DatePicker, Select, InputNumber, Popconfirm } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
@@ -14,14 +14,44 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
   const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [status, setStatus] = useState('Pending');
 
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for phone number:', status);
   };
 
+  const handleDelete = () => {
+    console.log('Item deleted');
+  };
+
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
+  const [value, setValue] = useState(1);
+
+  const handleChange = (newValue: any) => {
+    if (newValue >= 1) {
+      setValue(newValue);
+    }
+  };
+  const showPopconfirm = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setConfirmLoading(true);
+
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
 
   return (
     <div style={{ marginLeft: '50px' }}>
@@ -51,53 +81,30 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px'}}>Lorem Ipsum</div>
                   <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
                   <div style={{ display: 'flex' }}>
-                  {/* Kotak 1 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0px',  // Melancipkan sudut card
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
-
+                  <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '20px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}</Button>
                   {/* Kotak 2 */}
-                  <Card
-                    style={{
-                      width: '60px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <h4 style={{ margin: 0 }}>7</h4>
-                  </Card>
+                    <InputNumber
+                      min={1}
+                      value={value}
+                      onChange={handleChange}
+                      controls={false}
+                      style={{ width: '60px' , boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
+                    />
                   {/* Kotak 3 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
+                  <Button onClick={() => handleChange(value + 1)} style={{  width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />}</Button>
                 </div>
                   <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
-                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  <Popconfirm
+                  title="Menghapus koleksi"
+                  description="Apakah Anda yakin ingin menghapus barang ini?"
+                  onConfirm={handleOk}
+                  okButtonProps={{ loading: confirmLoading }}
+                  onCancel={handleCancel}
+                  okText="Iya"
+                  cancelText="Tidak"
+                  >
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px' }} />}><span style={{ color: 'black' }}>Hapus</span></Button>
+                  </Popconfirm>
                   </div>
                 </div>
               </div>
@@ -110,7 +117,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   display: 'flex',
                   alignItems: 'center',
                   marginBottom: '20px',
-                  borderRadius: '0px',
+                  borderRadius: '20px',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -121,53 +128,30 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
                   <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
                   <div style={{ display: 'flex' }}>
-                  {/* Kotak 1 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0px',  // Melancipkan sudut card
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
-
+                  <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '20px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}</Button>
                   {/* Kotak 2 */}
-                  <Card
-                    style={{
-                      width: '60px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <h4 style={{ margin: 0 }}>7</h4>
-                  </Card>
+                    <InputNumber
+                      min={1}
+                      value={value}
+                      onChange={handleChange}
+                      controls={false}
+                      style={{ width: '60px' , boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
+                    />
                   {/* Kotak 3 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
+                  <Button onClick={() => handleChange(value + 1)} style={{  width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />}</Button>
                 </div>
                   <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
-                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  <Popconfirm
+                  title="Menghapus koleksi"
+                  description="Apakah Anda yakin ingin menghapus barang ini?"
+                  onConfirm={handleOk}
+                  okButtonProps={{ loading: confirmLoading }}
+                  onCancel={handleCancel}
+                  okText="Iya"
+                  cancelText="Tidak"
+                  >
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px' }} />}><span style={{ color: 'black' }}>Hapus</span></Button>
+                  </Popconfirm>
                   </div>
                 </div>
               </div>
@@ -179,7 +163,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   height: '180px',
                   display: 'flex',
                   alignItems: 'center',
-                  borderRadius: '0',
+                  borderRadius: '20px',
                 }}
               >
                <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -190,53 +174,30 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   <div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '20px', marginBottom: '10px' }}>Lorem Ipsum</div>
                   <div style={{ fontSize: '17px',marginBottom: '15px', marginLeft: '20px' }}><span style={{ color: 'grey'}}>RPL</span></div>
                   <div style={{ display: 'flex' }}>
-                  {/* Kotak 1 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0px',  // Melancipkan sudut card
-                      marginLeft: '20px',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/minusicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
-
+                  <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '20px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}</Button>
                   {/* Kotak 2 */}
-                  <Card
-                    style={{
-                      width: '60px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <h4 style={{ margin: 0 }}>7</h4>
-                  </Card>
+                    <InputNumber
+                      min={1}
+                      value={value}
+                      onChange={handleChange}
+                      controls={false}
+                      style={{ width: '60px' , boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}
+                    />
                   {/* Kotak 3 */}
-                  <Card
-                    style={{
-                      width: '50px',
-                      height: '30px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '0',
-                    }}
-                  >
-                    <Button type="link"  icon={<img src="/pluseicon.svg" style={{ width: '15px', height: '15px'}} />} style={{ color: 'black' }} />
-                  </Card>
+                  <Button onClick={() => handleChange(value + 1)} style={{  width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />}</Button>
                 </div>
                   <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
-                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px'}} />}><span style={{ color: 'black'}}>Hapus</span></Button>
+                  <Popconfirm
+                  title="Menghapus koleksi"
+                  description="Apakah Anda yakin ingin menghapus barang ini?"
+                  onConfirm={handleOk}
+                  okButtonProps={{ loading: confirmLoading }}
+                  onCancel={handleCancel}
+                  okText="Iya"
+                  cancelText="Tidak"
+                  >
+                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px' }} />}><span style={{ color: 'black' }}>Hapus</span></Button>
+                  </Popconfirm>
                   </div>
                 </div>
               </div>

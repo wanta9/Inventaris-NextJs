@@ -200,7 +200,7 @@ const Page: React.FC = () => {
       if (searchRef.current) {
         const searchButton = searchRef.current.querySelector('.ant-input-search-button');
         if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
-          searchButton.style.backgroundColor = '#582DD2';
+          searchButton.style.backgroundColor = '#582DD2'
           searchButton.style.borderColor = '#582DD2';
         }
       }

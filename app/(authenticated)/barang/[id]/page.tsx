@@ -249,11 +249,26 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 <Col xs={13}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
+                <Col span={9} style={{ fontWeight }}>
                   Stok Keseluruhan
                 </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13}>{ruanganBarangById?.data?.jumlah}</Col>
+                <Col span={2}>:</Col>
+                <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
+              </Row>
+              <Row style={{ marginBottom: '0px' }}>
+                <Col span={24}>
+                  <Table
+                    dataSource={dataSource}
+                    columns={columns}
+                    // pagination={{ pageSize: 3 }}
+                    scroll={{ y: 200 }}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                    }}
+                    bordered
+                  />
+                </Col>
               </Row>
             </Col>
           </Row>
@@ -277,7 +292,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             </Row>
           </Form.Item>
           <Form.Item>
-            <Row justify="end" style={{ marginTop: '40px' }}>
+            <Row justify="end" style={{ marginTop: '-70px' }}>
               <Col>
                 <Button
                   style={{

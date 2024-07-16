@@ -25,12 +25,12 @@
 
 /* search style */
 .custom-search .ant-input {
-  height: 30px; /* Atur tinggi input */
-  line-height: 40px; /* Agar teks terpusat */
+  height: 30px !important; /* Atur tinggi input */
+  line-height: 40px !important; /* Agar teks terpusat */
 }
 .custom-search .ant-input-search-button {
-  height: 40px; /* Atur tinggi tombol pencarian */
-  line-height: 40px; /* Agar ikon terpusat */
+  height: 40px !important; /* Atur tinggi tombol pencarian */
+  line-height: 40px !important; /* Agar ikon terpusat */
 }
 
 

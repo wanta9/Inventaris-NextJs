@@ -1001,7 +1001,7 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div ref={searchRef}>
                 <Search
-                  placeholder="Telusuri Barang Masuk"
+                  placeholder="Telusuri Barang "
                   className="custom-search"
                   allowClear
                   enterButton

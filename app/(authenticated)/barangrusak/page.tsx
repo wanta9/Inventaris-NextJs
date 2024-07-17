@@ -626,27 +626,25 @@ const Page: React.FC = () => {
               >
                 <Input
                   placeholder="Jumlah"
-                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                  style={{ width: '100%', height: '40px' }}
                   value={createbarangRusak.jumlah}
                   onChange={(e) =>
                     setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
                   }
                 />
               </Form.Item>
-            </div>
-            <div style={{ flex: 1 }}>
-            <Form.Item
+              <Form.Item
                 name="tanggalRusak"
                 label="Tanggal Rusak"
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
-                wrapperCol={{ span: 16 }}
+                wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
                 <DatePicker
                   placeholder="Tanggal Rusak"
-                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                  style={{ width: '100%', height: '40px' }}
                   value={
                     createbarangRusak.tanggalRusak
                       ? dayjs(createbarangRusak.tanggalRusak, 'YYYY-MM-DD')
@@ -655,6 +653,31 @@ const Page: React.FC = () => {
                   onChange={handleDateChange}
                   format="YYYY-MM-DD"
                 />
+              </Form.Item>
+            </div>
+            <div style={{ flex: 1 }}>
+              <Form.Item
+                name="ruanganId"
+                label="Ruangan"
+                colon={false}
+                // Agar ke Kiri Teksnya
+                labelAlign="left"
+                // Atur Col
+                labelCol={{ span: 5 }}
+                // Atur lebar Input
+                wrapperCol={{ span: 8 }}
+                rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
+              >
+                <Select
+                  placeholder="Pilih Ruangan"
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                >
+                  {listRuangan?.data?.map((ruangan) => (
+                    <Option key={ruangan.id} value={ruangan.id}>
+                      {ruangan.Letak_Barang}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item
                 name="keterangan"
@@ -666,7 +689,7 @@ const Page: React.FC = () => {
               >
                 <TextArea
                   rows={4}
-                  style={{ width: '100%', borderColor: 'black', marginLeft: '35px' }}
+                  style={{ width: '100%', marginLeft: '35px' }}
                   value={createbarangRusak.keterangan}
                   onChange={(e) =>
                     setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })

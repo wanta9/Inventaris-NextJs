@@ -1,25 +1,40 @@
-/*@tailwind base;*//* global.css */
+/*@tailwind base;*/
+/* global.css */
 /* global.css */
 
 .login-page {
-  background-color: #582DD2;
+  background-color: #582dd2;
 }
 
 .register-page {
-  background-color: #582DD2;
+  background-color: #582dd2;
 }
-
 
 @tailwind components;
 @tailwind utilities;
 
 /* Petugas style */
 .shadow-card {
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 
 /* modal letak barang */
 .uppercase-input {
   text-transform: uppercase;
 }
-/* modal letak barang */ 
+
+/* search style */
+.custom-search .ant-input {
+  height: 30px; /* Atur tinggi input */
+  line-height: 40px; /* Agar teks terpusat */
+}
+.custom-search .ant-input-search-button {
+  height: 40px; /* Atur tinggi tombol pencarian */
+  line-height: 40px; /* Agar ikon terpusat */
+}
+
+
+
+
+
+/* modal letak barang */

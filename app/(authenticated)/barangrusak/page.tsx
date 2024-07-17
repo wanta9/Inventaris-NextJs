@@ -13,6 +13,7 @@ import {
   DatePicker,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { EditOutlined, PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
@@ -21,6 +22,9 @@ import { useRouter } from 'next/navigation';
 import { barangRusakRepository } from '#/repository/barangrusak';
 import dayjs from 'dayjs';
 import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
+import { ruanganRepository } from '#/repository/ruangan';
+import { Console } from 'console';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -32,13 +36,26 @@ interface EditableRowProps {
   index: number;
 }
 
+interface createbarangRusak {
+  barangId: string;
+  ruanganId: string;
+  jumlah: number;
+  tanggalRusak: string;
+  tanggalPerbaikan: string;
+  keterangan: string;
+  status: string;
+}
+
 interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
-  harga: string;
-  jumlah: string;
+  Jumlah: number;
   tanggalRusak: string;
+  jmlBarangDiperbaiki: number;
+  jmlbarangrusak: number;
+  keterangan: string;
+  tanggalPerbaikan: string;
   status: string;
 }
 
@@ -48,6 +65,7 @@ interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   handleSave: (record: Item) => void;
+  handleEdit: (record: Item) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -57,6 +75,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   dataIndex,
   record,
   handleSave,
+  handleEdit,
   ...restProps
 }) => {
   const [editing, setEditing] = useState(false);
@@ -127,12 +146,50 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
+  const [createbarangRusak, setcreatebarangRusak] = useState<createbarangRusak>({
+    barangId: '',
+    ruanganId: '',
+    jumlah: 0,
+    tanggalRusak: '',
+    tanggalPerbaikan: 'null',
+    keterangan: '',
+    status: 'Rusak',
+  });
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
+  console.log(listBarangRusak, 'listBarangRusak');
+
+  const { data: listBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [Jumlah, setJumlah] = useState('');
+  const [jmlbarangrusak, setjmlbarangrusak] = useState('');
+  const [jmlBarangDiperbaiki, setjmlbarangdiperbaiki] = useState<string>('');
+  const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
+  const [keterangan, setketerangan] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  // style button search
+  useEffect(() => {
+  if (searchRef.current) {
+    const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+    if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+       searchButton.style.backgroundColor = '#582DD2';
+       searchButton.style.borderColor = '#582DD2';
+      }
+    }
+  }, []);
+
+  const handleDateChange = (date: any, dateString: any) => {
+    setcreatebarangRusak({ ...createbarangRusak, tanggalRusak: dateString });
+  };
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -178,13 +235,16 @@ const Page: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+  };
 
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.jumlah.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const filteredData = dataSource.filter(
+  //   (item) =>
+  //     item.kodeBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.namaBarang.toLowerCase().includes(searchText.toLowerCase()) ||
+  //     item.jumlah.toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -197,35 +257,35 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
+        jumlah: createbarangRusak.jumlah,
+        tanggalRusak: createbarangRusak.tanggalRusak,
+        keterangan: createbarangRusak.keterangan,
+        status: 'Rusak',
+        tanggalPerbaikan: null,
+      };
+      const request = await barangRusakRepository.api.barangRusak(data);
+      if (request.status === 400) {
+        setError(request.body.message);
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          id: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        message.success('Data berhasil disimpan!');
         setModalVisible(false);
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -241,6 +301,10 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    // setJumlah(record.Jumlah);
+    // setjmlbarangrusak(record.jmlbarangrusak);
+    // setjmlbarangDiperbaiki(record.jmlbarangdiperbaiki);
+    setketerangan(record.keterangan);
     form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
@@ -290,19 +354,20 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (record: Item) => (
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ color: 'black' }} />}
-            // Menetapkan onClick khusus untuk tombol Edit
-            onClick={(e) => {
-              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-            }}
-          />
-        </span>
-      ),
+      render: (record: Item) => {
+        return (
+          <span>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+          </span>
+        );
+      },
     },
   ];
 
@@ -330,13 +395,16 @@ const Page: React.FC = () => {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
+          <div ref={searchRef}>
           <Search
-            placeholder="Telusuri Barang Rusak"
+            placeholder="Telusuri Barang Masuk"
+            className="custom-search"
             allowClear
             enterButton
-            onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '100vh' }}
+            onSearch={() => {}}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
           />
+          </div>
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -366,45 +434,17 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Rusak</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Rusak</span>
-          )
-        }
-        style={{ textAlign: 'center' }}
+        visible={modalEditVisible}
+        title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang Rusak</span>}
+        style={{ textAlign: 'center'}}
         onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
+        footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div style={{ flex: 1, marginRight: '16px' }}>
-              <Form.Item
-                name="kodeBarang"
-                label="Kode Barang"
-                style={{ textAlign: 'left' }}
-                colon={false}
-                labelAlign="left"
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 15 }}
-                rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
-              >
-                <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
-                  {dataSource.map((item) => (
-                    <Option key={item.id} value={item.kodeBarang}>
-                      {`${item.kodeBarang} - ${item.namaBarang}`}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
+            <div style={{ flex: 1 }}>
               <Form.Item
                 name="jumlah"
                 label="Jumlah"
@@ -412,9 +452,46 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
+              </Form.Item>
+              <Form.Item
+                name="jumlah1"
+                label={
+                  <span>
+                    Jumlah barang
+                    <br />
+                    rusak
+                  </span>
+                }
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} value={jmlbarangrusak} onChange={(e) => setjmlbarangrusak(e.target.value)}/>
+              </Form.Item>
+              <Form.Item
+                name="jumlah2"
+                label={
+                  <span>
+                    Jumlah barang
+                    <br />
+                    perbaikan
+                  </span>
+                }
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"
@@ -423,40 +500,207 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
               >
-                <DatePicker placeholder="Tanggal Rusak" style={{ width: '100%', height: '40px' }} />
+                <DatePicker
+                  placeholder="Tanggal Rusak"
+                  style={{ width: '100%', height: '40px' }}
+                  disabled
+                />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="ruangan"
-                label="Ruangan"
+                name="tanggalPerbaikan"
+                label={
+                  <span>
+                    Tanggal
+                    <br />
+                    perbaikan
+                  </span>
+                }
                 colon={false}
-                // Agar ke Kiri Teksnya
                 labelAlign="left"
-                // Atur Col
                 labelCol={{ span: 5 }}
-                // Atur lebar Input
-                wrapperCol={{ span: 8 }}
-                rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
+                wrapperCol={{ span: 17 }}
+                style={{ marginRight: '20px' }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
+                
               >
-                <Select
-                  placeholder="Pilih Ruangan"
-                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
-                >
-                  <Option value="ruangan1">TKJ</Option>
-                  <Option value="ruangan2">RPL</Option>
-                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
-                </Select>
+                <DatePicker
+                  placeholder="Tanggal Perbaikan"
+                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
+                  value={jmlBarangDiperbaiki}
+                  onChange={(date, dateString: any) => {
+                    setjmlbarangdiperbaiki(dateString);
+                    form.setFieldsValue({ tanggalPerbaikan: date });
+                  }}
+                />
               </Form.Item>
               <Form.Item
                 name="keterangan"
                 label="Keterangan"
                 colon={false}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 17 }}
+                style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} />
+                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}/>
+              </Form.Item>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '90px',
+                    backgroundColor: '#582DD2',
+                    position: 'absolute',
+                    left: '310px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    width: '90px',
+                    position: 'absolute',
+                    left: '210px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+      </Modal>
+      <Modal
+        visible={modalVisible}
+        title={<span style={{ fontWeight: 'bold', fontSize: '20px' }}>Tambah Barang Rusak</span>}
+        style={{ textAlign: 'center' }}
+        centered
+        width={900}
+        footer={null}
+        onCancel={handleModalCancel}
+      >
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }} onFinish={onFinish}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div style={{ flex: 1, marginRight: '16px' }}>
+              <Form.Item
+                name="barangId"
+                label="Kode Barang"
+                style={{ textAlign: 'left' }}
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
+              >
+                <Select
+                  placeholder="Pilih Kode Barang"
+                  style={{ width: '100%', height: '40px', textAlign: 'left', borderColor: 'black'}}
+                >
+                  {listBarang?.data?.map((barang: any) => (
+                    <Option key={barang.id} value={barang.id} >
+                      {barang.kode}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="jumlah" 
+                label="Jumlah"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 15 }}
+                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+              >
+                <Input
+                  placeholder="Jumlah"
+                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                  value={createbarangRusak.jumlah}
+                  onChange={(e) =>
+                    setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
+                  }
+                />
+              </Form.Item>
+            </div>
+            <div style={{ flex: 1 }}>
+            <Form.Item
+                name="tanggalRusak"
+                label="Tanggal Rusak"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 7 }}
+                wrapperCol={{ span: 16 }}
+                rules={[{ required: true, message: 'Tolong pilih tanggal Rusak!' }]}
+              >
+                <DatePicker
+                  placeholder="Tanggal Rusak"
+                  style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                  value={
+                    createbarangRusak.tanggalRusak
+                      ? dayjs(createbarangRusak.tanggalRusak, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
+                />
+              </Form.Item>
+              <Form.Item
+                name="keterangan"
+                label="Keterangan"
+                colon={false}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
+                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+              >
+                <TextArea
+                  rows={4}
+                  style={{ width: '100%', borderColor: 'black', marginLeft: '35px' }}
+                  value={createbarangRusak.keterangan}
+                  onChange={(e) =>
+                    setcreatebarangRusak({ ...createbarangRusak, keterangan: e.target.value })
+                  }
+                />
+              </Form.Item>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '90px',
+                    backgroundColor: '#582DD2',
+                    position: 'absolute',
+                    left: '330px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    width: '90px',
+                    position: 'absolute',
+                    left: '230px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
               </Form.Item>
             </div>
           </div>

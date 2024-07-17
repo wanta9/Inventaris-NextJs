@@ -29,15 +29,12 @@ const Login = () => {
         router.push('/dashboard');
       }
       console.log(request);
-      // Handle form submission here
     } catch (error) {
       console.log(error);
       message.error('Terjadi kesalahan saat login.');
     } finally {
       setLoading(false);
     }
-
-    // Handle form submission here
   };
 
   return (
@@ -108,6 +105,8 @@ const Login = () => {
               belum mempunyai akun?<a href="http://localhost:3002/register"> Daftar Sekarang</a>
             </div>
           </Form.Item>
+
+          
         </Form>
       </Card>
       <div className="login-page">

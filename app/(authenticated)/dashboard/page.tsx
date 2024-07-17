@@ -14,6 +14,7 @@ import {
   Dropdown,
   Menu,
   Select,
+  Form,
 } from 'antd';
 import {
   PlusOutlined,
@@ -25,12 +26,30 @@ import {
 import Chart from 'chart.js/auto';
 import type { UploadFile } from 'antd';
 import { useRouter } from 'next/navigation';
+import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
+import { peminjamRepository } from '#/repository/peminjam';
+import { barangRusakRepository } from '#/repository/barangrusak';
+import { barangMasukRepository } from '#/repository/barangmasuk';
+import { barangKeluarRepository } from '#/repository/barangkeluar';
 
 const { Item } = Menu;
 const { Option } = Select;
 
+interface DataType {
+  id: React.Key;
+  name: string;
+  username: string;
+  telp: string;
+  nip: string;
+}
+
 const Page = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [editData, setEditData] = useState<DataType | null>(null);
+  const [modalEditVisible, setModalEditVisible] = useState(false);
+  const [count, setCount] = useState(0);
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
   const [telp, setTelp] = useState('');
@@ -40,10 +59,48 @@ const Page = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedYear, setSelectedYear] = useState('thisYear');
   const [selectText, setSelectText] = useState('Tahun Ini');
+  // State untuk menyimpan status online dalam bentuk angka
+  const [jumlahAktif, setJumlahAktif] = useState(0);
   const allowedYears = ['2024', '2023', '2022'];
   const router = useRouter();
+  const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
-  const fontWeight = '800';
+  const fontWeight = '650';
+  const { data: akun } = akunRepository.hooks.useAuth();
+  console.log(akun, 'akun');
+  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
+  console.log(listRuanganBarang, 'list ruangan');
+  const { data: listPeminjam } = peminjamRepository.hooks.usePeminjam();
+  console.log(listPeminjam, 'list peminjam');
+  const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  console.log(listBarangMasuk, 'barang masuk');
+  const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+  console.log(listBarangKeluar, 'barang keluar');
+  const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
+  console.log(listBarangRusak, 'listBarangRusak');
+
+
+  const role = akun?.data?.peran?.Role;
+
+  const Jumlah = listRuanganBarang?.data?.length;
+
+  const barangMasuk =  listBarangMasuk?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangKeluar =  listBarangKeluar?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangRusak =  listBarangRusak?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+
+  useEffect(() => {
+    if (akun) {
+      // Jika akun adalah array, hitung jumlah akun yang aktif
+      if (Array.isArray(akun)) {
+        const aktifCount = akun.filter(item => item.isOnline).length;
+        setJumlahAktif(aktifCount);
+      } else {
+        // Jika akun adalah objek tunggal, cek status isOnline
+        setJumlahAktif(akun.isOnline ? 1 : 0);
+      }
+    }
+  }, [akun]);
+
   // const chartRef = useRef<HTMLCanvasElement>(null);
 
   // tahun
@@ -61,10 +118,31 @@ const Page = () => {
     router.push('/login');
   };
 
+
+  const profile = () => {
+    router.push('/profile');
+  };
+
   // menu akun
   const menu = (
     <Menu>
-      <Item key="1" onClick={() => logout()}>
+      {role === 'petugas' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      {role === 'peminjam' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      <Item key="2" onClick={() => logout()}>
         <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
           <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
           Keluar
@@ -72,6 +150,45 @@ const Page = () => {
       </Item>
     </Menu>
   );
+
+  const handleSaveModalData = () => {
+    // Validasi input kosong
+    form
+      .validateFields()
+      .then((values) => {
+        // Jika semua field tervalidasi
+        if (editData) {
+          // Jika dalam mode edit, update data yang ada
+          const newData = dataSource.map((item) =>
+            item.id === editData.id
+              ? { ...item, name: values.nama, username: values.namaPengguna, telp: values.telp, nip: values.nip }
+              : item
+          );
+          setDataSource(newData);
+          setEditData(null);
+          setModalEditVisible(false);
+        } else {
+          // Jika tidak dalam mode edit, tambahkan data baru
+          const newData = {
+            id: count.toString(),
+            name: values.nama,
+            username: values.namaPengguna,
+            telp: values.telp,
+            nip: values.nip,
+          };
+          setDataSource([...dataSource, newData]);
+          setCount(count + 1);
+          setModalVisible(false);
+        }
+        // Reset form setelah penyimpanan berhasil
+        form.resetFields();
+      })
+      .catch((error) => {
+        // Menampilkan pesan error jika ada validasi yang gagal
+        console.error('Validation failed:', error);
+      });
+  };
+
   const handleChangeUpload = (info: any) => {
     let fileList = [...info.fileList];
 
@@ -279,7 +396,7 @@ const Page = () => {
                   <img src="/dshbarang.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>30</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{Jumlah}</div>
                   <div style={{ fontFamily, color: 'grey' }}>Barang</div>
                 </div>
               </div>
@@ -307,7 +424,7 @@ const Page = () => {
                   <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily}}>8</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily}}>{listPeminjam?.data?.length}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
                 </div>
               </div>
@@ -335,7 +452,7 @@ const Page = () => {
                   <img src="/dshaktif.svg" style={{ width: '50%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>5</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{jumlahAktif}</div>
                   <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
                 </div>
               </div>
@@ -343,160 +460,164 @@ const Page = () => {
           </Col>
           {/* button Tambah akun petugas */}
           <Button
-            type="primary"
-            onClick={handleButtonClick}
-            icon={<PlusOutlined />}
-            style={{
-              backgroundColor: 'white',
-              color: 'black',
-              marginTop: '90px',
-              marginLeft: '110px',
-              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            Akun Petugas
-          </Button>
+          type="primary"
+          onClick={handleButtonClick}
+          icon={<PlusOutlined style={{ marginTop: '5px' }} />}
+          style={{
+            marginRight: '0',
+            display: 'absolute',
+            bottom: '-60px',
+            right: '-70px',
+            width: '200px',
+            height: '40px',
+            backgroundColor: 'white',
+            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+            color: 'black',
+          }}
+          className="custom-button"
+        >
+          <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
+        </Button>
         </Row>
 
         {/* Pop up Tambah Akun Petugas */}
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Buat Akun Petugas</div>}
+          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px'}}>Buat Akun Petugas</div>}
           style={{ textAlign: 'center' }}
-          width={900}
           centered
+          width={1000}
           visible={modalVisible}
           onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              style={{ backgroundColor: '#582DD2', color: 'white', marginRight: '27px' }}
-              key="save"
-              type="primary"
-              onClick={handleSave}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
-          }}
+          footer={null}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            {' '}
-            {/* Menambahkan margin atas */}
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama</p>
-                  </Col>
-                  <Col>
+          <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSaveModalData}
+          initialValues={{ nama: '', nip: '', telp: '', namaPengguna: '', sandi: '', konfirmasiSandi: '' }}
+        >
+
+        <div style={{ marginTop: '90px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col push={1} span={10}>
+                  <Form.Item
+                    label="Nama"
+                    name="nama"
+                    rules={[{ required: true, message: 'Nama harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
                       placeholder="Nama"
-                      value={nama}
                       onChange={(e) => setNama(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>NIP</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nip"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px' }}
                       placeholder="NIP"
-                      value={nip}
                       onChange={(e) => setNIP(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Telp</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                    style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '', top: '-35px', marginLeft: '100px'}}
                       placeholder="Telp"
-                      value={telp}
                       onChange={(e) => setTelp(e.target.value)}
                       maxLength={12}
                     />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={8}>
-                    <p>Unggah Foto</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
-                      fileList={fileList}
-                      onChange={handleChangeUpload}
+                      beforeUpload={ () => false }
+                      // onChange={(args) => handleChange(args)}
                     >
-                      <Button icon={<UploadOutlined />}>Unggah</Button>
+                      <Button style={{ top: '-30px', marginRight: '50px'}} icon={<UploadOutlined />}>Unggah</Button>
                     </Upload>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama Pengguna</p>
-                  </Col>
-                  <Col span={8}>
+                  </Form.Item>
+                </Col>
+                <Col push={2} span={11}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="namaPengguna"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                   style={{ fontWeight ,fontFamily, marginBottom: '-10px'}}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Nama Pengguna"
-                      value={namaPengguna}
                       onChange={(e) => setNamaPengguna(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Sandi</p>
-                  </Col>
-                  <Col span={8}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Sandi"
+                    name="sandi"
+                    rules={[{ required: true, message: 'Sandi harus di isi' }]}
+                   style={{ fontWeight , fontFamily, marginBottom: '-10px'}}
+                  > 
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Sandi"
-                      value={sandi}
                       onChange={(e) => setSandi(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Konfirmasi Sandi</p>
-                  </Col>
-                  <Col span={8}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Konfirmasi Sandi"
+                    name="konfirmasiSandi"
+                    style={{ fontWeight , fontFamily }}
+                    rules={[
+                      { required: true, message: 'Konfirmasi Sandi harus di isi' },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue('sandi') === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('Konfirmasi Sandi harus sama dengan Sandi.'));
+                        },
+                      }),
+                    ]}
+                  >
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '150px', top: '-35px' }}
                       placeholder="Konfirmasi Sandi"
-                      value={konfirmasiSandi}
                       onChange={(e) => setKonfirmasiSandi(e.target.value)}
                     />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{ width: '100px', height: '35px', backgroundColor: 'white', borderColor: 'black', color: 'black', marginRight: '10px' }}
+                >
+                  Batal
+                </Button>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: '100px', height: '35px',backgroundColor: '#582DD2', color: 'white', borderColor: '#582DD2', marginRight: '50px' }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
       </div>
       ,
@@ -505,7 +626,7 @@ const Page = () => {
 
         <Row>
           <Col flex="auto">
-            <Card className="shadow-card" style={{ height: '500px', marginRight: '50px' }}>
+            <Card className="shadow-card" style={{ height: '550px', marginRight: '50px' }}>
               <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px' }}>
                 Jumlah Peminjaman
               </h1>
@@ -543,7 +664,7 @@ const Page = () => {
                   <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>10</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangMasuk}</div>
                   <div style={{ color: 'grey' }}>Barang Masuk</div>
                 </div>
               </div>
@@ -553,7 +674,7 @@ const Page = () => {
                   <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>4</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangKeluar}</div>
                   <div style={{ color: 'grey' }}>Barang Keluar</div>
                 </div>
               </div>
@@ -563,7 +684,7 @@ const Page = () => {
                   <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>2</div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{barangRusak}</div>
                   <div style={{ color: 'grey' }}>Barang Rusak</div>
                 </div>
               </div>
@@ -582,34 +703,130 @@ const Page = () => {
             alignItems: 'center',
           }}
         >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '175px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, Elisabet
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>
-                      Admin
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+        </div>
+        )}
         </div>
       </div>
     </>

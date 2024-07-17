@@ -24,6 +24,7 @@ const Editpeminjam = () => {
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Edit Peminjam</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Profile</h1>
       <Card
         style={{
           marginTop: '50px',
@@ -148,28 +149,6 @@ const Editpeminjam = () => {
                       marginTop: '20px',
                     }}
                   />
-                </Col>
-              </Row>
-            </Col>
-            <Col push={20} style={{ marginTop: '40px' }}>
-              <Row align="middle">
-                <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                  <Button
-                    style={{
-                      backgroundColor: '#582DD2',
-                      color: 'white',
-                      width: '200px',
-                      height: '35px',
-                      borderRadius: '10px',
-                    }}
-                  >
-                    <a
-                      href="http://localhost:3002/peminjam"
-                      style={{ fontWeight, fontSize: '14px' }}
-                    >
-                      Simpan
-                    </a>
-                  </Button>
                 </Col>
               </Row>
             </Col>

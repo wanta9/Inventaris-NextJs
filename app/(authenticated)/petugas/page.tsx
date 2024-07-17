@@ -15,6 +15,7 @@ import {
   Card,
   Dropdown,
   Menu,
+  Avatar,
 } from 'antd';
 import {
   PlusOutlined,
@@ -31,9 +32,31 @@ import { Router } from 'react-router-dom';
 import { useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
+import { akunRepository } from '#/repository/akun';
+import { create } from 'domain';
 
 const { Search } = Input;
 const { Item } = Menu;
+
+export enum statusBarang {
+  Aktif = 'aktif',
+  TidakAktif = 'tidak aktif',
+  Pending = 'pending',
+  Diterima = 'diterima',
+  Ditolak = 'ditolak',
+}
+
+interface createAkunpetugas {
+  peranId: string;
+  nama: string;
+  nomorInduk: string;
+  telp: string;
+  gambar: string;
+  username: string;
+  password: string;
+  status: statusBarang;
+  kelas: string;
+}
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
@@ -127,7 +150,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-  key: React.Key;
+  id: React.Key;
   name: string;
   username: string;
   telp: string;
@@ -137,21 +160,40 @@ interface DataType {
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const Page: React.FC = () => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
+  const [username, setusername] = useState('');
   const [telp, setTelp] = useState('');
   const [namaPengguna, setNamaPengguna] = useState('');
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
+    peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
+    status: statusBarang.Aktif,
+    nama: '',
+    kelas: '',
+    nomorInduk: '',
+    telp: '',
+    gambar: '',
+    username: '',
+    password: '',
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
   console.log(listPetugas, 'listPetugas');
+  const [form] = Form.useForm(); 
+  const fontFamily = 'Barlow, sans-serif';
+  const fontWeight = '700';
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
 
   const router = useRouter();
 
@@ -160,6 +202,17 @@ const Page: React.FC = () => {
     localStorage.removeItem('access_token');
     router.push('/login');
   };
+
+    // style button search
+    useEffect(() => {
+      if (searchRef.current) {
+        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+          searchButton.style.backgroundColor = '#582DD2';
+          searchButton.style.borderColor = '#582DD2';
+        }
+      }
+    }, []);
 
   // menu akun
   const menu = (
@@ -188,30 +241,6 @@ const Page: React.FC = () => {
       item.nip.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleChange = (info: any) => {
-    let fileList = [...info.fileList];
-
-    // Limit to one file
-    fileList = fileList.slice(-1);
-
-    // Handle upload status
-    fileList = fileList.map((file) => {
-      if (file.response) {
-        // Handle server response
-        if (file.response.status === 'success') {
-          file.url = file.response.url; // Set URL if upload is successful
-        } else {
-          // Show error message if upload fails
-          message.error(`${file.name} upload failed: ${file.response.message}`);
-          fileList = [];
-        }
-      }
-      return file;
-    });
-
-    setFileList(fileList);
-  };
-
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -225,73 +254,49 @@ const Page: React.FC = () => {
     setTelp('');
   };
 
-  const handleSaveModalData = () => {
-    if (!nama || !nip || !telp || !namaPengguna || !sandi || !konfirmasiSandi) {
-      // Menampilkan pesan kesalahan di sebelah input yang kosong
-      if (!nama) {
-        message.error('Nama harus diisi.');
-      }
-      if (!nip) {
-        message.error('NIP harus diisi.');
-      }
-      if (!telp) {
-        message.error('Nomor telepon harus diisi.');
-      }
-      if (!namaPengguna) {
-        message.error('Nama pengguna harus diisi.');
-      }
-      if (!sandi) {
-        message.error('sandi harus diisi.');
-      }
-      if (!konfirmasiSandi) {
-        message.error('konfirmasi Sandi harus diisi.');
-      }
-      return;
-    }
-
-    if (editData) {
-      const newData = dataSource.map((item) => {
-        if (item.key === editData.key) {
-          return { ...item, name: nama, username: namaPengguna, telp, nip };
-        }
-        return item;
-      });
-      setDataSource(newData);
-      setModalEditVisible(false);
-      setEditData(null);
-      // Reset state nilai input setelah penyimpanan berhasil
-      setNama('');
-      setNamaPengguna('');
-      setNIP('');
-      setTelp('');
-    } else {
-      const newData: DataType = {
-        key: count.toString(),
-        name: nama,
-        username: namaPengguna,
-        telp: telp,
-        nip: nip,
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        peranId: createAkunpetugas.peranId,
+        status: createAkunpetugas.status,
+        nama: createAkunpetugas.nama,
+        nomorInduk: createAkunpetugas.nomorInduk,
+        telp: createAkunpetugas.telp,
+        gambar: createAkunpetugas.gambar,
+        username: createAkunpetugas.username,
+        password: createAkunpetugas.password,
+        kelas: createAkunpetugas.kelas,
       };
-      setDataSource([...dataSource, newData]);
-      setCount(count + 1);
-      setModalVisible(false);
-      setModalEditVisible(false);
-      // Reset state nilai input setelah penyimpanan berhasil
-      setNamaPengguna('');
-      setNIP('');
-      setTelp('');
+      const request = await akunRepository.api.akun(data);
+      if (request.status === 400) { 
+        setError(request.body.message); 
+      } else {
+        message.success('Berhasil Menambah Petugas!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Menambah Petugas!');
+      console.log();
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
+    const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
   };
 
-  const handleEdit = (record: DataType) => {
+  const handleEdit = (record: Item) => {
     setEditData(record);
     setNama(record.name);
-    setNamaPengguna(record.username);
+    setusername(record.username);
     setNIP(record.nip);
     setTelp(record.telp);
     setModalEditVisible(true);
@@ -304,7 +309,12 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.akun.nama;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar src={record.akun?.gambar} />
+            <span style={{ marginLeft: 8 }}>{record.akun.nama}</span>
+          </div>
+        );
       },
     },
     {
@@ -334,15 +344,35 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (_, record) =>
-        dataSource.length >= 1 ? (
+      render: (record: Item) => {
+        return (
           <span>
-            <Button type="link" onClick={() => handleEdit(record.id)} icon={<EditOutlined />} />
-            <Popconfirm title="Hapus Akun" onConfirm={() => handleDelete(record.id)}>
-              <DeleteOutlined />
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+            <Popconfirm
+              title="Hapus Barang"
+              onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
+              onCancel={(e) => {
+                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+              }}
+            >
+              <Button
+                type="link"
+                onClick={(e) => {
+                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                }}
+                icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+              />
             </Popconfirm>
           </span>
-        ) : null,
+        );
+      },
     },
   ];
 
@@ -363,7 +393,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: DataType) => {
     const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
+    const index = newData.findIndex((item) => row.id === item.id);
     const item = newData[index];
     newData.splice(index, 1, {
       ...item,
@@ -379,18 +409,39 @@ const Page: React.FC = () => {
     },
   };
 
+  const handleChange = async (args: any) => {
+    const file = args.file;
+
+    try {
+      const createBarang = { file };
+      const processUpload = await akunRepository.api.uploadAkun(file);
+      setcreateAkunpetugas((createAkunpetugas: any) => ({
+        ...createAkunpetugas,
+        gambar: processUpload?.body?.data?.filename,
+      }));
+      console.log(processUpload, 'create');
+      message.success('Gambar Berhasil Di Unggah!');
+    } catch (e) {
+      console.log(e, 'ini catch e');
+      // setTimeout(message.eror("Gambar Gagal Di Unggah"))
+    }
+  };
+
   return (
     <div>
       <title>Petugas</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Petugas</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '45px' }}>Petugas</h1>
       <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
+        <div ref={searchRef}>
         <Search
-          placeholder="Telusuri Petugas"
-          allowClear
-          enterButton
-          onSearch={(value) => handleSearch(value)}
-          style={{ width: 300 }}
-        />
+            placeholder="Telusuri Barang Masuk"
+            className="custom-search"
+            allowClear
+            enterButton
+            onSearch={() => {}}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
+          />
+        </div>
         <Button
           type="primary"
           onClick={handleButtonClick}
@@ -420,259 +471,442 @@ const Page: React.FC = () => {
           style={{ marginTop: '30px' }}
         />
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Buat Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           centered
-          width={900}
+          width={1000}
           visible={modalVisible}
           onCancel={handleModalCancel}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={handleModalCancel}
-              style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-            >
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{
-                marginRight: '27px',
-                backgroundColor: '#582DD2',
-                color: 'white',
-                borderColor: '#582DD2',
-              }}
-            >
-              Simpan
-            </Button>,
-          ]}
-          maskStyle={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}
+          footer={null}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama</p>
-                  </Col>
-                  <Col>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{
+              nama: '',
+              nip: '',
+              telp: '',
+              username: '',
+              sandi: '',
+              konfirmasiSandi: '',
+            }}
+          >
+            <div style={{ marginTop: '90px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col push={1} span={10}>
+                  <Form.Item
+                    label="Nama"
+                    name="nama"
+                    rules={[{ required: true, message: 'Nama harus di isi' }]}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
                       placeholder="Nama"
-                      value={nama}
-                      onChange={(e) => setNama(e.target.value)}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
+                      value={createAkunpetugas.nama}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>NIP</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nomorInduk"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
+                      value={createAkunpetugas.nomorInduk}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                      }
                       placeholder="NIP"
-                      value={nip}
-                      onChange={(e) => setNIP(e.target.value)}
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Telp</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        top: '-35px',
+                        marginLeft: '100px',
+                      }}
                       placeholder="Telp"
-                      value={telp}
-                      onChange={(e) => setTelp(e.target.value)}
-                      maxLength={12}
+                      value={createAkunpetugas.telp}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={8}>
-                    <p>Unggah Foto</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item label="Unggah Foto" name="foto" style={{ fontFamily, fontWeight }}>
                     <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                       listType="picture"
-                      fileList={fileList}
-                      onChange={handleChange}
+                      beforeUpload={() => false}
+                      onChange={(args) => handleChange(args)}
                     >
-                      <Button icon={<UploadOutlined />}>Unggah</Button>
+                      <Button
+                        style={{ top: '-30px', marginRight: '50px' }}
+                        icon={<UploadOutlined />}
+                      >
+                        Unggah
+                      </Button>
                     </Upload>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama Pengguna</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                </Col>
+                <Col push={2} span={11}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="username"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
-                      placeholder="Nama Pengguna"
-                      value={namaPengguna}
-                      onChange={(e) => setNamaPengguna(e.target.value)}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
+                      placeholder="Nama Pengguna"   
+                      value={createAkunpetugas.username}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p style={{ right: '20px' }}>Sandi</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Sandi"
+                    name="password"
+                    rules={[{ required: true, message: 'Sandi harus di isi' }]}
+                    style={{ fontWeight, fontFamily, marginBottom: '-10px' }}
+                  >
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Sandi"
-                      value={sandi}
-                      onChange={(e) => setSandi(e.target.value)}
+                      value={createAkunpetugas.password}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Konfirmasi Sandi</p>
-                  </Col>
-                  <Col span={16}>
+                  </Form.Item>
+                  <Form.Item
+                    label="Konfirmasi Sandi"
+                    name="konfirmasiSandi"
+                    style={{ fontWeight, fontFamily }}
+                    rules={[
+                      { required: true, message: 'Konfirmasi Sandi harus di isi' },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue('password') === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(
+                            new Error('Konfirmasi Sandi harus sama dengan Sandi.')
+                          );
+                        },
+                      }),
+                    ]}
+                  >
                     <Input.Password
-                      style={{ marginBottom: '12px', width: '300px', height: '40px' }}
+                      style={{
+                        width: '300px',
+                        height: '45px',
+                        border: '',
+                        marginLeft: '150px',
+                        top: '-35px',
+                      }}
                       placeholder="Konfirmasi Sandi"
-                      value={konfirmasiSandi}
                       onChange={(e) => setKonfirmasiSandi(e.target.value)}
                     />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
+                >
+                  Batal
+                </Button>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '100px',
+                    height: '35px',
+                    backgroundColor: '#582DD2',
+                    color: 'white',
+                    borderColor: '#582DD2',
+                    marginRight: '50px',
+                  }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
+
         <Modal
           title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Akun Petugas</div>}
           style={{ textAlign: 'center' }}
-          width={900}
+          width={700}
           centered
           visible={modalEditVisible}
           onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ marginRight: '27px' }}
-            >
-              Simpan
-            </Button>,
-          ]}
+          footer={null}
           maskStyle={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
           }}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            <Row gutter={[24, 24]}>
-              <Col span={12}>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Nama Pengguna</p>
-                  </Col>
-                  <Col span={16}>
+          <Form
+            layout="horizontal"
+            onFinish={onFinish}
+            initialValues={{
+              username,
+              nip,
+              telp,
+            }}
+          >
+            <div style={{ marginTop: '70px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col push={2} span={14}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="username"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Nama Pengguna"
-                      value={namaPengguna}
-                      onChange={(e) => setNamaPengguna(e.target.value)}
+                      value={createAkunpetugas.username}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>NIP</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nomorInduk"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="NIP"
-                      value={nip}
-                      onChange={(e) => setNIP(e.target.value)}
+                      value={createAkunpetugas.nomorInduk}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                      }
                     />
-                  </Col>
-                </Row>
-                <Row align="middle">
-                  <Col span={8}>
-                    <p>Telp</p>
-                  </Col>
-                  <Col>
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                  >
                     <Input
-                      style={{ marginBottom: '12px', width: '250px', height: '40px' }}
-                      type="string"
+                      style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Telp"
-                      value={telp}
-                      onChange={(e) => setTelp(e.target.value)}
+                      value={createAkunpetugas.telp}
+                      onChange={(e) =>
+                        setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                      }
                       maxLength={12}
                     />
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
+                >
+                  Batal
+                </Button>
+                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '27px' }}>
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
         </Modal>
       </Card>
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '175px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '90px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, Elisabet
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '12px', color: 'grey ', marginRight: '47px' }}>Admin</div>
-                </div>
+                </Button>
               </div>
-            </Button>
+            </Dropdown>
           </div>
-        </Dropdown>
-      </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src="ikon.png"
+                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+        </div>
+        )}
     </div>
   );
 };

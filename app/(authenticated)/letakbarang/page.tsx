@@ -15,9 +15,13 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 type EditableTableProps = Parameters<typeof Table>[0];
 
-interface Item {
+interface createLetakbarang {
+  Letak_Barang: string;
+}
+
+interface Item {  
   key: string;
-  letakBarang: string;
+  letakbarang: string;
 }
 interface DataType {
   key: React.Key;
@@ -67,15 +71,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
 
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.log('Save failed:', errInfo);
-    }
-  };
+
 
   let childNode = children;
 
@@ -91,7 +87,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
           },
         ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input ref={inputRef}/>
       </Form.Item>
     ) : (
       <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
@@ -112,6 +108,37 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<DataType | null>(null);
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [createLetakbarang, setcreateLetakbarang] = useState<createLetakbarang>({
+    Letak_Barang: '',
+  });
+
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        Letak_Barang: createLetakbarang.Letak_Barang,
+      };
+      const request = await ruanganRepository.api.ruangan(data);
+      if (request.status === 400) { 
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('berhasil Menambahkan Letak Barang!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Menambahkan Letak Barang.');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const router = useRouter();
 
@@ -216,7 +243,7 @@ const Page: React.FC = () => {
             <Button
               type="link"
               onClick={() => handleEdit(record)}
-              icon={<EditOutlined style={{ color: 'black' }} />}
+              icon={ <img src="/logoEdit.svg" style={{ width: '18px', height: '18px', marginLeft: '22px' }}/>}
             />
           </span>
         );
@@ -292,71 +319,100 @@ const Page: React.FC = () => {
         />
         <Modal
           title="Tambah Letak Barang"
+          style={{ textAlign: 'center'}}
           visible={modalVisible}
           centered
-          style={{ textAlign: 'center' }}
           onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel} style={{ border: 'black' }}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ backgroundColor: '#582DD2' }}
-            >
-              Simpan
-            </Button>,
-          ]}
+          footer={false}
         >
-          <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-            <Col span={6}>
-              <p>Nama Ruangan</p>
-            </Col>
-            <Col span={18}>
+          <Form layout="horizontal" onFinish={onFinish}>
+             {/* labelCol geser kanan
+             wrapperCol lebar input */}
+            <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
-                value={letakBarang}
-                onChange={(e) => setLetakBarang(e.target.value)}
+                value={createLetakbarang.Letak_Barang}
+                onChange={(e) =>
+                  setcreateLetakbarang({ ...createLetakbarang, Letak_Barang: e.target.value })
+                }
                 placeholder="Masukkan letak barang"
                 className="uppercase-input"
               />
-            </Col>
-          </Row>
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    top: '10px',
+                    right: '-125px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    left: '-25px',
+                    top: '10px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
+          </Form>
         </Modal>
+
         <Modal
           title="Edit Letak Barang"
+          style={{ textAlign: 'center' }}
           visible={modalEditVisible}
           centered
-          style={{ textAlign: 'center' }}
           onCancel={handleModalCancel}
-          footer={[
-            <Button key="cancel" onClick={handleModalCancel}>
-              Batal
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={handleSaveModalData}
-              style={{ backgroundColor: '#582DD2' }}
-            >
-              Simpan
-            </Button>,
-          ]}
+          footer={null}
         >
-          <Row gutter={[24, 24]} style={{ marginTop: '50px', marginBottom: '20px' }}>
-            <Col span={6}>
-              <p>Nama Ruangan</p>
-            </Col>
-            <Col span={18}>
+          <Form layout="horizontal">
+            <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
                 value={letakBarang}
                 onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
                 className="uppercase-input"
               />
-            </Col>
-          </Row>
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    top: '10px',
+                    right: '-125px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    left: '-25px',
+                    top: '10px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
+          </Form>
         </Modal>
       </Card>
       {role === 'admin' && (

@@ -11,6 +11,9 @@ const url = {
   authorize() {
     return `/akun/authorize`;
   },
+  uploadAkun() {
+    return `/upload/akun`;
+  },
 };
 
 const hooks = {
@@ -26,6 +29,15 @@ const api = {
   login(data: any) {
     return http.post(url.loginAkun()).send(data);
   },
+  akun(data: any) {
+    return http.post(url.getAkun()).send(data);
+  },
+  uploadAkun(data: any) {
+    const formData = new FormData();
+    formData.append('foto', data);
+    return http.post(url.uploadAkun()).send(formData);
+  },
+
 };
 
 export const akunRepository = {

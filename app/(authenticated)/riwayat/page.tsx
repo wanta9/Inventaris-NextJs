@@ -1,19 +1,64 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // Import useRouter
-import { Avatar, Button, Input, Table, Card, Select } from 'antd';
+import { useRouter } from 'next/navigation';
+import { Avatar, Button, Input, Table, Card, Select, Dropdown, Menu } from 'antd';
+import { PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
+import { akunRepository } from '#/repository/akun';
+
 
 const { Column } = Table;
 const { Search } = Input;
 const { Option } = Select;
+const { Item } = Menu;
 
 const Riwayat = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const router = useRouter();
+  const role = akun?.data?.peran?.Role;
+
+
+  const logout = () => {
+    localStorage.removeItem('access_token');
+    router.push('/login');
+  };
+
+  const profile = () => {
+    router.push('/profile');
+  };
+
+  const menu = (
+    <Menu>
+      {role === 'petugas' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      {role === 'peminjam' && (
+        <Item key="1" onClick={() => profile()}>
+          <a style={{ color: 'black' }} target="_blank" rel="noopener noreferrer">
+            <UserOutlined style={{ color: 'black', marginRight: '10px' }} />
+            Profile
+          </a>
+        </Item>
+      )}
+      <Item key="2" onClick={() => logout()}>
+        <a style={{ color: 'red' }} target="_blank" rel="noopener noreferrer">
+          <ArrowLeftOutlined style={{ color: 'red', marginRight: '10px' }} />
+          Keluar
+        </a>
+      </Item>
+    </Menu>
+  );
+
 
   interface DataType {
     key: React.Key;
@@ -153,6 +198,129 @@ const Riwayat = () => {
           />
         </Table>
       </Card>
+      {role === 'admin' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '200px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
+      )}
+      {role === 'petugas' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
+      )}
+      {role === 'peminjam' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
+      )}
     </div>
   );
 };

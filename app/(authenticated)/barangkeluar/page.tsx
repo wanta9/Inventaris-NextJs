@@ -13,6 +13,7 @@ import {
   DatePicker,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { EditOutlined, PlusOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
@@ -21,6 +22,8 @@ import { useRouter } from 'next/navigation';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
 import dayjs from 'dayjs';
 import { akunRepository } from '#/repository/akun';
+import { barangRepository } from '#/repository/barang';
+import { ruanganRepository } from '#/repository/ruangan';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -32,13 +35,22 @@ interface EditableRowProps {
   index: number;
 }
 
+interface createbarangKeluar {
+  barangId: string;
+  ruanganId: string;
+  jumlah: number;
+  tanggalKeluar: string;
+  keterangan: string;
+}
+
 interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
   harga: string;
   jumlah: string;
-  tanggalMasuk: string;
+  tanggalKeluar: string;
+  keterangan: string;
 }
 
 interface EditableCellProps {
@@ -126,12 +138,42 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
+  const [tanggalMasuk, settanggalKeluar] = useState('');
+  const [keterangan, setketerangan] = useState('');
   const [form] = Form.useForm();
+  const [createbarangKeluar, setcreatebarangKeluar] = useState<createbarangKeluar>({
+    barangId: '',
+    ruanganId: '',
+    jumlah: 0,
+    tanggalKeluar: '',
+    keterangan: '',
+  });
   const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+  const { data: listBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+    // style button search
+    useEffect(() => {
+      if (searchRef.current) {
+        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+          searchButton.style.backgroundColor = '#582DD2';
+          searchButton.style.borderColor = '#582DD2';
+        }
+      }
+    }, []);
+
+
+  const handleDateChange = (date: any, dateString: any) => {
+    setcreatebarangKeluar({ ...createbarangKeluar, tanggalKeluar: dateString });
+  };
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -144,8 +186,8 @@ const Page: React.FC = () => {
   };
 
   const profile = () => {
-    router.push('/profile')
-  }
+    router.push('/profile');
+  };
 
   const menu = (
     <Menu>
@@ -195,35 +237,33 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
-  const handleSaveModalData = async () => {
+  const onFinish = async (values: any) => {
+    console.log('data values: ', values);
     try {
-      const values = await form.validateFields();
-      const currentDate = new Date();
-      if (editData) {
-        const newData = dataSource.map((item) => {
-          if (item.id === editData.id) {
-            return { ...item, ...values };
-          }
-          return item;
-        });
-        setDataSource(newData);
-        setModalEditVisible(false);
-        setEditData(null);
+      setLoading(true);
+      setError(null);
+      const data = {
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
+        jumlah: createbarangKeluar.jumlah,
+        tanggalKeluar: createbarangKeluar.tanggalKeluar,
+        keterangan: createbarangKeluar.keterangan,
+      };
+      const request = await barangKeluarRepository.api.barangKeluar(data);
+      if (request.status === 400) {
+        setError(request.body.message); 
       } else {
-        const newKodeBarang = `A${(count + 1).toString().padStart(4, '0')}`;
-        const newData: Item = {
-          id: count.toString(),
-          kodeBarang: newKodeBarang,
-          tanggalMasuk: currentDate.toISOString().slice(0, 10),
-          ...values,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        message.success('Data berhasil disimpan!');
         setModalVisible(false);
       }
-      form.resetFields();
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log()
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -239,6 +279,8 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    settanggalKeluar(record.tanggalKeluar);
+    setketerangan(record.keterangan );
     form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
@@ -255,7 +297,8 @@ const Page: React.FC = () => {
       editable: false,
       render: (_, record) => {
         console.log(record);
-        return record.ruanganBarang.barang.nama;
+        const namaBarang = record?.ruanganBarang?.barang?.nama;
+        return namaBarang ? namaBarang : 'data belum ada';
       },
     },
     {
@@ -272,19 +315,20 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (record: Item) => (
-        <span>
-          <Button
-            type="link"
-            icon={<EditOutlined style={{ color: 'black' }} />}
-            // Menetapkan onClick khusus untuk tombol Edit
-            onClick={(e) => {
-              e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-              handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-            }}
-          />
-        </span>
-      ),
+      render: (record: Item) => {
+        return (
+          <span>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+          </span>
+        );
+      },
     },
   ];
 
@@ -312,13 +356,16 @@ const Page: React.FC = () => {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
+          <div ref={searchRef}>
           <Search
-            placeholder="Telusuri Barang Keluar"
+            placeholder="Telusuri Barang Masuk"
+            className="custom-search"
             allowClear
             enterButton
-            onSearch={(value) => handleSearch(value)}
-            style={{ width: 300, marginRight: '100vh' }}
+            onSearch={() => {}}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
           />
+          </div>
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -349,29 +396,19 @@ const Page: React.FC = () => {
         />
       </Card>
       <Modal
-        visible={modalVisible || modalEditVisible}
-        title={
-          editData ? (
-            <span style={{ fontWeight: 'bold' }}>Edit Barang Keluar</span>
-          ) : (
-            <span style={{ fontWeight: 'bold' }}>Tambah Barang Keluar</span>
-          )
-        }
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Keluar</div>}
+        visible={modalVisible}
         style={{ textAlign: 'center' }}
         onCancel={handleModalCancel}
         centered
         width={900}
-        okText="Simpan"
-        okButtonProps={{ style: { background: '#582DD2' } }}
-        cancelText="Batal"
-        cancelButtonProps={{ style: { borderColor: 'black', color: 'black' } }}
-        onOk={handleSaveModalData}
+        footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '50px' }} onFinish={onFinish}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1, marginRight: '16px' }}>
               <Form.Item
-                name="kodeBarang"
+                name="barangId"
                 label="Kode Barang"
                 style={{ textAlign: 'left' }}
                 colon={false}
@@ -380,10 +417,13 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi kode barang!' }]}
               >
-                <Select placeholder="Kode Barang" style={{ width: '100%', height: '40px' }}>
-                  {dataSource.map((item) => (
-                    <Option key={item.id} value={item.kodeBarang}>
-                      {`${item.kodeBarang} - ${item.namaBarang}`}
+                <Select
+                  placeholder="Pilih Kode Barang"
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                >
+                  {listBarang?.data?.map((barang: any) => (
+                    <Option key={barang.id} value={barang.id}>
+                      {barang.kode}
                     </Option>
                   ))}
                 </Select>
@@ -397,7 +437,12 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 15 }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} />
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+                value={createbarangKeluar.jumlah}
+                onChange={(e) =>
+                setcreatebarangKeluar({ ...createbarangKeluar, jumlah: Number (e.target.value) })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="tanggalKeluar"
@@ -411,12 +456,19 @@ const Page: React.FC = () => {
                 <DatePicker
                   placeholder="Tanggal Keluar"
                   style={{ width: '100%', height: '40px' }}
+                  value={
+                    createbarangKeluar.tanggalKeluar
+                      ? dayjs(createbarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+                      : null
+                  }
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
                 />
               </Form.Item>
             </div>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="ruangan"
+                name="ruanganId"
                 label="Ruangan"
                 colon={false}
                 // Agar ke Kiri Teksnya
@@ -431,9 +483,11 @@ const Page: React.FC = () => {
                   placeholder="Pilih Ruangan"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  <Option value="ruangan1">TKJ</Option>
-                  <Option value="ruangan2">RPL</Option>
-                  {/* Tambahkan opsi ruangan lainnya sesuai kebutuhan */}
+                  {listRuangan?.data?.map((ruangan) => (
+                    <Option key={ruangan.id} value={ruangan.id}>
+                      {ruangan.Letak_Barang}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item
@@ -442,134 +496,259 @@ const Page: React.FC = () => {
                 colon={false}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea rows={4} style={{ width: '100%' }} />
+                <TextArea rows={4} style={{ width: '100%' }} 
+                value={createbarangKeluar.keterangan}
+                onChange={(e) =>
+                setcreatebarangKeluar({ ...createbarangKeluar, keterangan: e.target.value })
+                }
+                />
+              </Form.Item>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    backgroundColor: '#582DD2',
+                    display: 'absolute',
+                    marginRight: '-150px',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    display: 'absolute',
+                    marginBottom: '-40px',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
               </Form.Item>
             </div>
           </div>
         </Form>
       </Modal>
-      {role === 'admin' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
+      <Modal
+      centered
+      title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Edit Barang Keluar</div>}
+      style={{ textAlign: 'center'}}
+      visible={modalEditVisible}
+      onCancel={handleModalCancel}
+      footer={null}
       >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '200px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
+      <Form.Item
+        name="jumlah"
+        label="Jumlah"
+        colon={false}
+        labelAlign="left"
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 16 }}
+        rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+        style={{ marginTop: '50px', marginLeft: '20px'}}
+      >
+        <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+          value={createbarangKeluar.jumlah}
+          onChange={(e) =>
+          setcreatebarangKeluar({ ...createbarangKeluar, jumlah: Number (e.target.value) })
+          }
+        />
+      </Form.Item>
+      <Form.Item
+        name="tanggalMasuk"
+        label="Tanggal Masuk"
+        colon={false}
+        labelAlign="left"
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 16 }}
+        rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+        style={{ marginLeft: '20px'}}
+        >
+          <DatePicker
+            placeholder="Tanggal Keluar"
+            style={{ width: '100%', height: '40px' }}
+            value={
+            createbarangKeluar.tanggalKeluar
+              ? dayjs(createbarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+              : null
+          }
+            onChange={handleDateChange}
+            format="YYYY-MM-DD"
+          />
+          </Form.Item>     
+          <Form.Item
+                name="keterangan"
+                label="Keterangan"
+                colon={false}
+                labelAlign="left"
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 16 }}
+                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+                style={{ marginLeft: '20px' }}
+              >
+                <TextArea
+                  placeholder='Keterangan'
+                  rows={4}
+                  style={{ width: '100%', marginLeft: '20px' }}
+                  value={createbarangKeluar.keterangan}
+                  onChange={(e) =>
+                    setcreatebarangKeluar({ ...createbarangKeluar, keterangan: e.target.value })
+                  }
                 />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+              </Form.Item>
+              <Form.Item
+                style={{ position: 'relative', display: 'flex' }}
+              >
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{
+                    width: '90px',
+                    backgroundColor: '#582DD2',
+                    position: 'absolute',
+                    left: '360px',
+                  }}
+                >
+                  <span>Simpan</span>
+                </Button>
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    position: 'absolute',
+                    left: '290px',
+                    borderColor: 'black',
+                    color: 'black',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
+              </Form.Item>
+      </Modal>
+      {role === 'admin' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '200px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
       {role === 'petugas' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
       {role === 'peminjam' && (
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '100px',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <Dropdown overlay={menu} placement="bottomCenter">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              style={{
-                width: '190px',
-                height: '50px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  src="ikon.png"
-                  style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                  alt="ikon"
-                />
-                <div>
-                  <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                    Halo, {akun?.data?.nama}
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                    {akun?.data?.peran?.Role}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '100px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Button>
-          </div>         
-        </Dropdown>
-      </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
       )}
     </div>
   );

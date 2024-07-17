@@ -21,6 +21,15 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
 
   const formattedDate = dayjs(barangMasukById?.data?.tanggalMasuk).format('DD-MM-YYYY');
 
+  const harga = barangMasukById?.data?.ruanganBarang?.barang?.harga;
+
+  // Menggunakan Intl.NumberFormat langsung di dalam JSX untuk format rupiah
+  const formattedHarga = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(harga);
+
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
       <title>Barang Masuk</title>
@@ -66,7 +75,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 Harga
               </Col>
               <Col span={3}>:</Col>
-              <Col span={5}>{barangMasukById?.data?.harga}</Col>
+              <Col span={5}>{formattedHarga}</Col>
             </Row>
             <Row style={{ marginBottom: '30px' }}>
               <Col span={9} style={{ fontWeight }}>

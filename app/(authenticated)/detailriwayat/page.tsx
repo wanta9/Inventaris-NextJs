@@ -19,7 +19,7 @@ const riwayatditolak = () => {
   return (
     <div style={{ marginLeft: '50px' }}>
       <title>Riwayat Ditolak</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Detai Peminjaman</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Riwayat</h1>
       <Card
         style={{
           marginTop: '30px',
@@ -146,6 +146,7 @@ const riwayatditolak = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <div
                     style={{
+                      marginTop: '10px',
                       marginBottom: '10px',
                       width: '100%',
                       display: 'flex',
@@ -223,7 +224,16 @@ const riwayatditolak = () => {
                     >
                       Status
                     </span>
-
+                    <Button
+                      style={{
+                        color: '#5BFF00',
+                        backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                        borderColor: '#A2E181',
+                      }}
+                      // type="primary"
+                    >
+                      tes
+                    </Button>
                   </div>
                 </div>
               </Card>
@@ -242,7 +252,7 @@ const riwayatditolak = () => {
                   border: '1px solid rgba(0, 0, 0, .95)',
                 }}
               >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '10px', marginTop: '10px' }}>
                   <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
                     Data Peminjam
                   </div>

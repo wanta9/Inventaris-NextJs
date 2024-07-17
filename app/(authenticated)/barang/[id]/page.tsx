@@ -27,7 +27,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (ruanganBarangById?.data?.ruanganBarang) {
-      const names = ruanganBarangById.data.ruanganBarang.map((item : any) => item.ruangan.Letak_Barang);
+      const names = ruanganBarangById.data.ruanganBarang.map(
+        (item: any) => item.ruangan.Letak_Barang
+      );
       setRuanganNames(names);
     }
   }, [ruanganBarangById]);
@@ -80,16 +82,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       key: 'jumlah',
     },
   ];
-
-<<<<<<< HEAD
-  const Kembali = () => {
-    router.push('/barang');
-  };
-
-  // Modal state and handlers
-  const [isModalVisible, setIsModalVisible] = useState(false);
-=======
->>>>>>> a49bf718cc74b5f9741df71be3deb16342c59b60
 
   const handleModalCancel = () => {
     setModalVisible(false);
@@ -218,69 +210,75 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           }}
         >
           <Form.Item>
-          <Row align="middle" justify="center" gutter={[16, 16]}>
-            <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <div
-                style={{
-                  width: '80%',
-                  height: '300px',
-                  backgroundColor: '#D9D9D9',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                  marginTop: '30px',
-                }}
-              >
-                <img src="/kk.png" style={{ width: '55%', borderRadius: '20px' }} />
-              </div>
-            </Col>
-            <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
-                  Nama Barang
-                </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col xs={9} style={{ fontWeight, fontFamily }}>
-                  Harga
-                </Col>
-                <Col xs={2}>:</Col>
-                <Col xs={13}>{formattedHarga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
-              </Row>
-              <Row style={{ marginBottom: '0px' }}>
-                <Col span={24}>
-                  <Table
-                    dataSource={dataSource}
-                    columns={columns}
-                    // pagination={{ pageSize: 3 }}
-                    scroll={{ y: 200 }}
-                    style={{
-                      width: '100%',
-                      height: '200px',
-                    }}
-                    bordered
-                  />
-                </Col>
-              </Row>
-            </Col>
-          </Row>
+            <Row align="middle" justify="center" gutter={[16, 16]}>
+              <Col xs={24} md={12} style={{ display: 'flex', justifyContent: 'center' }}>
+                <div
+                  style={{
+                    width: '80%',
+                    height: '300px',
+                    backgroundColor: '#D9D9D9',
+                    borderRadius: '20px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'relative',
+                    marginTop: '30px',
+                  }}
+                >
+                  <img src="/kk.png" style={{ width: '55%', borderRadius: '20px' }} />
+                </div>
+              </Col>
+              <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+                <Row style={{ marginBottom: '30px' }}>
+                  <Col xs={9} style={{ fontWeight, fontFamily }}>
+                    Nama Barang
+                  </Col>
+                  <Col xs={2}>:</Col>
+                  <Col xs={13}>{ruanganBarangById?.data?.nama}</Col>
+                </Row>
+                <Row style={{ marginBottom: '30px' }}>
+                  <Col xs={9} style={{ fontWeight, fontFamily }}>
+                    Harga
+                  </Col>
+                  <Col xs={2}>:</Col>
+                  <Col xs={13}>{formattedHarga}</Col>
+                </Row>
+                <Row style={{ marginBottom: '30px' }}>
+                  <Col span={9} style={{ fontWeight }}>
+                    Stok Keseluruhan
+                  </Col>
+                  <Col span={2}>:</Col>
+                  <Col span={5}>{ruanganBarangById?.data?.jumlah}</Col>
+                </Row>
+                <Row style={{ marginBottom: '0px' }}>
+                  <Col span={24}>
+                    <Table
+                      dataSource={dataSource}
+                      columns={columns}
+                      // pagination={{ pageSize: 3 }}
+                      scroll={{ y: 200 }}
+                      style={{
+                        width: '100%',
+                        height: '200px',
+                      }}
+                      bordered
+                    />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
           </Form.Item>
           <Form.Item>
             <Row>
               <Col
                 span={24}
-                style={{ fontWeight: 'bold', fontSize: '20px', marginTop: '20px', marginBottom: '10px', marginLeft: '10px' }}
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '20px',
+                  marginTop: '20px',
+                  marginBottom: '10px',
+                  marginLeft: '10px',
+                }}
               >
                 Deskripsi
               </Col>
@@ -288,7 +286,13 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Row>
               <Col
                 span={23}
-                style={{ fontWeight, fontFamily, fontSize: '15px', whiteSpace: 'pre-wrap', marginLeft: '20px'  }}
+                style={{
+                  fontWeight,
+                  fontFamily,
+                  fontSize: '15px',
+                  whiteSpace: 'pre-wrap',
+                  marginLeft: '20px',
+                }}
               >
                 {ruanganBarangById?.data?.deskripsi}
               </Col>
@@ -318,7 +322,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       <Modal
         visible={modalVisible}
         onCancel={handleModalCancel}
-        width={1200}  
+        width={1200}
         centered
         footer={false}
       >
@@ -397,7 +401,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   height: '40px',
                   borderRadius: '10px',
                   marginBottom: '10px',
-                  marginLeft: '30px'
+                  marginLeft: '30px',
                 }}
               >
                 {name}
@@ -406,44 +410,62 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           </Col>
         </Row>
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-          <Col
-            push={1}
-            span={24}
-            style={{ fontWeight, fontFamily, fontSize: '20px'}}
-          >
+          <Col push={1} span={24} style={{ fontWeight, fontFamily, fontSize: '20px' }}>
             Tentukan Jumlah
           </Col>
         </Row>
         <Col>
-        <Row align="middle" justify="space-between">
-          <Col>
-            <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '100px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}</Button>
-            <InputNumber
-              min={1}
-              value={value}
-              onChange={handleChange}
-              controls={false}
-              style={{ width: '60px' , boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',textAlign: 'center', }}
-            />
-            <Button onClick={() => handleChange(value + 1)} style={{  width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />}</Button>
-          </Col>
-          <Col>
-            <Button
-              style={{
-                backgroundColor: '#582DD2',
-                color: 'white',
-                width: '150px',
-                height: '50px',
-                borderRadius: '10px',
-              }}
-              onClick={handleButtonClick}
-            >
-              <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
-            </Button>
-          </Col>
-        </Row>
-          <Form.Item>
-          </Form.Item>
+          <Row align="middle" justify="space-between">
+            <Col>
+              <Button
+                onClick={() => handleChange(value - 1)}
+                style={{
+                  marginLeft: '100px',
+                  width: '50px',
+                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                {<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}
+              </Button>
+              <InputNumber
+                min={1}
+                value={value}
+                onChange={handleChange}
+                controls={false}
+                style={{
+                  width: '60px',
+                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                  textAlign: 'center',
+                }}
+              />
+              <Button
+                onClick={() => handleChange(value + 1)}
+                style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+              >
+                {
+                  <img
+                    src="/pluseicon.svg"
+                    style={{ width: '12px', height: '12px', marginBottom: '5px' }}
+                  />
+                }
+              </Button>
+            </Col>
+            <Col>
+              <Button
+                style={{
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  width: '150px',
+                  height: '50px',
+                  borderRadius: '10px',
+                }}
+                onClick={handleButtonClick}
+              >
+                <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
+              </Button>
+            </Col>
+          </Row>
+          <Form.Item></Form.Item>
         </Col>
       </Modal>
 

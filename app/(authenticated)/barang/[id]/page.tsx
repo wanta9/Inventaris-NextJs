@@ -338,7 +338,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         </Card>
       )}
 
-      <Row style={{ marginTop: '130px', marginBottom: '20px' }}>
+      {/* <Row style={{ marginTop: '130px', marginBottom: '20px' }}>
         <Col
           push={1}
           span={24}
@@ -394,7 +394,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             ))
           )}
         </Col>
-      </Row>
+      </Row> */}
 
       <Modal
         visible={modalVisible}

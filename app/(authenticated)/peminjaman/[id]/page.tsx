@@ -1,10 +1,12 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, DatePicker, Modal } from 'antd';
+import { Button, Card, Row, Col, DatePicker, Modal, Form } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
+import TextArea from 'antd/es/input/TextArea';
+import { akunRepository } from '#/repository/akun';
 
 const { RangePicker } = DatePicker;
 
@@ -16,6 +18,8 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
   console.log(peminjamanById, 'barang masuk by id');
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
 
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for status:', status);
@@ -23,12 +27,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
   const showModal = () => {
     setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-    // Add logic here to handle the rejection
-    console.log('Rejected');
   };
 
   const handleCancel = () => {
@@ -48,7 +46,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
           boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           width: '70%',
           borderRadius: '20px',
-          padding: '20px',
+          padding: '20px 55px',
         }}
       >
         <div>
@@ -95,6 +93,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   alignItems: 'center',
                   marginBottom: '10px',
                   borderRadius: '20px',
+                  marginTop: '25px',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -125,6 +124,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   display: 'flex',
                   alignItems: 'center',
                   borderRadius: '20px',
+                  marginTop: '25px',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -148,13 +148,404 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </div>
               </Card>
             </Col>
-            {/* Kolom Kanan dengan 2 Kartu */}
+            {role === 'admin' && (
+                <Col style={{ marginLeft: '50px' }}>
+                  <Card
+                    className="shadow-card"
+                    style={{
+                      width: '400px',
+                      height: '240px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '10px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      borderRadius: '20px',
+                      padding: '30px 10px 20px 20px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Peminjaman:
+                        </span>
+                        <DatePicker
+                          placeholder="Tanggal Peminjaman"
+                          onChange={(date: Date | null) => setBorrowDate(date)}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Pengembalian:
+                        </span>
+                        <DatePicker
+                          placeholder="Tanggal Pengembalian"
+                          onChange={(date: Date | null) => setReturnDate(date)}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Dikembalikan:
+                        </span>
+                        <DatePicker
+                          placeholder="Tanggal Dikembalikan"
+                          onChange={(date: Date | null) => setReturnedDate(date)}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Status
+                        </span>
+                        <div style={{ width: '50%', backgroundColor: '#60A5FA', border: '1px solid #1D4ED8', textAlign: 'center', padding: '5px', borderRadius: '5px', color: '#1D4ED8' }}>
+                          Diterima
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+    
+                  <Card
+                    className="shadow-card"
+                    style={{
+                      width: '400px',
+                      height: '250px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '10px',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                      <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
+                        Data Peminjam
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>RonyWjy</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>Rony Wijaya</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>222310404</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>08588828xxx</div>
+                      </div>
+                    </div>
+                  </Card>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
+                  <Button
+                    style={{
+                      marginTop: '30px',
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      width: '20%',
+                      height: '50px',
+                      borderRadius: '10px',
+                      marginRight: '150px',
+                    }}
+                  > 
+                    <a
+                      href="http://localhost:3002/peminjaman"
+                      style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
+                    >
+                      <ArrowLeftOutlined style={{ marginRight: '25px' }} />
+                      Kembali
+                    </a>
+                  </Button>
+                </div>
+                </Col>
+            )}
+            {role === 'petugas' && (
+              <Col style={{ marginLeft: '50px' }}>
+                <Card
+                  className="shadow-card"
+                  style={{
+                    width: '400px',
+                    height: '240px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '10px',
+                    border: '1px solid rgba(0, 0, 0, .95)',
+                    borderRadius: '20px',
+                    padding: '20px',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      >
+                        Tanggal Peminjaman:
+                      </span>
+                      <DatePicker
+                        placeholder="Tanggal Peminjaman"
+                        onChange={(date: Date | null) => setBorrowDate(date)}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      >
+                        Tanggal Pengembalian:
+                      </span>
+                      <DatePicker
+                        placeholder="Tanggal Pengembalian"
+                        onChange={(date: Date | null) => setReturnDate(date)}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      >
+                        Tanggal Dikembalikan:
+                      </span>
+                      <DatePicker
+                        placeholder="Tanggal Dikembalikan"
+                        onChange={(date: Date | null) => setReturnedDate(date)}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      >
+                        Status
+                      </span>
+                      <Button
+                        style={{
+                          color: '#FF0000',
+                          backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                          borderColor: '#FF0000',
+                          marginRight: '10px',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          showModal();
+                        }}
+                      >
+                        Tolak
+                      </Button>
+
+                      <Modal
+                        title="Alasan Ditolak"
+                        style={{ textAlign: 'center' }}
+                        visible={isModalVisible}
+                        centered
+                        onCancel={handleCancel}
+                        footer={null}
+                      >
+                        <TextArea style={{ marginTop: '20px', height: '100px' }} />
+                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                          <Button
+                            type="default"
+                            onClick={handleCancel}
+                            style={{
+                              marginTop: '20px',
+                              marginRight: '10px',
+                              marginBottom: '-20px',
+                              borderColor: 'black',
+                              color: 'black',
+                            }}
+                          >
+                            <span>Batal</span>
+                          </Button>
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            style={{
+                              backgroundColor: '#582DD2',
+                              marginRight: '-165px',
+                              marginTop: '20px',
+                              marginBottom: '-20px',
+                            }}
+                          >
+                            <span>Simpan</span>
+                          </Button>
+                        </Form.Item>
+                      </Modal>
+
+                      <Button
+                        style={{
+                          color: '#5BFF00',
+                          backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                          borderColor: '#A2E181',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleButtonClick('Accepted');
+                        }}
+                      >
+                        Terima
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card
+                  className="shadow-card"
+                  style={{
+                    width: '400px',
+                    height: '250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '10px',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(0, 0, 0, .95)',
+                  }}
+                >
+                  <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                    <div style={{ fontWeight, fontFamily, marginBottom: '30px', fontSize: '20px' }}>
+                      Data Peminjam
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>RonyWjy</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>Rony Wijaya</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>222310404</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>08588828xxx</div>
+                    </div>
+                  </div>
+                </Card>
+              </Col>
+            )}
+            {role === 'peminjam' && (
             <Col style={{ marginLeft: '50px' }}>
               <Card
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '200px',
+                  height: '240px',
                   display: 'flex',
                   alignItems: 'center',
                   marginBottom: '10px',
@@ -243,44 +634,9 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     >
                       Status
                     </span>
-                    <Button
-                      style={{
-                        color: '#FF0000',
-                        backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                        borderColor: '#FF0000',
-                        marginRight: '10px',
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showModal();
-                      }}
-                    >
-                      Tolak
-                    </Button>
-
-                    <Modal
-                      title="Alasan Ditolak"
-                      visible={isModalVisible}
-                      onOk={handleOk}
-                      onCancel={handleCancel}
-                      okText="Kirim"
-                    >
-                      <p></p>
-                    </Modal>
-
-                    <Button
-                      style={{
-                        color: '#5BFF00',
-                        backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                        borderColor: '#A2E181',
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleButtonClick('Accepted');
-                      }}
-                    >
-                      Terima
-                    </Button>
+                    <div style={{ width: '50%', backgroundColor: '#60A5FA', border: '1px solid #1D4ED8', textAlign: 'center', padding: '5px', borderRadius: '5px', color: '#1D4ED8' }}>
+                      Diterima
+                    </div>
                   </div>
                 </div>
               </Card>
@@ -289,7 +645,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 className="shadow-card"
                 style={{
                   width: '400px',
-                  height: '200px',
+                  height: '250px',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
@@ -297,6 +653,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   marginBottom: '10px',
                   borderRadius: '20px',
                   border: '1px solid rgba(0, 0, 0, .95)',
+                  marginTop: '20px',
                 }}
               >
                 <div style={{ textAlign: 'center', marginBottom: '10px' }}>
@@ -335,9 +692,31 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </div>
               </Card>
             </Col>
+            )}
           </Row>
         </div>
       </Card>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+        <Button
+          style={{
+          marginTop: '30px',
+          backgroundColor: '#582DD2',
+          color: 'white',
+          width: '20%',
+          height: '50px',
+          borderRadius: '10px',
+          marginRight: '45vh',
+         }}
+        >
+        <a
+          href="http://localhost:3002/peminjaman"
+          style={{ fontSize: '15px', fontWeight, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+        <ArrowLeftOutlined style={{ marginRight: '10px' }} />
+         Kembali
+        </a>
+        </Button>
+      </div>
     </div>
   );
 };

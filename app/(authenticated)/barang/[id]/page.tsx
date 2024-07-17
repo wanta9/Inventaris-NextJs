@@ -338,64 +338,6 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         </Card>
       )}
 
-      {/* <Row style={{ marginTop: '130px', marginBottom: '20px' }}>
-        <Col
-          push={1}
-          span={24}
-          style={{ fontWeight , fontFamily , fontSize: '20px', marginTop: '30px' }}
-        >
-          Pilih Ruangan
-        </Col>
-      </Row>
-      <Row>
-        <Col
-          push={1}
-          span={23}
-          style={{
-            fontWeight: 'normal',
-            fontFamily: 'Arial',
-            fontSize: '17px',
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          {PilihRuangan ? (
-            <Button
-              style={{
-                backgroundColor: '#D9D9D9',
-                color: 'black',
-                fontWeight: 'bold',
-                width: '120px',
-                height: '40px',
-                borderRadius: '10px',
-                marginBottom: '10px',
-                marginLeft: '30px'
-              }}
-            >
-              {PilihRuangan}
-            </Button>
-          ) : (
-            ruanganNames.map((name, index) => (
-              <Button
-                key={index}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  color: 'grey',
-                  fontWeight: 'bold',
-                  width: '120px',
-                  height: '40px',
-                  borderRadius: '10px',
-                  marginBottom: '10px',
-                  marginLeft: '30px'
-                }}
-                onClick={() => handleRuanganClick(name)}
-              >
-                {name}
-              </Button>
-            ))
-          )}
-        </Col>
-      </Row> */}
-
       <Modal
         visible={modalVisible}
         onCancel={handleModalCancel}
@@ -516,11 +458,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
           </Row>
           <Col>
             <Row align="middle" justify="space-between" style={{ marginTop: '25px', marginBottom: '-30px'}}>
-              <Col>
+              <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
                 <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '100px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>
                   <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
                 </Button>
-                <Form.Item name="jumlah">
+                <Form.Item>
                   <InputNumber
                     min={1}
                     value={value}
@@ -541,7 +483,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     width: '150px',
                     height: '50px',
                     borderRadius: '10px',
-                    marginBottom: '-50px',
+                    marginBottom: '40px',
                   }}
                   // onClick={handlePinjamClick}
                 >

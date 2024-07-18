@@ -43,6 +43,12 @@ const { Option } = Select;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
+interface updateBarang {
+  nama: string;
+  harga: string;
+  deskripsi: string;
+  // gambar: string;
+}
 interface createLetakbarang {
   Letak_Barang: string;
 }
@@ -167,6 +173,12 @@ const Page: React.FC = () => {
     harga: '',
     deskripsi: '',
     gambar: '',
+  });
+  const [updateBarang, setupdateBarang] = useState<updateBarang>({
+    nama: '',
+    harga: '',
+    deskripsi: '',
+    // gambar: '',
   });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
@@ -323,6 +335,33 @@ const Page: React.FC = () => {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Gagal Menambahkan Barang');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleEditBarang = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        nama: updateBarang.nama,
+        harga: updateBarang.harga,
+        deskripsi: updateBarang.deskripsi,
+        // gambar: updateBarang.gambar, // Menggunakan gambar yang diunggah
+  }
+      const request = await barangRepository.api.barang(data);
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('Berhasil Mengedit Barang!');
+        setModalEditVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Mengedit Barang');
     } finally {
       setLoading(false);
     }
@@ -681,7 +720,7 @@ const Page: React.FC = () => {
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveLetakBarang}
+                onClick={handleEditBarang}
                 style={{ backgroundColor: '#582DD2' }}
               >
                 Simpan
@@ -711,8 +750,10 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
+                          value={updateBarang.nama}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, nama: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -731,9 +772,11 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           prefix="Rp"
-                          value={harga ? ` ${formatRupiah(harga)}` : ''}
-                          placeholder="harga"
-                          onChange={handleHargaChange}
+                          placeholder='Harga'
+                          value={updateBarang.harga}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, harga: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -752,8 +795,10 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
+                          value={updateBarang.deskripsi}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -761,24 +806,24 @@ const Page: React.FC = () => {
                 </Row>
               </Col>
               <Col span={8}>
-                <Row>
-                  <Col span={8}>
-                    <p style={{ fontWeight }}>Unggah Foto</p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture"
-                    >
-                      <Button
-                        style={{ color: 'black', borderColor: 'black' }}
-                        icon={<UploadOutlined />}
+                  {/* <Row>
+                    <Col span={8}>
+                      <p style={{ fontWeight }}>Unggah Foto</p>
+                    </Col>
+                    <Col>
+                      <Upload
+                        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                        listType="picture"
                       >
-                        Unggah
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
+                        <Button
+                          style={{ color: 'black', borderColor: 'black' }}
+                          icon={<UploadOutlined />}
+                        >
+                          Unggah
+                        </Button>
+                      </Upload>
+                    </Col>
+                  </Row> */}
               </Col>
             </Row>
           </Modal>

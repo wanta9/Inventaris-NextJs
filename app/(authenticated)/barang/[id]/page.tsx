@@ -8,9 +8,14 @@ import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { values } from 'mobx';
+import { peminjamRepository } from '#/repository/peminjam';
 
 // const { Option } = Select;
-
+// interface createKoleksi {
+//   ruanganId: string;
+//   barangId: string;
+//   jumlah: number;
+// }
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
@@ -22,6 +27,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const [PilihRuangan, setPilihRuangan] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
+  //   ruanganId: '',
+  //   barangId: '',
+  //   jumlah: 0,
+  // });
   const [form] = Form.useForm();
   const role = akun?.data?.peran?.Role;
   const harga = ruanganBarangById?.data?.harga;
@@ -42,6 +52,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError(null);
       const data = {
+        // ruanganId: values.ruanganId || createKoleksi.ruanganId,
+        // barangId: values.barangId || createKoleksi.barangId,
+        // jumlah: values.jumlah || createKoleksi.jumlah,
       };
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) { 
@@ -117,6 +130,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
+  const handleRuanganChange = (value: string) => {
+    setcreateKoleksi({ ...createKoleksi, ruanganId: value });
+  };
 
   const handleModalCancel = () => {
     setModalVisible(false);
@@ -372,21 +388,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   Nama Barang
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.nama}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
                   Harga
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.harga}</Col>
+                <Col span={5}>{formattedHarga}</Col>
               </Row>
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
                   Stok Keseluruhan
                 </Col>
                 <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.barang?.jumlah}</Col>
+                <Col span={5}>{ruanganBarangById?.data?.jumlah} </Col>
               </Row>
             </Col>
           </Row>
@@ -404,8 +420,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               push={1}
               span={23}
               style={{
-                fontWeight: 'normal',
-                fontFamily: 'Arial',
+                fontWeight,
+                fontFamily,
                 fontSize: '17px',
                 whiteSpace: 'pre-wrap',
               }}
@@ -421,6 +437,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     borderRadius: '10px',
                     marginBottom: '10px',
                     marginLeft: '30px'
+                    
                   }}
                 >
                   {PilihRuangan}
@@ -475,21 +492,23 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />
                 </Button>
               </Col>
-              <Col>
+              <Form.Item>
+                <Col>
                 <Button
+                  onClick={onFinish}
                   style={{
                     backgroundColor: '#582DD2',
                     color: 'white',
                     width: '150px',
                     height: '50px',
                     borderRadius: '10px',
-                    marginBottom: '40px',
+                    marginTop: '20px',
                   }}
-                  // onClick={handlePinjamClick}
                 >
                   <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
                 </Button>
-              </Col>
+                </Col>
+              </Form.Item>
             </Row>
           </Col>
         </Form>

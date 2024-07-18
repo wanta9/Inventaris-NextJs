@@ -714,7 +714,7 @@ const Page: React.FC = () => {
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
-                <Col push={2} span={14}>
+                <Col push={2} span={10}>
                   <Form.Item
                     label="Nama Pengguna"
                     name="username"

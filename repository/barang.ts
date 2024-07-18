@@ -55,8 +55,11 @@ const api = {
     formData.append('foto', data);
     return http.post(url.uploadBarang()).send(formData);
   },
-  updateBarang(data: any) {
-    return http.put(url.updateBarang(data.id)).send(data);
+  updateFotoBarang(id: string, data: any) {
+    return http.put(url.updateBarang(id)).send(data);
+  },
+  updateBarang(id: string, data: any) {
+    return http.put(url.updateBarang(id)).send(data);
   },
 
   // updateUploadBarang(data: any) {

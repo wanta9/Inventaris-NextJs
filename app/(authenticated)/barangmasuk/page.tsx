@@ -38,7 +38,7 @@ interface EditableRowProps {
 }
 
 interface Item {
-  id: string;
+  id: string; 
   kodeBarang: string;
   namaBarang: string;
   harga: string;

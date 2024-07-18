@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UserOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation'; // Import useRouter
 import { Avatar, Button, Input, Table, Card, Form, Dropdown, Menu } from 'antd';
@@ -59,6 +59,7 @@ const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
   const [form] = Form.useForm();
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -66,6 +67,16 @@ const Peminjaman = () => {
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+
+  useEffect(() => {
+    if (searchRef.current) {
+      const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+      if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2'
+        searchButton.style.borderColor = '#582DD2';
+      }
+    }
+  }, []);
 
   const logout = () => {
     localStorage.removeItem('access_token');
@@ -138,16 +149,19 @@ const Peminjaman = () => {
       <div>
         <title>Peminjaman</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjaman</h1>
-      </div>
+      </div> 
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-          <Search
-            placeholder="Cari nama, nama pengguna, atau NISN"
-            allowClear
-            onSearch={handleSearch}
-            prefix={<SearchOutlined style={{ marginRight: 8 }} />}
-            style={{ width: 300 }}
-          />
+          <div ref={searchRef}>
+            <Search
+              placeholder="Telusuri Barang "
+              className="custom-search"
+              allowClear
+              enterButton
+              onSearch={() => {handleSearch}}
+              style={{ width: 300, marginRight: '500px', height: '40px' }}
+              />
+          </div>
           <Table
             dataSource={listPeminjaman?.data}
             style={{ paddingTop: '40px' }}
@@ -181,12 +195,6 @@ const Peminjaman = () => {
               title="Tanggal Peminjaman"
               dataIndex="tanggalPinjam"
               key="tanggalpeminjaman"
-              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
-            />
-            <Column
-              title="Tanggal Dikembalikan"
-              dataIndex="tanggalDikembalikan"
-              key="tanggaldikembalikan"
               render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
             />
             <Column

@@ -999,13 +999,13 @@ const Page: React.FC = () => {
             <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Barang</h1>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div ref={searchRef}>
+              <div ref={searchRef}>
                 <Search
                   placeholder="Telusuri Barang "
                   className="custom-search"
                   allowClear
                   enterButton
-                  onSearch={() => {}}
+                  onSearch={() => {handleSearch}}
                   style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
                 />
               </div>

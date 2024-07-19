@@ -21,6 +21,7 @@ const url = {
   getPeminjamById(id: string) {
     return `/peminjam/${id}`;
   },
+  
 };
 
 const hooks = {

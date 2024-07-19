@@ -15,6 +15,11 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 type EditableTableProps = Parameters<typeof Table>[0];
 
+interface updateLetakbarang {
+  id: string;
+  Letak_Barang: string;
+}
+
 interface createLetakbarang {
   Letak_Barang: string;
 }
@@ -24,7 +29,7 @@ interface Item {
   letakbarang: string;
 }
 interface DataType {
-  key: React.Key;
+  id: string;
   letakbarang: string;
 }
 
@@ -102,6 +107,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 const Page: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
+  const [id, setId] = useState<string>('');
   const [letakBarang, setLetakBarang] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -111,6 +117,10 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [createLetakbarang, setcreateLetakbarang] = useState<createLetakbarang>({
+    Letak_Barang: '',
+  });
+  const [updateLetakbarang, setupdateLetakbarang] = useState<updateLetakbarang>({
+    id: '',
     Letak_Barang: '',
   });
 
@@ -134,6 +144,32 @@ const Page: React.FC = () => {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Gagal Menambahkan Letak Barang.');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onFinishEdit = async (id: string) => {
+    // console.log('data values: ', values);
+  console.log('id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        Letak_Barang: updateLetakbarang.Letak_Barang,
+      };
+      const request = await ruanganRepository.api.updateRuangan(id, data);
+      if (request.status === 400) { 
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('berhasil Mengedit Letak Barang!');
+        setModalEditVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Mengedit Letak Barang.');
       console.log();
     } finally {
       setLoading(false);
@@ -192,7 +228,7 @@ const Page: React.FC = () => {
 
     if (editData) {
       const newData = dataSource.map((item) => {
-        if (item.key === editData.key) {
+        if (item.id === editData.id) {
           return { ...item, letakbarang: upperCaseLetakBarang };
         }
         return item;
@@ -202,7 +238,7 @@ const Page: React.FC = () => {
       setEditData(null);
     } else {
       const newData: DataType = {
-        key: count.toString(),
+        id: count.toString(),
         letakbarang: upperCaseLetakBarang,
       };
       setDataSource([...dataSource, newData]);
@@ -216,6 +252,7 @@ const Page: React.FC = () => {
   // handle Edit
   const handleEdit = (record: DataType) => {
     setEditData(record);
+    setId(record.id);
     setLetakBarang(record.letakbarang);
     setModalEditVisible(true);
   };
@@ -253,7 +290,7 @@ const Page: React.FC = () => {
 
   const handleSave = (row: DataType) => {
     const newData = [...dataSource];
-    const index = newData.findIndex((item) => row.key === item.key);
+    const index = newData.findIndex((item) => row.id === item.id);
     const item = newData[index];
     newData.splice(index, 1, { ...item, ...row });
     setDataSource(newData);
@@ -325,7 +362,7 @@ const Page: React.FC = () => {
           onCancel={handleModalCancel}
           footer={false}
         >
-          <Form layout="horizontal" onFinish={onFinish}>
+          <Form layout="horizontal" onFinish={() => onFinish(id)}>
              {/* labelCol geser kanan
              wrapperCol lebar input */}
             <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
@@ -368,6 +405,7 @@ const Page: React.FC = () => {
           </Form>
         </Modal>
 
+    {/* Modal Edit */}
         <Modal
           title="Edit Letak Barang"
           style={{ textAlign: 'center' }}
@@ -376,13 +414,15 @@ const Page: React.FC = () => {
           onCancel={handleModalCancel}
           footer={null}
         >
-          <Form layout="horizontal">
+          <Form layout="horizontal" onFinish={() => onFinishEdit(id)}>
             <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
-                value={letakBarang}
-                onChange={(e) => setLetakBarang(e.target.value)}
                 placeholder="Masukkan letak barang"
                 className="uppercase-input"
+                value={updateLetakbarang.Letak_Barang}
+                onChange={(e) =>
+                  setupdateLetakbarang({ ...updateLetakbarang, Letak_Barang: e.target.value })
+                }
               />
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>

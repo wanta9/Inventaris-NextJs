@@ -178,6 +178,7 @@ const Page: React.FC = () => {
   // handle tanggalMasuk
   const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangMasuk({ ...createbarangMasuk, tanggalMasuk: dateString });
+    setupdatebarangMasuk({ ...updatebarangMasuk, tanggalMasuk: dateString });
   };
 
 
@@ -270,44 +271,41 @@ const Page: React.FC = () => {
       if (request.status === 400) { 
         setError(request.body.message); // Set pesan error
       } else {
-        message.success('Data berhasil disimpan!');
+        message.success('berhasil Menambah Barang!');
         setModalVisible(false);
       }
       console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error('Terjadi kesalahan saat menyimpan data.');
+      message.error('Gagal Menambahkan Barang');
       console.log();
     } finally {
       setLoading(false);
     }
   };
-  const onFinishEdit = async (values: any) => {
-    console.log('data values: ', values);
+  const onFinishEdit = async (id: string) => {
+    console.log('id: ', id);
     try {
       setLoading(true);
       setError(null);
       const data = {
-        barangId: values.barangId,
-        ruanganId: values.ruanganId,
-        keterangan: createbarangMasuk.keterangan,
-        jumlah: createbarangMasuk.jumlah,
-        tanggalMasuk: createbarangMasuk.tanggalMasuk,
-        harga: 0,
+        tanggalMasuk: updatebarangMasuk.tanggalMasuk,
+        keterangan: updatebarangMasuk.keterangan,
+
       };
-      const request = await barangMasukRepository.api.barangMasuk(data);
+      const request = await barangMasukRepository.api.updatebarangMasuk(id, data);
       if (request.status === 400) { 
         setError(request.body.message); // Set pesan error
       } else {
-        message.success('Data berhasil disimpan!');
-        setModalVisible(false);
+        message.success('berhasil Mengubah Barang!');
+        setModalEditVisible(false);
       }
       console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error('Terjadi kesalahan saat menyimpan data.');
+      message.error('Gagal Mengubah Barang');
       console.log();
     } finally {
       setLoading(false);
@@ -337,6 +335,7 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    setId(record.id);
     settanggalMasuk(record.tanggalMasuk);
     setketerangan(record.keterangan);
     setModalEditVisible(true);
@@ -602,84 +601,91 @@ const Page: React.FC = () => {
           </div>
         </Form>
       </Modal>
+
       <Modal
       centered
       title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Edit Barang Masuk</div>}
-      style={{ textAlign: 'center'}}
+      style={{ textAlign: 'center' }}
       visible={modalEditVisible}
       onCancel={handleModalCancel}
       footer={null}
+    >
+      <Form
+        layout="horizontal"
+        onFinish={() => onFinishEdit(id)}
+        initialValues={{
+          tanggalMasuk: updatebarangMasuk.tanggalMasuk,
+          keterangan: updatebarangMasuk.keterangan,
+        }}
       >
-      <Form.Item
-        name="tanggalMasuk"
-        label="Tanggal Masuk"
-        colon={false}
-        labelAlign="left"
-        labelCol={{ span: 7 }}
-        wrapperCol={{ span: 16 }}
-        rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-        style={{  marginTop: '60px', marginLeft: '20px'}}
+        <Form.Item
+          name="tanggalMasuk"
+          label="Tanggal Masuk"
+          colon={false}
+          labelAlign="left"
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 16 }}
+          rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+          style={{ marginTop: '60px', marginLeft: '20px' }}
         >
           <DatePicker
             placeholder="Tanggal Masuk"
             style={{ width: '100%', height: '40px' }}
             value={
-            updatebarangMasuk.tanggalMasuk
-              ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
-              : null
-          }
+              updatebarangMasuk.tanggalMasuk
+                ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+                : null
+            }
             onChange={handleDateChange}
             format="YYYY-MM-DD"
           />
-          </Form.Item>     
-          <Form.Item
-                name="keterangan"
-                label="Keterangan"
-                colon={false}
-                labelAlign="left"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 16 }}
-                rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
-                style={{ marginLeft: '20px' }}
-              >
-                <TextArea
-                  rows={4}
-                  style={{ width: '100%', marginLeft: '20px' }}
-                  value={updatebarangMasuk.keterangan}
-                  onChange={(e) =>
-                    setupdatebarangMasuk({ ...updatebarangMasuk, keterangan: e.target.value })
-                  }
-                />
-              </Form.Item>
-              <Form.Item
-                style={{ position: 'relative', display: 'flex' }}
-              >
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    width: '90px',
-                    backgroundColor: '#582DD2',
-                    position: 'absolute',
-                    left: '360px',
-                  }}
-                >
-                  <span>Simpan</span>
-                </Button>
-                <Button
-                  type="default"
-                  onClick={handleModalCancel}
-                  style={{
-                    position: 'absolute',
-                    left: '290px',
-                    borderColor: 'black',
-                    color: 'black',
-                  }}
-                >
-                  <span>Batal</span>
-                </Button>
-              </Form.Item>
-      </Modal>
+        </Form.Item>
+        <Form.Item
+          name="keterangan"
+          label="Keterangan"
+          colon={false}
+          labelAlign="left"
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 16 }}
+          rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+          style={{ marginLeft: '20px' }}
+        >
+          <TextArea
+            rows={4}
+            style={{ width: '100%' }}
+            value={updatebarangMasuk.keterangan}
+            onChange={(e) =>
+              setupdatebarangMasuk({ ...updatebarangMasuk, keterangan: e.target.value })
+            }
+          />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 14, span: 16 }}>
+          <Button
+           type="primary"
+            htmlType="submit"
+            style={{
+            backgroundColor: '#582DD2',
+            display: 'absolute',
+            marginRight: '-150px',
+            marginBottom: '-40px',
+            }}
+          >
+            <span>Simpan</span>
+          </Button>
+            <Button
+             type="default"
+             onClick={handleModalCancel}
+             style={{
+             display: 'absolute',
+             marginBottom: '-40px',
+            }}
+            >
+            <span>Batal</span>
+            </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+
       {role === 'admin' && (
         <div
           style={{

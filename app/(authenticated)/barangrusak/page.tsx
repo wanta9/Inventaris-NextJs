@@ -36,6 +36,16 @@ interface EditableRowProps {
   index: number;
 }
 
+interface updateBarangrusak {
+  id: string;
+  jumlah: number;
+  jumlahbarangrusak: number;
+  jumlahbarangdiperbaiki: number;
+  tanggalrusak: string;
+  tanggalperbaikan: string;
+  keterangan: string;
+}
+
 interface createbarangRusak {
   barangId: string;
   ruanganId: string;
@@ -155,6 +165,15 @@ const Page: React.FC = () => {
     keterangan: '',
     status: 'Rusak',
   });
+  const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
+    id: '',
+    jumlah: 0,
+    jumlahbarangrusak: 0,
+    jumlahbarangdiperbaiki: 0,
+    tanggalrusak: '',
+    tanggalperbaikan: '',
+    keterangan: '',
+  })
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
@@ -455,7 +474,14 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
+                <Input 
+                placeholder="Jumlah" 
+                style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                value={updateBarangrusak.jumlah}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="jumlah1"
@@ -473,7 +499,12 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} value={jmlbarangrusak} onChange={(e) => setjmlbarangrusak(e.target.value)}/>
+                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} 
+                value={updateBarangrusak.jumlahbarangrusak}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="jumlah2"
@@ -491,7 +522,13 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} />
+                <Input placeholder="Jumlah" 
+                style={{ width: '100%', height: '40px', borderColor: 'black' }}
+                value={updateBarangrusak.jumlahbarangdiperbaiki}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
+                }
+                />
               </Form.Item>
               <Form.Item
                 name="tanggalRusak"
@@ -531,11 +568,10 @@ const Page: React.FC = () => {
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
                   style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
-                  value={jmlBarangDiperbaiki}
-                  onChange={(date, dateString: any) => {
-                    setjmlbarangdiperbaiki(dateString);
-                    form.setFieldsValue({ tanggalPerbaikan: date });
-                  }}
+                  value={updateBarangrusak.tanggalperbaikan}
+                  onChange={(e) =>
+                    setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -627,10 +663,7 @@ const Page: React.FC = () => {
                 <Input
                   placeholder="Jumlah"
                   style={{ width: '100%', height: '40px' }}
-                  value={createbarangRusak.jumlah}
-                  onChange={(e) =>
-                    setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
-                  }
+                  
                 />
               </Form.Item>
               <Form.Item

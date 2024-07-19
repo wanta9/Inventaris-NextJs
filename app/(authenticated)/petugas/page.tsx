@@ -46,6 +46,10 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
+interface deletePetugas {
+  id: string;
+}
+
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -109,6 +113,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     setEditing(!editing);
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
+
+  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+    id: '',
+  });
 
   const save = async () => {
     try {
@@ -182,6 +190,10 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+    id: '',
+
+  });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -194,6 +206,7 @@ const Page: React.FC = () => {
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
+  const [id, setId] = useState<string>('');
 
   const router = useRouter();
 
@@ -288,10 +301,12 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.id !== key);
-    setDataSource(newData);
+  const handleDeletePetugas = (id: string) => {
+    // const newData = dataSource.filter((item) => item.id !== id);
+    setId(id);
+    // setDataSource(newData);
   };
+  
 
   const handleEdit = (record: Item) => {
     setEditData(record);
@@ -355,21 +370,21 @@ const Page: React.FC = () => {
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
-            <Popconfirm
-              title="Hapus Barang"
-              onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
-              onCancel={(e) => {
-                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-              }}
-            >
-              <Button
-                type="link"
-                onClick={(e) => {
-                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                }}
-                icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
-              />
-            </Popconfirm>
+      <Popconfirm
+        title="Hapus Petugas"
+        onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+        onCancel={(e) => {
+          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+        }}
+      >
+        <Button
+          type="link"
+          onClick={(e) => {
+            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+          }}
+          icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+        />
+      </Popconfirm>
           </span>
         );
       },

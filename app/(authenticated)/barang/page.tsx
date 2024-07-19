@@ -212,16 +212,17 @@ const Page: React.FC = () => {
     }).format(number);
   };
 
-    // style button search
-    useEffect(() => {
-      if (searchRef.current) {
-        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
-        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
-          searchButton.style.backgroundColor = '#582DD2'
-          searchButton.style.borderColor = '#582DD2';
-        }
+  // style button search
+  useEffect(() => {
+    if (searchRef.current) {
+      const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+      if (searchButton instanceof HTMLElement) {
+        // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2';
+        searchButton.style.borderColor = '#582DD2';
       }
-    }, []);
+    }
+  }, []);
 
   const handleDropdownClick = () => {
     setOpenDropdown(!openDropdown);
@@ -345,7 +346,7 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   // SAVE EDIT BARANG
   const handleEditbarang = async (id: string) => {
     // console.log('data values: ', values);
@@ -356,9 +357,9 @@ const Page: React.FC = () => {
         nama: updateBarang.nama,
         harga: updateBarang.harga,
         deskripsi: updateBarang.deskripsi,
-        // // gambar: updateBarang.gambar, 
-  }
-      const request = await barangRepository.api.updateBarang(id, data);                  
+        // // gambar: updateBarang.gambar,
+      };
+      const request = await barangRepository.api.updateBarang(id, data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
@@ -366,7 +367,7 @@ const Page: React.FC = () => {
         setModalEditVisible(false);
       }
       console.log(request);
-    } catch (error) { 
+    } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Gagal Mengedit Barang');
@@ -377,7 +378,7 @@ const Page: React.FC = () => {
 
   // CREATE LETAK BARANG
   const handleSaveLetakBarang = async (values: any) => {
-    console.log('data values: ', values);   
+    console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
@@ -402,7 +403,7 @@ const Page: React.FC = () => {
     }
   };
 
-  // UPLOAD GAMBAR  
+  // UPLOAD GAMBAR
   const handleChange = async (args: any) => {
     const file = args.file;
 
@@ -423,10 +424,10 @@ const Page: React.FC = () => {
 
   // const handleUpdate = async (args: any) => {
   //   const file = args.file;
-  
+
   //   try {
   //     const updateBarang = { file };
-  //     const processUpload = await barangRepository.api.updateBarang(file); 
+  //     const processUpload = await barangRepository.api.updateBarang(file);
   //     setupdateBarang((updateBarang) => ({
   //       ...updateBarang,
   //       gambar: processUpload?.body?.data?.filename,
@@ -640,6 +641,7 @@ const Page: React.FC = () => {
                   color: 'white',
                   borderColor: '#582DD2',
                 }}
+                loading={loading}
               >
                 Simpan
               </Button>,
@@ -651,85 +653,87 @@ const Page: React.FC = () => {
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}
           >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ fontWeight }}>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          placeholder="Nama Barang"
-                          value={createBarang.nama}
-                          onChange={(e) =>
-                            setcreateBarang({ ...createBarang, nama: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ fontWeight }}>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          prefix="Rp"
-                          value={createBarang.harga}
-                          onChange={(e) =>
-                            setcreateBarang({ ...createBarang, harga: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ marginBottom: '80px', fontWeight }}>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{ marginBottom: '12px', width: '75%', height: '50%' }}
-                          rows={4}
-                          placeholder="Deskripsi Barang"
-                          // value={createBarang.deskripsi}
-                          onChange={(e) =>
-                            setcreateBarang({ ...createBarang, deskripsi: e.target.value })
-                          }
-                          // onChange={(e) => console.log(e.target.value, "deskripsi")}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row>
-                  <Col>
-                    <p style={{ marginLeft: '-40px', marginRight: '20px', fontWeight }}>
-                      Unggah Foto
-                    </p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      listType="picture"
-                      beforeUpload={() => false}
-                      onChange={(args) => handleChange(args)}
-                    >
-                      <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
-                        Unggah
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+            <Form form={form}>
+              <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
+                <Col span={16}>
+                  <Row gutter={[24, 24]}>
+                    <Col span={24}>
+                      <Row align="middle">
+                        <Col span={6}>
+                          <p style={{ fontWeight }}>Nama Barang</p>
+                        </Col>
+                        <Col span={18}>
+                          <Input
+                            style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                            placeholder="Nama Barang"
+                            value={createBarang.nama}
+                            onChange={(e) =>
+                              setcreateBarang({ ...createBarang, nama: e.target.value })
+                            }
+                          />
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={24}>
+                      <Row align="middle">
+                        <Col span={6}>
+                          <p style={{ fontWeight }}>Harga</p>
+                        </Col>
+                        <Col span={18}>
+                          <Input
+                            style={{ marginBottom: '12px', width: '75%', height: '40px' }}
+                            prefix="Rp"
+                            value={createBarang.harga}
+                            onChange={(e) =>
+                              setcreateBarang({ ...createBarang, harga: e.target.value })
+                            }
+                          />
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={24}>
+                      <Row align="middle">
+                        <Col span={6}>
+                          <p style={{ marginBottom: '80px', fontWeight }}>Deskripsi</p>
+                        </Col>
+                        <Col span={18}>
+                          <Input.TextArea
+                            style={{ marginBottom: '12px', width: '75%', height: '50%' }}
+                            rows={4}
+                            placeholder="Deskripsi Barang"
+                            // value={createBarang.deskripsi}
+                            onChange={(e) =>
+                              setcreateBarang({ ...createBarang, deskripsi: e.target.value })
+                            }
+                            // onChange={(e) => console.log(e.target.value, "deskripsi")}
+                          />
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={8}>
+                  <Row>
+                    <Col>
+                      <p style={{ marginLeft: '-40px', marginRight: '20px', fontWeight }}>
+                        Unggah Foto
+                      </p>
+                    </Col>
+                    <Col>
+                      <Upload
+                        listType="picture"
+                        beforeUpload={() => false}
+                        onChange={(args) => handleChange(args)}
+                      >
+                        <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
+                          Unggah
+                        </Button>
+                      </Upload>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Form>
           </Modal>
           <Modal
             title={
@@ -810,7 +814,7 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           prefix="Rp"
-                          placeholder='Harga'
+                          placeholder="Harga"
                           value={updateBarang.harga}
                           onChange={(e) =>
                             setupdateBarang({ ...updateBarang, harga: e.target.value })
@@ -869,7 +873,7 @@ const Page: React.FC = () => {
               </Row>
               </Form.Item>
               </Col> */}
-                {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <Button
                     type="default"
                     onClick={handleModalCancel}
@@ -893,7 +897,7 @@ const Page: React.FC = () => {
                   <span>Simpan</span>
                 </Button>
                </div> */}
-              </Row>
+            </Row>
           </Modal>
           {/* Button Tambah Letak barang */}
           <Modal
@@ -1112,42 +1116,44 @@ const Page: React.FC = () => {
             <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '30px' }}>Barang</h1>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div ref={searchRef}>
-                <Search
-                  placeholder="Telusuri Barang "
-                  className="custom-search"
-                  allowClear
-                  enterButton
-                  onSearch={() => {handleSearch}}
-                  style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
-                />
-              </div>
-              <Dropdown
-                overlay={menu1}
-                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-                visible={openDropdown}
-                onVisibleChange={setOpenDropdown}
+            <div ref={searchRef}>
+              <Search
+                placeholder="Telusuri Barang "
+                className="custom-search"
+                allowClear
+                enterButton
+                onSearch={() => {
+                  handleSearch;
+                }}
+                style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
+              />
+            </div>
+            <Dropdown
+              overlay={menu1}
+              placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
+              visible={openDropdown}
+              onVisibleChange={setOpenDropdown}
+            >
+              <Button
+                style={{
+                  backgroundColor: 'white',
+                  color: 'black',
+                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                  height: '40px',
+                  width: '200px',
+                  fontFamily: 'inherit',
+                  marginRight: '40px',
+                }}
+                onClick={handleDropdownClick}
               >
-                <Button
-                  style={{
-                    backgroundColor: 'white',
-                    color: 'black',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                    height: '40px',
-                    width: '200px',
-                    fontFamily: 'inherit',
-                    marginRight: '40px',
-                  }}
-                  onClick={handleDropdownClick}
-                >
-                  Letak Barang{' '}
-                  {openDropdown ? (
-                    <DownOutlined style={{ fontSize: '12px' }} />
-                  ) : (
-                    <RightOutlined style={{ fontSize: '12px' }} />
-                  )}
-                </Button>
-              </Dropdown>
+                Letak Barang{' '}
+                {openDropdown ? (
+                  <DownOutlined style={{ fontSize: '12px' }} />
+                ) : (
+                  <RightOutlined style={{ fontSize: '12px' }} />
+                )}
+              </Button>
+            </Dropdown>
           </div>
           <div
             style={{

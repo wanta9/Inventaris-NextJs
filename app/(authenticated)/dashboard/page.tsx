@@ -79,20 +79,19 @@ const Page = () => {
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
 
-
   const role = akun?.data?.peran?.Role;
 
   const Jumlah = listRuanganBarang?.data?.length;
 
-  const barangMasuk =  listBarangMasuk?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
-  const barangKeluar =  listBarangKeluar?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
-  const barangRusak =  listBarangRusak?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangMasuk = listBarangMasuk?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangKeluar = listBarangKeluar?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
+  const barangRusak = listBarangRusak?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
 
   useEffect(() => {
     if (akun) {
       // Jika akun adalah array, hitung jumlah akun yang aktif
       if (Array.isArray(akun)) {
-        const aktifCount = akun.filter(item => item.isOnline).length;
+        const aktifCount = akun.filter((item) => item.isOnline).length;
         setJumlahAktif(aktifCount);
       } else {
         // Jika akun adalah objek tunggal, cek status isOnline
@@ -429,8 +428,10 @@ const Page = () => {
                   <img src="/dshpeminjam.svg" style={{ width: '60%', height: '60%' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '30px', fontWeight, fontFamily}}>{listPeminjam?.data?.length}</div>
-                  <div style={{ fontFamily, color: 'grey'  }}>Peminjam</div>
+                  <div style={{ fontSize: '30px', fontWeight, fontFamily }}>
+                    {listPeminjam?.data?.length}
+                  </div>
+                  <div style={{ fontFamily, color: 'grey' }}>Peminjam</div>
                 </div>
               </div>
             </Card>
@@ -458,7 +459,7 @@ const Page = () => {
                 </div>
                 <div>
                   <div style={{ fontSize: '30px', fontWeight, fontFamily }}>{jumlahAktif}</div>
-                  <div style={{ fontFamily, color: 'grey'  }}>Aktif</div>
+                  <div style={{ fontFamily, color: 'grey' }}>Aktif</div>
                 </div>
               </div>
             </Card>

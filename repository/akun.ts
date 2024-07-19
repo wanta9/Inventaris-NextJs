@@ -33,6 +33,7 @@ const api = {
   login(data: any) {
     return http.post(url.loginAkun()).send(data);
   },
+
   akun(data: any) {
     return http.post(url.getAkun()).send(data);
   },
@@ -42,11 +43,14 @@ const api = {
     formData.append('foto', data);
     return http.post(url.uploadAkun()).send(formData);
   },
+<<<<<<< HEAD
+=======
 
   updateAkun(id: string, data: any) { 
     return http.put(url.updateAkun(id)).send(data);
   },
 
+>>>>>>> 1405f685a3117d3371fc2a48ee344df87bac3158
 };
 
 export const akunRepository = {

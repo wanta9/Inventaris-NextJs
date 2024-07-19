@@ -17,7 +17,7 @@ const url = {
 
   updateAkun(id: string) {
     return `/akun/${id}`;
-  }
+  },
 };
 
 const hooks = {
@@ -37,20 +37,16 @@ const api = {
   akun(data: any) {
     return http.post(url.getAkun()).send(data);
   },
-  
+
   uploadAkun(data: any) {
     const formData = new FormData();
     formData.append('foto', data);
     return http.post(url.uploadAkun()).send(formData);
   },
-<<<<<<< HEAD
-=======
 
-  updateAkun(id: string, data: any) { 
+  updateAkun(id: string, data: any) {
     return http.put(url.updateAkun(id)).send(data);
   },
-
->>>>>>> 1405f685a3117d3371fc2a48ee344df87bac3158
 };
 
 export const akunRepository = {

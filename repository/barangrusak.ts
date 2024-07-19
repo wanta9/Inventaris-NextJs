@@ -26,6 +26,9 @@ const url = {
   getBarangRusakById(id: string) {
     return `/barangRusak/${id}`;
   },
+  updateBarangrusak(id: string) {
+    return `/barangRusak/${id}`;
+  }
 };
 
 const hooks = {
@@ -40,6 +43,10 @@ const hooks = {
 const api = {
   barangRusak(data: any) {
     return http.post(url.getBarangRusak()).send(data);
+  },
+  
+  updateBarangrusak(id: string,data: any) {
+    return http.put(url.updateBarangrusak(id)).send(data);
   },
 };
 

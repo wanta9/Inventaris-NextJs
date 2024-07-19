@@ -21,6 +21,7 @@ const url = {
   getPetugasById(id: string) {
     return `/petugas/${id}`;
   },
+  
 };
 
 const hooks = {

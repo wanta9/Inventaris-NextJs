@@ -37,6 +37,12 @@ interface EditableRowProps {
   index: number;
 }
 
+interface updatebarangMasuk {
+  id: string;
+  tanggalMasuk: string;
+  keterangan: string;
+}
+
 interface Item {
   id: string; 
   kodeBarang: string;
@@ -143,6 +149,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
+  const [id, setId] = useState<string>('');
   const [form] = Form.useForm();
   const [createbarangMasuk, setcreatebarangMasuk] = useState<createbarangMasuk>({
     barangId: '',
@@ -151,6 +158,11 @@ const Page: React.FC = () => {
     jumlah: 0,
     tanggalMasuk: '',
     harga: '',
+  });
+  const [updatebarangMasuk, setupdatebarangMasuk] = useState<updatebarangMasuk>({
+    id: '',
+    keterangan: '',
+    tanggalMasuk: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -242,6 +254,36 @@ const Page: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
+    console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        barangId: values.barangId,
+        ruanganId: values.ruanganId,
+        keterangan: createbarangMasuk.keterangan,
+        jumlah: createbarangMasuk.jumlah,
+        tanggalMasuk: createbarangMasuk.tanggalMasuk,
+        harga: 0,
+      };
+      const request = await barangMasukRepository.api.barangMasuk(data);
+      if (request.status === 400) { 
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('Data berhasil disimpan!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onFinishEdit = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
@@ -582,8 +624,8 @@ const Page: React.FC = () => {
             placeholder="Tanggal Masuk"
             style={{ width: '100%', height: '40px' }}
             value={
-            createbarangMasuk.tanggalMasuk
-              ? dayjs(createbarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+            updatebarangMasuk.tanggalMasuk
+              ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
               : null
           }
             onChange={handleDateChange}
@@ -603,9 +645,9 @@ const Page: React.FC = () => {
                 <TextArea
                   rows={4}
                   style={{ width: '100%', marginLeft: '20px' }}
-                  value={createbarangMasuk.keterangan}
+                  value={updatebarangMasuk.keterangan}
                   onChange={(e) =>
-                    setcreatebarangMasuk({ ...createbarangMasuk, keterangan: e.target.value })
+                    setupdatebarangMasuk({ ...updatebarangMasuk, keterangan: e.target.value })
                   }
                 />
               </Form.Item>

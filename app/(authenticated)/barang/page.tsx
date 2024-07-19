@@ -43,6 +43,13 @@ const { Option } = Select;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
+interface updateBarang {
+  id: string;
+  nama: string;
+  harga: string;
+  deskripsi: string;
+  // gambar: string;
+}
 interface createLetakbarang {
   Letak_Barang: string;
 }
@@ -54,7 +61,7 @@ interface createBarang {
 }
 
 interface Item {
-  key: string;
+  id: string;
   kodeBarang: string;
   nama: string;
   letakBarang: string;
@@ -168,6 +175,13 @@ const Page: React.FC = () => {
     deskripsi: '',
     gambar: '',
   });
+  const [updateBarang, setupdateBarang] = useState<updateBarang>({
+    id: '',
+    nama: '',
+    harga: '',
+    deskripsi: '',
+    // gambar: '',
+  });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
   const [namaBarang, setNamaBarang] = useState('');
@@ -184,8 +198,10 @@ const Page: React.FC = () => {
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
+  const [form] = Form.useForm();
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
+  const [id, setId] = useState<string>('');
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const formatRupiah = (number: any) => {
@@ -297,6 +313,7 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
+  // CREATE BARANG
   const handleSaveBarang = async (values: any) => {
     console.log('data values: ', values);
     try {
@@ -327,9 +344,39 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
+  
+  // SAVE EDIT BARANG
+  const handleEditbarang = async (id: string) => {
+    // console.log('data values: ', values);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        nama: updateBarang.nama,
+        harga: updateBarang.harga,
+        deskripsi: updateBarang.deskripsi,
+        // // gambar: updateBarang.gambar, 
+  }
+      const request = await barangRepository.api.updateBarang(id, data);                  
+      if (request.status === 400) {
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('Berhasil Mengedit Barang!');
+        setModalEditVisible(false);
+      }
+      console.log(request);
+    } catch (error) { 
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Mengedit Barang');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // CREATE LETAK BARANG
   const handleSaveLetakBarang = async (values: any) => {
-    console.log('data values: ', values);
+    console.log('data values: ', values);   
     try {
       setLoading(true);
       setError(null);
@@ -354,6 +401,7 @@ const Page: React.FC = () => {
     }
   };
 
+  // UPLOAD GAMBAR  
   const handleChange = async (args: any) => {
     const file = args.file;
 
@@ -372,12 +420,31 @@ const Page: React.FC = () => {
     }
   };
 
+  // const handleUpdate = async (args: any) => {
+  //   const file = args.file;
+  
+  //   try {
+  //     const updateBarang = { file };
+  //     const processUpload = await barangRepository.api.updateBarang(file); 
+  //     setupdateBarang((updateBarang) => ({
+  //       ...updateBarang,
+  //       gambar: processUpload?.body?.data?.filename,
+  //     }));
+  //     console.log(processUpload, 'update');
+  //     message.success('Gambar Berhasil Diperbarui!');
+  //   } catch (e) {
+  //     console.log(e, 'ini catch e');
+  //     message.error('Gambar Gagal Diperbarui!');
+  //   }
+  // };
+
   const handleDelete = (key: string) => {
     const newData = dataSource.filter((item) => item.key !== key);
     setDataSource(newData);
   };
 
   const handleEdit = (record: Item) => {
+    setId(record.id);
     setEditData(record);
     setKodeBarang(record.kodeBarang);
     setNamaBarang(record.nama);
@@ -675,14 +742,23 @@ const Page: React.FC = () => {
             onCancel={handleModalCancel}
             width={1000}
             footer={[
-              <Button key="cancel" onClick={handleModalCancel} style={{ borderColor: 'black' }}>
+              <Button
+                key="cancel"
+                onClick={handleModalCancel}
+                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
+              >
                 Batal
               </Button>,
               <Button
                 key="save"
                 type="primary"
-                onClick={handleSaveLetakBarang}
-                style={{ backgroundColor: '#582DD2' }}
+                onClick={() => handleEditbarang(id)}
+                style={{
+                  marginRight: '27px',
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  borderColor: '#582DD2',
+                }}
               >
                 Simpan
               </Button>,
@@ -711,8 +787,10 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
+                          value={updateBarang.nama}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, nama: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -731,9 +809,11 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           prefix="Rp"
-                          value={harga ? ` ${formatRupiah(harga)}` : ''}
-                          placeholder="harga"
-                          onChange={handleHargaChange}
+                          placeholder='Harga'
+                          value={updateBarang.harga}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, harga: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
@@ -752,35 +832,67 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
+                          value={updateBarang.deskripsi}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
+                          }
                         />
                       </Col>
                     </Row>
                   </Col>
                 </Row>
               </Col>
-              <Col span={8}>
-                <Row>
-                  <Col span={8}>
-                    <p style={{ fontWeight }}>Unggah Foto</p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture"
-                    >
-                      <Button
-                        style={{ color: 'black', borderColor: 'black' }}
-                        icon={<UploadOutlined />}
-                      >
-                        Unggah
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+              {/* <Col span={8}>
+              <Form.Item
+              name="gambar"
+              >
+              <Row>
+                <Col span={8}>
+                  <p style={{ fontWeight }}>Unggah Foto</p>
+                </Col>
+                <Col>
+                <Upload
+                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                  listType="picture"
+                  beforeUpload={() => false}
+                  onChange={(args) => handleUpdate(args)}
+                >
+                 <Button
+                   style={{ color: 'black', borderColor: 'black' }}
+                   icon={<UploadOutlined />}
+                  >
+                   Unggah
+                 </Button>
+                </Upload>
+                </Col>
+              </Row>
+              </Form.Item>
+              </Col> */}
+                {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Button
+                    type="default"
+                    onClick={handleModalCancel}
+                    style={{
+                    marginBottom: '40px',
+                    marginLeft: '45vh',
+                    marginRight: '10px',
+                  }}
+                  >
+                    <span>Batal</span>
+                  </Button>
+                    <Button
+                    onClick={handleEditbarang}
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      backgroundColor: '#582DD2',
+                      marginBottom: '40px',
+                    }}
+                  >
+                  <span>Simpan</span>
+                </Button>
+               </div> */}
+              </Row>
           </Modal>
           {/* Button Tambah Letak barang */}
           <Modal

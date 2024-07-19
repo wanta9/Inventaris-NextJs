@@ -30,6 +30,10 @@ const url = {
   uploadBarang() {
     return `/upload/barang`;
   },
+
+  updateBarang(id: string) {
+    return `/barang/${id}`;
+  }
 };
 
 const hooks = {
@@ -39,6 +43,7 @@ const hooks = {
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
   },
+  
 };
 
 const api = {
@@ -50,6 +55,16 @@ const api = {
     formData.append('foto', data);
     return http.post(url.uploadBarang()).send(formData);
   },
+  updateFotoBarang(id: string, data: any) {
+    return http.put(url.updateBarang(id)).send(data);
+  },
+  updateBarang(id: string, data: any) {
+    return http.put(url.updateBarang(id)).send(data);
+  },
+
+  // updateUploadBarang(data: any) {
+  //   return http.put(url.updateBarang(data.id)).send(data);
+  // }
 };
 
 export const barangRepository = {

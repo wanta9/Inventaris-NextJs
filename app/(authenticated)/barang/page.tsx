@@ -193,8 +193,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -336,6 +336,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Barang!');
         setModalVisible(false);
+        await mutateListBarang();
       }
       console.log(request);
     } catch (error) {
@@ -365,6 +366,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Mengedit Barang!');
         setModalEditVisible(false);
+        await mutateListBarang();
       }
       console.log(request);
     } catch (error) {
@@ -392,6 +394,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Letak Barang!');
         setLetakBarangVisible(false);
+        await mutateListRuangan();
       }
       console.log(request);
     } catch (error) {

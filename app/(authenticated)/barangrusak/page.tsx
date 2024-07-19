@@ -391,7 +391,7 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Rusak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
-      <Card style={{ marginTop: '100px' }}>
+      <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
@@ -402,7 +402,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px' }}
+            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
           />
           </div>
           <Button
@@ -416,6 +416,7 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
+              marginTop: '20px'
             }}
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Rusak</span>
@@ -430,7 +431,7 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal

@@ -7,10 +7,12 @@ import { title } from 'process';
 import { akunRepository } from '#/repository/akun';
 import { useRouter } from 'next/navigation';
 
+
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
 
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
@@ -26,6 +28,7 @@ const Login = () => {
         setError(request.body.message); // Set pesan error
       } else {
         localStorage.setItem('access_token', request.body.data);
+        // await mutateAkun();
         router.push('/dashboard');
       }
       console.log(request);

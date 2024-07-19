@@ -162,9 +162,9 @@ const Page: React.FC = () => {
     tanggalKeluar: '',
     keterangan: '',
   })
-  const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
-  const { data: listBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listBarangKeluar, mutate: mutateBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+  const { data: listBarang, mutate: mutateBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan, mutate: mutateRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -271,6 +271,9 @@ const Page: React.FC = () => {
       } else {
         message.success('Data berhasil disimpan!');
         setModalVisible(false);
+        await mutateBarangKeluar();
+        await mutateBarang();
+        await mutateRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -301,6 +304,9 @@ const Page: React.FC = () => {
       } else {
         message.success('berhasil Mengubah Barang Keluar!');
         setModalEditVisible(false);
+        await mutateBarangKeluar();
+        await mutateBarang();
+        await mutateRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -399,9 +405,9 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Keluar</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Keluar</h1>
-      <Card style={{ marginTop: '100px' }}>
+      <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
         <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px', marginTop: '20px' }}
         >
           <div ref={searchRef}>
           <Search
@@ -410,7 +416,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={() => {}}
-            style={{ width: 300, marginRight: '600px', height: '40px' }}
+            style={{ width: 300, marginRight: '950px', height: '40px' }}
           />
           </div>
           <Button
@@ -439,7 +445,7 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '50px' }}
         />
       </Card>
       <Modal

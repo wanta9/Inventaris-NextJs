@@ -25,6 +25,10 @@ const url = {
   getBarangMasukById(id: string) {
     return `/barangMasuk/${id}`;
   },
+  
+  updatebarangMasuk(id: string) {
+    return `/barangMasuk/${id}`;
+  }
 };
 
 const hooks = {
@@ -39,6 +43,9 @@ const hooks = {
 const api = {
   barangMasuk(data: any) {
     return http.post(url.getBarangMasuk()).send(data);
+  },
+  updatebarangMasuk(id: string, data: any) {
+    return http.put(url.updatebarangMasuk(id)).send(data);
   },
 };
 

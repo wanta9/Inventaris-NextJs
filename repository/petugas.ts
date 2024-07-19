@@ -21,9 +21,13 @@ const url = {
   getPetugasById(id: string) {
     return `/petugas/${id}`;
   },
+<<<<<<< HEAD
   deletePetugas:(id: string) => {
     return `/petugas/${id}`;
   },
+=======
+  
+>>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
 };
 
 const hooks = {

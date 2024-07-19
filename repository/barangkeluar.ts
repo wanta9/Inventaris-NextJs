@@ -24,6 +24,10 @@ const url = {
   getBarangKeluarById(id: string) {
     return `/barangKeluar/${id}`;
   },
+
+  updatebarangKeluar(id: string) {
+    return `/barangKeluar/${id}`;
+  },
 };
 
 const hooks = {
@@ -38,6 +42,9 @@ const hooks = {
 const api = {
   barangKeluar(data: any) {
     return http.post(url.getBarangKeluar()).send(data);
+  },
+  updatebarangKeluar(id: string, data: any) {
+    return http.put(url.updatebarangKeluar(id)).send(data);
   },
 };
 

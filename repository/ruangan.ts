@@ -21,6 +21,9 @@ const url = {
   getRuaganById(id: string) {
     return `/ruangan/${id}`;
   },
+  updateRuangan(id: string) {
+    return `/ruangan/${id}`;
+  }
 };
 
 const hooks = {
@@ -35,6 +38,9 @@ const hooks = {
 const api = {
   ruangan(data: any) {
     return http.post(url.getRuagan()).send(data);
+  },
+  updateRuangan(id: string, data: any) {
+    return http.put(url.updateRuangan(id)).send(data);
   },
 };
 

@@ -41,23 +41,27 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const kembali = () => {
     router.push('/barang');
   };
-  
+
   const handleRuanganClick = (name: any) => {
     setPilihRuangan(name);
   };
 
-  const   onFinish = async (values: any) => {
+  const onFinish = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
+<<<<<<< HEAD
+      const data = {};
+=======
       const data = {
         // ruanganId: values.ruanganId || createKoleksi.ruanganId,
         // barangId: values.barangId || createKoleksi.barangId,
         // jumlah: values.jumlah || createKoleksi.jumlah,
       };
+>>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
       const request = await barangRepository.api.barang(data);
-      if (request.status === 400) { 
+      if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Data berhasil disimpan!');
@@ -76,7 +80,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (ruanganBarangById?.data?.ruanganBarang) {
-      const names = ruanganBarangById.data.ruanganBarang.map((item : any) => item.ruangan.Letak_Barang);
+      const names = ruanganBarangById.data.ruanganBarang.map(
+        (item: any) => item.ruangan.Letak_Barang
+      );
       setRuanganNames(names);
     }
   }, [ruanganBarangById]);
@@ -130,10 +136,13 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
+<<<<<<< HEAD
+=======
   const handleRuanganChange = (value: string) => {
     setcreateKoleksi({ ...createKoleksi, ruanganId: value });
   };
 
+>>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
   const handleModalCancel = () => {
     setModalVisible(false);
     form.resetFields();
@@ -318,39 +327,51 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               </Row>
             </Col>
           </Row>
-            <Row>
-              <Col
-                span={24}
-                style={{ fontWeight , fontSize: '20px', marginTop: '80px', marginBottom: '10px', marginLeft: '10px' }}
-              >
-                Deskripsi
-              </Col>
-            </Row>
-            <Row>
-              <Col
-                span={23}
-                style={{ fontWeight, fontFamily, fontSize: '15px', whiteSpace: 'pre-wrap', marginLeft: '20px'  }}
-              >
-                {ruanganBarangById?.data?.deskripsi}
-              </Col>
-            </Row>
+          <Row>
+            <Col
+              span={24}
+              style={{
+                fontWeight,
+                fontSize: '20px',
+                marginTop: '80px',
+                marginBottom: '10px',
+                marginLeft: '10px',
+              }}
+            >
+              Deskripsi
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              span={23}
+              style={{
+                fontWeight,
+                fontFamily,
+                fontSize: '15px',
+                whiteSpace: 'pre-wrap',
+                marginLeft: '20px',
+              }}
+            >
+              {ruanganBarangById?.data?.deskripsi}
+            </Col>
+          </Row>
 
-            <Row justify="end" style={{ marginBottom: '20px' }}>
-              <Col>
-                <Button
-                  style={{
-                    backgroundColor: '#582DD2',
-                    color: 'white',
-                    width: '150px',
-                    height: '50px',
-                    borderRadius: '10px',
-                  }}
-                  onClick={handleButtonClick}
-                >
-                  <span style={{ fontSize: '15px', fontWeight }}>Pinjam</span>
-                </Button>
-              </Col>
-            </Row>
+          <Row justify="end" style={{ marginBottom: '20px' }}>
+            <Col>
+              <Button
+                style={{
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  width: '150px',
+                  height: '50px',
+                  borderRadius: '10px',
+                }}
+                onClick={handleButtonClick}
+              >
+                <span style={{ fontSize: '15px', fontWeight }}>Pinjam</span>
+              </Button>
+            </Col>
+          </Row>
         </Card>
       )}
 
@@ -410,7 +431,12 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col
               push={1}
               span={24}
-              style={{ fontWeight: 'bold', fontFamily: 'Arial', fontSize: '20px', marginTop: '30px' }}
+              style={{
+                fontWeight: 'bold',
+                fontFamily: 'Arial',
+                fontSize: '20px',
+                marginTop: '30px',
+              }}
             >
               Pilih Ruangan
             </Col>
@@ -436,8 +462,12 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     height: '40px',
                     borderRadius: '10px',
                     marginBottom: '10px',
+<<<<<<< HEAD
+                    marginLeft: '30px',
+=======
                     marginLeft: '30px'
                     
+>>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
                   }}
                 >
                   {PilihRuangan}
@@ -454,7 +484,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                       height: '40px',
                       borderRadius: '10px',
                       marginBottom: '10px',
-                      marginLeft: '30px'
+                      marginLeft: '30px',
                     }}
                     onClick={() => handleRuanganClick(name)}
                   >
@@ -468,15 +498,26 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             <Col
               push={1}
               span={24}
-              style={{ fontWeight: 'bold', fontFamily: 'Arial', fontSize: '20px'}}
+              style={{ fontWeight: 'bold', fontFamily: 'Arial', fontSize: '20px' }}
             >
               Tentukan Jumlah
             </Col>
           </Row>
           <Col>
-            <Row align="middle" justify="space-between" style={{ marginTop: '25px', marginBottom: '-30px'}}>
-              <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center'}}>
-                <Button onClick={() => handleChange(value - 1)} style={{ marginLeft: '100px', width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>
+            <Row
+              align="middle"
+              justify="space-between"
+              style={{ marginTop: '25px', marginBottom: '-30px' }}
+            >
+              <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                <Button
+                  onClick={() => handleChange(value - 1)}
+                  style={{
+                    marginLeft: '100px',
+                    width: '50px',
+                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                  }}
+                >
                   <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
                 </Button>
                 <Form.Item>
@@ -485,11 +526,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     value={value}
                     onChange={handleChange}
                     controls={false}
-                    style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)', textAlign: 'center' }}
+                    style={{
+                      width: '60px',
+                      boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                      textAlign: 'center',
+                    }}
                   />
                 </Form.Item>
-                <Button onClick={() => handleChange(value + 1)} style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>
-                  <img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />
+                <Button
+                  onClick={() => handleChange(value + 1)}
+                  style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+                >
+                  <img
+                    src="/pluseicon.svg"
+                    style={{ width: '12px', height: '12px', marginBottom: '5px' }}
+                  />
                 </Button>
               </Col>
               <Form.Item>
@@ -528,7 +579,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
             borderRadius: '10px',
           }}
         >
-          <ArrowLeftOutlined style={{ marginRight: '25px' }} /><span style={{ fontSize: '15px', fontWeight }}>Kembali</span>
+          <ArrowLeftOutlined style={{ marginRight: '25px' }} />
+          <span style={{ fontSize: '15px', fontWeight }}>Kembali</span>
         </Button>
       </div>
     </div>

@@ -46,10 +46,21 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
+<<<<<<< HEAD
 interface deletePetugas {
   id: string;
 }
 
+=======
+interface updatePetugas {
+  id: string;
+  username: string;
+  nomorInduk: string;
+  telp: string;
+}
+
+
+>>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -64,7 +75,7 @@ interface createAkunpetugas {
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
-  id: string;
+   id: string;
   name: string;
   username: string;
   telp: string;
@@ -172,6 +183,7 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
+  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
   const [username, setusername] = useState('');
@@ -190,17 +202,26 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+<<<<<<< HEAD
   const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
     id: '',
 
   });
+=======
+  const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
+    id: '',
+    nomorInduk: '',
+    telp: '',
+    username: '',
+  })
+>>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
-  const { data: listPetugas } = petugasRepository.hooks.usePetugas();
-  console.log(listPetugas, 'listPetugas');
+  const { data: listakun } = akunRepository.hooks.useAkun();
+  console.log(listakun, 'listPetugas');
   const [form] = Form.useForm(); 
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
@@ -301,15 +322,51 @@ const Page: React.FC = () => {
     }
   };
 
+<<<<<<< HEAD
   const handleDeletePetugas = (id: string) => {
     // const newData = dataSource.filter((item) => item.id !== id);
     setId(id);
     // setDataSource(newData);
+=======
+  const onFinishEdit = async (id: string) => {
+    // console.log('data values: ', values);
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        username: updatePetugas.username,
+        nomorInduk: updatePetugas.nomorInduk,
+        telp: updatePetugas.telp,
+      };
+      const request = await akunRepository.api.updateAkun(id, data);
+      if (request.status === 400) { 
+        setError(request.body.message); 
+      } else {
+        message.success('Berhasil Mengedit Petugas!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('GagalMengedit Petugas!');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = (key: React.Key) => {
+    const newData = dataSource.filter((item) => item.id !== key);
+    setDataSource(newData);
+>>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
   };
   
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    setId(record.id);
     setNama(record.name);
     setusername(record.username);
     setNIP(record.nip);
@@ -320,14 +377,15 @@ const Page: React.FC = () => {
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
       title: 'Nama',
-      dataIndex: 'name',
+      dataIndex: 'nama',
       width: '20%',
       editable: true,
       render: (_, record) => {
         return (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar src={record.akun?.gambar} />
-            <span style={{ marginLeft: 8 }}>{record.akun.nama}</span>
+            <Avatar src={record.gambar} />
+            <span style={{ marginLeft: '10px' }}>{record.nama}</span>
+            
           </div>
         );
       },
@@ -337,24 +395,23 @@ const Page: React.FC = () => {
       dataIndex: 'username',
       width: '20%',
       editable: true,
-      render: (_, record) => {
-        return record.akun.username;
-      },
+
     },
     {
       title: 'Telp',
       dataIndex: 'telp',
       width: '20%',
       editable: true,
-      render: (_, record) => {
-        return record.akun.telp;
-      },
+
     },
     {
       title: 'NIP',
       dataIndex: 'NIP',
       width: '20%',
       editable: true,
+      render: (_, record) => {
+        return record.petugas.NIP;
+      },
     },
     {
       title: '',
@@ -480,7 +537,7 @@ const Page: React.FC = () => {
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listPetugas?.data}
+          dataSource={listakun?.data}
           pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
@@ -720,11 +777,11 @@ const Page: React.FC = () => {
         >
           <Form
             layout="horizontal"
-            onFinish={onFinish}
+            onFinish={() => onFinishEdit(id)}
             initialValues={{
-              username,
-              nip,
-              telp,
+              username: updatePetugas.username,
+              nomorInduk: updatePetugas.nomorInduk,
+              telp: updatePetugas.telp,
             }}
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
@@ -738,9 +795,9 @@ const Page: React.FC = () => {
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Nama Pengguna"
-                      value={createAkunpetugas.username}
+                      value={updatePetugas.username}
                       onChange={(e) =>
-                        setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
                       }
                     />
                   </Form.Item>
@@ -752,9 +809,9 @@ const Page: React.FC = () => {
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="NIP"
-                      value={createAkunpetugas.nomorInduk}
+                      value={updatePetugas.nomorInduk}
                       onChange={(e) =>
-                        setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                        setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })
                       }
                     />
                   </Form.Item>
@@ -766,9 +823,9 @@ const Page: React.FC = () => {
                     <Input
                       style={{ width: '300px', height: '45px', border: '' }}
                       placeholder="Telp"
-                      value={createAkunpetugas.telp}
+                      value={updatePetugas.telp}
                       onChange={(e) =>
-                        setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                        setupdatePetugas({ ...updatePetugas, telp: e.target.value })
                       }
                       maxLength={12}
                     />

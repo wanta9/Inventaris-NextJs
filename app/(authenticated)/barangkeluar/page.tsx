@@ -35,6 +35,13 @@ interface EditableRowProps {
   index: number;
 }
 
+interface updatebarangKeluar {
+  id: string;
+  jumlah: number;
+  tanggalKeluar: string;
+  keterangan: string;
+}
+
 interface createbarangKeluar {
   barangId: string;
   ruanganId: string;
@@ -138,7 +145,8 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
-  const [tanggalMasuk, settanggalKeluar] = useState('');
+  const [id, setId] = useState<string>('');
+  const [tanggalKeluar, settanggalKeluar] = useState('');
   const [keterangan, setketerangan] = useState('');
   const [form] = Form.useForm();
   const [createbarangKeluar, setcreatebarangKeluar] = useState<createbarangKeluar>({
@@ -148,6 +156,12 @@ const Page: React.FC = () => {
     tanggalKeluar: '',
     keterangan: '',
   });
+  const [updatebarangKeluar, setupdatebarangKeluar] = useState<updatebarangKeluar>({
+    id: '',
+    jumlah:  0,
+    tanggalKeluar: '',
+    keterangan: '',
+  })
   const { data: listBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
@@ -171,10 +185,11 @@ const Page: React.FC = () => {
     }, []);
 
 
-  const handleDateChange = (date: any, dateString: any) => {
-    setcreatebarangKeluar({ ...createbarangKeluar, tanggalKeluar: dateString });
-  };
-
+    const handleDateChange = (date: any, dateString: any) => {
+      setcreatebarangKeluar({ ...createbarangKeluar, tanggalKeluar: dateString });
+      setupdatebarangKeluar({ ...updatebarangKeluar, tanggalKeluar: dateString });
+    };
+    
   // klik row
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3002/barangkeluar/${id}`;
@@ -237,6 +252,7 @@ const Page: React.FC = () => {
     setEditData(null);
   };
 
+  // CREATE BARANG KELUAR
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
     try {
@@ -267,6 +283,36 @@ const Page: React.FC = () => {
     }
   };
 
+  // EDIT BARANG KELUAR
+  const onFinishEdit = async (id: string) => {
+    console.log('id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        jumlah : updatebarangKeluar.jumlah,
+        tanggalKeluar: updatebarangKeluar.tanggalKeluar,
+        keterangan: updatebarangKeluar.keterangan,
+
+      };
+      const request = await barangKeluarRepository.api.updatebarangKeluar(id, data);
+      if (request.status === 400) { 
+        setError(request.body.message); // Set pesan error
+      } else {
+        message.success('berhasil Mengubah Barang Keluar!');
+        setModalEditVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Mengubah Barang Keluar');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.id === item.id);
@@ -279,6 +325,7 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    setId(record.id);
     settanggalKeluar(record.tanggalKeluar);
     setketerangan(record.keterangan );
     form.setFieldsValue(record.id);
@@ -363,7 +410,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px' }}
+            style={{ width: 300, marginRight: '600px', height: '40px' }}
           />
           </div>
           <Button
@@ -539,46 +586,55 @@ const Page: React.FC = () => {
       onCancel={handleModalCancel}
       footer={null}
       >
-      <Form.Item
-        name="jumlah"
-        label="Jumlah"
-        colon={false}
-        labelAlign="left"
-        labelCol={{ span: 7 }}
-        wrapperCol={{ span: 16 }}
-        rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
-        style={{ marginTop: '50px', marginLeft: '20px'}}
+      <Form
+        layout="horizontal"
+        onFinish={() => onFinishEdit(id)}
+        initialValues={{
+          jumlah: updatebarangKeluar.jumlah,
+          tanggalKeluar: updatebarangKeluar.tanggalKeluar,
+          keterangan: updatebarangKeluar.keterangan,
+        }}
       >
-        <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
-          value={createbarangKeluar.jumlah}
-          onChange={(e) =>
-          setcreatebarangKeluar({ ...createbarangKeluar, jumlah: Number (e.target.value) })
-          }
-        />
-      </Form.Item>
-      <Form.Item
-        name="tanggalMasuk"
-        label="Tanggal Masuk"
-        colon={false}
-        labelAlign="left"
-        labelCol={{ span: 7 }}
-        wrapperCol={{ span: 16 }}
-        rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-        style={{ marginLeft: '20px'}}
+        <Form.Item
+          name="jumlah"
+          label="Jumlah"
+          colon={false}
+          labelAlign="left"
+          labelCol={{ span: 7 }}
+          wrapperCol={{ span: 16 }}
+          rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
+          style={{ marginTop: '50px', marginLeft: '20px'}}
         >
-          <DatePicker
-            placeholder="Tanggal Keluar"
-            style={{ width: '100%', height: '40px' }}
-            value={
-            createbarangKeluar.tanggalKeluar
-              ? dayjs(createbarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
-              : null
-          }
-            onChange={handleDateChange}
-            format="YYYY-MM-DD"
+          <Input placeholder="Jumlah" style={{ width: '100%', height: '40px' }} 
+            value={updatebarangKeluar.jumlah}
+            onChange={(e) =>
+              setupdatebarangKeluar({ ...updatebarangKeluar, jumlah: Number (e.target.value) })
+            }
           />
-          </Form.Item>     
+        </Form.Item>
           <Form.Item
+            name="tanggalKeluar"
+            label="Tanggal Keluar"
+            colon={false}
+            labelAlign="left"
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 16 }}
+            rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+            style={{ marginLeft: '20px'}}
+          >
+              <DatePicker
+                placeholder="Tanggal Keluar"
+                style={{ width: '100%', height: '40px' }}
+                value={
+                updatebarangKeluar.tanggalKeluar
+                  ? dayjs(updatebarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+                  : null
+              }
+                onChange={handleDateChange}
+                format="YYYY-MM-DD"
+              />
+          </Form.Item>     
+              <Form.Item
                 name="keterangan"
                 label="Keterangan"
                 colon={false}
@@ -592,9 +648,9 @@ const Page: React.FC = () => {
                   placeholder='Keterangan'
                   rows={4}
                   style={{ width: '100%', marginLeft: '20px' }}
-                  value={createbarangKeluar.keterangan}
+                  value={updatebarangKeluar.keterangan}
                   onChange={(e) =>
-                    setcreatebarangKeluar({ ...createbarangKeluar, keterangan: e.target.value })
+                    setupdatebarangKeluar({ ...updatebarangKeluar, keterangan: e.target.value })
                   }
                 />
               </Form.Item>
@@ -625,7 +681,8 @@ const Page: React.FC = () => {
                 >
                   <span>Batal</span>
                 </Button>
-              </Form.Item>
+            </Form.Item>
+        </Form>
       </Modal>
       {role === 'admin' && (
         <div

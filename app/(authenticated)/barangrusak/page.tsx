@@ -165,15 +165,15 @@ const Page: React.FC = () => {
     keterangan: '',
     status: 'Rusak',
   });
-  const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
-    id: '',
-    jumlah: 0,
-    jumlahbarangrusak: 0,
-    jumlahbarangdiperbaiki: 0,
-    tanggalrusak: '',
-    tanggalperbaikan: '',
-    keterangan: '',
-  })
+  // const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
+  //   id: '',
+  //   jumlah: 0,
+  //   jumlahbarangrusak: 0,
+  //   jumlahbarangdiperbaiki: 0,
+  //   tanggalrusak: '',
+  //   tanggalperbaikan: '',
+  //   keterangan: '',
+  // })
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
@@ -478,10 +478,10 @@ const Page: React.FC = () => {
                 <Input 
                 placeholder="Jumlah" 
                 style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                value={updateBarangrusak.jumlah}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlah}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -501,10 +501,10 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} 
-                value={updateBarangrusak.jumlahbarangrusak}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlahbarangrusak}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -525,10 +525,10 @@ const Page: React.FC = () => {
               >
                 <Input placeholder="Jumlah" 
                 style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                value={updateBarangrusak.jumlahbarangdiperbaiki}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlahbarangdiperbaiki}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -569,10 +569,10 @@ const Page: React.FC = () => {
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
                   style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
-                  value={updateBarangrusak.tanggalperbaikan}
-                  onChange={(e) =>
-                    setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
-                  }
+                  // value={updateBarangrusak.tanggalperbaikan}
+                  // onChange={(e) =>
+                  //   setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
+                  // }
                 />
               </Form.Item>
               <Form.Item

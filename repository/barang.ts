@@ -33,7 +33,7 @@ const url = {
 
   updateBarang(id: string) {
     return `/barang/${id}`;
-  }
+  },
 };
 
 const hooks = {
@@ -43,7 +43,6 @@ const hooks = {
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
   },
-  
 };
 
 const api = {

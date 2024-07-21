@@ -34,6 +34,11 @@ import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
 import { akunRepository } from '#/repository/akun';
 import { create } from 'domain';
+export enum rolePeran {
+  Admin = 'admin',
+  Petugas = 'petugas',
+  Peminjam = 'peminjam',
+}
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -46,13 +51,15 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
+// interface deletePetugas {
+//   id: string;
+// }
 interface updatePetugas {
   id: string;
   username: string;
   nomorInduk: string;
   telp: string;
 }
-
 
 interface createAkunpetugas {
   peranId: string;
@@ -68,11 +75,11 @@ interface createAkunpetugas {
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
-   id: string;
+  id: string;
   name: string;
   username: string;
   telp: string;
-  nip: string;
+  nomorInduk: string;
 }
 
 interface EditableRowProps {
@@ -166,7 +173,7 @@ interface DataType {
   name: string;
   username: string;
   telp: string;
-  nip: string;
+  nomorInduk: string;
 }
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
@@ -176,9 +183,9 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-  const [id, setId] = useState<string>('');
+
   const [nama, setNama] = useState('');
-  const [NIP, setNIP] = useState('');
+  const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
   const [telp, setTelp] = useState('');
   const [namaPengguna, setNamaPengguna] = useState('');
@@ -195,12 +202,18 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+
+  // const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+  //   id: '',
+  // });
+
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
-  })
+  });
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -208,7 +221,9 @@ const Page: React.FC = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
-  const [form] = Form.useForm(); 
+  const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
+  const [form] = Form.useForm();
+  const [id, setId] = useState<string>('');
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -222,16 +237,17 @@ const Page: React.FC = () => {
     router.push('/login');
   };
 
-    // style button search
-    useEffect(() => {
-      if (searchRef.current) {
-        const searchButton = searchRef.current.querySelector('.ant-input-search-button');
-        if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
-          searchButton.style.backgroundColor = '#582DD2';
-          searchButton.style.borderColor = '#582DD2';
-        }
+  // style button search
+  useEffect(() => {
+    if (searchRef.current) {
+      const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+      if (searchButton instanceof HTMLElement) {
+        // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2';
+        searchButton.style.borderColor = '#582DD2';
       }
-    }, []);
+    }
+  }, []);
 
   // menu akun
   const menu = (
@@ -249,17 +265,6 @@ const Page: React.FC = () => {
     setSearchText(value);
   };
 
-  useEffect(() => {
-    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
-  }, []);
-
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.username.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.nip.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -269,7 +274,7 @@ const Page: React.FC = () => {
     setModalEditVisible(false);
     setNama('');
     setNamaPengguna('');
-    setNIP('');
+    setnomorInduk('');
     setTelp('');
   };
 
@@ -290,8 +295,8 @@ const Page: React.FC = () => {
         kelas: createAkunpetugas.kelas,
       };
       const request = await akunRepository.api.akun(data);
-      if (request.status === 400) { 
-        setError(request.body.message); 
+      if (request.status === 400) {
+        setError(request.body.message);
       } else {
         message.success('Berhasil Menambah Petugas!');
         setModalVisible(false);
@@ -319,8 +324,8 @@ const Page: React.FC = () => {
         telp: updatePetugas.telp,
       };
       const request = await akunRepository.api.updateAkun(id, data);
-      if (request.status === 400) { 
-        setError(request.body.message); 
+      if (request.status === 400) {
+        setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
         setModalVisible(false);
@@ -340,17 +345,26 @@ const Page: React.FC = () => {
     const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
   };
-  
 
   const handleEdit = (record: Item) => {
     setEditData(record);
     setId(record.id);
     setNama(record.name);
     setusername(record.username);
-    setNIP(record.nip);
+    setnomorInduk(record.nomorInduk);
     setTelp(record.telp);
     setModalEditVisible(true);
   };
+
+  // useEffect(() => {
+  //   if (listakun) {
+  //     // Filter data untuk hanya menampilkan entitas dengan peran 'Petugas'
+  //     const filteredData = listakun.filter((item: Item) =>
+  //       item ? akun?.data?.peran?.Role === rolePeran.Petugas : true
+  //     );
+  //     setDataSource(filteredData);
+  //   }
+  // }, [listakun]);
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -363,7 +377,6 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Avatar src={record.gambar} />
             <span style={{ marginLeft: '10px' }}>{record.nama}</span>
-            
           </div>
         );
       },
@@ -373,14 +386,12 @@ const Page: React.FC = () => {
       dataIndex: 'username',
       width: '20%',
       editable: true,
-
     },
     {
       title: 'Telp',
       dataIndex: 'telp',
       width: '20%',
       editable: true,
-
     },
     {
       title: 'NIP',
@@ -388,7 +399,7 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.petugas.NIP;
+        return record.petugas[0].NIP;
       },
     },
     {
@@ -405,24 +416,24 @@ const Page: React.FC = () => {
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
-      <Popconfirm
-        title="Hapus Petugas"
-        // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
-        onCancel={(e) => {
-          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-        }}
-      >
-        <Button
-          type="link"
-          onClick={(e) => {
-            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          }}
-          icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
-        />
-      </Popconfirm>
-          </span>
-        );
-      },
+            <Popconfirm
+              title="Hapus Petugas"
+              // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+              onCancel={(e) => {
+                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+              }}
+            >
+              <Button
+                type="link"
+                onClick={(e) => {
+                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                }}
+                icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+              />
+            </Popconfirm>
+                </span>
+              );
+         },
     },
   ];
 
@@ -483,7 +494,7 @@ const Page: React.FC = () => {
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '45px' }}>Petugas</h1>
       <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
         <div ref={searchRef}>
-        <Search
+          <Search
             placeholder="Telusuri Barang Masuk"
             className="custom-search"
             allowClear
@@ -515,7 +526,7 @@ const Page: React.FC = () => {
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listakun?.data}
+          dataSource={petugasData}
           pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
@@ -642,7 +653,7 @@ const Page: React.FC = () => {
                         marginLeft: '150px',
                         top: '-35px',
                       }}
-                      placeholder="Nama Pengguna"   
+                      placeholder="Nama Pengguna"
                       value={createAkunpetugas.username}
                       onChange={(e) =>
                         setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
@@ -758,7 +769,7 @@ const Page: React.FC = () => {
             onFinish={() => onFinishEdit(id)}
             initialValues={{
               username: updatePetugas.username || username,
-              nomorInduk: updatePetugas.nomorInduk || NIP, 
+              nomorInduk: updatePetugas.nomorInduk || nomorInduk,  
               telp: updatePetugas.telp || telp,
             }}
           >
@@ -806,9 +817,7 @@ const Page: React.FC = () => {
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '107px' }}
                       placeholder="Telp"
                       value={updatePetugas.telp}
-                      onChange={(e) =>
-                        setupdatePetugas({ ...updatePetugas, telp: e.target.value })
-                      }
+                      onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
                       maxLength={12}
                     />
                   </Form.Item>
@@ -837,130 +846,130 @@ const Page: React.FC = () => {
           </Form>
         </Modal>
       </Card>
-        {/* menu inpo */}
-        {role === 'admin' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '90px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '200px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
-                      </div>
+      {/* menu inpo */}
+      {role === 'admin' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '90px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '200px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
                     </div>
                   </div>
-                </Button>
-              </div>
-            </Dropdown>
-          </div>
-        )}
-        {role === 'petugas' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '200px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </Dropdown>
-          </div>
-        )}
-        {role === 'peminjam' && (
-          <div
-            style={{
-              position: 'absolute',
-              top: '20px',
-              right: '10px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Button
-                  style={{
-                    width: '190px',
-                    height: '50px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img
-                      src="ikon.png"
-                      style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                      alt="ikon"
-                    />
-                    <div>
-                      <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                        Halo, {akun?.data?.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                        {akun?.data?.peran?.Role}
-                      </div>
-                    </div>
-                  </div>
-                </Button>
-              </div>
-            </Dropdown>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
         </div>
-        )}
+      )}
+      {role === 'petugas' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '200px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
+      )}
+      {role === 'peminjam' && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '10px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Dropdown overlay={menu} placement="bottomCenter">
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Button
+                style={{
+                  width: '190px',
+                  height: '50px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img
+                    src="ikon.png"
+                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                    alt="ikon"
+                  />
+                  <div>
+                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                      Halo, {akun?.data?.nama}
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                      {akun?.data?.peran?.Role}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            </div>
+          </Dropdown>
+        </div>
+      )}
     </div>
   );
 };

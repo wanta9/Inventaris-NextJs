@@ -6,13 +6,12 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { title } from 'process';
 import { akunRepository } from '#/repository/akun';
 import { useRouter } from 'next/navigation';
-
+import { parseJwt } from '#/utils/parseJwt';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
 
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
@@ -29,6 +28,9 @@ const Login = () => {
       } else {
         localStorage.setItem('access_token', request.body.data);
         // await mutateAkun();
+        const parseToken = parseJwt(request.body.data);
+        console.log(parseToken, 'data akun');
+
         router.push('/dashboard');
       }
       console.log(request);

@@ -32,6 +32,7 @@ import { peminjamRepository } from '#/repository/peminjam';
 import { barangRusakRepository } from '#/repository/barangrusak';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
+import { parseCookies } from 'nookies';
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -78,9 +79,7 @@ const Page = () => {
   console.log(listBarangKeluar, 'barang keluar');
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
-
   const role = akun?.data?.peran?.Role;
-
   const Jumlah = listRuanganBarang?.data?.length;
 
   const barangMasuk = listBarangMasuk?.data?.reduce((total, item) => total + item.jumlah, 0) || 0;
@@ -938,5 +937,25 @@ const Page = () => {
     </>
   );
 };
+// export async function getServerSideProps(context: any) {
+//   const cookies = parseCookies(context);
+//   const token = cookies.accessToken;
+
+//   // If token does not exist, redirect to login page
+//   if (!token) {
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   // Additional logic to verify token if needed
+
+//   return {
+//     props: {}, // Props to be passed to the component
+//   };
+// }
 
 export default Page;

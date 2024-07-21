@@ -112,7 +112,7 @@ const Page: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -138,6 +138,7 @@ const Page: React.FC = () => {
       } else {
         message.success('berhasil Menambahkan Letak Barang!');
         setModalVisible(false);
+        await mutateListRuangan(); // Mutate after success
       }
       console.log(request);
     } catch (error) {
@@ -164,6 +165,7 @@ const Page: React.FC = () => {
       } else {
         message.success('berhasil Mengedit Letak Barang!');
         setModalEditVisible(false);
+        await mutateListRuangan(); // Mutate after success
       }
       console.log(request);
     } catch (error) {

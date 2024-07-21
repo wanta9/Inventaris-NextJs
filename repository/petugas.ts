@@ -21,7 +21,6 @@ const url = {
   getPetugasById(id: string) {
     return `/petugas/${id}`;
   },
-  
 };
 
 const hooks = {
@@ -37,6 +36,9 @@ const api = {
   petugas(data: any) {
     return http.post(url.getPetugas()).send(data);
   },
+  // deletePetugas(id: string, data: any) {
+  //   return http.put(url.deletePetugas(id)).send(data);
+  // },
 };
 
 export const petugasRepository = {

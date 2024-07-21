@@ -34,6 +34,11 @@ import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
 import { akunRepository } from '#/repository/akun';
 import { create } from 'domain';
+export enum rolePeran {
+  Admin = 'admin',
+  Petugas = 'petugas',
+  Peminjam = 'peminjam',
+}
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -44,6 +49,10 @@ export enum statusBarang {
   Pending = 'pending',
   Diterima = 'diterima',
   Ditolak = 'ditolak',
+}
+
+interface deletePetugas {
+  id: string;
 }
 
 interface updatePetugas {
@@ -117,6 +126,10 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
 
+  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+    id: '',
+  });
+
   const save = async () => {
     try {
       const values = await form.validateFields();
@@ -171,7 +184,7 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-  const [id, setId] = useState<string>('');
+
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
   const [username, setusername] = useState('');
@@ -190,12 +203,18 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+
+  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+    id: '',
+  });
+
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
   });
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -203,11 +222,13 @@ const Page: React.FC = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
+  const petugasData = listakun?.data?.filter((item) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
+  const [id, setId] = useState<string>('');
 
   const router = useRouter();
 
@@ -244,17 +265,6 @@ const Page: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchText(value);
   };
-
-  useEffect(() => {
-    setDataSource(filteredData); // Menggunakan setDataSource untuk mengatur nilai initialData
-  }, []);
-
-  const filteredData = dataSource.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.username.toLowerCase().includes(searchText.toLowerCase()) ||
-      item.nip.toLowerCase().includes(searchText.toLowerCase())
-  );
 
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -347,6 +357,16 @@ const Page: React.FC = () => {
     setModalEditVisible(true);
   };
 
+  // useEffect(() => {
+  //   if (listakun) {
+  //     // Filter data untuk hanya menampilkan entitas dengan peran 'Petugas'
+  //     const filteredData = listakun.filter((item: Item) =>
+  //       item ? akun?.data?.peran?.Role === rolePeran.Petugas : true
+  //     );
+  //     setDataSource(filteredData);
+  //   }
+  // }, [listakun]);
+
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
       title: 'Nama',
@@ -380,7 +400,7 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.petugas.NIP;
+        return record.petugas[0].NIP;
       },
     },
     {
@@ -398,8 +418,8 @@ const Page: React.FC = () => {
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
             <Popconfirm
-              title="Hapus Barang"
-              onConfirm={() => handleDelete(record.id)} // Memanggil fungsi handleDelete saat Popconfirm dikonfirmasi
+              title="Hapus Petugas"
+              onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
               onCancel={(e) => {
                 if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
               }}
@@ -507,7 +527,7 @@ const Page: React.FC = () => {
           components={components}
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listakun?.data}
+          dataSource={petugasData}
           pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}

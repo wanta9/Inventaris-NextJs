@@ -51,15 +51,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     try {
       setLoading(true);
       setError(null);
-<<<<<<< HEAD
-      const data = {};
-=======
       const data = {
         // ruanganId: values.ruanganId || createKoleksi.ruanganId,
         // barangId: values.barangId || createKoleksi.barangId,
         // jumlah: values.jumlah || createKoleksi.jumlah,
       };
->>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
       const request = await barangRepository.api.barang(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
@@ -136,13 +132,10 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     },
   ];
 
-<<<<<<< HEAD
-=======
-  const handleRuanganChange = (value: string) => {
-    setcreateKoleksi({ ...createKoleksi, ruanganId: value });
-  };
+  // const handleRuanganChange = (value: string) => {
+  //   setcreateKoleksi({ ...createKoleksi, ruanganId: value });
+  // };
 
->>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
   const handleModalCancel = () => {
     setModalVisible(false);
     form.resetFields();
@@ -462,12 +455,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     height: '40px',
                     borderRadius: '10px',
                     marginBottom: '10px',
-<<<<<<< HEAD
-                    marginLeft: '30px',
-=======
                     marginLeft: '30px'
                     
->>>>>>> aab9f9e8fd189399a50b593b06fc6e8632dcef77
                   }}
                 >
                   {PilihRuangan}

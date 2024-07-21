@@ -6,6 +6,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { title } from 'process';
 import { akunRepository } from '#/repository/akun';
 import { useRouter } from 'next/navigation';
+import { parseJwt } from '#/utils/parseJwt';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,10 @@ const Login = () => {
         setError(request.body.message); // Set pesan error
       } else {
         localStorage.setItem('access_token', request.body.data);
+        // await mutateAkun();
+        const parseToken = parseJwt(request.body.data);
+        console.log(parseToken, 'data akun');
+
         router.push('/dashboard');
       }
       console.log(request);

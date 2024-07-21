@@ -51,10 +51,13 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
+<<<<<<< HEAD
 interface deletePetugas {
   id: string;
 }
 
+=======
+>>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
 interface updatePetugas {
   id: string;
   username: string;
@@ -62,6 +65,10 @@ interface updatePetugas {
   telp: string;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -126,9 +133,9 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     form.setFieldsValue({ [dataIndex]: record[dataIndex] });
   };
 
-  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
-    id: '',
-  });
+  // const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+  //   id: '',
+  // });
 
   const save = async () => {
     try {
@@ -186,7 +193,7 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
 
   const [nama, setNama] = useState('');
-  const [nip, setNIP] = useState('');
+  const [NIP, setNIP] = useState('');
   const [username, setusername] = useState('');
   const [telp, setTelp] = useState('');
   const [namaPengguna, setNamaPengguna] = useState('');
@@ -203,18 +210,25 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+<<<<<<< HEAD
 
   const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
     id: '',
   });
 
+=======
+>>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
+<<<<<<< HEAD
   });
 
+=======
+  })
+>>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -228,7 +242,6 @@ const Page: React.FC = () => {
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
-  const [id, setId] = useState<string>('');
 
   const router = useRouter();
 
@@ -417,6 +430,7 @@ const Page: React.FC = () => {
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
+<<<<<<< HEAD
             <Popconfirm
               title="Hapus Petugas"
               onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
@@ -432,6 +446,23 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
+=======
+      <Popconfirm
+        title="Hapus Petugas"
+        // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+        onCancel={(e) => {
+          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+        }}
+      >
+        <Button
+          type="link"
+          onClick={(e) => {
+            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+          }}
+          icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+        />
+      </Popconfirm>
+>>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
           </span>
         );
       },
@@ -752,9 +783,9 @@ const Page: React.FC = () => {
         </Modal>
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Akun Petugas</div>}
+          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
           style={{ textAlign: 'center' }}
-          width={700}
+          width={600}
           centered
           visible={modalEditVisible}
           onCancel={handleModalCancel}
@@ -769,9 +800,9 @@ const Page: React.FC = () => {
             layout="horizontal"
             onFinish={() => onFinishEdit(id)}
             initialValues={{
-              username: updatePetugas.username,
-              nomorInduk: updatePetugas.nomorInduk,
-              telp: updatePetugas.telp,
+              username: updatePetugas.username || username,
+              nomorInduk: updatePetugas.nomorInduk || NIP, 
+              telp: updatePetugas.telp || telp,
             }}
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
@@ -781,9 +812,10 @@ const Page: React.FC = () => {
                     label="Nama Pengguna"
                     name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                    style={{ paddingLeft: '10px'}}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '30px' }}
                       placeholder="Nama Pengguna"
                       value={updatePetugas.username}
                       onChange={(e) =>
@@ -795,9 +827,10 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
+                    style={{ paddingLeft: '10px'}}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '111px' }}
                       placeholder="NIP"
                       value={updatePetugas.nomorInduk}
                       onChange={(e) =>
@@ -809,9 +842,11 @@ const Page: React.FC = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
+                    style={{ paddingLeft: '10px'}}
+
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '' }}
+                      style={{ width: '300px', height: '45px', border: '', marginLeft: '107px' }}
                       placeholder="Telp"
                       value={updatePetugas.telp}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
@@ -835,7 +870,7 @@ const Page: React.FC = () => {
                 >
                   Batal
                 </Button>
-                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '27px' }}>
+                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '40px', backgroundColor: '#582DD2' }}>
                   Simpan
                 </Button>
               </div>

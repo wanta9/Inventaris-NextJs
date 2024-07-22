@@ -18,6 +18,9 @@ const url = {
   updateAkun(id: string) {
     return `/akun/${id}`;
   },
+  deleteAkun(id: string) {
+    return `/akun/${id}`;
+  },
 };
 
 const hooks = {
@@ -44,9 +47,9 @@ const api = {
     return http.post(url.uploadAkun()).send(formData);
   },
 
-  updateAkun(id: string, data: any) {
-    return http.put(url.updateAkun(id)).send(data);
-  },
+  deleteAkun(id: string) {
+    return http.delete(url.deleteAkun(id));
+  }
 };
 
 export const akunRepository = {

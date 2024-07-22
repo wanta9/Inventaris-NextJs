@@ -794,7 +794,7 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Nama Barang"
-                          value={updateBarang.nama}
+                          value={updateBarang.nama || namaBarang}
                           onChange={(e) =>
                             setupdateBarang({ ...updateBarang, nama: e.target.value })
                           }
@@ -817,7 +817,7 @@ const Page: React.FC = () => {
                           }}
                           prefix="Rp"
                           placeholder="Harga"
-                          value={updateBarang.harga}
+                          value={updateBarang.harga || harga}
                           onChange={(e) =>
                             setupdateBarang({ ...updateBarang, harga: e.target.value })
                           }
@@ -839,7 +839,7 @@ const Page: React.FC = () => {
                             borderColor: 'black',
                           }}
                           placeholder="Deskripsi Barang"
-                          value={updateBarang.deskripsi}
+                          value={updateBarang.deskripsi || deskripsi}
                           onChange={(e) =>
                             setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
                           }

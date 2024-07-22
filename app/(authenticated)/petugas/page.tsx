@@ -51,12 +51,9 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
-<<<<<<< HEAD
-=======
 // interface deletePetugas {
 //   id: string;
 // }
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
 interface updatePetugas {
   id: string;
   username: string;
@@ -205,24 +202,17 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
-<<<<<<< HEAD
-=======
 
   // const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
   //   id: '',
   // });
 
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -232,7 +222,6 @@ const Page: React.FC = () => {
   console.log(listakun, 'listPetugas');
   const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
-  const [id, setId] = useState<string>('');
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -440,15 +429,9 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
-<<<<<<< HEAD
           </span>
         );
       },
-=======
-                </span>
-              );
-         },
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
     },
   ];
 
@@ -786,19 +769,11 @@ const Page: React.FC = () => {
           <Form
             layout="horizontal"
             onFinish={() => onFinishEdit(id)}
-<<<<<<< HEAD
-            // initialValues={{
-            //   username: updatePetugas.username || username,
-            //   nomorInduk: updatePetugas.nomorInduk || NIP,
-            //   telp: updatePetugas.telp || telp,
-            // }}
-=======
             initialValues={{
               username: updatePetugas.username || username,
-              nomorInduk: updatePetugas.nomorInduk || nomorInduk,  
+              nomorInduk: updatePetugas.nomorInduk || nomorInduk,
               telp: updatePetugas.telp || telp,
             }}
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>

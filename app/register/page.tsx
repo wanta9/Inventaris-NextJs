@@ -85,7 +85,7 @@ const Register = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Card  style={{ width: '25%', marginTop: '70px', height: '800px'}}>
-                                <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                  <div style={{ textAlign: 'center', marginBottom: 40 }}>
                     <img src="ikon.png" alt="logo" style={{ width: 100, marginTop: '-30px' }} />
                     <div style={{ fontSize: 18, fontWeight: 'bold' }}>PENDAFTARAN</div>
                 </div>

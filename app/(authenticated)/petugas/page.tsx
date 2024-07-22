@@ -61,6 +61,10 @@ interface updatePetugas {
   telp: string;
 }
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -212,6 +216,9 @@ const Page: React.FC = () => {
     nomorInduk: '',
     telp: '',
     username: '',
+<<<<<<< HEAD
+  })
+=======
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
@@ -414,6 +421,26 @@ const Page: React.FC = () => {
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
+<<<<<<< HEAD
+      <Popconfirm
+        title="Hapus Petugas"
+        // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+        onCancel={(e) => {
+          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+        }}
+      >
+        <Button
+          type="link"
+          onClick={(e) => {
+            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+          }}
+          icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
+        />
+      </Popconfirm>
+          </span>
+        );
+      },
+=======
             <Popconfirm
               title="Hapus Petugas"
               // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan

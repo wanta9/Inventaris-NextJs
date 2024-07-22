@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Card, Form, Input, message } from 'antd';
+import { Button, Card, Col, Form, Input, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useRouter } from "next/navigation";
 import { akunRepository } from "#/repository/akun";
@@ -83,152 +83,174 @@ const Register = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Card  style={{ width: '25%', marginTop: '70px', height: '800px'}}>
-                  <div style={{ textAlign: 'center', marginBottom: 40 }}>
-                    <img src="ikon.png" alt="logo" style={{ width: 100, marginTop: '-30px' }} />
-                    <div style={{ fontSize: 18, fontWeight: 'bold' }}>PENDAFTARAN</div>
-                </div>
-                <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
-                    <Form.Item
-                        label="Nama Pengguna"
-                        name="username"
-                        rules={[{ required: true, message: 'Masukkan Nama yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input prefix={<UserOutlined />} type="text"                           
-                        value={createAkun.username}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, username: e.target.value })
-                        }/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Sandi"
-                        name="sandi"
-                        rules={[{ required: true, message: 'Masukkan sandi!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input.Password prefix={<LockOutlined />} type="text"                           
-                        value={createAkun.password}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, password: e.target.value })
-                        }/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Konfirmasi Sandi"
-                        name="konfirmasisandi"
-                        rules={[{ required: true, message: 'Masukkan sandi yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input.Password prefix={<LockOutlined />} type="password" />
-                    </Form.Item>
-                    <Form.Item
-                        label="NISN"
-                        name="nomorInduk"
-                        rules={[{ required: true, type: 'string', message: 'Masukkan NISN yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px' }} />} type="text"                       
-                        value={createAkun.nomorInduk}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, nomorInduk: e.target.value })
-                        }/> 
-                    </Form.Item>
-                    <Form.Item
-                        label="Nama Lengkap"
-                        name="nama"
-                        rules={[{ required: true, type: 'string', message: 'Masukkan Nama Lengkap yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                    <Input prefix={<img src="/icnnamalengkap.svg" style={{ width: '19px', height: '19px' }} />} type="text"                           
-                        value={createAkun.nama}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, nama: e.target.value })
-                        }/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Kelas"
-                        name="kelas"
-                        rules={[{ required: true, type: 'string', message: 'Masukkan Kelas yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input prefix={<img src="/icnkelas.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
-                        value={createAkun.kelas}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, kelas: e.target.value })
-                        }/>
-                    </Form.Item>
-                    <Form.Item
-                        label="Nomer Telp"
-                        name="nomertelp"
-                        rules={[{ required: true, type: 'string', message: 'Masukkan Nomer Telp yang benar!' }]}
-                        style={{ marginLeft: '40px', marginBottom: '5px'}}
-                        wrapperCol={{ span: 20 }}
-                    >
-                        <Input prefix={<img src="/icntelpon.svg" style={{ width: '19px', height: '19px' }} />} type="text"                        
-                        value={createAkun.telp}
-                         onChange={(e) =>
-                            setcreateAkun({ ...createAkun, telp: e.target.value })
-                        }/>
-                    </Form.Item>
-                    <Form.Item>
-                        <Button
-                            type="primary"
-                            block
-                            loading={loading}
-                            htmlType="submit"
-                            style={{ background: '#582DD2', width: '329px', marginLeft: '40px', marginTop: '20px' }}
-                        >
-                            Daftar
-                        </Button>
-                        <div
-              style={{
-                textAlign: 'center',
-                position: 'relative',
-                margin: '20px 0',
-                marginTop: '30px',
-              }}
-            >
-              <hr
-                style={{ borderTop: '1px solid #ccc', width: '76%', marginLeft:'40px', padding: '0' }}
-              />
-              <span
-                style={{
-                  backgroundColor: '#fff',
-                  position: 'absolute',
-                  top: '-10px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  padding: '0 10px',
-                }}
-              >
-                ATAU
-              </span>
-            </div>
-            <div style={{ textAlign: 'center', paddingTop: '5px' }}>
-              sudah mempunyai akun?<a href="http://localhost:3002/login"> Log in</a>
-            </div>
-                    </Form.Item>
-                </Form>
-            </Card>
-            <div className="register-page">
-            <style>
-                {`
-                    body {
-                        background-color: #582DD2;
-                    }
-                `}
-            </style>
-            {/* Konten halaman login */}
-        </div>
-        </div>
-    );
+      <div style={{ display: 'flex',justifyContent: 'center', alignItems: 'center', minHeight: '100vh',}} >
+          <Row style={{ width: '100%' }} justify="center">
+              <Col xs={24} sm={20} md={16} lg={12} xl={8}>
+                      <Card
+                        style={{
+                          width: '100%',
+                          maxWidth: 500, // Set maximum width for the card
+                          maxHeight: 1100,
+                          margin: 'auto', // Center the card horizontally
+                          padding: 20, // Add padding inside the card
+                        }}
+                      >
+                      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+                          <img src="ikon.png" alt="logo" style={{ width: 100, marginTop: '-10px' }} />
+                          <div style={{ fontSize: 18, fontWeight: 'bold' }}>PENDAFTARAN</div>
+                      </div>
+                      <Form layout="vertical" name="normal_login" onFinish={onFinish}>
+                          <Form.Item
+                              label="Nama Pengguna"
+                              name="username"
+                              rules={[{ required: true, message: 'Masukkan Nama yang benar!' }]}
+                              style={{ marginTop: '40px', paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input
+                                  prefix={<UserOutlined style={{ marginLeft: '12px'}}/>}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.username}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, username: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item
+                              label="Sandi"
+                              name="password"
+                              rules={[{ required: true, message: 'Masukkan sandi!' }]}
+                              style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input.Password
+                                  prefix={<LockOutlined style={{ marginLeft: '12px'}}/>}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.password}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, password: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item
+                                label="Konfirmasi Sandi"
+                                name="confirmPassword"
+                                style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                                rules={[
+                                    { required: true, message: 'Masukkan konfirmasi sandi!' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('password') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Sandi tidak cocok!'));
+                                        },
+                                    }),
+                                ]}
+                            >
+                              <Input.Password prefix={<LockOutlined style={{ marginLeft: '12px', height: '30px'}}/>} type="password" />
+                          </Form.Item>
+                          <Form.Item
+                              label="NISN"
+                              name="nomorInduk"
+                              rules={[{ required: true, type: 'string', message: 'Masukkan NISN yang benar!' }]}
+                              style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input
+                                  prefix={<img src="/icnnisn.svg" style={{ width: '19px', height: '19px', marginLeft: '12px' }} />}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.nomorInduk}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, nomorInduk: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item
+                              label="Nama Lengkap"
+                              name="nama"
+                              rules={[{ required: true, type: 'string', message: 'Masukkan Nama Lengkap yang benar!' }]}
+                              style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input
+                                  prefix={<img src="/icnnamalengkap.svg" style={{ width: '19px', height: '19px', marginLeft: '12px' }} />}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.nama}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, nama: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item
+                              label="Kelas"
+                              name="kelas"
+                              rules={[{ required: true, type: 'string', message: 'Masukkan Kelas yang benar!' }]}
+                              style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input
+                                  prefix={<img src="/icnkelas.svg" style={{ width: '19px', height: '19px', marginLeft: '12px' }} />}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.kelas}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, kelas: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item
+                              label="Nomer Telp"
+                              name="nomertelp"
+                              rules={[{ required: true, type: 'string', message: 'Masukkan Nomer Telp yang benar!' }]}
+                              style={{ paddingLeft: '12px', paddingRight: '12px'}}
+                          >
+                              <Input
+                                  prefix={<img src="/icntelpon.svg" style={{ width: '19px', height: '19px', marginLeft: '12px' }} />}
+                                  type="text"
+                                  style={{ height: '40px'}}
+                                  value={createAkun.telp}
+                                  onChange={(e) =>
+                                      setcreateAkun({ ...createAkun, telp: e.target.value })
+                                  }
+                              />
+                          </Form.Item>
+                          <Form.Item style={{ paddingLeft: '12px', paddingRight: '12px'}}>
+                              <Button type="primary" block loading={loading} htmlType="submit" style={{ backgroundColor: '#582DD2', height: '40px'}}>
+                                  Daftar
+                              </Button>
+                              <div style={{ textAlign: 'center', position: 'relative', margin: '20px 0', marginTop: '30px' }}>
+                                  <hr style={{ borderTop: '1px solid #ccc' }} />
+                                  <span
+                                      style={{
+                                          backgroundColor: '#fff',
+                                          position: 'absolute',
+                                          top: '-10px',
+                                          left: '50%',
+                                          transform: 'translateX(-50%)',
+                                          padding: '0 10px',
+                                      }}
+                                  >
+                                      ATAU
+                                  </span>
+                              </div>
+                              <div style={{ textAlign: 'center', paddingTop: '5px' }}>
+                                  sudah mempunyai akun?<a href="http://localhost:3002/login"> Log in</a>
+                              </div>
+                          </Form.Item>
+                      </Form>
+                  </Card>
+              </Col>
+          </Row>
+          <style>
+              {`
+                  body {
+                      background-color: #582DD2;
+                  }
+              `}
+          </style>
+      </div>
+  );
 };
+
 
 export default Register;

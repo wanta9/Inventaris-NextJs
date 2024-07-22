@@ -605,19 +605,6 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
                 
               >
-<<<<<<< HEAD
-              <DatePicker
-                placeholder="Tanggal Keluar"
-                style={{ width: '100%', height: '40px' }}
-                value={
-                  updateBarangrusak.tanggalrusak
-                  ? dayjs(updateBarangrusak.tanggalrusak, 'YYYY-MM-DD')
-                  : null
-              }
-                onChange={handleDateChange}
-                format="YYYY-MM-DD"
-              />
-=======
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
                   style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
@@ -626,7 +613,6 @@ const Page: React.FC = () => {
                   //   setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
                   // }
                 />
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
               </Form.Item>
               <Form.Item
                 name="keterangan"

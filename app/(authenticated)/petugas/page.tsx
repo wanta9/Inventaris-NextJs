@@ -212,25 +212,18 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
-<<<<<<< HEAD
-=======
 
   // const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
   //   id: '',
   // });
 
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
-<<<<<<< HEAD
-  })
-=======
   });
 
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);

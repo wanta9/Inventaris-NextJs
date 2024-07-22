@@ -51,13 +51,6 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
-<<<<<<< HEAD
-interface deletePetugas {
-  id: string;
-}
-
-=======
->>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
 interface updatePetugas {
   id: string;
   username: string;
@@ -65,10 +58,6 @@ interface updatePetugas {
   telp: string;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -191,7 +180,7 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-
+  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [NIP, setNIP] = useState('');
   const [username, setusername] = useState('');
@@ -210,25 +199,12 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
-<<<<<<< HEAD
-
-  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
-    id: '',
-  });
-
-=======
->>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
-<<<<<<< HEAD
   });
-
-=======
-  })
->>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -430,10 +406,9 @@ const Page: React.FC = () => {
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
-<<<<<<< HEAD
             <Popconfirm
               title="Hapus Petugas"
-              onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+              // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
               onCancel={(e) => {
                 if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
               }}
@@ -446,23 +421,6 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
-=======
-      <Popconfirm
-        title="Hapus Petugas"
-        // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
-        onCancel={(e) => {
-          if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-        }}
-      >
-        <Button
-          type="link"
-          onClick={(e) => {
-            if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-          }}
-          icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
-        />
-      </Popconfirm>
->>>>>>> 87c8b176a99e99e26401cfed4367316ce746614a
           </span>
         );
       },
@@ -783,7 +741,11 @@ const Page: React.FC = () => {
         </Modal>
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Edit Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           width={600}
           centered
@@ -799,11 +761,11 @@ const Page: React.FC = () => {
           <Form
             layout="horizontal"
             onFinish={() => onFinishEdit(id)}
-            initialValues={{
-              username: updatePetugas.username || username,
-              nomorInduk: updatePetugas.nomorInduk || NIP, 
-              telp: updatePetugas.telp || telp,
-            }}
+            // initialValues={{
+            //   username: updatePetugas.username || username,
+            //   nomorInduk: updatePetugas.nomorInduk || NIP,
+            //   telp: updatePetugas.telp || telp,
+            // }}
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
@@ -812,14 +774,14 @@ const Page: React.FC = () => {
                     label="Nama Pengguna"
                     name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '30px' }}
                       placeholder="Nama Pengguna"
                       value={updatePetugas.username}
                       onChange={(e) =>
-                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value || username })
                       }
                     />
                   </Form.Item>
@@ -827,7 +789,7 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '111px' }}
@@ -842,8 +804,7 @@ const Page: React.FC = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
-
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '107px' }}
@@ -870,7 +831,12 @@ const Page: React.FC = () => {
                 >
                   Batal
                 </Button>
-                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '40px', backgroundColor: '#582DD2' }}>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginRight: '40px', backgroundColor: '#582DD2' }}
+                >
                   Simpan
                 </Button>
               </div>

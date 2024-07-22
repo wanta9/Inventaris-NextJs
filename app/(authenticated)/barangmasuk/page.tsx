@@ -643,9 +643,9 @@ const Page: React.FC = () => {
               placeholder="Tanggal Masuk"
               style={{ width: '100%', height: '40px' }}
               value={
-                updatebarangMasuk.tanggalMasuk
+                updatebarangMasuk.tanggalMasuk || tanggalMasuk
                   ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
-                  : null
+                  : null 
               }
               onChange={handleDateChange}
               format="YYYY-MM-DD"

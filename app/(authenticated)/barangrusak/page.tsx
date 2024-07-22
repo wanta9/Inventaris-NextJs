@@ -25,6 +25,7 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
 import { Console } from 'console';
+import { set } from 'mobx';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -186,9 +187,10 @@ const Page: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [Jumlah, setJumlah] = useState('');
   const [jmlbarangrusak, setjmlbarangrusak] = useState('');
-  const [jmlBarangDiperbaiki, setjmlbarangdiperbaiki] = useState<string>('');
+  const [jumlahBarangDiperbaiki, setJumlahBarangDiperbaiki] = useState<string>('');
   const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
   const [keterangan, setketerangan] = useState('');
+  const[id, setId] = useState<string>('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   
 
@@ -308,6 +310,37 @@ const Page: React.FC = () => {
     }
   };
 
+  const onFinishEdit = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        jumlah: updateBarangrusak.jumlah,
+        JumlahBarangRusak: updateBarangrusak.jumlahbarangrusak,
+        jumlahbarangDiperbaiki: updateBarangrusak.jumlahbarangdiperbaiki,
+        tanggalRusak: updateBarangrusak.tanggalrusak,
+        tanggalPerbaikan: updateBarangrusak.tanggalperbaikan,
+        keterangan: updateBarangrusak.keterangan,
+      };
+      const request = await barangRusakRepository.api.updateBarangrusak(id,data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Data berhasil disimpan!');
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSave = (row: Item) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.id === item.id);
@@ -320,6 +353,12 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     setEditData(record);
+    setId(record.id);
+    setJumlah(record.jumlah);
+    setJumlahBarangRusak(record.JumlahBarangRusak);
+    setJumlahBarangDiperbaiki(record.jumlahBarangDiperbaiki);
+    setTglRusak(record.tanggalRusak);
+    setTglPerbaikan(record.tanggalPerbaikan);
     // setJumlah(record.Jumlah);
     // setjmlbarangrusak(record.jmlbarangrusak);
     // setjmlbarangDiperbaiki(record.jmlbarangdiperbaiki);
@@ -461,7 +500,7 @@ const Page: React.FC = () => {
         width={900}
         footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
+        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }} onFinish={() => onFinishEdit(id)}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1 }}>
               <Form.Item
@@ -565,14 +604,17 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
                 
               >
-                <DatePicker
-                  placeholder="Tanggal Perbaikan"
-                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
-                  value={updateBarangrusak.tanggalperbaikan}
-                  onChange={(e) =>
-                    setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
-                  }
-                />
+              <DatePicker
+                placeholder="Tanggal Keluar"
+                style={{ width: '100%', height: '40px' }}
+                value={
+                  updateBarangrusak.tanggalrusak
+                  ? dayjs(updateBarangrusak.tanggalrusak, 'YYYY-MM-DD')
+                  : null
+              }
+                onChange={handleDateChange}
+                format="YYYY-MM-DD"
+              />
               </Form.Item>
               <Form.Item
                 name="keterangan"
@@ -583,7 +625,12 @@ const Page: React.FC = () => {
                 style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}/>
+                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}
+                                value={updateBarangrusak.keterangan}
+                                onChange={(e) =>
+                                  setupdateBarangrusak({ ...updateBarangrusak, keterangan: e.target.value })
+                                }
+                />
               </Form.Item>
               <Form.Item
                 style={{ position: 'relative', display: 'flex' }}

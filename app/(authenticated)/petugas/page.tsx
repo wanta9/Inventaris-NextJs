@@ -46,12 +46,6 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
-<<<<<<< HEAD
-interface deletePetugas {
-  id: string;
-}
-
-=======
 interface updatePetugas {
   id: string;
   username: string;
@@ -60,7 +54,6 @@ interface updatePetugas {
 }
 
 
->>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -183,7 +176,6 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nip, setNIP] = useState('');
   const [username, setusername] = useState('');
@@ -202,19 +194,12 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
-<<<<<<< HEAD
-  const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
-    id: '',
-
-  });
-=======
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
   })
->>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -322,12 +307,6 @@ const Page: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-  const handleDeletePetugas = (id: string) => {
-    // const newData = dataSource.filter((item) => item.id !== id);
-    setId(id);
-    // setDataSource(newData);
-=======
   const onFinishEdit = async (id: string) => {
     // console.log('data values: ', values);
     console.log('data id: ', id);
@@ -360,7 +339,6 @@ const Page: React.FC = () => {
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.id !== key);
     setDataSource(newData);
->>>>>>> 4b3c3f85ca6e4850ff731e8b02d3d81e27864cf2
   };
   
 

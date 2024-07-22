@@ -190,7 +190,7 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-
+  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
@@ -226,6 +226,8 @@ const Page: React.FC = () => {
   })
 =======
   });
+<<<<<<< HEAD
+=======
 
 >>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [modalVisible, setModalVisible] = useState(false);
@@ -465,6 +467,11 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
+<<<<<<< HEAD
+          </span>
+        );
+      },
+=======
                 </span>
               );
          },
@@ -786,7 +793,11 @@ const Page: React.FC = () => {
         </Modal>
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Edit Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           width={600}
           centered
@@ -802,11 +813,19 @@ const Page: React.FC = () => {
           <Form
             layout="horizontal"
             onFinish={() => onFinishEdit(id)}
+<<<<<<< HEAD
+            // initialValues={{
+            //   username: updatePetugas.username || username,
+            //   nomorInduk: updatePetugas.nomorInduk || NIP,
+            //   telp: updatePetugas.telp || telp,
+            // }}
+=======
             initialValues={{
               username: updatePetugas.username || username,
               nomorInduk: updatePetugas.nomorInduk || nomorInduk,  
               telp: updatePetugas.telp || telp,
             }}
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
@@ -815,14 +834,14 @@ const Page: React.FC = () => {
                     label="Nama Pengguna"
                     name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '30px' }}
                       placeholder="Nama Pengguna"
                       value={updatePetugas.username}
                       onChange={(e) =>
-                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value || username })
                       }
                     />
                   </Form.Item>
@@ -830,7 +849,7 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '111px' }}
@@ -845,8 +864,7 @@ const Page: React.FC = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
-
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '300px', height: '45px', border: '', marginLeft: '107px' }}
@@ -873,7 +891,12 @@ const Page: React.FC = () => {
                 >
                   Batal
                 </Button>
-                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '40px', backgroundColor: '#582DD2' }}>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ marginRight: '40px', backgroundColor: '#582DD2' }}
+                >
                   Simpan
                 </Button>
               </div>

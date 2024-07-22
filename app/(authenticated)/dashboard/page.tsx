@@ -33,6 +33,7 @@ import { barangRusakRepository } from '#/repository/barangrusak';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
 import { parseCookies } from 'nookies';
+import { dashboardRepository } from '#/repository/dashboard';
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -69,6 +70,8 @@ const Page = () => {
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(akun, 'akun');
+  const { data: Dashboard } = dashboardRepository.hooks.useDashboard();
+  console.log(Dashboard, 'dashboard');
   const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   console.log(listRuanganBarang, 'list ruangan');
   const { data: listPeminjam } = peminjamRepository.hooks.usePeminjam();

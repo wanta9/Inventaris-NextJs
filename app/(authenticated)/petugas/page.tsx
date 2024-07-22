@@ -51,6 +51,12 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
+<<<<<<< HEAD
+=======
+// interface deletePetugas {
+//   id: string;
+// }
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
 interface updatePetugas {
   id: string;
   username: string;
@@ -76,7 +82,7 @@ interface Item {
   name: string;
   username: string;
   telp: string;
-  nip: string;
+  nomorInduk: string;
 }
 
 interface EditableRowProps {
@@ -170,7 +176,7 @@ interface DataType {
   name: string;
   username: string;
   telp: string;
-  nip: string;
+  nomorInduk: string;
 }
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
@@ -182,7 +188,7 @@ const Page: React.FC = () => {
   const [count, setCount] = useState(0);
   const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
-  const [NIP, setNIP] = useState('');
+  const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
   const [telp, setTelp] = useState('');
   const [namaPengguna, setNamaPengguna] = useState('');
@@ -199,12 +205,24 @@ const Page: React.FC = () => {
     username: '',
     password: '',
   });
+<<<<<<< HEAD
+=======
+
+  // const [deletePetugas, setdeletePetugas] = useState<deletePetugas>({
+  //   id: '',
+  // });
+
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
     nomorInduk: '',
     telp: '',
     username: '',
   });
+<<<<<<< HEAD
+=======
+
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
   const [modalVisible, setModalVisible] = useState(false);
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
@@ -212,8 +230,9 @@ const Page: React.FC = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
-  const petugasData = listakun?.data?.filter((item) => item.peran?.Role === 'petugas');
+  const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
+  const [id, setId] = useState<string>('');
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -264,7 +283,7 @@ const Page: React.FC = () => {
     setModalEditVisible(false);
     setNama('');
     setNamaPengguna('');
-    setNIP('');
+    setnomorInduk('');
     setTelp('');
   };
 
@@ -341,7 +360,7 @@ const Page: React.FC = () => {
     setId(record.id);
     setNama(record.name);
     setusername(record.username);
-    setNIP(record.nip);
+    setnomorInduk(record.nomorInduk);
     setTelp(record.telp);
     setModalEditVisible(true);
   };
@@ -421,9 +440,15 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
+<<<<<<< HEAD
           </span>
         );
       },
+=======
+                </span>
+              );
+         },
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
     },
   ];
 
@@ -490,7 +515,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px' }}
+            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '10px' }}
           />
         </div>
         <Button
@@ -761,11 +786,19 @@ const Page: React.FC = () => {
           <Form
             layout="horizontal"
             onFinish={() => onFinishEdit(id)}
+<<<<<<< HEAD
             // initialValues={{
             //   username: updatePetugas.username || username,
             //   nomorInduk: updatePetugas.nomorInduk || NIP,
             //   telp: updatePetugas.telp || telp,
             // }}
+=======
+            initialValues={{
+              username: updatePetugas.username || username,
+              nomorInduk: updatePetugas.nomorInduk || nomorInduk,  
+              telp: updatePetugas.telp || telp,
+            }}
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
           >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>

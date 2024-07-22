@@ -23,6 +23,7 @@ const Login = () => {
         password: values.password,
       };
       const request = await akunRepository.api.login(data);
+      console.log(request);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
@@ -30,8 +31,11 @@ const Login = () => {
         // await mutateAkun();
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-
-        router.push('/dashboard');
+        if (parseToken.existUser.status === 'aktif') {
+          router.push('/dashboard');
+        } else if (parseToken.existUser.status === 'pending') {
+          router.push('/approval');
+        }
       }
       console.log(request);
     } catch (error) {

@@ -333,7 +333,7 @@ const Page: React.FC = () => {
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
-      message.error('GagalMengedit Petugas!');
+      message.error('Gagal Mengedit Petugas!');
       console.log();
     } finally {
       setLoading(false);
@@ -791,7 +791,7 @@ const Page: React.FC = () => {
                       placeholder="Nama Pengguna"
                       value={updatePetugas.username}
                       onChange={(e) =>
-                        setupdatePetugas({ ...updatePetugas, username: e.target.value || username })
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
                       }
                     />
                   </Form.Item>

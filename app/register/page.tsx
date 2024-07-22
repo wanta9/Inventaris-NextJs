@@ -90,8 +90,9 @@ const Register = () => {
                         style={{
                           width: '100%',
                           maxWidth: 500, // Set maximum width for the card
+                          maxHeight: 1100,
                           margin: 'auto', // Center the card horizontally
-                          padding: 20 // Add padding inside the card
+                          padding: 20, // Add padding inside the card
                         }}
                       >
                       <div style={{ textAlign: 'center', marginBottom: 40 }}>

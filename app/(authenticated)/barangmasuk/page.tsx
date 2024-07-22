@@ -44,7 +44,7 @@ interface updatebarangMasuk {
 }
 
 interface Item {
-  id: string; 
+  id: string;
   kodeBarang: string;
   namaBarang: string;
   harga: string;
@@ -132,7 +132,6 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   );
 };
 
-
 type EditableTableProps = Parameters<typeof Table>[0];
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
@@ -166,7 +165,8 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } =
+    barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
 
@@ -180,7 +180,6 @@ const Page: React.FC = () => {
     setcreatebarangMasuk({ ...createbarangMasuk, tanggalMasuk: dateString });
     setupdatebarangMasuk({ ...updatebarangMasuk, tanggalMasuk: dateString });
   };
-
 
   // klik row
   const handleRowClick = (id: string) => {
@@ -268,7 +267,7 @@ const Page: React.FC = () => {
         harga: 0,
       };
       const request = await barangMasukRepository.api.barangMasuk(data);
-      if (request.status === 400) { 
+      if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('berhasil Menambah Barang!');
@@ -295,10 +294,9 @@ const Page: React.FC = () => {
       const data = {
         tanggalMasuk: updatebarangMasuk.tanggalMasuk,
         keterangan: updatebarangMasuk.keterangan,
-
       };
       const request = await barangMasukRepository.api.updatebarangMasuk(id, data);
-      if (request.status === 400) { 
+      if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('berhasil Mengubah Barang!');
@@ -317,12 +315,13 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   // style button search
   useEffect(() => {
     if (searchRef.current) {
       const searchButton = searchRef.current.querySelector('.ant-input-search-button');
-      if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
+      if (searchButton instanceof HTMLElement) {
+        // Memastikan searchButton adalah HTMLElement
         searchButton.style.backgroundColor = '#582DD2';
         searchButton.style.borderColor = '#582DD2';
       }
@@ -357,6 +356,7 @@ const Page: React.FC = () => {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: false,
+
       render: (_, record) => {
         return record.ruanganBarang.barang.nama;
       },
@@ -385,7 +385,7 @@ const Page: React.FC = () => {
       dataIndex: 'tanggalMasuk',
       editable: true,
       render: (text: string) => dayjs(text).format('DD-MM-YYYY'),
-    },   
+    },
     {
       title: '',
       dataIndex: '',
@@ -426,7 +426,7 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
-      <Card style={{ marginTop: '100px', borderRadius: '30px'  }}>
+      <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
@@ -451,7 +451,7 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
-              marginTop: '20px'
+              marginTop: '20px',
             }}
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
@@ -610,88 +610,92 @@ const Page: React.FC = () => {
       </Modal>
 
       <Modal
-      centered
-      title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Edit Barang Masuk</div>}
-      style={{ textAlign: 'center' }}
-      visible={modalEditVisible}
-      onCancel={handleModalCancel}
-      footer={null}
-    >
-      <Form
-        layout="horizontal"
-        onFinish={() => onFinishEdit(id)}
-        initialValues={{
-          tanggalMasuk: updatebarangMasuk.tanggalMasuk,
-          keterangan: updatebarangMasuk.keterangan,
-        }}
+        centered
+        title={
+          <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+            Edit Barang Masuk
+          </div>
+        }
+        style={{ textAlign: 'center' }}
+        visible={modalEditVisible}
+        onCancel={handleModalCancel}
+        footer={null}
       >
-        <Form.Item
-          name="tanggalMasuk"
-          label="Tanggal Masuk"
-          colon={false}
-          labelAlign="left"
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 16 }}
-          rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
-          style={{ marginTop: '60px', marginLeft: '20px' }}
+        <Form
+          layout="horizontal"
+          onFinish={() => onFinishEdit(id)}
+          initialValues={{
+            tanggalMasuk: updatebarangMasuk.tanggalMasuk,
+            keterangan: updatebarangMasuk.keterangan,
+          }}
         >
-          <DatePicker
-            placeholder="Tanggal Masuk"
-            style={{ width: '100%', height: '40px' }}
-            value={
-              updatebarangMasuk.tanggalMasuk
-                ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
-                : null
-            }
-            onChange={handleDateChange}
-            format="YYYY-MM-DD"
-          />
-        </Form.Item>
-        <Form.Item
-          name="keterangan"
-          label="Keterangan"
-          colon={false}
-          labelAlign="left"
-          labelCol={{ span: 7 }}
-          wrapperCol={{ span: 16 }}
-          rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
-          style={{ marginLeft: '20px' }}
-        >
-          <TextArea
-            rows={4}
-            style={{ width: '100%' }}
-            value={updatebarangMasuk.keterangan}
-            onChange={(e) =>
-              setupdatebarangMasuk({ ...updatebarangMasuk, keterangan: e.target.value })
-            }
-          />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 14, span: 16 }}>
-          <Button
-           type="primary"
-            htmlType="submit"
-            style={{
-            backgroundColor: '#582DD2',
-            display: 'absolute',
-            marginRight: '-150px',
-            marginBottom: '-40px',
-            }}
+          <Form.Item
+            name="tanggalMasuk"
+            label="Tanggal Masuk"
+            colon={false}
+            labelAlign="left"
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 16 }}
+            rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+            style={{ marginTop: '60px', marginLeft: '20px' }}
           >
-            <span>Simpan</span>
-          </Button>
+            <DatePicker
+              placeholder="Tanggal Masuk"
+              style={{ width: '100%', height: '40px' }}
+              value={
+                updatebarangMasuk.tanggalMasuk
+                  ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+                  : null
+              }
+              onChange={handleDateChange}
+              format="YYYY-MM-DD"
+            />
+          </Form.Item>
+          <Form.Item
+            name="keterangan"
+            label="Keterangan"
+            colon={false}
+            labelAlign="left"
+            labelCol={{ span: 7 }}
+            wrapperCol={{ span: 16 }}
+            rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
+            style={{ marginLeft: '20px' }}
+          >
+            <TextArea
+              rows={4}
+              style={{ width: '100%' }}
+              value={updatebarangMasuk.keterangan}
+              onChange={(e) =>
+                setupdatebarangMasuk({ ...updatebarangMasuk, keterangan: e.target.value })
+              }
+            />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 14, span: 16 }}>
             <Button
-             type="default"
-             onClick={handleModalCancel}
-             style={{
-             display: 'absolute',
-             marginBottom: '-40px',
-            }}
+              type="primary"
+              htmlType="submit"
+              style={{
+                backgroundColor: '#582DD2',
+                display: 'absolute',
+                marginRight: '-150px',
+                marginBottom: '-40px',
+              }}
             >
-            <span>Batal</span>
+              <span>Simpan</span>
             </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
+            <Button
+              type="default"
+              onClick={handleModalCancel}
+              style={{
+                display: 'absolute',
+                marginBottom: '-40px',
+              }}
+            >
+              <span>Batal</span>
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
 
       {role === 'admin' && (
         <div

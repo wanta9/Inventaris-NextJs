@@ -166,9 +166,9 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
-  const { data: listBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
+  const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
 
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listBarangMasuk, 'listBarangMasuk');
@@ -273,6 +273,9 @@ const Page: React.FC = () => {
       } else {
         message.success('berhasil Menambah Barang!');
         setModalVisible(false);
+        await mutateListBarangMasuk();
+        await mutateListBarang();
+        await mutateListRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -300,6 +303,9 @@ const Page: React.FC = () => {
       } else {
         message.success('berhasil Mengubah Barang!');
         setModalEditVisible(false);
+        await mutateListBarangMasuk();
+        await mutateListBarang();
+        await mutateListRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -420,7 +426,7 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
-      <Card style={{ marginTop: '100px' }}>
+      <Card style={{ marginTop: '100px', borderRadius: '30px'  }}>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
@@ -431,7 +437,7 @@ const Page: React.FC = () => {
               allowClear
               enterButton
               onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px' }}
+              style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
             />
           </div>
           <Button
@@ -445,6 +451,7 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
+              marginTop: '20px'
             }}
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
@@ -461,7 +468,7 @@ const Page: React.FC = () => {
             };
           }}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal

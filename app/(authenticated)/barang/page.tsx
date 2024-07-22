@@ -193,8 +193,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
-  const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -202,7 +202,6 @@ const Page: React.FC = () => {
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
   const [id, setId] = useState<string>('');
-  
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const formatRupiah = (number: any) => {
@@ -336,6 +335,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Barang!');
         setModalVisible(false);
+        await mutateListBarang();
       }
       console.log(request);
     } catch (error) {
@@ -365,6 +365,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Mengedit Barang!');
         setModalEditVisible(false);
+        await mutateListBarang();
       }
       console.log(request);
     } catch (error) {
@@ -392,6 +393,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Letak Barang!');
         setLetakBarangVisible(false);
+        await mutateListRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -1195,7 +1197,11 @@ const Page: React.FC = () => {
                         height: '160px',
                       }}
                     >
-                      <img src={item.gambar} alt="Gambar Barang" style={{ width: '100%' }} />
+                      <img
+                        src="localhost:3222/upload/get-barang/8fbcabff-0975-411e-9e1c-277e4ddd5519_20240705132755.webp"
+                        alt="Gambar Barang"
+                        style={{ width: '100%' }}
+                      />
                     </div>
                   }
                 >

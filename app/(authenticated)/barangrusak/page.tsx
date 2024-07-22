@@ -166,15 +166,15 @@ const Page: React.FC = () => {
     keterangan: '',
     status: 'Rusak',
   });
-  const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
-    id: '',
-    jumlah: 0,
-    jumlahbarangrusak: 0,
-    jumlahbarangdiperbaiki: 0,
-    tanggalrusak: '',
-    tanggalperbaikan: '',
-    keterangan: '',
-  })
+  // const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
+  //   id: '',
+  //   jumlah: 0,
+  //   jumlahbarangrusak: 0,
+  //   jumlahbarangdiperbaiki: 0,
+  //   tanggalrusak: '',
+  //   tanggalperbaikan: '',
+  //   keterangan: '',
+  // })
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
@@ -449,7 +449,7 @@ const Page: React.FC = () => {
     <div>
       <title>Barang Rusak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
-      <Card style={{ marginTop: '100px' }}>
+      <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
@@ -460,7 +460,7 @@ const Page: React.FC = () => {
             allowClear
             enterButton
             onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px' }}
+            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
           />
           </div>
           <Button
@@ -474,6 +474,7 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
+              marginTop: '20px'
             }}
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Rusak</span>
@@ -488,7 +489,7 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '30px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal
@@ -516,10 +517,10 @@ const Page: React.FC = () => {
                 <Input 
                 placeholder="Jumlah" 
                 style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                value={updateBarangrusak.jumlah}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlah}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -539,10 +540,10 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} 
-                value={updateBarangrusak.jumlahbarangrusak}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlahbarangrusak}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -563,10 +564,10 @@ const Page: React.FC = () => {
               >
                 <Input placeholder="Jumlah" 
                 style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                value={updateBarangrusak.jumlahbarangdiperbaiki}
-                onChange={(e) =>
-                  setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
-                }
+                // value={updateBarangrusak.jumlahbarangdiperbaiki}
+                // onChange={(e) =>
+                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
+                // }
                 />
               </Form.Item>
               <Form.Item
@@ -604,6 +605,7 @@ const Page: React.FC = () => {
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
                 
               >
+<<<<<<< HEAD
               <DatePicker
                 placeholder="Tanggal Keluar"
                 style={{ width: '100%', height: '40px' }}
@@ -615,6 +617,16 @@ const Page: React.FC = () => {
                 onChange={handleDateChange}
                 format="YYYY-MM-DD"
               />
+=======
+                <DatePicker
+                  placeholder="Tanggal Perbaikan"
+                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
+                  // value={updateBarangrusak.tanggalperbaikan}
+                  // onChange={(e) =>
+                  //   setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
+                  // }
+                />
+>>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
               </Form.Item>
               <Form.Item
                 name="keterangan"

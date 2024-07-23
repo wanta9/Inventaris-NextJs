@@ -48,7 +48,7 @@ const api = {
   },
 
   deleteAkun(id: string) {
-    return http.delete(url.deleteAkun(id));
+    return http.del(url.deleteAkun(id));
   }
 };
 

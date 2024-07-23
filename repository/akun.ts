@@ -47,9 +47,13 @@ const api = {
     return http.post(url.uploadAkun()).send(formData);
   },
 
-  deleteAkun(id: string) {
-    return http.delete(url.deleteAkun(id));
-  }
+  updateAkun(id: string, data: any) {
+    return http.put(url.updateAkun(id)).send(data);
+  },
+
+  // deleteAkun(id: string) {
+  //   return http.delete(url.deleteAkun(id));
+  // }
 };
 
 export const akunRepository = {

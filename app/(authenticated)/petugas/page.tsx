@@ -51,12 +51,9 @@ export enum statusBarang {
   Ditolak = 'ditolak',
 }
 
-<<<<<<< HEAD
-=======
 // interface deletePetugas {
 //   id: string;
 // }
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
 interface updatePetugas {
   id: string;
   username: string;
@@ -64,10 +61,6 @@ interface updatePetugas {
   telp: string;
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
 interface createAkunpetugas {
   peranId: string;
   nama: string;
@@ -189,19 +182,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-<<<<<<< HEAD
   const [count, setCount] = useState(0);  
-=======
-  const [count, setCount] = useState(0);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> de370f4bb1c143e6f1a44cd4a7160fb7473cd234
-=======
->>>>>>> 6a02e8dfec3c1d734d7c84c3e1790e65852363e4
   const [id, setId] = useState<string>('');
->>>>>>> a04d114e26a480ac1d663bccd2177eead83a4dce
   const [nama, setNama] = useState('');
   const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
@@ -248,14 +230,14 @@ const Page: React.FC = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (id && modalEditVisible) {
-      // Fetch the data for the specific user by id and populate the form
-      api.akun(id).then((response : any) => {
-        setupdatePetugas(response.data);
-      });
-    }
-  }, [id, modalEditVisible]);
+  // useEffect(() => {
+  //   if (id && modalEditVisible) {
+  //     // Fetch the data for the specific user by id and populate the form
+  //     api.akun(id).then((response : any) => {
+  //       setupdatePetugas(response.data);
+  //     });
+  //   }
+  // }, [id, modalEditVisible]);
 
   // menu akun
   const logout = () => {

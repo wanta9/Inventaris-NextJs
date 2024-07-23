@@ -294,7 +294,7 @@ const Page: React.FC = () => {
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
-    setharga(value);
+    setcreateBarang({ ...createBarang, harga: value }); (value);
   };
 
   const handleButtonClick = (type: string) => {
@@ -477,23 +477,13 @@ const Page: React.FC = () => {
     {
       title: 'Kode Barang',
       dataIndex: 'kode',
+      width: '30%',
       editable: true,
     },
     {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: true,
-    },
-    {
-      title: 'Letak Barang',
-      dataIndex: 'Letak_Barang',
-      editable: true,
-      render: (_, record) => {
-        if (record.ruanganBarang && record.ruanganBarang.length > 0) {
-          return record.ruanganBarang[0].ruangan.Letak_Barang;
-        }
-        return null;
-      },
     },
     {
       title: 'Jumlah',
@@ -503,6 +493,7 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
@@ -512,7 +503,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
           </span>
         );
@@ -542,35 +533,9 @@ const Page: React.FC = () => {
                   allowClear
                   enterButton
                   onSearch={() => {}}
-                  style={{ width: 300, marginRight: '500px', height: '40px' }}
+                  style={{ width: 300, marginRight: '700px', height: '40px' }}
                 />
               </div>
-              <Dropdown
-                overlay={menu1}
-                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-                visible={openDropdown}
-                onVisibleChange={setOpenDropdown}
-              >
-                <Button
-                  style={{
-                    backgroundColor: 'white',
-                    color: 'black',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                    height: '40px',
-                    width: '200px',
-                    fontFamily: 'inherit',
-                    marginLeft: '10px',
-                  }}
-                  onClick={handleDropdownClick}
-                >
-                  Letak Barang{' '}
-                  {openDropdown ? (
-                    <DownOutlined style={{ fontSize: '12px' }} />
-                  ) : (
-                    <RightOutlined style={{ fontSize: '12px' }} />
-                  )}
-                </Button>
-              </Dropdown>
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('letakBarang')}
@@ -597,6 +562,7 @@ const Page: React.FC = () => {
                   height: '40px',
                   width: '200px',
                   fontFamily,
+                  marginRight: '20px',
                 }}
               >
                 <span style={{ marginRight: '10px' }}>Barang</span>
@@ -686,9 +652,13 @@ const Page: React.FC = () => {
                             style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                             prefix="Rp"
                             value={createBarang.harga}
-                            onChange={(e) =>
-                              setcreateBarang({ ...createBarang, harga: e.target.value })
-                            }
+                            onChange={(e) => {
+                              // Only allow numeric input (including decimal point)
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setcreateBarang({ ...createBarang, harga: value });
+                              }
+                            }}
                           />
                         </Col>
                       </Row>
@@ -696,7 +666,7 @@ const Page: React.FC = () => {
                     <Col span={24}>
                       <Row align="middle">
                         <Col span={6}>
-                          <p style={{ marginBottom: '80px', fontWeight }}>Deskripsi</p>
+                          <p style={{ marginBottom: '75%', fontWeight }}>Deskripsi</p>
                         </Col>
                         <Col span={18}>
                           <Input.TextArea
@@ -748,7 +718,7 @@ const Page: React.FC = () => {
             centered
             visible={modalEditVisible}
             onCancel={handleModalCancel}
-            width={1000}
+            width={900}
             footer={null}
             maskStyle={{
               display: 'flex',
@@ -757,40 +727,51 @@ const Page: React.FC = () => {
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}
           >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
+            <Form
+              form={form}
+              layout="horizontal"
+              onFinish={() => handleEditbarang(id)}
+            >
+              <Row gutter={[10, 20]} style={{ marginTop: '70px' }}>
+                <Col span={16}>
+                  <Row gutter={[40, 40]}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Nama Barang"
+                        name="nama"
+                        style={{ marginBottom: '-10px' }}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 16 }}
+                      >
                         <Input
                           style={{
-                            marginBottom: '12px',
-                            width: '75%',
+                            width: '100%', // Full width of the container
+                            maxWidth: '300px', // Limit max width
                             height: '40px',
                           }}
                           placeholder="Nama Barang"
                           value={updateBarang.nama}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, nama: e.target.value })
-                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*\.?\d*$/.test(value)) {
+                              setupdateBarang({ ...updateBarang, nama: value });
+                            }
+                          }}
                         />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Harga</p>
-                      </Col>
-                      <Col span={18}>
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Harga"
+                        name="harga"
+                        style={{ marginBottom: '-10px' }}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 20 }}
+                      >
                         <Input
                           style={{
-                            marginBottom: '12px',
-                            width: '75%',
+                            width: '100%', // Full width of the container
+                            maxWidth: '300px', // Limit max width
                             height: '40px',
                           }}
                           prefix="Rp"
@@ -800,19 +781,20 @@ const Page: React.FC = () => {
                             setupdateBarang({ ...updateBarang, harga: e.target.value })
                           }
                         />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Deskripsi"
+                        name="deskripsi"
+                        style={{ marginBottom: '-10px', marginLeft: '10px' }}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 20 }}
+                      >
                         <Input.TextArea
                           style={{
-                            marginBottom: '12px',
-                            width: '75%',
+                            width: '100%', // Full width of the container
+                            maxWidth: '300px', // Limit max width
                             height: '80px',
                           }}
                           placeholder="Deskripsi Barang"
@@ -821,62 +803,64 @@ const Page: React.FC = () => {
                             setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
                           }
                         />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    name="gambar"
+                    label="Unggah Foto"
+                    style={{ marginBottom: '12px' }}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 24 }}
+                  >
+                    <Row align="middle">
+                      <Col span={24}>
+                        <Upload
+                          listType="picture"
+                          beforeUpload={() => false}
+                          onChange={handleChange}
+                        >
+                          <Button
+                            style={{ color: 'black', borderColor: 'black' }}
+                            icon={<UploadOutlined />}
+                          >
+                            Unggah
+                          </Button>
+                        </Upload>
                       </Col>
                     </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-              <Form.Item
-              name="gambar"
-              >
-              <Row>
-                <Col span={8}>
-                  <p style={{ fontWeight }}>Unggah Foto</p>
-                </Col>
-                <Col>
-                <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                  listType="picture"
-                  beforeUpload={() => false}
-                  onChange={handleChange} 
-                >
-                 <Button
-                   style={{ color: 'black', borderColor: 'black' }}
-                   icon={<UploadOutlined />}
-                  >
-                   Unggah
-                 </Button>
-                </Upload>
+                  </Form.Item>
                 </Col>
               </Row>
-              </Form.Item>
-              </Col>
-               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Row justify="end" style={{ marginTop: '40px' }}>
+                <Col>
                   <Button
                     type="default"
                     onClick={handleModalCancel}
                     style={{
-                    marginBottom: '40px',
-                    marginLeft: '45vh',
-                    marginRight: '10px',
-                  }}
-                  >
-                    <span>Batal</span>
-                  </Button>
-                    <Button
-                    type="primary"
-                    htmlType="submit"
-                    onClick={() => handleEditbarang(id)}
-                    style={{
-                      backgroundColor: '#582DD2',
-                      marginBottom: '40px',
+                      marginRight: '10px',
+                      borderColor: 'black'
                     }}
                   >
-                  <span>Simpan</span>
-                </Button>
-               </div>
-            </Row>
+                    <span style={{ color: 'black'}}>Batal</span>
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      borderColor: '#582DD2',
+                      marginRight: '20px',
+                    }}
+                  >
+                    <span>Simpan</span>
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
           </Modal>
           {/* Button Tambah Letak barang */}
           <Modal
@@ -939,32 +923,6 @@ const Page: React.FC = () => {
                   style={{ width: 300, marginRight: '950px', height: '40px' }}
                 />
               </div>
-              <Dropdown
-                overlay={menu1}
-                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-                visible={openDropdown}
-                onVisibleChange={setOpenDropdown}
-              >
-                <Button
-                  style={{
-                    backgroundColor: 'white',
-                    color: 'black',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                    height: '40px',
-                    width: '200px',
-                    fontFamily: 'inherit',
-                    marginLeft: '10px', // Margin here
-                  }}
-                  onClick={handleDropdownClick}
-                >
-                  Letak Barang{' '}
-                  {openDropdown ? (
-                    <DownOutlined style={{ fontSize: '12px' }} />
-                  ) : (
-                    <RightOutlined style={{ fontSize: '12px' }} />
-                  )}
-                </Button>
-              </Dropdown>
             </div>
             <Table
               components={components}
@@ -1002,32 +960,6 @@ const Page: React.FC = () => {
                 style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
               />
             </div>
-            <Dropdown
-              overlay={menu1}
-              placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-              visible={openDropdown}
-              onVisibleChange={setOpenDropdown}
-            >
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  color: 'black',
-                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                  height: '40px',
-                  width: '200px',
-                  fontFamily: 'inherit',
-                  marginRight: '40px',
-                }}
-                onClick={handleDropdownClick}
-              >
-                Letak Barang{' '}
-                {openDropdown ? (
-                  <DownOutlined style={{ fontSize: '12px' }} />
-                ) : (
-                  <RightOutlined style={{ fontSize: '12px' }} />
-                )}
-              </Button>
-            </Dropdown>
           </div>
           <div
             style={{

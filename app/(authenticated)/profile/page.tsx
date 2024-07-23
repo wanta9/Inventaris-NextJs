@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Card, Col, Divider, Form, Input, Modal, Row, Select, Upload } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeftOutlined, EditOutlined, LockOutlined, UploadOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
@@ -17,12 +17,23 @@ const Profile = () => {
   const fontWeight = '500';
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [namaLengkap, setNamaLengkap] = useState('John Brown');
-  const [namaPengguna, setNamaPengguna] = useState('Johnny');
-  const [telpon, setTelpon] = useState('1234567890');
+  const [namaLengkap, setNamaLengkap] = useState('');
+  const [namaPengguna, setNamaPengguna] = useState('');
+  const [nomorInduk, setNomorInduk] = useState('');
+  const [telpon, setTelpon] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
 
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const parseToken = parseJwt(token);
+      setNamaLengkap(parseToken.existUser.nama);
+      setNamaPengguna(parseToken.existUser.username);
+      setNomorInduk(parseToken.existUser.nomorInduk);
+      setTelpon(parseToken.existUser.telp);
+    }
+  });
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -174,7 +185,7 @@ const Profile = () => {
                     fontWeight,
                   }}
                 >
-                  {listPetugas?.data[0]?.NIP}
+                  {nomorInduk}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>

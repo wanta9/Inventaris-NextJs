@@ -28,10 +28,9 @@ const Login = () => {
         setError(request.body.message); // Set pesan error
       } else {
         localStorage.setItem('access_token', request.body.data);
-        // await mutateAkun();
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-        if (parseToken.existUser.status === 'aktif') {
+        if (parseToken.existUser.status === 'aktif' || 'tidak aktif') {
           router.push('/dashboard');
         } else if (parseToken.existUser.status === 'pending') {
           router.push('/approval');

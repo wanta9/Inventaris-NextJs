@@ -182,9 +182,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-
   const [count, setCount] = useState(0);
-
+  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
@@ -219,12 +218,13 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const [petugasId, setPetugasId] = useState<string | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
   const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
-  const [form] = Form.useForm();
-  const [id, setId] = useState<string>('');
+  const [form] = Form.useForm()
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun, mutate: mutateListPetugas } = akunRepository.hooks.useAuth();
@@ -232,14 +232,6 @@ const Page: React.FC = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (id && modalEditVisible) {
-      // Fetch the data for the specific user by id and populate the form
-      api.akun(id).then((response: any) => {
-        setupdatePetugas(response.data);
-      });
-    }
-  }, [id, modalEditVisible]);
 
   // menu akun
   const logout = () => {
@@ -320,12 +312,12 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleEditPetugas = async (id: string) => {
-    // console.log('data values: ', values);
+  const onFinishEdit = async (id: string) => {
     console.log('data id: ', id);
     try {
       setLoading(true);
       setError(null);
+      console.log(updatePetugas);
       const data = {
         username: updatePetugas.username,
         nomorInduk: updatePetugas.nomorInduk,
@@ -336,7 +328,7 @@ const Page: React.FC = () => {
         setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
-        setModalVisible(false);
+        setModalEditVisible(false);
         await mutateListPetugas();
       }
       console.log(request);
@@ -362,25 +354,25 @@ const Page: React.FC = () => {
     }
   };
 
+
   const handleEdit = (record: Item) => {
+    console.log('record: ', record);
+    // const nip = record.Petugas && record.petugas.length > 0 ? record.petugas[0].NIP : '';
     setId(record.id);
-    setEditData(record);
-    setNama(record.name);
-    setusername(record.username);
-    setnomorInduk(record.nomorInduk);
-    setTelp(record.telp);
-    setModalEditVisible(true);
+    setusername (record.username);
+    setnomorInduk (record.nomorInduk);
+    setTelp (record.telp); // Memasukkan data ke form
+    setModalEditVisible(true); // Menampilkan modal edit
+
+
+    form.setFieldsValue({
+      id: record.id,
+      username: record.username,
+      nomorInduk: record?.petugas[0]?.NIP,
+      telp: record.telp,
+    });
   };
 
-  useEffect(() => {
-    if (listakun) {
-      // Filter data untuk hanya menampilkan entitas dengan peran 'Petugas'
-      const filteredData = listakun.data.filter((item: Item) =>
-        item ? akun?.data?.peran?.Role === rolePeran.Petugas : true
-      );
-      setDataSource(filteredData);
-    }
-  }, [listakun]);
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -965,10 +957,14 @@ const Page: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <Form layout="horizontal" onFinish={() => handleEditPetugas(id)}>
+          <Form 
+            form={form}
+            layout="horizontal" 
+            onFinish={() => onFinishEdit(id)}
+            >
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
-                <Col span={22} offset={1}>
+                <Col span={23} offset={1}>
                   <Form.Item
                     label="Nama Pengguna"
                     name="username"
@@ -991,13 +987,12 @@ const Page: React.FC = () => {
                     style={{ paddingLeft: '10px'}}
                   >
                     <Input
-                      style={{ width: '100%', height: '45px', marginLeft: '30px' }}
+                      style={{ width: '80%', height: '45px', marginLeft: '110px' }}
                       placeholder="NIP"
-                      value={updatePetugas.nomorInduk || nomorInduk}
                       onChange={(e) =>
                         setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })
                       }
-                    />
+                    />  
                   </Form.Item>
                   <Form.Item
                     label="Telp"
@@ -1007,9 +1002,9 @@ const Page: React.FC = () => {
 
                   >
                     <Input
-                      style={{ width: '100%', height: '45px', marginLeft: '30px' }}
+                      style={{ width: '80%', height: '45px', marginLeft: '107px' }}
                       placeholder="Telp"
-                      value={updatePetugas.telp || telp}
+                      value={updatePetugas.telp}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
                       maxLength={12}
                     />
@@ -1035,7 +1030,7 @@ const Page: React.FC = () => {
                   key="save"
                   type="primary"
                   htmlType="submit"
-                  style={{ backgroundColor: '#582DD2' }}
+                  style={{ backgroundColor: '#582DD2', marginRight: '5px' }}
                 >
                   Simpan
                 </Button>

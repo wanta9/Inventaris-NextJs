@@ -343,6 +343,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 fontSize: '15px',
                 whiteSpace: 'pre-wrap',
                 marginLeft: '20px',
+                marginBottom: '30px',
               }}
             >
               {ruanganBarangById?.data?.deskripsi}

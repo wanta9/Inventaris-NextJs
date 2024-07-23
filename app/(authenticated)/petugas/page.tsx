@@ -182,7 +182,7 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [count, setCount] = useState(0);  
+  const [count, setCount] = useState(0);
   const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nomorInduk, setnomorInduk] = useState('');
@@ -219,6 +219,7 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const [petugasId, setPetugasId] = useState<string | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
   const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
@@ -230,14 +231,6 @@ const Page: React.FC = () => {
 
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (id && modalEditVisible) {
-  //     // Fetch the data for the specific user by id and populate the form
-  //     api.akun(id).then((response : any) => {
-  //       setupdatePetugas(response.data);
-  //     });
-  //   }
-  // }, [id, modalEditVisible]);
 
   // menu akun
   const logout = () => {
@@ -318,12 +311,12 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleEditPetugas = async (id: string) => {
-    // console.log('data values: ', values);
+  const onFinishEdit = async (id: string) => {
     console.log('data id: ', id);
     try {
       setLoading(true);
       setError(null);
+      console.log(updatePetugas);
       const data = {
         username: updatePetugas.username,
         nomorInduk: updatePetugas.nomorInduk,
@@ -334,7 +327,7 @@ const Page: React.FC = () => {
         setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
-        setModalVisible(false);
+        setModalEditVisible(false);
         await mutateListPetugas();
       }
       console.log(request);
@@ -353,25 +346,25 @@ const Page: React.FC = () => {
     setDataSource(newData);
   };
 
+
   const handleEdit = (record: Item) => {
+    console.log('record: ', record);
+    // const nip = record.Petugas && record.petugas.length > 0 ? record.petugas[0].NIP : '';
     setId(record.id);
-    setEditData(record);
-    setNama(record.name);
-    setusername(record.username);
-    setnomorInduk(record.nomorInduk);
-    setTelp(record.telp);
-    setModalEditVisible(true);
+    setusername (record.username);
+    setnomorInduk (record.nomorInduk);
+    setTelp (record.telp); // Memasukkan data ke form
+    setModalEditVisible(true); // Menampilkan modal edit
+
+
+    form.setFieldsValue({
+      id: record.id,
+      username: record.username,
+      nomorInduk: record?.petugas[0]?.NIP,
+      telp: record.telp,
+    });
   };
 
-  // useEffect(() => {
-  //   if (listakun) {
-  //     // Filter data untuk hanya menampilkan entitas dengan peran 'Petugas'
-  //     const filteredData = listakun.filter((item: Item) =>
-  //       item ? akun?.data?.peran?.Role === rolePeran.Petugas : true
-  //     );
-  //     setDataSource(filteredData);
-  //   }
-  // }, [listakun]);
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -418,8 +411,8 @@ const Page: React.FC = () => {
             <Button
               type="link"
               onClick={(e) => {
-                e.stopPropagation(); 
-                handleEdit(record); 
+                e.stopPropagation();
+                handleEdit(record);
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
@@ -540,255 +533,165 @@ const Page: React.FC = () => {
           style={{ marginTop: '30px' }}
         />
         {/* CREATE AKUN PETUGAS */}
-      <Modal
-      title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Tambah Akun Petugas</div>}
-      style={{ textAlign: 'center' }}
-      centered
-      width={1000}
-      visible={modalVisible}
-      onCancel={handleModalCancel}
-      footer={null}
-      >
-      <Form
-        form={form}
-        layout="horizontal"
-        onFinish={onFinish}
-        initialValues={{
-          nama: '',
-          nip: '',
-          telp: '',
-          namaPengguna: '',
-          sandi: '',
-          konfirmasiSandi: '',
-        }}
-      >
-        <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Nama"
-              name="nama"
-              rules={[{ required: true, message: 'Nama harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Nama"
-                value={createAkunpetugas.nama}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="NIP"
-              name="nomorInduk"
-              rules={[{ required: true, message: 'NIP harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="NIP"
-                value={createAkunpetugas.nomorInduk}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Telp"
-              name="telp"
-              rules={[{ required: true, message: 'Telp harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Telp"
-                value={createAkunpetugas.telp}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
-                }
-                maxLength={12}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Unggah Foto"
-              name="foto"
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 14 }}
-            >
-              <Upload 
-              listType="picture" 
-              beforeUpload={() => false}
-              onChange={(args) => handleChange(args)}
-              >
-                <Button icon={<UploadOutlined />} style={{ marginRight: '200px'}}>Unggah</Button>
-              </Upload>
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Nama Pengguna"
-              name="username"
-              rules={[{ required: true, message: 'Nama Pengguna harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Nama Pengguna"
-                value={createAkunpetugas.username}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Sandi"
-              name="password"
-              rules={[{ required: true, message: 'Sandi harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input.Password
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Sandi"
-                value={createAkunpetugas.password}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Konfirmasi Sandi"
-              name="konfirmasiSandi"
-              rules={[
-                { required: true, message: 'Konfirmasi Sandi harus diisi' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Sandi tidak cocok.'));
-                  },
-                }),
-              ]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input.Password
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Konfirmasi Sandi"
-                onChange={(e) => setKonfirmasiSandi(e.target.value)}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item style={{ textAlign: 'right', marginTop: '24px', marginRight: '40px' }}>
-          <Button
-            type="default"
-            onClick={handleModalCancel}
-            style={{
-              width: '100px',
-              height: '35px',
-              borderColor: 'black',
-              color: 'black',
-              marginRight: '10px',
-            }}
-          >
-            Batal
-          </Button>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{
-              width: '100px',
-              height: '35px',
-              backgroundColor: '#582DD2',
-              color: 'white',
-              borderColor: '#582DD2',
-            }}
-          >
-            Simpan
-          </Button>
-        </Form.Item>
-      </Form>
-      </Modal>
-      
-      {/* EDIT AKUN PETUGAS */}
-      <Modal
-        title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
-        style={{ textAlign: 'center' }}
-        width={600}
-        centered
-        visible={modalEditVisible}
-        onCancel={handleModalCancel}
-        footer={null}
-        maskStyle={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Form
-          layout="horizontal"
-          onFinish={() => handleEditPetugas(id)}
+        <Modal
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+              Tambah Akun Petugas
+            </div>
+          }
+          style={{ textAlign: 'center' }}
+          centered
+          width={1000}
+          visible={modalVisible}
+          onCancel={handleModalCancel}
+          footer={null}
         >
-          <div style={{ marginTop: '70px', marginRight: '70px' }}>
-            <Row gutter={[24, 24]}>
-              <Col span={22} offset={1}>
+          <Form
+            form={form}
+            layout="horizontal"
+            onFinish={onFinish}
+            initialValues={{
+              nama: '',
+              nip: '',
+              telp: '',
+              namaPengguna: '',
+              sandi: '',
+              konfirmasiSandi: '',
+            }}
+          >
+            <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
+              <Col xs={24} sm={12}>
                 <Form.Item
-                  label="Nama Pengguna"
-                  name="username"
-                  rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                  style={{ paddingLeft: '10px' }}
+                  label="Nama"
+                  name="nama"
+                  rules={[{ required: true, message: 'Nama harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
                 >
                   <Input
-                    style={{ width: '100%', height: '45px', marginLeft: '30px' }}
-                    placeholder="Nama Pengguna"
-                    value={updatePetugas.username}
-                    onChange={(e) => setupdatePetugas({ ...updatePetugas, username: e.target.value })}
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama"
+                    value={createAkunpetugas.nama}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
+                    }
                   />
                 </Form.Item>
                 <Form.Item
                   label="NIP"
                   name="nomorInduk"
-                  rules={[{ required: true, message: 'NIP harus di isi' }]}
-                  style={{ paddingLeft: '10px' }}
+                  rules={[{ required: true, message: 'NIP harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
                 >
                   <Input
-                    style={{ width: '100%', height: '45px', marginLeft: '30px' }}
+                    style={{ width: '100%', height: '45px' }}
                     placeholder="NIP"
-                    value={updatePetugas.nomorInduk || nomorInduk}
-                    onChange={(e) => setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })}
+                    value={createAkunpetugas.nomorInduk}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                    }
                   />
                 </Form.Item>
                 <Form.Item
                   label="Telp"
                   name="telp"
-                  rules={[{ required: true, message: 'Telp harus di isi' }]}
-                  style={{ paddingLeft: '10px' }}
+                  rules={[{ required: true, message: 'Telp harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
                 >
                   <Input
-                    style={{ width: '100%', height: '45px', marginLeft: '30px' }}
+                    style={{ width: '100%', height: '45px' }}
                     placeholder="Telp"
-                    value={updatePetugas.telp || telp}
-                    onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
+                    value={createAkunpetugas.telp}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                    }
                     maxLength={12}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Unggah Foto"
+                  name="foto"
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 14 }}
+                >
+                  <Upload
+                    listType="picture"
+                    beforeUpload={() => false}
+                    onChange={(args) => handleChange(args)}
+                  >
+                    <Button icon={<UploadOutlined />} style={{ marginRight: '200px' }}>
+                      Unggah
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Nama Pengguna"
+                  name="username"
+                  rules={[{ required: true, message: 'Nama Pengguna harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama Pengguna"
+                    value={createAkunpetugas.username}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Sandi"
+                  name="password"
+                  rules={[{ required: true, message: 'Sandi harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Sandi"
+                    value={createAkunpetugas.password}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Konfirmasi Sandi"
+                  name="konfirmasiSandi"
+                  rules={[
+                    { required: true, message: 'Konfirmasi Sandi harus diisi' },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Sandi tidak cocok.'));
+                      },
+                    }),
+                  ]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Konfirmasi Sandi"
+                    onChange={(e) => setKonfirmasiSandi(e.target.value)}
                   />
                 </Form.Item>
               </Col>
             </Row>
-          </div>
-          <Form.Item>
-            <div style={{ textAlign: 'right', marginRight: '40px' }}>
+            <Form.Item style={{ textAlign: 'right', marginTop: '24px', marginRight: '40px' }}>
               <Button
-                key="cancel"
+                type="default"
                 onClick={handleModalCancel}
                 style={{
-                  backgroundColor: 'white',
+                  width: '100px',
+                  height: '35px',
                   borderColor: 'black',
                   color: 'black',
                   marginRight: '10px',
@@ -797,18 +700,121 @@ const Page: React.FC = () => {
                 Batal
               </Button>
               <Button
-                key="save"
                 type="primary"
                 htmlType="submit"
-                style={{ backgroundColor: '#582DD2' }}
+                style={{
+                  width: '100px',
+                  height: '35px',
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  borderColor: '#582DD2',
+                }}
               >
                 Simpan
               </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Modal>
+            </Form.Item>
+          </Form>
+        </Modal>
 
+        {/* EDIT AKUN PETUGAS */}
+        <Modal
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Edit Akun Petugas
+            </div>
+          }
+          style={{ textAlign: 'center' }}
+          width={600}
+          centered
+          visible={modalEditVisible}
+          onCancel={handleModalCancel}
+          footer={null}
+          maskStyle={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Form 
+            form={form}
+            layout="horizontal" 
+            onFinish={() => onFinishEdit(id)}
+            >
+            <div style={{ marginTop: '70px', marginRight: '70px' }}>
+              <Row gutter={[24, 24]}>
+                <Col span={23} offset={1}>
+                  <Form.Item
+                    label="Nama Pengguna"
+                    name="username"
+                    rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    <Input
+                      style={{ width: '100%', height: '45px', marginLeft: '30px' }}
+                      placeholder="Nama Pengguna"
+                      value={updatePetugas.username}
+                      onChange={(e) =>
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="NIP"
+                    name="nomorInduk"
+                    rules={[{ required: true, message: 'NIP harus di isi' }]}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    <Input
+                      style={{ width: '80%', height: '45px', marginLeft: '110px' }}
+                      placeholder="NIP"
+                      onChange={(e) =>
+                        setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })
+                      }
+                    />  
+                  </Form.Item>
+                  <Form.Item
+                    label="Telp"
+                    name="telp"
+                    rules={[{ required: true, message: 'Telp harus di isi' }]}
+                    style={{ paddingLeft: '10px' }}
+                  >
+                    <Input
+                      style={{ width: '80%', height: '45px', marginLeft: '107px' }}
+                      placeholder="Telp"
+                      value={updatePetugas.telp}
+                      onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
+                      maxLength={12}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Form.Item>
+              <div style={{ textAlign: 'right', marginRight: '40px' }}>
+                <Button
+                  key="cancel"
+                  onClick={handleModalCancel}
+                  style={{
+                    backgroundColor: 'white',
+                    borderColor: 'black',
+                    color: 'black',
+                    marginRight: '10px',
+                  }}
+                >
+                  Batal
+                </Button>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ backgroundColor: '#582DD2', marginRight: '5px' }}
+                >
+                  Simpan
+                </Button>
+              </div>
+            </Form.Item>
+          </Form>
+        </Modal>
       </Card>
       {/* menu inpo */}
       {role === 'admin' && (

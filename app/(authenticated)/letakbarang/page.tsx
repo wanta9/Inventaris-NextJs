@@ -25,8 +25,8 @@ interface createLetakbarang {
 }
 
 interface Item {  
-  key: string;
-  letakbarang: string;
+  id: string;
+  Letak_Barang: string;
 }
 interface DataType {
   id: string;
@@ -54,7 +54,7 @@ interface EditableCellProps {
   dataIndex: keyof DataType;
   record: DataType;
   handleSave: (record: DataType) => void;
-  handleEdit: (record: DataType) => void;
+  handleEdit: (record: Item) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -73,9 +73,15 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
   const toggleEdit = () => {
     setEditing(!editing);
-    form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+    form.setFieldsValue({ [dataIndex]: record[dataIndex].toUpperCase() });
   };
 
+  useEffect(() => {
+    // Focus the input field when it becomes editable
+    if (editing) {
+      inputRef.current?.focus();
+    }
+  }, [editing]);
 
 
   let childNode = children;
@@ -126,30 +132,14 @@ const Page: React.FC = () => {
     Letak_Barang: '',
   });
 
-  useEffect(() => {
-    // Fetch the data based on the ID
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`/api/data/${id}`);
-            const data = await response.json();
-            setInitialValues(data); // Update the initialValues with fetched data
-            form.setFieldsValue(data); // Set the form values
-        } catch (error) {
-            console.error('Failed to fetch data', error);
-        }
-    };
-
-    fetchData();
-}, [id, form]);
-
 
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
-      setError(null);
+      setError(null); 
       const data = {
-        Letak_Barang: createLetakbarang.Letak_Barang,
+        Letak_Barang: createLetakbarang.Letak_Barang.toUpperCase(),
       };
       const request = await ruanganRepository.api.ruangan(data);
       if (request.status === 400) { 
@@ -170,32 +160,32 @@ const Page: React.FC = () => {
     }
   };
   const onFinishEdit = async (id: string) => {
-    // console.log('data values: ', values);
-  console.log('id: ', id);
+    console.log('id: ', id);
     try {
       setLoading(true);
       setError(null);
+      const upperCaseLetak_Barang = updateLetakbarang.Letak_Barang.toUpperCase();
       const data = {
-        Letak_Barang: updateLetakbarang.Letak_Barang,
+        Letak_Barang: upperCaseLetak_Barang,
       };
       const request = await ruanganRepository.api.updateRuangan(id, data);
       if (request.status === 400) { 
-        setError(request.body.message); // Set pesan error
+        setError(request.body.message); // Set error message
       } else {
-        message.success('berhasil Mengedit Letak Barang!');
+        message.success('Berhasil Mengedit Letak Barang!');
         setModalEditVisible(false);
-        await mutateListRuangan(); // Mutate after success
+        await mutateListRuangan(); // Refresh data after success
       }
       console.log(request);
     } catch (error) {
       console.log(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Gagal Mengedit Letak Barang.');
-      console.log();
     } finally {
       setLoading(false);
     }
   };
+  
 
   const router = useRouter();
 
@@ -238,51 +228,19 @@ const Page: React.FC = () => {
     </Menu>
   );
 
-  // handle save modal data
-  const handleSaveModalData = () => {
-    if (!Letak_Barang) {
-      message.error('Letak Barang harus diisi.');
-      return;
-    }
-
-    const upperCaseLetak_Barang = Letak_Barang.toUpperCase();
-
-    if (editData) {
-      const newData = dataSource.map((item) => {
-        if (item.id === editData.id) {
-          return { ...item, Letak_Barang: upperCaseLetak_Barang };
-        }
-        return item;
-      });
-      setDataSource(newData);
-      setModalEditVisible(false);
-      setEditData(null);
-    } else {
-      const newData: DataType = {
-        id: count.toString(),
-        Letak_Barang: upperCaseLetak_Barang,
-      };
-      setDataSource([...dataSource, newData]);
-      setCount(count + 1);
-      setModalVisible(false);
-    }
-
-    setLetak_Barang('');
-  };
-
   // handle Edit
-  const handleEdit = (record: DataType) => {
-    setEditData(record);
+  const handleEdit = (record: Item) => {
     setId(record.id);
-    setLetak_Barang(record.Letak_Barang);
+    const upperCaseLetak_Barang = record.Letak_Barang.toUpperCase(); // Convert to uppercase
+    setupdateLetakbarang({ id: record.id, Letak_Barang: upperCaseLetak_Barang });
+    form.setFieldsValue({ Letak_Barang: upperCaseLetak_Barang }); // Use uppercase value
     setModalEditVisible(true);
   };
 
-  // hanle modal simpan
   const handleModalCancel = () => {
     setModalVisible(false);
     setModalEditVisible(false);
-    setLetak_Barang('');
+    form.resetFields();
   };
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -295,7 +253,7 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
-      render: (record: DataType) => {
+      render: (record: Item) => {
         return (
           <span>
             <Button
@@ -328,7 +286,6 @@ const Page: React.FC = () => {
         dataIndex: col.dataIndex,
         title: col.title,
         handleSave,
-        handleEdit,
       }),
     };
   });
@@ -436,9 +393,11 @@ const Page: React.FC = () => {
           footer={null}
         >
           <Form 
+          form={form}
           layout="horizontal" 
           onFinish={() => onFinishEdit(id)}
-          initialValues={initialValues}>
+
+          >
             <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
                 placeholder="Masukkan letak barang"

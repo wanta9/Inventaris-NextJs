@@ -5,6 +5,9 @@ import React, { useState } from 'react';
 import { ArrowLeftOutlined, EditOutlined, LockOutlined, UploadOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
+import { parseJwt } from '#/utils/parseJwt';
+import { request } from 'http';
+import { akunRepository } from '#/repository/akun';
 
 const { Option } = Select;
 
@@ -19,6 +22,7 @@ const Profile = () => {
   const [telpon, setTelpon] = useState('1234567890');
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
@@ -31,7 +35,7 @@ const Profile = () => {
   //     const data = {
   //     };
   //     const request = await barangMasukRepository.api.barangMasuk(data);
-  //     if (request.status === 400) { 
+  //     if (request.status === 400) {
   //       setError(request.body.message); // Set pesan error
   //     } else {
   //       message.success('Data berhasil disimpan!');
@@ -58,10 +62,10 @@ const Profile = () => {
   };
 
   const handleButtonClick = () => {
-      setModalVisible(true);
+    setModalVisible(true);
   };
 
-  // const 
+  // const
 
   const handleKembaliClick = () => {
     setIsEditing(false);
@@ -79,14 +83,13 @@ const Profile = () => {
     setTelpon(e.target.value);
   };
 
-
   const handleSave = () => {
     // Implement save functionality here
     setIsEditing(false);
   };
 
   const { data: listPetugas } = petugasRepository.hooks.usePetugas();
-  console.log(listPetugas, 'barang masuk by id'); 
+  console.log(listPetugas, 'barang masuk by id');
 
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
@@ -226,7 +229,17 @@ const Profile = () => {
                         beforeUpload={() => false}
                         // onChange={handleChange}
                       >
-                        <Button icon={<UploadOutlined />} style={{ marginRight: '50px' , borderColor: 'black', width: '150px', marginTop: '20px', marginLeft: '55px', color: 'black'}}>
+                        <Button
+                          icon={<UploadOutlined />}
+                          style={{
+                            marginRight: '50px',
+                            borderColor: 'black',
+                            width: '150px',
+                            marginTop: '20px',
+                            marginLeft: '55px',
+                            color: 'black',
+                          }}
+                        >
                           Unggah Foto
                         </Button>
                       </Upload>
@@ -278,73 +291,72 @@ const Profile = () => {
                         </span>
                       </Button>
                       <Modal
-                      centered
-                      visible={modalVisible}
-                      onCancel={handleModalCancel}
-                      footer={null}
-                      width={400}
-                      style={{ borderRadius: '10px', overflow: 'hidden' }}
-                    >
-                      <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
-                      <Form form={form} layout="vertical" style={{ marginTop: '40px' }}>
-                      <Form.Item
-                        name="oldPassword"
-                        label="Masukkan Sandi Lama Anda"
-                        rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
-                        style={{ margin: '20px 20px 20px'}}
+                        centered
+                        visible={modalVisible}
+                        onCancel={handleModalCancel}
+                        footer={null}
+                        width={400}
+                        style={{ borderRadius: '10px', overflow: 'hidden' }}
                       >
-                        <Input
-                          placeholder="Sandi Lama"
-                          style={{ width: '100%', height: '40px' }}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="newPassword"
-                        label="Masukkan Sandi Baru Anda"
-                        rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
-                        style={{ margin: '20px 20px 20px'}}
-                      >
-                        <Input
-                          placeholder="Sandi Baru"
-                          style={{ width: '100%', height: '40px' }}
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        name="confirmNewPassword"
-                        label="Konfirmasi Sandi Baru Anda"
-                        rules={[{ required: true, message: 'Tolong konfirmasi sandi baru!' }]}
-                        style={{ margin: '20px 20px 20px'}}
-                      >
-                        <Input
-                          placeholder="Konfirmasi Sandi Baru"
-                          style={{ width: '100%', height: '40px' }}
-                        />
-                      </Form.Item>
-                      <Form.Item style={{ textAlign: 'right', marginRight: '20px' }}>
-                        <Button
-                          type="default"
-                          onClick={handleModalCancel}
-                          style={{
-                            marginRight: '8px',
-                            color: 'black',
-                            borderColor: 'black',
-                          }}
-                        >
-                          <span>Batal</span>
-                        </Button>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          style={{
-                            backgroundColor: '#582DD2',
-                          }}
-                        >
-                          <span>Simpan</span>
-                        </Button>
-                      </Form.Item>
-                    </Form>
-                    </Modal>
-
+                        <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
+                        <Form form={form} layout="vertical" style={{ marginTop: '40px' }}>
+                          <Form.Item
+                            name="oldPassword"
+                            label="Masukkan Sandi Lama Anda"
+                            rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
+                            style={{ margin: '20px 20px 20px' }}
+                          >
+                            <Input
+                              placeholder="Sandi Lama"
+                              style={{ width: '100%', height: '40px' }}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            name="newPassword"
+                            label="Masukkan Sandi Baru Anda"
+                            rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
+                            style={{ margin: '20px 20px 20px' }}
+                          >
+                            <Input
+                              placeholder="Sandi Baru"
+                              style={{ width: '100%', height: '40px' }}
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            name="confirmNewPassword"
+                            label="Konfirmasi Sandi Baru Anda"
+                            rules={[{ required: true, message: 'Tolong konfirmasi sandi baru!' }]}
+                            style={{ margin: '20px 20px 20px' }}
+                          >
+                            <Input
+                              placeholder="Konfirmasi Sandi Baru"
+                              style={{ width: '100%', height: '40px' }}
+                            />
+                          </Form.Item>
+                          <Form.Item style={{ textAlign: 'right', marginRight: '20px' }}>
+                            <Button
+                              type="default"
+                              onClick={handleModalCancel}
+                              style={{
+                                marginRight: '8px',
+                                color: 'black',
+                                borderColor: 'black',
+                              }}
+                            >
+                              <span>Batal</span>
+                            </Button>
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              style={{
+                                backgroundColor: '#582DD2',
+                              }}
+                            >
+                              <span>Simpan</span>
+                            </Button>
+                          </Form.Item>
+                        </Form>
+                      </Modal>
                     </Col>
                   </Row>
                 </Col>
@@ -390,9 +402,7 @@ const Profile = () => {
             display: isEditing ? 'block' : 'none',
           }}
         >
-          <a
-            style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
-          >
+          <a style={{ fontSize: '15px', marginRight: '20px', fontWeight }}>
             <ArrowLeftOutlined style={{ marginRight: '25px' }} />
             Kembali
           </a>

@@ -220,6 +220,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [petugasId, setPetugasId] = useState<string | null>(null);
   const { data: listakun } = akunRepository.hooks.useAkun();

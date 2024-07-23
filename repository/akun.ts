@@ -47,19 +47,9 @@ const api = {
     return http.post(url.uploadAkun()).send(formData);
   },
 
-<<<<<<< HEAD
-  updateAkun(id: string, data: any) {
-    return http.put(url.updateAkun(id)).send(data);
-  },
-
-  // deleteAkun(id: string) {
-  //   return http.delete(url.deleteAkun(id));
-  // }
-=======
   deleteAkun(id: string) {
     return http.del(url.deleteAkun(id));
   }
->>>>>>> 2855c4d9e995baf6e2c69f6a68587b3481d4a235
 };
 
 export const akunRepository = {

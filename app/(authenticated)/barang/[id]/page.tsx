@@ -186,7 +186,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 </Col>
                 <Col span={2}>:</Col>
                 <Col span={5}>{ruanganBarangById?.data?.kode}</Col>
-              </Row>
+              </Row>   
 
               <Row style={{ marginBottom: '30px' }}>
                 <Col span={9} style={{ fontWeight }}>

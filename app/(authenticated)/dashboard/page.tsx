@@ -34,6 +34,7 @@ import { barangMasukRepository } from '#/repository/barangmasuk';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
 // import { parseCookies } from 'nookies';
 import { dashboardRepository } from '#/repository/dashboard';
+import { parseJwt } from '#/utils/parseJwt';
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -107,7 +108,6 @@ const Page = () => {
   console.log('dashboard :', Dashboard);
   const role = akun?.data?.peran?.Role;
 
-
   useEffect(() => {
     if (akun) {
       // Jika akun adalah array, hitung jumlah akun yang aktif
@@ -139,7 +139,14 @@ const Page = () => {
   };
 
   const profile = () => {
-    router.push('/profile');
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const parseToken = parseJwt(token);
+      console.log(parseToken, 'data akun');
+      router.push('/profile');
+    } else {
+      message.error('Token tidak ditemukan, silakan login ulang.');
+    }
   };
 
   // menu akun
@@ -169,7 +176,6 @@ const Page = () => {
       </Item>
     </Menu>
   );
-
 
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
@@ -379,408 +385,469 @@ const Page = () => {
         {/* Barang, Peminjam, Aktif */}
 
         <Row gutter={[16, 16]} justify="start">
-        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
-          <Card
-            style={{
-              width: '100%',
-              maxWidth: '300px', // Batas maksimum lebar card
-              height: '150px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  backgroundColor: '#F5DEB3',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '30px',
-                }}
-              >
-                <img src="/dshbarang.svg" alt="Barang Icon" style={{ width: '50%', height: '50%' }} />
-              </div>
-              <div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Arial, sans-serif' }}>
-                  {Dashboard?.totalBarang}
+          <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+            <Card
+              style={{
+                width: '100%',
+                maxWidth: '300px', // Batas maksimum lebar card
+                height: '150px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    backgroundColor: '#F5DEB3',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img
+                    src="/dshbarang.svg"
+                    alt="Barang Icon"
+                    style={{ width: '50%', height: '50%' }}
+                  />
                 </div>
-                <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Barang</div>
-              </div>
-            </div>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card
-            style={{
-              width: '100%',
-              maxWidth: '300px', // Batas maksimum lebar card
-              height: '150px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  backgroundColor: '#fff0e0',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '30px',
-                }}
-              >
-                <img src="/dshpeminjam.svg" alt="Peminjam Icon" style={{ width: '50%', height: '50%' }} />
-              </div>
-              <div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Arial, sans-serif' }}>
-                  {Dashboard?.totalAkunPeminjam}
+                <div>
+                  <div
+                    style={{
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      fontFamily: 'Arial, sans-serif',
+                    }}
+                  >
+                    {Dashboard?.totalBarang}
+                  </div>
+                  <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Barang</div>
                 </div>
-                <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Peminjam</div>
               </div>
-            </div>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={6} >
-          <Card
-            style={{
-              width: '100%',
-              maxWidth: '300px', // Batas maksimum lebar card
-              height: '150px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '20px',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div
-                style={{
-                  width: '60px',
-                  height: '60px',
-                  borderRadius: '50%',
-                  backgroundColor: '#e0f7e9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: '30px',
-                }}
-              >
-                <img src="/dshaktif.svg" alt="Aktif Icon" style={{ width: '50%', height: '50%' }} />
-              </div>
-              <div>
-                <div style={{ fontSize: '24px', fontWeight: 'bold', fontFamily: 'Arial, sans-serif' }}>
-                  {Dashboard?.totalAkunAktif}
-                </div>
-                <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Aktif</div>
-              </div>
-            </div>
-          </Card>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={6} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
-          <Button
-            type="primary"
-            onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ marginTop: '5px' }} />}
-            style={{
-              width: '200px',
-              height: '40px',
-              backgroundColor: 'white',
-              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-              color: 'black',
-            }}
-          >
-            <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
-          </Button>
-        </Col>
-      </Row>
-
-      <Modal
-      title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>Buat Akun Petugas</div>}
-      style={{ textAlign: 'center' }}
-      centered
-      width={1000}
-      visible={modalVisible}
-      onCancel={handleModalCancel}
-      footer={null}
-      >
-      <Form
-        form={form}
-        layout="horizontal"
-        onFinish={onFinish}
-        initialValues={{
-          nama: '',
-          nip: '',
-          telp: '',
-          namaPengguna: '',
-          sandi: '',
-          konfirmasiSandi: '',
-        }}
-      >
-        <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Nama"
-              name="nama"
-              rules={[{ required: true, message: 'Nama harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Nama"
-                value={createAkunpetugas.nama}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="NIP"
-              name="nomorInduk"
-              rules={[{ required: true, message: 'NIP harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="NIP"
-                value={createAkunpetugas.nomorInduk}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Telp"
-              name="telp"
-              rules={[{ required: true, message: 'Telp harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
-            >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Telp"
-                value={createAkunpetugas.telp}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
-                }
-                maxLength={12}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Unggah Foto"
-              name="foto"
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 14 }}
-            >
-              <Upload 
-              listType="picture" 
-              beforeUpload={() => false}
-              onChange={(args) => handleChange(args)}
-              >
-                <Button icon={<UploadOutlined />} style={{ marginRight: '200px'}}>Unggah</Button>
-              </Upload>
-            </Form.Item>
+            </Card>
           </Col>
-          <Col xs={24} sm={12}>
-            <Form.Item
-              label="Nama Pengguna"
-              name="username"
-              rules={[{ required: true, message: 'Nama Pengguna harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
+
+          <Col xs={24} sm={12} md={8} lg={6}>
+            <Card
+              style={{
+                width: '100%',
+                maxWidth: '300px', // Batas maksimum lebar card
+                height: '150px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              }}
             >
-              <Input
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Nama Pengguna"
-                value={createAkunpetugas.username}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Sandi"
-              name="password"
-              rules={[{ required: true, message: 'Sandi harus diisi' }]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    backgroundColor: '#fff0e0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img
+                    src="/dshpeminjam.svg"
+                    alt="Peminjam Icon"
+                    style={{ width: '50%', height: '50%' }}
+                  />
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      fontFamily: 'Arial, sans-serif',
+                    }}
+                  >
+                    {Dashboard?.totalAkunPeminjam}
+                  </div>
+                  <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Peminjam</div>
+                </div>
+              </div>
+            </Card>
+          </Col>
+
+          <Col xs={24} sm={12} md={8} lg={6}>
+            <Card
+              style={{
+                width: '100%',
+                maxWidth: '300px', // Batas maksimum lebar card
+                height: '150px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '20px',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              }}
             >
-              <Input.Password
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Sandi"
-                value={createAkunpetugas.password}
-                onChange={(e) =>
-                  setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              label="Konfirmasi Sandi"
-              name="konfirmasiSandi"
-              rules={[
-                { required: true, message: 'Konfirmasi Sandi harus diisi' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Sandi tidak cocok.'));
-                  },
-                }),
-              ]}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 16 }}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '50%',
+                    backgroundColor: '#e0f7e9',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '30px',
+                  }}
+                >
+                  <img
+                    src="/dshaktif.svg"
+                    alt="Aktif Icon"
+                    style={{ width: '50%', height: '50%' }}
+                  />
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: '24px',
+                      fontWeight: 'bold',
+                      fontFamily: 'Arial, sans-serif',
+                    }}
+                  >
+                    {Dashboard?.totalAkunAktif}
+                  </div>
+                  <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Aktif</div>
+                </div>
+              </div>
+            </Card>
+          </Col>
+
+          <Col
+            xs={24}
+            sm={12}
+            md={8}
+            lg={6}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Button
+              type="primary"
+              onClick={handleButtonClick}
+              icon={<PlusOutlined style={{ marginTop: '5px' }} />}
+              style={{
+                width: '200px',
+                height: '40px',
+                backgroundColor: 'white',
+                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                color: 'black',
+              }}
             >
-              <Input.Password
-                style={{ width: '100%', height: '45px' }}
-                placeholder="Konfirmasi Sandi"
-                onChange={(e) => setKonfirmasiSandi(e.target.value)}
-              />
-            </Form.Item>
+              <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
+            </Button>
           </Col>
         </Row>
-        <Form.Item style={{ textAlign: 'right', marginTop: '24px', marginRight: '40px' }}>
-          <Button
-            type="default"
-            onClick={handleModalCancel}
-            style={{
-              width: '100px',
-              height: '35px',
-              borderColor: 'black',
-              color: 'black',
-              marginRight: '10px',
+
+        <Modal
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+              Buat Akun Petugas
+            </div>
+          }
+          style={{ textAlign: 'center' }}
+          centered
+          width={1000}
+          visible={modalVisible}
+          onCancel={handleModalCancel}
+          footer={null}
+        >
+          <Form
+            form={form}
+            layout="horizontal"
+            onFinish={onFinish}
+            initialValues={{
+              nama: '',
+              nip: '',
+              telp: '',
+              namaPengguna: '',
+              sandi: '',
+              konfirmasiSandi: '',
             }}
           >
-            Batal
-          </Button>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{
-              width: '100px',
-              height: '35px',
-              backgroundColor: '#582DD2',
-              color: 'white',
-              borderColor: '#582DD2',
-            }}
-          >
-            Simpan
-          </Button>
-        </Form.Item>
-      </Form>
-      </Modal>
+            <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Nama"
+                  name="nama"
+                  rules={[{ required: true, message: 'Nama harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama"
+                    value={createAkunpetugas.nama}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="NIP"
+                  name="nomorInduk"
+                  rules={[{ required: true, message: 'NIP harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="NIP"
+                    value={createAkunpetugas.nomorInduk}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Telp"
+                  name="telp"
+                  rules={[{ required: true, message: 'Telp harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Telp"
+                    value={createAkunpetugas.telp}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                    }
+                    maxLength={12}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Unggah Foto"
+                  name="foto"
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 14 }}
+                >
+                  <Upload
+                    listType="picture"
+                    beforeUpload={() => false}
+                    onChange={(args) => handleChange(args)}
+                  >
+                    <Button icon={<UploadOutlined />} style={{ marginRight: '200px' }}>
+                      Unggah
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Nama Pengguna"
+                  name="username"
+                  rules={[{ required: true, message: 'Nama Pengguna harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama Pengguna"
+                    value={createAkunpetugas.username}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Sandi"
+                  name="password"
+                  rules={[{ required: true, message: 'Sandi harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Sandi"
+                    value={createAkunpetugas.password}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Konfirmasi Sandi"
+                  name="konfirmasiSandi"
+                  rules={[
+                    { required: true, message: 'Konfirmasi Sandi harus diisi' },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Sandi tidak cocok.'));
+                      },
+                    }),
+                  ]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Konfirmasi Sandi"
+                    onChange={(e) => setKonfirmasiSandi(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item style={{ textAlign: 'right', marginTop: '24px', marginRight: '40px' }}>
+              <Button
+                type="default"
+                onClick={handleModalCancel}
+                style={{
+                  width: '100px',
+                  height: '35px',
+                  borderColor: 'black',
+                  color: 'black',
+                  marginRight: '10px',
+                }}
+              >
+                Batal
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  width: '100px',
+                  height: '35px',
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  borderColor: '#582DD2',
+                }}
+              >
+                Simpan
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
 
-    <Row gutter={[40, 40]} justify="start" style={{ marginTop: '40px', marginBottom: '40px' }}>
-    <Col xs={24} md={15} lg={15} style={{ marginBottom: '40px' }}>
-      <Card className="shadow-card" style={{ width: '100%', height: '600px', borderRadius: '30px' }}>
-        <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px' }}>Jumlah Peminjaman</h1>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-          <Select
-            value={selectText}
-            onChange={handleChangeYear}
-            style={{ width: 120 }}
-            allowClear
-            placeholder={<span>Tahun Ini</span>}
-          >
-            {allowedYears.map((year) => (
-              <Option key={year} value={year}>
-                {year}
-              </Option>
-            ))}
-          </Select>
-        </div>
-        <div>
-          <canvas id="bar-chart" style={{ height: '35vh' }}></canvas>
-        </div>
-      </Card>
-    </Col>
+        <Row gutter={[40, 40]} justify="start" style={{ marginTop: '40px', marginBottom: '40px' }}>
+          <Col xs={24} md={15} lg={15} style={{ marginBottom: '40px' }}>
+            <Card
+              className="shadow-card"
+              style={{ width: '100%', height: '600px', borderRadius: '30px' }}
+            >
+              <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px' }}>
+                Jumlah Peminjaman
+              </h1>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                <Select
+                  value={selectText}
+                  onChange={handleChangeYear}
+                  style={{ width: 120 }}
+                  allowClear
+                  placeholder={<span>Tahun Ini</span>}
+                >
+                  {allowedYears.map((year) => (
+                    <Option key={year} value={year}>
+                      {year}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+              <div>
+                <canvas id="bar-chart" style={{ height: '35vh' }}></canvas>
+              </div>
+            </Card>
+          </Col>
 
-      <Col xs={24} md={8} lg={6}>
-        <Card className="shadow-card" style={{ padding: '100px 50px', width: '35vh', height: '600px', borderRadius: '30px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
-            <div
+          <Col xs={24} md={8} lg={6}>
+            <Card
+              className="shadow-card"
               style={{
-                width: '70px',
-                height: '70px',
-                borderRadius: '50%',
-                backgroundColor: '#B2C7FF',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '20px',
+                padding: '100px 50px',
+                width: '35vh',
+                height: '600px',
+                borderRadius: '30px',
               }}
             >
-              <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{Dashboard?.totalBarangMasuk}</div>
-              <div style={{ color: 'grey' }}>Barang Masuk</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
-            <div
-              style={{
-                width: '70px',
-                height: '70px',
-                borderRadius: '50%',
-                backgroundColor: '#E1E1E1',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '20px',
-              }}
-            >
-              <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{Dashboard?.totalBarangKeluar}</div>
-              <div style={{ color: 'grey' }}>Barang Keluar</div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-              style={{
-                width: '70px',
-                height: '70px',
-                borderRadius: '50%',
-                backgroundColor: '#F0C7C7',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: '20px',
-              }}
-            >
-              <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: 'bold' }}>{Dashboard?.totalBarangRusak}</div>
-              <div style={{ color: 'grey' }}>Barang Rusak</div>
-            </div>
-          </div>
-        </Card>
-      </Col>
-    </Row>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#B2C7FF',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '20px',
+                  }}
+                >
+                  <img src="/dshbarangmasuk.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                    {Dashboard?.totalBarangMasuk}
+                  </div>
+                  <div style={{ color: 'grey' }}>Barang Masuk</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#E1E1E1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '20px',
+                  }}
+                >
+                  <img src="/dshbarangkeluar.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                    {Dashboard?.totalBarangKeluar}
+                  </div>
+                  <div style={{ color: 'grey' }}>Barang Keluar</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{
+                    width: '70px',
+                    height: '70px',
+                    borderRadius: '50%',
+                    backgroundColor: '#F0C7C7',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: '20px',
+                  }}
+                >
+                  <img src="/dshbarangrusak.svg" style={{ width: '60%', height: '60%' }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                    {Dashboard?.totalBarangRusak}
+                  </div>
+                  <div style={{ color: 'grey' }}>Barang Rusak</div>
+                </div>
+              </div>
+            </Card>
+          </Col>
+        </Row>
 
         {/* Info Akun */}
 

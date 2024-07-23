@@ -31,7 +31,7 @@ const Login = () => {
         // await mutateAkun();
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-        if (parseToken.existUser.status === 'aktif') {
+        if (parseToken.existUser.status === 'aktif' || 'tidak aktif') {
           router.push('/dashboard');
         } else if (parseToken.existUser.status === 'pending') {
           router.push('/approval');

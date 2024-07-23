@@ -4,3 +4,4 @@ export const config = {
     process.env.NEXT_PUBLIC_BASE_URL ||
     'http://172.17.0.148:3222',
 };
+

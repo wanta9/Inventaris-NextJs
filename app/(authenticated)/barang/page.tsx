@@ -618,6 +618,8 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
+
+          {/* CREATE BARANG */}
           <Modal
             title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
             style={{ textAlign: 'center' }}
@@ -707,7 +709,6 @@ const Page: React.FC = () => {
                             onChange={(e) =>
                               setcreateBarang({ ...createBarang, deskripsi: e.target.value })
                             }
-                            // onChange={(e) => console.log(e.target.value, "deskripsi")}
                           />
                         </Col>
                       </Row>
@@ -737,6 +738,8 @@ const Page: React.FC = () => {
               </Row>
             </Form>
           </Modal>
+
+          {/* EDIT BARANG */}
           <Modal
             title={
               <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
@@ -783,7 +786,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p style={{ fontWeight }}>Nama Barang</p>
+                        <p>Nama Barang</p>
                       </Col>
                       <Col span={18}>
                         <Input
@@ -791,7 +794,6 @@ const Page: React.FC = () => {
                             marginBottom: '12px',
                             width: '75%',
                             height: '40px',
-                            borderColor: 'black',
                           }}
                           placeholder="Nama Barang"
                           value={updateBarang.nama || namaBarang}
@@ -805,7 +807,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p style={{ fontWeight }}>Harga</p>
+                        <p>Harga</p>
                       </Col>
                       <Col span={18}>
                         <Input
@@ -813,7 +815,6 @@ const Page: React.FC = () => {
                             marginBottom: '12px',
                             width: '75%',
                             height: '40px',
-                            borderColor: 'black',
                           }}
                           prefix="Rp"
                           placeholder="Harga"
@@ -828,7 +829,7 @@ const Page: React.FC = () => {
                   <Col span={24}>
                     <Row align="middle">
                       <Col span={6}>
-                        <p style={{ fontWeight }}>Deskripsi</p>
+                        <p>Deskripsi</p>
                       </Col>
                       <Col span={18}>
                         <Input.TextArea
@@ -836,7 +837,6 @@ const Page: React.FC = () => {
                             marginBottom: '12px',
                             width: '75%',
                             height: '80px',
-                            borderColor: 'black',
                           }}
                           placeholder="Deskripsi Barang"
                           value={updateBarang.deskripsi || deskripsi}
@@ -1003,112 +1003,7 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-          <Modal
-            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
-            style={{ textAlign: 'center' }}
-            centered
-            width={900}
-            visible={modalVisible}
-            onCancel={handleModalCancel}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSaveBarang}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
-            maskStyle={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          prefix="Rp"
-                          value={harga}
-                          onChange={handleHargaChange}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ marginBottom: '80px' }}>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{ marginBottom: '12px', width: '75%', height: '50%' }}
-                          rows={4}
-                          placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row>
-                  <Col>
-                    <p style={{ marginLeft: '-40px', marginRight: '20px' }}>Unggah Foto</p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture"
-                    >
-                      <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
-                        Unggah
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Modal>
+
         </div>
       )}
       {role === 'peminjam' && (

@@ -154,7 +154,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         <Card
           style={{
             width: '80%',
-            height: '600px',
+            height: '630px',
             marginTop: '50px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
@@ -343,7 +343,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 fontSize: '15px',
                 whiteSpace: 'pre-wrap',
                 marginLeft: '20px',
-                marginBottom: '30px',
+                
               }}
             >
               {ruanganBarangById?.data?.deskripsi}

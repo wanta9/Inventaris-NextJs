@@ -81,6 +81,7 @@ interface Item {
   telp: string;
   nomorInduk: string;
   petugas?: any;
+  peminjam?: any;
 }
 
 interface EditableRowProps {
@@ -356,7 +357,6 @@ const Page: React.FC = () => {
 
   const handleEdit = (record: Item) => {
     console.log('record: ', record);
-    // const nip = record.Petugas && record.petugas.length > 0 ? record.petugas[0].NIP : '';
     setId(record.id);
     setusername(record.username);
     setnomorInduk(record.nomorInduk);

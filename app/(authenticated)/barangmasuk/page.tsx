@@ -302,8 +302,6 @@ const Page: React.FC = () => {
         message.success('berhasil Mengubah Barang!');
         setModalEditVisible(false);
         await mutateListBarangMasuk();
-        await mutateListBarang();
-        await mutateListRuangan();
       }
       console.log(request);
     } catch (error) {
@@ -339,12 +337,23 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
-    setEditData(record);
+    console.log('record: ', record);
+  
+    // Set form fields using dayjs to ensure correct date formatting
+  const formattedCreatedAt = record.createdAt ? dayjs(record.createdAt) : null;
+  
+    form.setFieldsValue({
+      id: record.id,
+      tanggalMasuk: formattedCreatedAt,
+      keterangan: record.keterangan,
+    });
+  
     setId(record.id);
     settanggalMasuk(record.tanggalMasuk);
     setketerangan(record.keterangan);
     setModalEditVisible(true);
   };
+  
 
   const columns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -396,7 +405,7 @@ const Page: React.FC = () => {
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+                handleEdit(record);
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
@@ -622,12 +631,9 @@ const Page: React.FC = () => {
         footer={null}
       >
         <Form
+          form={form}
           layout="horizontal"
           onFinish={() => onFinishEdit(id)}
-          initialValues={{
-            tanggalMasuk: updatebarangMasuk.tanggalMasuk,
-            keterangan: updatebarangMasuk.keterangan,
-          }}
         >
           <Form.Item
             name="tanggalMasuk"
@@ -643,9 +649,11 @@ const Page: React.FC = () => {
               placeholder="Tanggal Masuk"
               style={{ width: '100%', height: '40px' }}
               value={
-                updatebarangMasuk.tanggalMasuk || tanggalMasuk
-                  ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
-                  : null 
+                updatebarangMasuk.tanggalMasuk
+                  ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD').isValid()
+                    ? dayjs(updatebarangMasuk.tanggalMasuk, 'YYYY-MM-DD')
+                    : null
+                  : null
               }
               onChange={handleDateChange}
               format="YYYY-MM-DD"

@@ -300,27 +300,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                   </Card>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}>
-                  <Button
-                    style={{
-                      marginTop: '30px',
-                      backgroundColor: '#582DD2',
-                      color: 'white',
-                      width: '20%',
-                      height: '50px',
-                      borderRadius: '10px',
-                      marginRight: '150px',
-                    }}
-                  > 
-                    <a
-                      href="http://localhost:3002/peminjaman"
-                      style={{ fontSize: '15px', marginRight: '20px', fontWeight }}
-                    >
-                      <ArrowLeftOutlined style={{ marginRight: '25px' }} />
-                      Kembali
-                    </a>
-                  </Button>
-                </div>
+                  
                 </Col>
             )}
             {role === 'petugas' && (

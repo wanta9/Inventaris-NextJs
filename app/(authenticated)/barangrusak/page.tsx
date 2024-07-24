@@ -40,10 +40,11 @@ interface EditableRowProps {
 interface updateBarangrusak {
   id: string;
   jumlah: number;
-  jumlahbarangrusak: number;
-  jumlahbarangdiperbaiki: number;
-  tanggalrusak: string;
-  tanggalperbaikan: string;
+  jmlbarangrusak: number;
+  perbaikan: number;
+  tanggalRusak: string;
+  tanggalPerbaikan: string;
+  status: string;
   keterangan: string;
 }
 
@@ -61,13 +62,14 @@ interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
-  Jumlah: number;
-  tanggalRusak: string;
-  jmlBarangDiperbaiki: number;
+  jumlah: number;
   jmlbarangrusak: number;
-  keterangan: string;
+  tanggalRusak: string;
+  perbaikan: number;
   tanggalPerbaikan: string;
+  keterangan: string;
   status: string;
+  createdAt?: any;
 }
 
 interface EditableCellProps {
@@ -162,19 +164,20 @@ const Page: React.FC = () => {
     ruanganId: '',
     jumlah: 0,
     tanggalRusak: '',
-    tanggalPerbaikan: 'null',
+    tanggalPerbaikan: '',
     keterangan: '',
     status: 'Rusak',
   });
-  // const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
-  //   id: '',
-  //   jumlah: 0,
-  //   jumlahbarangrusak: 0,
-  //   jumlahbarangdiperbaiki: 0,
-  //   tanggalrusak: '',
-  //   tanggalperbaikan: '',
-  //   keterangan: '',
-  // })
+  const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
+    id: '',
+    jumlah: 0,
+    jmlbarangrusak: 0,
+    perbaikan: 0,
+    tanggalRusak: '',
+    tanggalPerbaikan: '',
+    status: '',
+    keterangan: '',
+  })
   const [form] = Form.useForm();
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
@@ -185,9 +188,11 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [Jumlah, setJumlah] = useState('');
-  const [jmlbarangrusak, setjmlbarangrusak] = useState('');
-  const [jumlahBarangDiperbaiki, setJumlahBarangDiperbaiki] = useState<string>('');
+  const [jumlah, setJumlah] = useState<string | number>('');
+  const [jmlbarangrusak, setJmlbarangrusak] = useState<string | number>('');
+  const [perbaikan, setPerbaikan] = useState<string | number>('');
+  const [status, setStatus] = useState('');
+  const [tanggalRusak, settanggalRusak] = useState('');
   const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
   const [keterangan, setketerangan] = useState('');
   const[id, setId] = useState<string>('');
@@ -210,6 +215,7 @@ const Page: React.FC = () => {
 
   const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangRusak({ ...createbarangRusak, tanggalRusak: dateString });
+    setupdateBarangrusak({ ...updateBarangrusak, tanggalRusak: dateString });
   };
 
   // klik row
@@ -290,14 +296,24 @@ const Page: React.FC = () => {
         tanggalRusak: createbarangRusak.tanggalRusak,
         keterangan: createbarangRusak.keterangan,
         status: 'Rusak',
-        tanggalPerbaikan: null,
+        tanggalPerbaikan: createbarangRusak.tanggalPerbaikan,
+
       };
+      if (data.status === 'Rusak') {
+        const updateData = {
+          barangId: values.barangId,
+          status: 'barangRusak',
+          jumlah: createbarangRusak.jumlah,
+        };
+      }
       const request = await barangRusakRepository.api.barangRusak(data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
         message.success('Data berhasil disimpan!');
+        
         setModalVisible(false);
+        
       }
       console.log(request);
     } catch (error) {
@@ -317,10 +333,10 @@ const Page: React.FC = () => {
       setError(null);
       const data = {
         jumlah: updateBarangrusak.jumlah,
-        JumlahBarangRusak: updateBarangrusak.jumlahbarangrusak,
-        jumlahbarangDiperbaiki: updateBarangrusak.jumlahbarangdiperbaiki,
-        tanggalRusak: updateBarangrusak.tanggalrusak,
-        tanggalPerbaikan: updateBarangrusak.tanggalperbaikan,
+        jmlbarangrusak: updateBarangrusak.jmlbarangrusak,
+        perbaikan: updateBarangrusak.perbaikan,
+        tanggalRusak: updateBarangrusak.tanggalRusak,
+        tanggalPerbaikan: updateBarangrusak.tanggalPerbaikan,
         keterangan: updateBarangrusak.keterangan,
       };
       const request = await barangRusakRepository.api.updateBarangrusak(id,data);
@@ -352,18 +368,29 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
-    setEditData(record);
+    console.log('record data: ', record);
+
+    const formattanggalRusak = record.createdAt ? dayjs(record.createdAt) : null;
+    const formattanggalPerbaikan = record.createdAt ? dayjs(record.createdAt) : null;
+  
+    form.setFieldsValue({
+      id: record.id,
+      jumlah: record.jumlah,
+      jmlbarangrusak: record.jmlbarangrusak,
+      perbaikan: record.perbaikan,
+      tanggalRusak: formattanggalRusak,
+      tanggalPerbaikan: formattanggalPerbaikan,
+      keterangan: record.keterangan,
+    });
+  
     setId(record.id);
     setJumlah(record.jumlah);
-    setJumlahBarangRusak(record.JumlahBarangRusak);
-    setJumlahBarangDiperbaiki(record.jumlahBarangDiperbaiki);
-    setTglRusak(record.tanggalRusak);
-    setTglPerbaikan(record.tanggalPerbaikan);
-    // setJumlah(record.Jumlah);
-    // setjmlbarangrusak(record.jmlbarangrusak);
-    // setjmlbarangDiperbaiki(record.jmlbarangdiperbaiki);
+    setJmlbarangrusak(record.jmlbarangrusak);
+    setPerbaikan(record.perbaikan);
+    settanggalRusak(record.tanggalRusak);
+    settanggalPerbaikan(record.tanggalPerbaikan);
     setketerangan(record.keterangan);
-    form.setFieldsValue(record.id);
+  
     setModalEditVisible(true);
   };
 
@@ -455,7 +482,7 @@ const Page: React.FC = () => {
         >
           <div ref={searchRef}>
           <Search
-            placeholder="Telusuri Barang Masuk"
+            placeholder="Telusuri Barang Rusak"
             className="custom-search"
             allowClear
             enterButton
@@ -505,7 +532,7 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="jumlah"
+                name="barangRusak"
                 label="Jumlah"
                 colon={false}
                 labelAlign="left"
@@ -516,15 +543,15 @@ const Page: React.FC = () => {
               >
                 <Input 
                 placeholder="Jumlah" 
-                style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                // value={updateBarangrusak.jumlah}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
-                // }
+                style={{ width: '100%', height: '40px'}}
+                value={updateBarangrusak.jumlah}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
+                }
                 />
               </Form.Item>
               <Form.Item
-                name="jumlah1"
+                name="jmlbarangrusak"
                 label={
                   <span>
                     Jumlah barang
@@ -539,15 +566,15 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} 
-                // value={updateBarangrusak.jumlahbarangrusak}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
-                // }
+                <Input placeholder="Jumlah Barang Rusak" style={{ width: '100%', height: '40px'}} 
+                value={updateBarangrusak.jmlbarangrusak}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, jmlbarangrusak: Number(e.target.value) })
+                }
                 />
               </Form.Item>
               <Form.Item
-                name="jumlah2"
+                name="perbaikan"
                 label={
                   <span>
                     Jumlah barang
@@ -562,12 +589,12 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" 
-                style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                // value={updateBarangrusak.jumlahbarangdiperbaiki}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
-                // }
+                <Input placeholder="Jumlah Barang Perbaikan" 
+                style={{ width: '100%', height: '40px' }}
+                value={updateBarangrusak.perbaikan}
+                onChange={(e) =>
+                  setupdateBarangrusak({ ...updateBarangrusak, perbaikan: Number(e.target.value) })
+                }
                 />
               </Form.Item>
               <Form.Item
@@ -607,11 +634,16 @@ const Page: React.FC = () => {
               >
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
-                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
-                  // value={updateBarangrusak.tanggalperbaikan}
-                  // onChange={(e) =>
-                  //   setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
+                  style={{ width: '100%', height: '40px', marginLeft: '30px' }}
+                  // value={
+                  //   updateBarangrusak.tanggalRusak
+                  //     ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD').isValid()
+                  //       ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD')
+                  //       : null
+                  //     : null
                   // }
+                  // onChange={handleDateChange}
+                  // format="YYYY-MM-DD"
                 />
               </Form.Item>
               <Form.Item
@@ -623,11 +655,11 @@ const Page: React.FC = () => {
                 style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}
-                                value={updateBarangrusak.keterangan}
-                                onChange={(e) =>
-                                  setupdateBarangrusak({ ...updateBarangrusak, keterangan: e.target.value })
-                                }
+                <TextArea style={{ height: '170px', marginLeft: '30px' }}
+                  value={updateBarangrusak.keterangan}
+                    onChange={(e) =>
+                    setupdateBarangrusak({ ...updateBarangrusak, keterangan: e.target.value })
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -697,7 +729,7 @@ const Page: React.FC = () => {
                 </Select>
               </Form.Item>
               <Form.Item
-                name="jumlah" 
+                name="barangRusak" 
                 label="Jumlah"
                 colon={false}
                 labelAlign="left"
@@ -743,7 +775,8 @@ const Page: React.FC = () => {
                 // Atur Col
                 labelCol={{ span: 5 }}
                 // Atur lebar Input
-                wrapperCol={{ span: 8 }}
+                wrapperCol={{ offset: 2, span: 16 }}
+                
                 rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
               >
                 <Select

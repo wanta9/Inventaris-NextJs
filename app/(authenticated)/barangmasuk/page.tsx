@@ -52,6 +52,7 @@ interface Item {
   tanggalMasuk: string;
   keterangan: string;
   Letak_Barang: string;
+  createdAt?: any;
 }
 interface createbarangMasuk {
   harga: string;
@@ -265,6 +266,7 @@ const Page: React.FC = () => {
         jumlah: createbarangMasuk.jumlah,
         tanggalMasuk: createbarangMasuk.tanggalMasuk,
         harga: 0,
+        
       };
       const request = await barangMasukRepository.api.barangMasuk(data);
       if (request.status === 400) {
@@ -337,7 +339,7 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
-    console.log('record: ', record);
+    console.log('record data: ', record);
   
     // Set form fields using dayjs to ensure correct date formatting
   const formattedCreatedAt = record.createdAt ? dayjs(record.createdAt) : null;
@@ -589,7 +591,7 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Form.Item  wrapperCol={{ offset: 8, span: 16 }}>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -697,6 +699,8 @@ const Page: React.FC = () => {
               style={{
                 display: 'absolute',
                 marginBottom: '-40px',
+                borderColor: 'black',
+                color: 'black',
               }}
             >
               <span>Batal</span>

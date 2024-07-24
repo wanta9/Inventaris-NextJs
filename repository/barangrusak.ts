@@ -41,6 +41,7 @@ const hooks = {
 };
 
 const api = {
+  
   barangRusak(data: any) {
     return http.post(url.getBarangRusak()).send(data);
   },

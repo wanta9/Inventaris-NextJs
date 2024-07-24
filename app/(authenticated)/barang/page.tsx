@@ -770,8 +770,8 @@ const Page: React.FC = () => {
                       >
                         <Input
                           style={{
-                            width: '100%', // Full width of the container
-                            maxWidth: '300px', // Limit max width
+                            width: '100%', 
+                            maxWidth: '300px', 
                             height: '40px',
                           }}
                           prefix="Rp"

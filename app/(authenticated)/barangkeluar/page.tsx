@@ -24,6 +24,7 @@ import dayjs from 'dayjs';
 import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
+import { set } from 'mobx';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -58,6 +59,7 @@ interface Item {
   jumlah: string;
   tanggalKeluar: string;
   keterangan: string;
+  createdAt?: any;
 }
 
 interface EditableCellProps {
@@ -66,6 +68,7 @@ interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   handleSave: (record: Item) => void;
+  handleEdit: (record: Item) => void;
 }
 
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
@@ -74,6 +77,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   children,
   dataIndex,
   record,
+  handleEdit,
   handleSave,
   ...restProps
 }) => {
@@ -146,6 +150,7 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [id, setId] = useState<string>('');
+  const [jumlah, setJumlah] = useState('');  
   const [tanggalKeluar, settanggalKeluar] = useState('');
   const [keterangan, setketerangan] = useState('');
   const [form] = Form.useForm();
@@ -249,6 +254,8 @@ const Page: React.FC = () => {
   const handleModalCancel = () => {
     setModalVisible(false);
     setModalEditVisible(false);
+    settanggalKeluar('');
+    setketerangan('');
     form.resetFields();
     setEditData(null);
   };
@@ -330,11 +337,21 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
-    setEditData(record);
+    console.log(record, 'record data:');
+
+    const formattedCreatedAt = record.createdAt ? dayjs(record.createdAt) : null;
+
+    form.setFieldsValue({
+      id: record.id,
+      jumlah: record.jumlah,
+      tanggalKeluar: formattedCreatedAt,
+      keterangan: record.keterangan,
+    });
+  
     setId(record.id);
+    setJumlah(record.jumlah);
     settanggalKeluar(record.tanggalKeluar);
     setketerangan(record.keterangan);
-    form.setFieldsValue(record.id);
     setModalEditVisible(true);
   };
 
@@ -375,7 +392,7 @@ const Page: React.FC = () => {
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+                handleEdit(record); 
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
@@ -417,7 +434,7 @@ const Page: React.FC = () => {
         >
           <div ref={searchRef}>
             <Search
-              placeholder="Telusuri Barang Masuk"
+              placeholder="Telusuri Barang Keluar"
               className="custom-search"
               allowClear
               enterButton
@@ -566,28 +583,26 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Form.Item style={{ marginTop: '40px', marginBottom: '-5px' }} wrapperCol={{ offset: 15, span: 18 }}>
+                  <Button
+                    type="default"
+                    onClick={handleModalCancel}
+                    style={{
+                      color: 'black',
+                      borderColor: 'black',
+                      marginRight: '10px',
+                    }}
+                  >
+                    <span>Batal</span>
+                  </Button>
                 <Button
                   type="primary"
                   htmlType="submit"
                   style={{
                     backgroundColor: '#582DD2',
-                    display: 'absolute',
-                    marginRight: '-150px',
-                    marginBottom: '-40px',
                   }}
                 >
                   <span>Simpan</span>
-                </Button>
-                <Button
-                  type="default"
-                  onClick={handleModalCancel}
-                  style={{
-                    display: 'absolute',
-                    marginBottom: '-40px',
-                  }}
-                >
-                  <span>Batal</span>
                 </Button>
               </Form.Item>
             </div>
@@ -607,13 +622,9 @@ const Page: React.FC = () => {
         footer={null}
       >
         <Form
+          form={form}
           layout="horizontal"
           onFinish={() => onFinishEdit(id)}
-          initialValues={{
-            jumlah: updatebarangKeluar.jumlah,
-            tanggalKeluar: updatebarangKeluar.tanggalKeluar,
-            keterangan: updatebarangKeluar.keterangan,
-          }}
         >
           <Form.Item
             name="jumlah"
@@ -641,7 +652,7 @@ const Page: React.FC = () => {
             labelAlign="left"
             labelCol={{ span: 7 }}
             wrapperCol={{ span: 16 }}
-            rules={[{ required: true, message: 'Tolong pilih tanggal masuk!' }]}
+            rules={[{ required: true, message: 'Tolong pilih tanggal Keluar!' }]}
             style={{ marginLeft: '20px' }}
           >
             <DatePicker
@@ -649,7 +660,9 @@ const Page: React.FC = () => {
               style={{ width: '100%', height: '40px' }}
               value={
                 updatebarangKeluar.tanggalKeluar
-                  ? dayjs(updatebarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+                  ? dayjs(updatebarangKeluar.tanggalKeluar, 'YYYY-MM-DD').isValid()
+                    ? dayjs(updatebarangKeluar.tanggalKeluar, 'YYYY-MM-DD')
+                    : null
                   : null
               }
               onChange={handleDateChange}

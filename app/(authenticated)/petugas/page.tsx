@@ -226,14 +226,13 @@ const Page: React.FC = () => {
   const { data: listakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
   const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun, mutate: mutateListPetugas } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
 
   const router = useRouter();
-
 
   // menu akun
   const logout = () => {
@@ -348,32 +347,29 @@ const Page: React.FC = () => {
     try {
       await akunRepository.api.deleteAkun(id); // Panggil API untuk menghapus akun berdasarkan ID
       const newData = dataSource.filter((item) => item.id !== id);
-            console.log(newData, 'delete');
+      console.log(newData, 'delete');
       message.success('Akun Berhasil Dihapus!');
       setDataSource(newData);
     } catch (error) {
-      console.error("Akun Gagal Dihapus:", error);
+      console.error('Akun Gagal Dihapus:', error);
     }
   };
-
 
   const handleEdit = (record: Item) => {
     console.log('record: ', record);
     setId(record.id);
-    setusername (record.username);
-    setnomorInduk (record.nomorInduk);
-    setTelp (record.telp); // Memasukkan data ke form
+    setusername(record.username);
+    setnomorInduk(record.nomorInduk);
+    setTelp(record.telp); // Memasukkan data ke form
     setModalEditVisible(true); // Menampilkan modal edit
-
 
     form.setFieldsValue({
       id: record.id,
       username: record.username,
-      nomorInduk: record?.petugas[0]?.NIP,
+      nomorInduk: record?.petugas.NIP,
       telp: record.telp,
     });
   };
-
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -408,7 +404,7 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.petugas[0].NIP;
+        return record.petugas.NIP;
       },
     },
     {
@@ -416,33 +412,33 @@ const Page: React.FC = () => {
       dataIndex: '',
       render: (record: Item) => {
         return (
-            <span>
+          <span>
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(record);
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+            />
+            <Popconfirm
+              title="Hapus Petugas"
+              onConfirm={() => handleDelete(record.id)} // Mengirimkan ID yang benar untuk dihapus
+              onCancel={(e) => {
+                if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
+              }}
+            >
               <Button
                 type="link"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  handleEdit(record);
+                  if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 }}
-                icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+                icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
-              <Popconfirm
-                title="Hapus Petugas"
-                onConfirm={() => handleDelete(record.id)} // Mengirimkan ID yang benar untuk dihapus
-                onCancel={(e) => {
-                  if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
-                }}
-              >
-                <Button
-                  type="link"
-                  onClick={(e) => {
-                    if (e) e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                  }}
-                  icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
-                />
-              </Popconfirm>
-            </span>
-              );
-         },
+            </Popconfirm>
+          </span>
+        );
+      },
     },
   ];
 
@@ -945,7 +941,11 @@ const Page: React.FC = () => {
         </Modal>
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Edit Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           width={600}
           centered
@@ -958,11 +958,7 @@ const Page: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <Form 
-            form={form}
-            layout="horizontal" 
-            onFinish={() => onFinishEdit(id)}
-            >
+          <Form form={form} layout="horizontal" onFinish={() => onFinishEdit(id)}>
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
                 <Col span={23} offset={1}>
@@ -970,7 +966,7 @@ const Page: React.FC = () => {
                     label="Nama Pengguna"
                     name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '100%', height: '45px', marginLeft: '30px' }}
@@ -985,7 +981,7 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '80%', height: '45px', marginLeft: '110px' }}
@@ -993,14 +989,13 @@ const Page: React.FC = () => {
                       onChange={(e) =>
                         setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })
                       }
-                    />  
+                    />
                   </Form.Item>
                   <Form.Item
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
-
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
                       style={{ width: '80%', height: '45px', marginLeft: '107px' }}

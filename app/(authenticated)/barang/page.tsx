@@ -938,7 +938,118 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-
+                        {/* EDIT BARANG */}
+          <Modal
+            title={
+              <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+                Edit Barang
+              </div>
+            }
+            style={{ textAlign: 'center' }}
+            centered
+            visible={modalEditVisible}
+            onCancel={handleModalCancel}
+            width={1000}
+            footer={[
+              <Button
+                key="cancel"
+                onClick={handleModalCancel}
+                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
+              >
+                Batal
+              </Button>,
+              <Button
+                key="save"
+                type="primary"
+                onClick={() => handleEditbarang(id)}
+                style={{
+                  marginRight: '27px',
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  borderColor: '#582DD2',
+                }}
+              >
+                Simpan
+              </Button>,
+            ]}
+            maskStyle={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
+              <Col span={16}>
+                <Row gutter={[24, 24]}>
+                  <Col span={24}>
+                    <Row align="middle">
+                      <Col span={6}>
+                        <p>Nama Barang</p>
+                      </Col>
+                      <Col span={18}>
+                        <Input
+                          style={{
+                            marginBottom: '12px',
+                            width: '75%',
+                            height: '40px',
+                          }}
+                          placeholder="Nama Barang"
+                          value={updateBarang.nama || namaBarang}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, nama: e.target.value })
+                          }
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={24}>
+                    <Row align="middle">
+                      <Col span={6}>
+                        <p>Harga</p>
+                      </Col>
+                      <Col span={18}>
+                        <Input
+                          style={{
+                            marginBottom: '12px',
+                            width: '75%',
+                            height: '40px',
+                          }}
+                          prefix="Rp"
+                          placeholder="Harga"
+                          value={updateBarang.harga || harga}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, harga: e.target.value })
+                          }
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={24}>
+                    <Row align="middle">
+                      <Col span={6}>
+                        <p>Deskripsi</p>
+                      </Col>
+                      <Col span={18}>
+                        <Input.TextArea
+                          style={{
+                            marginBottom: '12px',
+                            width: '75%',
+                            height: '80px',
+                          }}
+                          placeholder="Deskripsi Barang"
+                          value={updateBarang.deskripsi || deskripsi}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
+                          }
+                        />
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Modal>
         </div>
       )}
       {role === 'peminjam' && (

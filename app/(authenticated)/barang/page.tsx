@@ -36,6 +36,7 @@ import Meta from 'antd/es/card/Meta';
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
 import { ruanganRepository } from '#/repository/ruangan';
+import { parseJwt } from '#/utils/parseJwt';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -236,7 +237,18 @@ const Page: React.FC = () => {
   );
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/barang/${id}`;
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const parseToken = parseJwt(token);
+      if (parseToken) {
+        console.log(parseToken, 'data akun');
+        window.location.href = `http://localhost:3002/barang/${id}`;
+      } else {
+        message.error('Invalid token, please log in again.');
+      }
+    } else {
+      message.error('Token not found, please log in again.');
+    }
   };
 
   // menu akun
@@ -464,7 +476,7 @@ const Page: React.FC = () => {
     });
     setDataSource(newData);
   };
-
+ 
   const components = {
     body: {
       row: EditableRow,

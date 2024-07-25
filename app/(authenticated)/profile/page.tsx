@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowLeftOutlined, EditOutlined, LockOutlined, UploadOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { petugasRepository } from '#/repository/petugas';
-import { parseJwt } from '#/utils/parseJwt';
+// import { parseJwt } from '#/utils/parseJwt';
 import { request } from 'http';
 import { akunRepository } from '#/repository/akun';
 
@@ -34,7 +34,6 @@ interface Item {
 }  
 
 const Profile = () => {
-  const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const [error, setError] = useState<string | null>(null);
   const [id, setId] = useState('');
@@ -132,17 +131,18 @@ const Profile = () => {
   const handleEdit = (record: updatePetugas) => {
     console.log('record: ', record);
     setId(record.id);
-    setNamaPengguna(record.username);
-    setNamaLengkap(record.nama);
-    setNomorInduk(record.nomorInduk);
-    setTelpon(record.telp);
-    setIsEditing(true); // Mengatur mode edit
-  
-    form.setFieldsValue({
+    setupdatePetugas({
       id: record.id,
       username: record.username,
       nama: record.nama,
-      nip: record.nomorInduk,
+      nomorInduk: record.nomorInduk,
+      telp: record.telp,
+    });
+    setIsEditing(true);
+    form.setFieldsValue({
+      username: record.username,
+      nama: record.nama,
+      nip: akun?.data?.petugas?.NIP,
       telp: record.telp,
     });
   };
@@ -213,16 +213,17 @@ const Profile = () => {
                 <Form.Item
                   label="Nama Lengkap"
                   name="nama"
-                  style={rowStyle}
+                  wrapperCol={{ offset: 7,span: 16 }}
+                  style={{ marginTop: '20px', fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.nama}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, nama: e.target.value })}
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '60%' }}
+                      style={{ fontSize: '15px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', marginLeft: '5px', height: '40px' }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '10px' }}>
                       {akun?.data?.nama}
                     </span>
                   )}
@@ -231,17 +232,17 @@ const Profile = () => {
                 <Form.Item
                   label="Nama Pengguna"
                   name="username"
-                  wrapperCol={{ span: 16 }}
-                  style={rowStyle}
+                  wrapperCol={{ offset: 7,span: 16 }}
+                  style={{ marginTop: '20px', fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.username}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, username: e.target.value })}
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '60%' }}
+                      style={{  color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '-2px' }}>
                       {akun?.data?.username}
                     </span>
                   )}
@@ -250,12 +251,13 @@ const Profile = () => {
                 <Form.Item
                   label="NIP"
                   name="nip"
-                  style={rowStyle}
+                  wrapperCol={{ offset: 11,span: 16 }}
+                  style={{  fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       disabled
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '60%' }}
+                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
                     />
                   ) : (
                     <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
@@ -267,16 +269,17 @@ const Profile = () => {
                 <Form.Item
                   label="Telpon"
                   name="telp"
-                  style={rowStyle}
+                  wrapperCol={{ offset: 10,span: 16 }}
+                  style={{ fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.telp}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '2px' }}>
                       {akun?.data?.telp}
                     </span>
                   )}
@@ -310,183 +313,189 @@ const Profile = () => {
               </Form>
             </Col>
 
-            <Col span={2} push={2}>
-              <Divider type="vertical" style={{ height: '100%', borderColor: 'grey' }} />
-            </Col>
-            <Col span={8} push={3}>
-              <Row align="middle">
-                <Col span={12}>
-                  <img
-                    src={'/sitmen.png'}
-                    alt="gambar"
-                    style={{
-                      width: '250px',
-                      height: 'auto',
-                      borderRadius: '100%',
-                      marginTop: '20px',
-                    }}
-                  />
+                <Col span={2} push={2}>
+                  <Divider type="vertical" style={{ height: '100%', borderColor: 'grey' }} />
                 </Col>
-              </Row>
-              {/* {isEditing && (
-                <Col>
-                  <Row>
-                    <Col>
-                      <Upload
-                        listType="picture"
-                        beforeUpload={() => false}
-                        onChange={handleChange}
-                      >
-                        <Button
-                          icon={<UploadOutlined />}
-                          style={{  
-                            marginRight: '50px',
-                            borderColor: 'black',
-                            width: '150px',
-                            marginTop: '20px',
-                            marginLeft: '55px',
-                            color: 'black',
-                          }}
-                        >
-                          Unggah Foto
-                        </Button>
-                      </Upload>
+                <Col span={8} push={3}>
+                  <Row align="middle">
+                    <Col span={12}>
+                      <img
+                        src={'/sitmen.png'}
+                        alt="gambar"
+                        style={{
+                          width: '250px',
+                          height: 'auto',
+                          borderRadius: '100%',
+                          marginTop: '20px',
+                        }}
+                      />
                     </Col>
                   </Row>
+                  {/* {isEditing && (
+                    <Col>
+                      <Row>
+                        <Col>
+                          <Upload
+                            listType="picture"
+                            beforeUpload={() => false}
+                            onChange={handleChange}
+                          >
+                            <Button
+                              icon={<UploadOutlined />}
+                              style={{  
+                                marginRight: '50px',
+                                borderColor: 'black',
+                                width: '150px',
+                                marginTop: '20px',
+                                marginLeft: '55px',
+                                color: 'black',
+                              }}
+                            >
+                              Unggah Foto
+                            </Button>
+                          </Upload>
+                        </Col>
+                      </Row>
+                    </Col>
+                  )} */}
                 </Col>
-              )} */}
-            </Col>
-            <Col push={17} style={{ marginTop: '40px', marginLeft: '40px' }}>
-              <Row align="middle">
-                <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                  <Button
-                    style={{
-                      backgroundColor: '#582DD2',
-                      color: 'white',
-                      width: '200px',
-                      height: '40px',
-                      borderRadius: '10px',
-                      display: isEditing ? 'none' : 'block',
-                    }}
-                    onClick={handleEditClick}
-                  >
-                    <a style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
-                      <EditOutlined style={{ marginRight: '20px' }} />
-                      Edit Profile
-                    </a>
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-            {isEditing && (
-              <>
-                <Col push={15} style={{ marginTop: '40px' }}>
+                <Col push={17} style={{ marginTop: '40px', marginLeft: '40px' }}>
                   <Row align="middle">
                     <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
                       <Button
-                        onClick={handleButtonClick}
                         style={{
                           backgroundColor: '#582DD2',
                           color: 'white',
-                          width: '190px',
-                          height: '45px',
+                          width: '200px',
+                          height: '40px',
                           borderRadius: '10px',
+                          display: isEditing ? 'none' : 'block',
                         }}
+                        onClick={() => handleEdit({
+                          id: akun?.data?.id,
+                          username: akun?.data?.username,
+                          nama: akun?.data?.nama,
+                          nomorInduk: akun?.data?.nomorInduk,
+                          telp: akun?.data?.telp
+                        })}
                       >
-                        <span style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
-                          <LockOutlined style={{ marginRight: '20px' }} />
-                          Ubah Sandi
-                        </span>
+                        <a style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
+                          <EditOutlined style={{ marginRight: '20px' }} />
+                          Edit Profile
+                        </a>
                       </Button>
-                      <Modal
-                        centered
-                        visible={modalVisible}
-                        onCancel={handleModalCancel}
-                        footer={null}
-                        width={400}
-                        style={{ borderRadius: '10px', overflow: 'hidden' }}
-                      >
-                        <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
-                        <Form form={form} layout="vertical" style={{ marginTop: '40px' }} onFinish={onFinishPassword}>
-                          <Form.Item
-                            name="Password"
-                            label="Masukkan Sandi Lama Anda"
-                            rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
-                            style={{ margin: '20px 20px 20px' }}
-                          >
-                            <Input
-                              placeholder="Sandi Lama"
-                              style={{ width: '100%', height: '40px' }}
-                              value={updatePassword.sandi}
-                              onChange={(e) => setupdatePassword({ ...updatePassword, sandi: e.target.value })}
-                            />
-                          </Form.Item>
-                          <Form.Item
-                            name="newPassword"
-                            label="Masukkan Sandi Baru Anda"
-                            rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
-                            style={{ margin: '20px 20px 20px' }}
-                          >
-                            <Input
-                              placeholder="Sandi Baru"
-                              style={{ width: '100%', height: '40px' }}
-                              type="password"
-                              value={updatePassword.newPassword}
-                              onChange={(e) => setupdatePassword({ ...updatePassword, newPassword: e.target.value })}
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            name="confirmNewPassword"
-                            label="Konfirmasi Sandi Baru Anda"
-                            rules={[
-                              { required: true, message: 'Tolong konfirmasi sandi baru!' },
-                              ({ getFieldValue }) => ({
-                                validator(_, value) {
-                                  if (!value || getFieldValue('newPassword') === value) {
-                                    return Promise.resolve();
-                                  }
-                                  return Promise.reject(new Error('Sandi tidak cocok!'));
-                                },
-                              }),
-                            ]}
-                            style={{ margin: '20px 20px 20px' }}
-                          >
-                            <Input
-                              placeholder="Konfirmasi Sandi Baru"
-                              style={{ width: '100%', height: '40px' }}
-                              type="password"
-                            />
-                          </Form.Item>
-                          <Form.Item style={{ textAlign: 'right', marginRight: '20px' }}>
-                            <Button
-                              type="default"
-                              onClick={handleModalCancel}
-                              style={{
-                                marginRight: '8px',
-                                color: 'black',
-                                borderColor: 'black',
-                              }}
-                            >
-                              <span>Batal</span>
-                            </Button>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              style={{
-                                backgroundColor: '#582DD2',
-                              }}
-                            >
-                              <span>Simpan</span>
-                            </Button>
-                          </Form.Item>
-                        </Form>
-                      </Modal>
                     </Col>
                   </Row>
                 </Col>
-              </>
-            )}
+                {isEditing && (
+                  <>
+                    <Col push={15} style={{ marginTop: '40px' }}>
+                      <Row align="middle">
+                        <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                          <Button
+                            onClick={handleButtonClick}
+                            style={{
+                              backgroundColor: '#582DD2',
+                              color: 'white',
+                              width: '190px',
+                              height: '45px',
+                              borderRadius: '10px',
+                            }}
+                          >
+                            <span style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
+                              <LockOutlined style={{ marginRight: '20px' }} />
+                              Ubah Sandi
+                            </span>
+                          </Button>
+                          <Modal
+                            centered
+                            visible={modalVisible}
+                            onCancel={handleModalCancel}
+                            footer={null}
+                            width={400}
+                            style={{ borderRadius: '10px', overflow: 'hidden' }}
+                          >
+                            <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
+                            <Form form={form} layout="vertical" style={{ marginTop: '40px' }} onFinish={onFinishPassword}>
+                              <Form.Item
+                                name="Password"
+                                label="Masukkan Sandi Lama Anda"
+                                rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
+                                style={{ margin: '20px 20px 20px' }}
+                              >
+                                <Input
+                                  placeholder="Sandi Lama"
+                                  style={{ width: '100%', height: '40px' }}
+                                  value={updatePassword.sandi}
+                                  onChange={(e) => setupdatePassword({ ...updatePassword, sandi: e.target.value })}
+                                />
+                              </Form.Item>
+                              <Form.Item
+                                name="newPassword"
+                                label="Masukkan Sandi Baru Anda"
+                                rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
+                                style={{ margin: '20px 20px 20px' }}
+                              >
+                                <Input
+                                  placeholder="Sandi Baru"
+                                  style={{ width: '100%', height: '40px' }}
+                                  type="password"
+                                  value={updatePassword.newPassword}
+                                  onChange={(e) => setupdatePassword({ ...updatePassword, newPassword: e.target.value })}
+                                />
+                              </Form.Item>
+
+                              <Form.Item
+                                name="confirmNewPassword"
+                                label="Konfirmasi Sandi Baru Anda"
+                                rules={[
+                                  { required: true, message: 'Tolong konfirmasi sandi baru!' },
+                                  ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                      if (!value || getFieldValue('newPassword') === value) {
+                                        return Promise.resolve();
+                                      }
+                                      return Promise.reject(new Error('Sandi tidak cocok!'));
+                                    },
+                                  }),
+                                ]}
+                                style={{ margin: '20px 20px 20px' }}
+                              >
+                                <Input
+                                  placeholder="Konfirmasi Sandi Baru"
+                                  style={{ width: '100%', height: '40px' }}
+                                  type="password"
+                                />
+                              </Form.Item>
+                              <Form.Item style={{ textAlign: 'right', marginRight: '20px' }}>
+                                <Button
+                                  type="default"
+                                  onClick={handleModalCancel}
+                                  style={{
+                                    marginRight: '8px',
+                                    color: 'black',
+                                    borderColor: 'black',
+                                  }}
+                                >
+                                  <span>Batal</span>
+                                </Button>
+                                <Button
+                                  type="primary"
+                                  htmlType="submit"
+                                  style={{
+                                    backgroundColor: '#582DD2',
+                                  }}
+                                >
+                                  <span>Simpan</span>
+                                </Button>
+                              </Form.Item>
+                            </Form>
+                          </Modal>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </>
+                )}
           </Row>
         </div>
       </Card>

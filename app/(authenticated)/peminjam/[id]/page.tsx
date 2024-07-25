@@ -5,17 +5,17 @@ import React from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { peminjamRepository } from '#/repository/peminjam';
+import { akunRepository } from '#/repository/akun';
 
 const { Option } = Select;
 
-const Editpeminjam = () => {
+const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '500';
-  const params = useParams();
   const id: string = params?.id;
-  const { data: peminjamById } = peminjamRepository.hooks.usePeminjamById(params.id);
-  console.log(peminjamById, 'barang masuk by id');
+  const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
+  console.log(akunbyId, 'barang masuk by id');
   const router = useRouter();
 
   const Kembali = () => {
@@ -29,7 +29,7 @@ const Editpeminjam = () => {
 
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Profile</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Edit Pemijam</h1>
       <Card
         style={{
           marginTop: '50px',
@@ -57,7 +57,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.nama}
+                  {akunbyId?.data?.nama}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -74,7 +74,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.username}
+                  {akunbyId?.data?.username}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -91,7 +91,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.telp}
+                  {akunbyId?.data?.telp}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -108,7 +108,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.NISN}
+                  {akunbyId?.data?.peminjam?.NISN}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>

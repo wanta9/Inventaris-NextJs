@@ -5,6 +5,9 @@ const url = {
   getAkun() {
     return `/akun`;
   },
+  getakunbyId(id: string) {
+    return `/akun/${id}`;
+  },
   loginAkun() {
     return `/akun/login`;
   },
@@ -29,6 +32,10 @@ const hooks = {
   },
   useAuth() {
     return useSWR(url.authorize(), http.fetcher);
+  },
+
+  useAkunbyId(id: string) {
+    return useSWR(url.getakunbyId(id), http.fetcher);
   },
 };
 

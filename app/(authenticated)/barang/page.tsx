@@ -37,6 +37,7 @@ import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
 import { ruanganRepository } from '#/repository/ruangan';
 import { parseJwt } from '#/utils/parseJwt';
+import useSWR from 'swr';
 
 const { Search } = Input;
 const { Item } = Menu;

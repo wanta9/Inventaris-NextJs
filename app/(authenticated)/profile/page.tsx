@@ -47,7 +47,8 @@ const Profile = () => {
   const [telpon, setTelpon] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const {data: akun } = akunRepository.hooks.useAuth();
+  const { data: akun } = akunRepository.hooks.useAuth();
+  const role = akun?.data?.peran?.Role;
   console.log(akun, 'ini akun');
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
@@ -142,6 +143,7 @@ const Profile = () => {
     form.setFieldsValue({
       username: record.username,
       nama: record.nama,
+      nisn: akun?.data?.peminjam?.NISN,
       nip: akun?.data?.petugas?.NIP,
       telp: record.telp,
     });
@@ -247,7 +249,7 @@ const Profile = () => {
                     </span>
                   )}
                 </Form.Item>
-
+                {role === 'petugas' && (
                 <Form.Item
                   label="NIP"
                   name="nip"
@@ -265,6 +267,27 @@ const Profile = () => {
                     </span>
                   )}
                 </Form.Item>
+                )}  
+
+                {role === 'peminjam' && (
+                <Form.Item
+                  label="NISN"
+                  name="nisn"
+                  wrapperCol={{ offset: 10,span: 16 }}
+                  style={{  fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
+                >
+                  {isEditing ? (
+                    <Input
+                      disabled
+                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px', marginLeft: '10px'  }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '10px'  }}>
+                      {akun?.data?.peminjam?.NISN}
+                    </span>
+                  )}
+                </Form.Item>
+                )}  
 
                 <Form.Item
                   label="Telpon"

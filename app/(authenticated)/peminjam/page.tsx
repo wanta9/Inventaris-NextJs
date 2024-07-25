@@ -141,14 +141,14 @@ const Peminjam = () => {
               //   return record.telp;
               // }}
             />
-            <Column
+            {/* <Column
               title="NISN"
               dataIndex="NISN"
               key="nisn"
               render={(text, record: DataType) => {
                 return record.peminjam[0].NISN;
               }}
-            />
+            /> */}
             <Column
               title="Status"
               dataIndex="tatus"

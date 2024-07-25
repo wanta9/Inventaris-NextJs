@@ -318,7 +318,6 @@ const Page: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log(updatePetugas);
       const data = {
         username: updatePetugas.username,
         nomorInduk: updatePetugas.nomorInduk,

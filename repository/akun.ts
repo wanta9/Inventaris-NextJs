@@ -5,6 +5,9 @@ const url = {
   getAkun() {
     return `/akun`;
   },
+  getakunbyId(id: string) {
+    return `/akun/${id}`;
+  },
   loginAkun() {
     return `/akun/login`;
   },
@@ -30,6 +33,10 @@ const hooks = {
   useAuth() {
     return useSWR(url.authorize(), http.fetcher);
   },
+
+  useAkunbyId(id: string) {
+    return useSWR(url.getakunbyId(id), http.fetcher);
+  },
 };
 
 const api = {
@@ -45,6 +52,10 @@ const api = {
     const formData = new FormData();
     formData.append('foto', data);
     return http.post(url.uploadAkun()).send(formData);
+  },
+
+  updateAkun(id: string, data: any) {
+    return http.put(url.updateAkun(id)).send(data);
   },
 
   deleteAkun(id: string) {

@@ -9,13 +9,13 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { values } from 'mobx';
 import { peminjamRepository } from '#/repository/peminjam';
+import { koleksiRepository } from '#/repository/koleksi';
 
 // const { Option } = Select;
-// interface createKoleksi {
-//   ruanganId: string;
-//   barangId: string;
-//   jumlah: number;
-// }
+interface createKoleksi {
+  ruanganBarangId: string
+  jumlah: number;
+}
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
@@ -27,13 +27,13 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const [PilihRuangan, setPilihRuangan] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  // const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
-  //   ruanganId: '',
-  //   barangId: '',
-  //   jumlah: 0,
-  // });
+  const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
+    ruanganBarangId: '',
+    jumlah: 0,
+  });
   const [form] = Form.useForm();
   const role = akun?.data?.peran?.Role;
+  const [id, setId] = useState('');
   const harga = ruanganBarangById?.data?.harga;
 
   const [ruanganNames, setRuanganNames] = useState<string[]>([]);
@@ -44,19 +44,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const handleRuanganClick = (name: any) => {
     setPilihRuangan(name);
+    setcreateKoleksi({ ...createKoleksi, ruanganBarangId: name });
   };
 
+  // CREATE KOLEKSI
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
       const data = {
-        // ruanganId: values.ruanganId || createKoleksi.ruanganId,
-        // barangId: values.barangId || createKoleksi.barangId,
-        // jumlah: values.jumlah || createKoleksi.jumlah,
+        ruanganBarangId: values.ruanganBarangId,
+        jumlah: createKoleksi.jumlah
       };
-      const request = await barangRepository.api.barang(data);
+      console.log(data, 'create koleksi');
+      const request = await koleksiRepository.api.koleksi(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
@@ -82,6 +84,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       setRuanganNames(names);
     }
   }, [ruanganBarangById]);
+  console.log(ruanganBarangById, 'barang by id');
 
   const [value, setValue] = useState(1);
 
@@ -369,6 +372,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         </Card>
       )}
 
+      {/* MODAL PINJAM BARANG DI PEMINJAM */}
       <Modal
         visible={modalVisible}
         onCancel={handleModalCancel}
@@ -376,77 +380,78 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         centered
         footer={false}
       >
-        <Form form={form} onFinish={onFinish}>
-          <Row align="middle" justify="center">
-            <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
-              <div
-                style={{
-                  width: '80%',
-                  height: '300px',
-                  backgroundColor: '#D9D9D9',
-                  borderRadius: '20px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'absolute',
-                  left: '75px',
-                  top: '-80px',
-                  bottom: '',
-                }}
-              >
-                <img src="/kk.png" style={{ width: '50%', borderRadius: '20px' }} />
-              </div>
-            </Col>
-            <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
-                  Nama Barang
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
-                  Harga
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{formattedHarga}</Col>
-              </Row>
-              <Row style={{ marginBottom: '30px' }}>
-                <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
-                  Stok Keseluruhan
-                </Col>
-                <Col span={2}>:</Col>
-                <Col span={5}>{ruanganBarangById?.data?.jumlah} </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '130px', marginBottom: '20px' }}>
-            <Col
-              push={1}
-              span={24}
+      <Form form={form} onFinish={onFinish}>
+        <Row align="middle" justify="center">
+          <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
               style={{
-                fontWeight: 'bold',
-                fontFamily: 'Arial',
-                fontSize: '20px',
-                marginTop: '30px',
+                width: '80%',
+                height: '300px',
+                backgroundColor: '#D9D9D9',
+                borderRadius: '20px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                left: '75px',
+                top: '-80px',
+                bottom: '',
               }}
             >
-              Pilih Ruangan
-            </Col>
-          </Row>
-          <Row>
-            <Col
-              push={1}
-              span={23}
-              style={{
-                fontWeight,
-                fontFamily,
-                fontSize: '17px',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {PilihRuangan ? (
+              <img src="/kk.png" style={{ width: '50%', borderRadius: '20px' }} />
+            </div>
+          </Col>
+          <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
+                Nama Barang
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.nama}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
+                Harga
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{formattedHarga}</Col>
+            </Row>
+            <Row style={{ marginBottom: '30px' }}>
+              <Col span={9} style={{ fontWeight: 'bold', fontFamily: 'Arial' }}>
+                Stok Keseluruhan
+              </Col>
+              <Col span={2}>:</Col>
+              <Col span={5}>{ruanganBarangById?.data?.jumlah} </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '130px', marginBottom: '20px' }}>
+          <Col
+            push={1}
+            span={24}
+            style={{
+              fontWeight: 'bold',
+              fontFamily: 'Arial',
+              fontSize: '20px',
+              marginTop: '30px',
+            }}
+          >
+            Pilih Ruangan
+          </Col>
+        </Row>
+        <Row>
+          <Col
+            push={1}
+            span={23}
+            style={{
+              fontWeight,
+              fontFamily,
+              fontSize: '17px',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {PilihRuangan ? (
+              <Form.Item>
                 <Button
                   style={{
                     backgroundColor: '#D9D9D9',
@@ -456,16 +461,16 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     height: '40px',
                     borderRadius: '10px',
                     marginBottom: '10px',
-                    marginLeft: '30px'
-                    
+                    marginLeft: '30px',
                   }}
                 >
                   {PilihRuangan}
                 </Button>
-              ) : (
-                ruanganNames.map((name, index) => (
+              </Form.Item>
+            ) : (
+              ruanganNames.map((name, index) => (
+                <Form.Item key={index}>
                   <Button
-                    key={index}
                     style={{
                       backgroundColor: '#FFFFFF',
                       color: 'grey',
@@ -480,26 +485,28 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   >
                     {name}
                   </Button>
-                ))
-              )}
-            </Col>
-          </Row>
-          <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-            <Col
-              push={1}
-              span={24}
-              style={{ fontWeight: 'bold', fontFamily: 'Arial', fontSize: '20px' }}
-            >
-              Tentukan Jumlah
-            </Col>
-          </Row>
-          <Col>
-            <Row
-              align="middle"
-              justify="space-between"
-              style={{ marginTop: '25px', marginBottom: '-30px' }}
-            >
-              <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+                </Form.Item>
+              ))
+            )}
+          </Col>
+        </Row>
+        <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
+          <Col
+            push={1}
+            span={24}
+            style={{ fontWeight: 'bold', fontFamily: 'Arial', fontSize: '20px' }}
+          >
+            Tentukan Jumlah
+          </Col>
+        </Row>
+        <Col>
+          <Row
+            align="middle"
+            justify="space-between"
+            style={{ marginTop: '25px', marginBottom: '-30px' }}
+          >
+            <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+              <Form.Item>
                 <Button
                   onClick={() => handleChange(value - 1)}
                   style={{
@@ -510,19 +517,21 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 >
                   <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
                 </Button>
-                <Form.Item>
-                  <InputNumber
-                    min={1}
-                    value={value}
-                    onChange={handleChange}
-                    controls={false}
-                    style={{
-                      width: '60px',
-                      boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                      textAlign: 'center',
-                    }}
-                  />
-                </Form.Item>
+              </Form.Item>
+              <Form.Item>
+                <InputNumber
+                  min={1}
+                  value={value}
+                  onChange={handleChange}
+                  controls={false}
+                  style={{
+                    width: '60px',
+                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                    textAlign: 'center',
+                  }}
+                />
+              </Form.Item>
+              <Form.Item>
                 <Button
                   onClick={() => handleChange(value + 1)}
                   style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
@@ -532,11 +541,13 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     style={{ width: '12px', height: '12px', marginBottom: '5px' }}
                   />
                 </Button>
-              </Col>
-              <Form.Item>
-                <Col>
+              </Form.Item>
+            </Col>
+            <Form.Item>
+              <Col>
                 <Button
-                  onClick={onFinish}
+                  type="primary"
+                  htmlType="submit"
                   style={{
                     backgroundColor: '#582DD2',
                     color: 'white',
@@ -548,11 +559,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 >
                   <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
                 </Button>
-                </Col>
-              </Form.Item>
-            </Row>
-          </Col>
-        </Form>
+              </Col>
+            </Form.Item>
+          </Row>
+        </Col>
+      </Form>
       </Modal>
 
       <div

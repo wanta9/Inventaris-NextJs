@@ -21,9 +21,14 @@ const Editpeminjam = () => {
   const Kembali = () => {
     router.push('/peminjam');
   };
+
+  const SaveChanges = () => {
+    // Implement your save logic here
+    console.log('Changes saved!');
+  };
+
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
-      <title>Edit Peminjam</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Profile</h1>
       <Card
         style={{
@@ -32,6 +37,7 @@ const Editpeminjam = () => {
           width: '80%',
           borderRadius: '30px',
           height: '450px',
+          position: 'relative',
         }}
       >
         <div style={{ padding: '50px 50px 40px 80px', fontFamily }}>
@@ -149,6 +155,23 @@ const Editpeminjam = () => {
                       marginTop: '20px',
                     }}
                   />
+                </Col>
+              </Row>
+              <Row align="middle" style={{ marginTop: '20px' }}>
+                <Col span={24}>
+                  <Button
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      width: '40%',
+                      height: '50px',
+                      borderRadius: '10px',
+                      marginLeft: '200px',
+                    }}
+                    onClick={SaveChanges}
+                  >
+                    Simpan
+                  </Button>
                 </Col>
               </Row>
             </Col>

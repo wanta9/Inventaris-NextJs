@@ -47,6 +47,10 @@ const api = {
     return http.post(url.uploadAkun()).send(formData);
   },
 
+  updateAkun(id: string, data: any) {
+    return http.put(url.updateAkun(id)).send(data);
+  },
+
   deleteAkun(id: string) {
     return http.del(url.deleteAkun(id));
   }

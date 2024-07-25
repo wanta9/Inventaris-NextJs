@@ -21,9 +21,13 @@ export interface ListBarang extends Barang {
 }
 
 const url = {
-  getBarang() {
-    return `/barang`;
+  getBarang(params: any = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return `/barang?${queryString}`;
   },
+  // getBarang() {
+  //   return `/barang`;
+  // },
   getBarangById(id: string) {
     return `/barang/${id}`;
   },

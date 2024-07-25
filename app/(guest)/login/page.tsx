@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Form, Input, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { title } from 'process';
@@ -12,6 +12,18 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  // Check if the user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      router.push('/dashboard');
+    }
+  }, [router]);
+
+  const parseJwt = (token: string) => {
+    // Your implementation to parse JWT token
+    return JSON.parse(atob(token.split('.')[1]));
+  };
 
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);

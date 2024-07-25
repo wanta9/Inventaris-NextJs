@@ -275,9 +275,13 @@ const Page: React.FC = () => {
       </Item>
     </Menu>
   );
+  useEffect(() => {
+    mutateListBarang({ nama: searchText });
+  }, [searchText, mutateListBarang]);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
+    mutateListBarang({ nama: value });
   };
 
   const [dataSource, setDataSource] = useState([]);
@@ -294,7 +298,8 @@ const Page: React.FC = () => {
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
-    setcreateBarang({ ...createBarang, harga: value }); (value);
+    setcreateBarang({ ...createBarang, harga: value });
+    value;
   };
 
   const handleButtonClick = (type: string) => {
@@ -451,7 +456,7 @@ const Page: React.FC = () => {
     setNamaBarang(record.nama);
     setharga(record.harga);
     setDeskripsi(record.deskripsi);
-    form.setFieldsValue({record});
+    form.setFieldsValue({ record });
     setModalEditVisible(true);
   };
 
@@ -503,7 +508,12 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                />
+              }
             />
           </span>
         );
@@ -532,7 +542,9 @@ const Page: React.FC = () => {
                   className="custom-search"
                   allowClear
                   enterButton
-                  onSearch={() => {}}
+                  onSearch={() => {
+                    handleSearch(searchText);
+                  }}
                   style={{ width: 300, marginRight: '700px', height: '40px' }}
                 />
               </div>
@@ -727,11 +739,7 @@ const Page: React.FC = () => {
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}
           >
-            <Form
-              form={form}
-              layout="horizontal"
-              onFinish={() => handleEditbarang(id)}
-            >
+            <Form form={form} layout="horizontal" onFinish={() => handleEditbarang(id)}>
               <Row gutter={[10, 20]} style={{ marginTop: '70px' }}>
                 <Col span={16}>
                   <Row gutter={[40, 40]}>
@@ -770,8 +778,8 @@ const Page: React.FC = () => {
                       >
                         <Input
                           style={{
-                            width: '100%', 
-                            maxWidth: '300px', 
+                            width: '100%',
+                            maxWidth: '300px',
                             height: '40px',
                           }}
                           prefix="Rp"
@@ -841,10 +849,10 @@ const Page: React.FC = () => {
                     onClick={handleModalCancel}
                     style={{
                       marginRight: '10px',
-                      borderColor: 'black'
+                      borderColor: 'black',
                     }}
                   >
-                    <span style={{ color: 'black'}}>Batal</span>
+                    <span style={{ color: 'black' }}>Batal</span>
                   </Button>
                   <Button
                     type="primary"
@@ -938,7 +946,7 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-                        {/* EDIT BARANG */}
+          {/* EDIT BARANG */}
           <Modal
             title={
               <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>

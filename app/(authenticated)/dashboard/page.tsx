@@ -532,6 +532,7 @@ const Page = () => {
             </Card>
           </Col>
 
+          {role === 'admin' && (           
           <Col
             xs={24}
             sm={12}
@@ -554,6 +555,7 @@ const Page = () => {
               <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
             </Button>
           </Col>
+          )}
         </Row>
 
         <Modal

@@ -951,7 +951,7 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-                        {/* EDIT BARANG */}
+          {/* EDIT BARANG */}
           <Modal
             title={
               <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>

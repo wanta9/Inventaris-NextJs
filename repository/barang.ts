@@ -25,9 +25,6 @@ const url = {
     const queryString = new URLSearchParams(params).toString();
     return `/barang?${queryString}`;
   },
-  // getBarang() {
-  //   return `/barang`;
-  // },
   getBarangById(id: string) {
     return `/barang/${id}`;
   },
@@ -38,6 +35,10 @@ const url = {
   updateBarang(id: string) {
     return `/barang/${id}`;
   },
+
+  getBarangByName(nama: string) {
+    return `/barang/search/by-name?nama=${nama}`;
+  },
 };
 
 const hooks = {
@@ -46,6 +47,9 @@ const hooks = {
   },
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
+  },
+  useBarangByName(nama: string) {
+    return useSWR(url.getBarangByName(nama), http.fetcher);
   },
 };
 

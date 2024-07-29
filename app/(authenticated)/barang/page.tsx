@@ -195,6 +195,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
+  const { data: listBarang, mutate: mutateListBarangNama } =
+    barangRepository.hooks.useBarangByName(searchText);
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
@@ -288,13 +290,9 @@ const Page: React.FC = () => {
       </Item>
     </Menu>
   );
-  useEffect(() => {
-    mutateListBarang({ nama: searchText });
-  }, [searchText, mutateListBarang]);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
-    mutateListBarang({ nama: value });
   };
 
   const [dataSource, setDataSource] = useState([]);
@@ -482,7 +480,7 @@ const Page: React.FC = () => {
     });
     setDataSource(newData);
   };
- 
+
   const components = {
     body: {
       row: EditableRow,
@@ -533,6 +531,8 @@ const Page: React.FC = () => {
       },
     },
   ];
+  // Determine which data to display based on search text
+  const dataToDisplay = searchText ? listBarang?.data : listRuanganBarang?.data;
 
   return (
     <div>
@@ -551,13 +551,11 @@ const Page: React.FC = () => {
             >
               <div ref={searchRef}>
                 <Search
-                  placeholder="Telusuri Barang Masuk"
+                  placeholder="Telusuri Barang"
                   className="custom-search"
                   allowClear
                   enterButton
-                  onSearch={() => {
-                    handleSearch(searchText);
-                  }}
+                  onSearch={handleSearch}
                   style={{ width: 300, marginRight: '700px', height: '40px' }}
                 />
               </div>
@@ -597,7 +595,7 @@ const Page: React.FC = () => {
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={listRuanganBarang?.data}
+              dataSource={dataToDisplay}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },
@@ -936,7 +934,7 @@ const Page: React.FC = () => {
             >
               <div ref={searchRef}>
                 <Search
-                  placeholder="Telusuri Barang Masuk"
+                  placeholder="Telusuri Barang"
                   className="custom-search"
                   allowClear
                   enterButton

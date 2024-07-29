@@ -195,8 +195,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang, mutate: mutateListBarangNama } =
-    barangRepository.hooks.useBarangByName(searchText);
+  const { data: listBarang } = barangRepository.hooks.useBarangByName(searchText);
+  console.log(listBarang, 'listBarang');
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');

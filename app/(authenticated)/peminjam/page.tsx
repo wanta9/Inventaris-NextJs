@@ -19,7 +19,7 @@ const Peminjam = () => {
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const { data: listAkun } = akunRepository.hooks.useAkun();
-  const peminjamData = listAkun?.data?.filter((akun) => akun.peran.Role === 'peminjam');
+  const peminjamData = listAkun?.data?.filter((akun: any) => akun.peran.Role === 'peminjam');
   console.log(listAkun, 'list peminjam');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;

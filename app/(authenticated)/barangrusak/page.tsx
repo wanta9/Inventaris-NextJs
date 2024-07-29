@@ -433,6 +433,7 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
@@ -442,7 +443,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
           </span>
         );

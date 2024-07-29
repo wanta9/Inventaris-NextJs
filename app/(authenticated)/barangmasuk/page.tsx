@@ -401,7 +401,7 @@ const Page: React.FC = () => {
       title: '',
       dataIndex: '',
       render: (record: Item) => {
-        return (
+        return (  
           <span>
             <Button
               type="link"
@@ -409,7 +409,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record);
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
           </span>
         );
@@ -591,7 +591,7 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item  wrapperCol={{ offset: 8, span: 16 }}>
+              <Form.Item  wrapperCol={{ offset: 14, span: 18 }}>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -610,6 +610,8 @@ const Page: React.FC = () => {
                   style={{
                     display: 'absolute',
                     marginBottom: '-40px',
+                    color: 'black',
+                    borderColor: 'black',
                   }}
                 >
                   <span>Batal</span>

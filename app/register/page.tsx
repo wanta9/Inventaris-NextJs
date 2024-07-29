@@ -252,12 +252,12 @@ const Register = () => {
                   Daftar
                 </Button>
                 <div style={{ textAlign: 'center', position: 'relative', margin: '15px 0' }}>
-                  <hr style={{ borderTop: '1px solid #ccc' }} />
+                  <hr style={{ borderTop: '1px solid #ccc', marginTop: '20px' }} />
                   <span
                     style={{
                       backgroundColor: '#fff',
                       position: 'absolute',
-                      top: '-10px',
+                      top: '10px',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       padding: '0 8px',
@@ -266,7 +266,7 @@ const Register = () => {
                     ATAU
                   </span>
                 </div>
-                <div style={{ textAlign: 'center', paddingTop: '5px' }}>
+                <div style={{ textAlign: 'center', paddingTop: '30px' }}>
                   sudah mempunyai akun? <a href="http://localhost:3002/login"> Log in</a>
                 </div>
               </Form.Item>

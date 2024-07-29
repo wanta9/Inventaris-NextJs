@@ -186,7 +186,7 @@ const Page: React.FC = () => {
   });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
-  const [namaBarang, setNamaBarang] = useState('');
+  const [nama, setnama] = useState('');
   const [harga, setharga] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -195,8 +195,8 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang, mutate: mutateListBarangNama } =
-    barangRepository.hooks.useBarangByName(searchText);
+  const { data: listBarang } = barangRepository.hooks.useBarangByName(searchText);
+  console.log(listBarang, 'listBarang');
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
@@ -373,7 +373,7 @@ const Page: React.FC = () => {
         nama: updateBarang.nama,
         harga: updateBarang.harga,
         deskripsi: updateBarang.deskripsi,
-        // // gambar: updateBarang.gambar,
+        // gambar: updateBarang.gambar,
       };
       const request = await barangRepository.api.updateBarang(id, data);
       if (request.status === 400) {
@@ -440,20 +440,20 @@ const Page: React.FC = () => {
     }
   };
 
-  // UPDATE GAMBAR
-  const handleUpdate = async (info: any) => {
-    const file = info.file;
-    try {
-      const processUpload = await barangRepository.api.updateFotoBarang(updateBarang.id, file);
-      setupdateBarang((prevState) => ({
-        ...prevState,
-        gambar: processUpload?.body?.data?.filename,
-      }));
-      message.success('Gambar berhasil diperbarui!');
-    } catch (e) {
-      message.error('Gambar gagal diperbarui!');
-    }
-  };
+  // // UPDATE GAMBAR
+  // const handleUpdate = async (info: any) => {
+  //   const file = info.file;
+  //   try {
+  //     const processUpload = await barangRepository.api.updateFotoBarang(updateBarang.id, file);
+  //     setupdateBarang((prevState) => ({
+  //       ...prevState,
+  //       gambar: processUpload?.body?.data?.filename,
+  //     }));
+  //     message.success('Gambar berhasil diperbarui!');
+  //   } catch (e) {
+  //     message.error('Gambar gagal diperbarui!');
+  //   }
+  // };
 
   const handleDelete = (key: string) => {
     const newData = dataSource.filter((item) => item.key !== key);
@@ -461,14 +461,19 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
+    console.log('record: ', record);
     setId(record.id);
-    setEditData(record);
-    setKodeBarang(record.kodeBarang);
-    setNamaBarang(record.nama);
+    setnama(record.nama);
     setharga(record.harga);
     setDeskripsi(record.deskripsi);
-    form.setFieldsValue({ record });
     setModalEditVisible(true);
+
+    form.setFieldsValue({
+      id: record.id,
+      nama: record.nama,
+      harga: record.harga,
+      deskripsi: record.deskripsi,
+    });
   };
 
   const handleSave = (row: Item) => {
@@ -513,6 +518,7 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
+            {role === 'admin' && (          
             <Button
               type="link"
               onClick={(e) => {
@@ -526,6 +532,7 @@ const Page: React.FC = () => {
                 />
               }
             />
+            )}
           </span>
         );
       },
@@ -729,8 +736,8 @@ const Page: React.FC = () => {
               </Row>
             </Form>
           </Modal>
-
-          {/* EDIT BARANG */}
+          
+          {role === 'admin' && (       
           <Modal
             title={
               <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
@@ -770,12 +777,9 @@ const Page: React.FC = () => {
                           }}
                           placeholder="Nama Barang"
                           value={updateBarang.nama}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*\.?\d*$/.test(value)) {
-                              setupdateBarang({ ...updateBarang, nama: value });
-                            }
-                          }}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, nama: e.target.value })
+                          }
                         />
                       </Form.Item>
                     </Col>
@@ -788,6 +792,7 @@ const Page: React.FC = () => {
                         wrapperCol={{ span: 20 }}
                       >
                         <Input
+                          type='number'
                           style={{
                             width: '100%',
                             maxWidth: '300px',
@@ -796,9 +801,12 @@ const Page: React.FC = () => {
                           prefix="Rp"
                           placeholder="Harga"
                           value={updateBarang.harga}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, harga: e.target.value })
-                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*\.?\d*$/.test(value)) {
+                              setupdateBarang({ ...updateBarang, harga: value });
+                            }
+                          }}
                         />
                       </Form.Item>
                     </Col>
@@ -881,6 +889,7 @@ const Page: React.FC = () => {
               </Row>
             </Form>
           </Modal>
+          )}
           {/* Button Tambah Letak barang */}
           <Modal
             title="Tambah Letak Barang"
@@ -957,118 +966,6 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-          {/* EDIT BARANG */}
-          <Modal
-            title={
-              <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
-                Edit Barang
-              </div>
-            }
-            style={{ textAlign: 'center' }}
-            centered
-            visible={modalEditVisible}
-            onCancel={handleModalCancel}
-            width={1000}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={() => handleEditbarang(id)}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
-            maskStyle={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '40px',
-                          }}
-                          placeholder="Nama Barang"
-                          value={updateBarang.nama || namaBarang}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, nama: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '40px',
-                          }}
-                          prefix="Rp"
-                          placeholder="Harga"
-                          value={updateBarang.harga || harga}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, harga: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '80px',
-                          }}
-                          placeholder="Deskripsi Barang"
-                          value={updateBarang.deskripsi || deskripsi}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Modal>
         </div>
       )}
       {role === 'peminjam' && (
@@ -1104,7 +1001,7 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
             {dataSource.map((item, index) => (
               <div
                 key={index}

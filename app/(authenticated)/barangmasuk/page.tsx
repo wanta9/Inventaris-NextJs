@@ -401,11 +401,7 @@ const Page: React.FC = () => {
       title: '',
       dataIndex: '',
       render: (record: Item) => {
-<<<<<<< HEAD
-        return (         
-=======
         return (  
->>>>>>> 129af2f96eccd367d359ce277e717394f50fca40
           <span>
             {role === 'admin' && (          
             <Button
@@ -414,16 +410,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-<<<<<<< HEAD
-              icon={
-                <img
-                  src="/logoEdit.svg"
-                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
-                />
-              }
-=======
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
->>>>>>> 129af2f96eccd367d359ce277e717394f50fca40
             />
             )}
             </span>

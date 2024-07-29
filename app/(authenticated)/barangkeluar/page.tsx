@@ -388,14 +388,21 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
+            {role === 'admin' && (          
             <Button
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record); 
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                />
+              }
             />
+            )}  
           </span>
         );
       },

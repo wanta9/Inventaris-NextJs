@@ -401,17 +401,24 @@ const Page: React.FC = () => {
       title: '',
       dataIndex: '',
       render: (record: Item) => {
-        return (
+        return (         
           <span>
+            {role === 'admin' && (          
             <Button
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record);
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                />
+              }
             />
-          </span>
+            )}
+            </span>
         );
       },
     },
@@ -451,6 +458,7 @@ const Page: React.FC = () => {
               style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
             />
           </div>
+          {role === 'admin' && (
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -467,6 +475,7 @@ const Page: React.FC = () => {
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
           </Button>
+          )}
         </div>
         <Table
           rowClassName={() => 'editable-row'}
@@ -482,6 +491,8 @@ const Page: React.FC = () => {
           style={{ marginTop: '40px' }}
         />
       </Card>
+
+      {role === 'admin' && (
       <Modal
         title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang Masuk</div>}
         style={{ textAlign: 'center' }}
@@ -619,7 +630,9 @@ const Page: React.FC = () => {
           </div>
         </Form>
       </Modal>
+      )}
 
+      {role === 'admin' && (
       <Modal
         centered
         title={
@@ -708,6 +721,7 @@ const Page: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+      )}
 
       {role === 'admin' && (
         <div

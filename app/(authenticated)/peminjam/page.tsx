@@ -63,6 +63,7 @@ const Peminjam = () => {
     status: string;
     gambar: string;
     akun: string;
+    peminjam?: any;
   }
 
   // useEffect(() => {

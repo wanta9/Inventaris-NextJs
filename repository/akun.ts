@@ -53,6 +53,9 @@ const api = {
     formData.append('foto', data);
     return http.post(url.uploadAkun()).send(formData);
   },
+  updateAkun(id: string, data: any) {
+    return http.put(url.updateAkun(id)).send(data);
+  },
 
   updateAkun(id: string, data: any) {
     return http.put(url.updateAkun(id)).send(data);

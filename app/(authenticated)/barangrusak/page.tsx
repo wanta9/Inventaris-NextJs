@@ -63,6 +63,7 @@ interface Item {
   kodeBarang: string;
   namaBarang: string;
   jumlah: number;
+  barangRusak: number;
   jmlbarangrusak: number;
   tanggalRusak: string;
   perbaikan: number;
@@ -189,7 +190,7 @@ const Page: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [jumlah, setJumlah] = useState<string | number>('');
+  const [barangRusak, setJumlah] = useState<string | number>('');
   const [jmlbarangrusak, setJmlbarangrusak] = useState<string | number>('');
   const [perbaikan, setPerbaikan] = useState<string | number>('');
   const [status, setStatus] = useState('');
@@ -530,19 +531,20 @@ const Page: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1 }}>
               <Form.Item
-                name="barangRusak"
+                name="jumlah"
                 label="Jumlah"
                 colon={false}
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
-                style={{ marginLeft: '20px' }}
+                style={{ marginLeft: '20px',  }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input
                   placeholder="Jumlah"
                   style={{ width: '100%', height: '40px' }}
                   value={updateBarangrusak.jumlah}
+                  disabled
                   onChange={(e) =>
                     setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
                   }

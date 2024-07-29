@@ -532,29 +532,29 @@ const Page = () => {
             </Card>
           </Col>
 
-          {role === 'admin' && (           
-          <Col
-            xs={24}
-            sm={12}
-            md={8}
-            lg={6}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Button
-              type="primary"
-              onClick={handleButtonClick}
-              icon={<PlusOutlined style={{ marginTop: '5px' }} />}
-              style={{
-                width: '200px',
-                height: '40px',
-                backgroundColor: 'white',
-                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                color: 'black',
-              }}
+          {role === 'admin' && (
+            <Col
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
-            </Button>
-          </Col>
+              <Button
+                type="primary"
+                onClick={handleButtonClick}
+                icon={<PlusOutlined style={{ marginTop: '5px' }} />}
+                style={{
+                  width: '200px',
+                  height: '40px',
+                  backgroundColor: 'white',
+                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                  color: 'black',
+                }}
+              >
+                <span style={{ marginLeft: '5px' }}>Akun Petugas</span>
+              </Button>
+            </Col>
           )}
         </Row>
 

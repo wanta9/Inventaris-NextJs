@@ -70,7 +70,7 @@ interface createAkunpetugas {
   username: string;
   password: string;
   status: statusBarang;
-  kelas: string;
+  // kelas: string;
 }
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -194,10 +194,10 @@ const Page: React.FC = () => {
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
-    peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
+    peranId: 'a7f86285-bdeb-4c3e-9449-6a4e71d2e96d',
     status: statusBarang.Aktif,
     nama: '',
-    kelas: '',
+    // kelas: '',
     nomorInduk: '',
     telp: '',
     gambar: '',
@@ -223,7 +223,7 @@ const Page: React.FC = () => {
   // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [petugasId, setPetugasId] = useState<string | null>(null);
-  const { data: listakun } = akunRepository.hooks.useAkun();
+  const { data: listakun, mutate: mutateListakun } = akunRepository.hooks.useAkun();
   console.log(listakun, 'listPetugas');
   const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
@@ -292,7 +292,7 @@ const Page: React.FC = () => {
         gambar: createAkunpetugas.gambar,
         username: createAkunpetugas.username,
         password: createAkunpetugas.password,
-        kelas: createAkunpetugas.kelas,
+        // kelas: createAkunpetugas.kelas,
       };
       const request = await akunRepository.api.akun(data);
       if (request.status === 400) {

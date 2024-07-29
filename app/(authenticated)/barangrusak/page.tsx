@@ -538,13 +538,14 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
-                style={{ marginLeft: '20px' }}
+                style={{ marginLeft: '20px',  }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input 
                 placeholder="Jumlah" 
                 style={{ width: '100%', height: '40px'}}
                 value={updateBarangrusak.jumlah}
+                disabled
                 onChange={(e) =>
                   setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
                 }

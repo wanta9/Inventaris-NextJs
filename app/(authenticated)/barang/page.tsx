@@ -197,8 +197,11 @@ const Page: React.FC = () => {
   const fontFamily = 'Barlow, sans-serif';
   const { data: listBarang, mutate: mutateListBarangNama } =
     barangRepository.hooks.useBarangByName(searchText);
+  console.log(listBarang, 'list barang');
+  console.log(searchText, 'search text');
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
+
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();

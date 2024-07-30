@@ -147,7 +147,7 @@ const Peminjam = () => {
               dataIndex="NISN"
               key="nisn"
               render={(text, record: DataType) => {
-                // return record.peminjam[0].NISN;
+                return record.peminjam?.NISN;
               }}
             />  
             <Column

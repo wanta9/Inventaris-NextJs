@@ -12,6 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
   // Check if the user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('access_token');

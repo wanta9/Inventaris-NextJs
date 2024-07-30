@@ -15,6 +15,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [id, setId] = useState<string>('');
   const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -55,10 +56,10 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       await koleksiRepository.api.deletekoleksi(id); // Panggil API untuk menghapus akun berdasarkan ID
       const newData = dataSource.filter((item) => item.id !== id);
       console.log(newData, 'delete');
-      message.success('Akun Berhasil Dihapus!');
+      message.success('Koleksi Berhasil Dihapus!');
       setDataSource(newData);
     } catch (error) {
-      console.error('Akun Gagal Dihapus:', error);
+      console.error('Gagal menghapus koleksi!', error);
     }
   };
 
@@ -107,7 +108,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   <Popconfirm
                   title="Menghapus koleksi"
                   description="Apakah Anda yakin ingin menghapus barang ini?"
-                  onConfirm={() => handleDelete(record.id)}
+                  onConfirm={() => handleDelete(id)}
                   okButtonProps={{ loading: confirmLoading }}
                   onCancel={handleCancel}
                   okText="Iya"

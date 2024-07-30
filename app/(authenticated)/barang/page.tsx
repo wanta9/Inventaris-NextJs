@@ -556,16 +556,16 @@ const Page: React.FC = () => {
                 marginBottom: '16px',
               }}
             >
-              <div ref={searchRef}>
+              <div ref={searchRef} >
                 <Search
                   placeholder="Telusuri Barang"
                   className="custom-search"
                   allowClear
                   enterButton
                   onSearch={handleSearch}
-                  style={{ width: 300, marginRight: '100px', height: '40px' }}
+                  style={{ width: 300, marginRight: '700px', height: '40px' }}
                 />
-              </div>
+              </div> 
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('letakBarang')}
@@ -1001,7 +1001,7 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
             {dataSource.map((item, index) => (
               <div
                 key={index}

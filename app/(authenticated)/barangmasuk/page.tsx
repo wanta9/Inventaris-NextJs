@@ -443,6 +443,7 @@ const Page: React.FC = () => {
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
         >
+          {role === 'admin' && (
           <div ref={searchRef}>
             <Search
               placeholder="Telusuri Barang Masuk"
@@ -452,7 +453,20 @@ const Page: React.FC = () => {
               onSearch={() => {}}
               style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
             />
-          </div>
+          </div>  
+          )}
+          {role === 'petugas' && (
+            <div ref={searchRef}>
+            <Search
+              placeholder="Telusuri Barang Masuk"
+              className="custom-search"
+              allowClear
+              enterButton
+              onSearch={() => {}}
+              style={{ width: 300, marginRight: '1170px', height: '40px', marginTop: '20px' }}
+            />
+          </div> 
+          )}
           {role === 'admin' && (
           <Button
             type="primary"

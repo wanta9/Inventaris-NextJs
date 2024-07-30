@@ -1,15 +1,15 @@
 'use client';
 
 import { Button, Card, Col, Divider, Row, Select } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
-import { peminjamRepository } from '#/repository/peminjam';
 import { akunRepository } from '#/repository/akun';
 
 const { Option } = Select;
 
 const Editpeminjam = ({ params }: { params: { id: string } }) => {
+  const [status, setStatus] = useState<string | undefined>();
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '500';
@@ -22,14 +22,26 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
     router.push('/peminjam');
   };
 
-  const SaveChanges = () => {
-    // Implement your save logic here
-    console.log('Changes saved!');
+  const handleStatusChange = (value: string) => {
+    setStatus(value);
+  };
+
+  const SaveChanges = async () => {
+    if (status) {
+      try {
+        await akunRepository.updateAkun(id, status);
+        console.log('Status updated successfully!');
+      } catch (error) {
+        console.error('Failed to update status:', error);
+      }
+    } else {
+      console.warn('No status selected!');
+    }
   };
 
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Edit Pemijam</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Edit Peminjam</h1>
       <Card
         style={{
           marginTop: '50px',
@@ -47,16 +59,10 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Lengkap
                 </Col>
-                <Col
-                  span={3}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   :
                 </Col>
-                <Col
-                  span={8}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   {akunbyId?.data?.nama}
                 </Col>
               </Row>
@@ -64,16 +70,10 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Pengguna
                 </Col>
-                <Col
-                  span={3}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   :
                 </Col>
-                <Col
-                  span={8}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   {akunbyId?.data?.username}
                 </Col>
               </Row>
@@ -81,16 +81,10 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Telp
                 </Col>
-                <Col
-                  span={3}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   :
                 </Col>
-                <Col
-                  span={8}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   {akunbyId?.data?.telp}
                 </Col>
               </Row>
@@ -98,16 +92,10 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   NISN
                 </Col>
-                <Col
-                  span={3}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   :
                 </Col>
-                <Col
-                  span={8}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   {akunbyId?.data?.peminjam?.NISN}
                 </Col>
               </Row>
@@ -115,10 +103,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Status
                 </Col>
-                <Col
-                  span={3}
-                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
-                >
+                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
                   :
                 </Col>
                 <Col span={8}>
@@ -132,6 +117,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                       fontWeight,
                       borderColor: 'black',
                     }}
+                    onChange={handleStatusChange}
                   >
                     <Option value="diterima">Diterima</Option>
                     <Option value="ditolak">Ditolak</Option>

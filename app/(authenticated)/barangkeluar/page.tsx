@@ -387,17 +387,24 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
+            {role === 'admin' && (          
             <Button
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+<<<<<<< HEAD
                 handleEdit(record);
+=======
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+>>>>>>> a3f4f44aa264de3dc2bfd1e2ceaa45e2964524d0
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
+            )}  
           </span>
         );
       },
@@ -444,6 +451,7 @@ const Page: React.FC = () => {
               style={{ width: 300, marginRight: '950px', height: '40px' }}
             />
           </div>
+          {role === 'admin' && (
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -459,6 +467,7 @@ const Page: React.FC = () => {
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Keluar</span>
           </Button>
+          )}
         </div>
         <Table
           rowClassName={() => 'editable-row'}

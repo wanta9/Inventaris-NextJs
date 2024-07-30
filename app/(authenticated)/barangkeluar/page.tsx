@@ -168,8 +168,9 @@ const Page: React.FC = () => {
     tanggalKeluar: '',
     keterangan: '',
   });
-  const { data: listBarangKeluar, mutate: mutateBarangKeluar } =
-    barangKeluarRepository.hooks.useBarangKeluar();
+  const { data : listSearchBarangkeluar } = barangKeluarRepository.hooks.useBarangdKeluarByName(searchText);
+  console.log(listSearchBarangkeluar, 'listSearchBarangkeluar');
+  const { data: listBarangKeluar, mutate: mutateBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
   const { data: listBarang, mutate: mutateBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarangByRuanganId();
@@ -448,8 +449,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px' }}
             />
           </div>     
           )}

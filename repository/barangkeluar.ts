@@ -28,6 +28,9 @@ const url = {
   updatebarangKeluar(id: string) {
     return `/barangKeluar/${id}`;
   },
+  getBarangKeluarByName(nama: string) {
+    return `/barangKeluar/search/by-name?nama=${nama}`;
+  }
 };
 
 const hooks = {
@@ -37,6 +40,9 @@ const hooks = {
   useBarangKeluarById(id: string) {
     return useSWR(url.getBarangKeluarById(id), http.fetcher);
   },
+  useBarangdKeluarByName(nama: string) {
+    return useSWR(url.getBarangKeluarByName(nama), http.fetcher);
+  }
 };
 
 const api = {

@@ -34,6 +34,7 @@ import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
 import { akunRepository } from '#/repository/akun';
 import { create } from 'domain';
+import { search } from 'superagent';
 export enum rolePeran {
   Admin = 'admin',
   Petugas = 'petugas',
@@ -223,13 +224,16 @@ const Page: React.FC = () => {
   // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [petugasId, setPetugasId] = useState<string | null>(null);
-  const { data: listakun, mutate: mutateListakun } = akunRepository.hooks.useAkun();
-  console.log(listakun, 'listPetugas');
-  const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
+  const { data : listPetugas,mutate: mutateListPetugas } = akunRepository.hooks.useSearchByName(searchText);
+  console.log(search, 'search');
+  console.log(listPetugas, 'listPetugas');
+  const { data: listakun } = akunRepository.hooks.useAkun();
+  console.log(listakun, 'listakun');
+  const petugasData = listPetugas?.filter((item: any) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
-  const { data: akun, mutate: mutateListPetugas } = akunRepository.hooks.useAuth();
+  const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
 
   const router = useRouter();
@@ -503,8 +507,8 @@ const Page: React.FC = () => {
             className="custom-search"
             allowClear
             enterButton
-            onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '10px' }}
+            onSearch={handleSearch}
+            style={{ width: 300, height: '40px', marginTop: '10px' }}
           />
         </div>
         <Button

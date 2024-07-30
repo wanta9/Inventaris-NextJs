@@ -181,9 +181,10 @@ const Page: React.FC = () => {
     keterangan: '',
   });
   const [form] = Form.useForm();
+  const { data: listSearchBarangrusak } = barangRusakRepository.hooks.useBarangRusakByName(searchText);
+  console.log( listSearchBarangrusak, 'listSearchBarangrusak');
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
-
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -481,8 +482,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div>
           <Button

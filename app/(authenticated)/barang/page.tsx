@@ -548,54 +548,52 @@ const Page: React.FC = () => {
           <title>Barang</title>
           <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
           <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '20px',
-                marginBottom: '16px',
-              }}
-            >
-              <div ref={searchRef} >
+              <div ref={searchRef}>
                 <Search
                   placeholder="Telusuri Barang"
                   className="custom-search"
                   allowClear
                   enterButton
                   onSearch={handleSearch}
-                  style={{ width: 300, marginRight: '700px', height: '40px' }}
+                  style={{ width: 300, marginRight: '100px', height: '40px' }}
                 />
-              </div> 
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('letakBarang')}
-                icon={<PlusOutlined />}
+                icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
                 style={{
                   backgroundColor: 'white',
                   color: 'black',
                   boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                   height: '40px',
                   width: '200px',
-                  fontFamily,
+                  bottom: '35px',
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  fontFamily: 'inherit', // Pastikan fontFamily yang benar di sini
+                  marginRight: '10px', // Mengurangi margin kanan untuk jarak yang lebih kecil
                 }}
               >
-                Letak Barang
+                <span style={{ marginTop: '3px', marginLeft: '10px' }}>Letak Barang</span>
               </Button>
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('barang')}
-                icon={<PlusOutlined style={{}} />}
+                icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '35px' }}/>}
                 style={{
                   backgroundColor: 'white',
                   boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                   color: 'black',
                   height: '40px',
+                  bottom: '35px',
                   width: '200px',
-                  fontFamily,
-                  marginRight: '20px',
+                  display: 'flex',
+                  fontFamily: 'inherit', // Pastikan fontFamily yang benar di sini
                 }}
               >
-                <span style={{ marginRight: '10px' }}>Barang</span>
+                <span style={{ marginTop: '3px', marginLeft: '10px' }}>Barang</span>
               </Button>
             </div>
             <Table
@@ -609,7 +607,7 @@ const Page: React.FC = () => {
               })}
               pagination={{ pageSize: 5 }}
               columns={columns as ColumnTypes}
-              style={{ marginTop: '40px' }}
+              style={{ marginTop: '10px' }}
             />
           </Card>
 
@@ -1001,7 +999,7 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
             {dataSource.map((item, index) => (
               <div
                 key={index}

@@ -68,9 +68,6 @@ const api = {
   updateBarang(id: string, data: any) {
     return http.put(url.updateBarang(id)).send(data);
   },
-  getBarangByName(nama: string) {
-    return `/barang/search/by-name?nama=${nama}`;
-  },
 
 };
 

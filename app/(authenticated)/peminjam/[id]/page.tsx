@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card, Col, Divider, Row, Select } from 'antd';
+import { Button, Card, Col, Divider, message, Row, Select } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
@@ -29,10 +29,14 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const SaveChanges = async () => {
     if (status) {
       try {
-        await akunRepository.updateAkun(id, status);
+        await akunRepository.api.updateAkun(id, { status });
         console.log('Status updated successfully!');
+        
+message.success('Akun berhasil diterima!');
+
       } catch (error) {
         console.error('Failed to update status:', error);
+        message.error('Akun berhasil ditolak!');
       }
     } else {
       console.warn('No status selected!');
@@ -96,7 +100,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                   :
                 </Col>
                 <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
-                  {akunbyId?.data?.peminjam?.NISN}
+                  {akunbyId?.data?.akun?.NISN}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>

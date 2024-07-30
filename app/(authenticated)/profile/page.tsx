@@ -8,14 +8,15 @@ import { petugasRepository } from '#/repository/petugas';
 // import { parseJwt } from '#/utils/parseJwt';
 import { request } from 'http';
 import { akunRepository } from '#/repository/akun';
+import Password from 'antd/es/input/Password';
+import { update, values } from 'lodash';
 
 const { Option } = Select;
 
 interface updatePassword {
   id: string;
-  sandi: string;
+  oldPassword: string;
   newPassword: string;
-  confirmNewPassword: string; // Tambahkan properti ini
 }
 interface updatePetugas {
   id: string;
@@ -60,9 +61,8 @@ const Profile = () => {
   });
   const [updatePassword, setupdatePassword] = useState<updatePassword>({
     id: '',
-    sandi: '',
+    oldPassword: '',
     newPassword: '',
-    confirmNewPassword: '',
   });
   
 
@@ -103,29 +103,32 @@ const Profile = () => {
       setLoading(false);
     }
   }
-  const onFinishPassword = async (values: any) => {
+
+  const onFinishPassword = async (id: any) => {
+    const { oldPassword, newPassword } = id; // Ambil nilai newPassword dari form
+    console.log('data id: ', id); // Cetak id untuk debugging
+    // console.log('id: ', id); // Cetak values untuk debugging
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true); // Set loading state ke true
+      setError(null); // Set error state ke null
       const data = {
-        // sandi,
-        // newPassword,
+        oldPassword: updatePassword.oldPassword,
+        newPassword: updatePassword.newPassword, // Siapkan data untuk dikirim ke API
       };
-      const request = await akunRepository.api.updateAkun(id, data);
+      const request = await akunRepository.api.updateAkun(id, data); // Panggil API untuk update akun
       if (request.status === 400) {
-        setError(request.body.message); // Set pesan error
+        setError(request.body.message); // Set pesan error jika status 400
       } else {
-        message.success('Berhasil Mengubah Sandi!');
-        setModalVisible(false);
+        message.success('Berhasil Mengubah Sandi!'); // Tampilkan pesan sukses
+        setModalVisible(false); // Tutup modal
       }  
-      console.log(request);
+      console.log(request); // Cetak request untuk debugging
     } catch (error) {
-      console.log(error);
-      setError('Terjadi kesalahan pada server.');
-      message.error('Gagal Mengubah Sandi!');
-      console.log();
+      console.log(error); // Cetak error untuk debugging
+      setError('Terjadi kesalahan pada server.'); // Set pesan error umum
+      message.error('Gagal Mengubah Sandi!'); // Tampilkan pesan error
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading state ke false
     }
   };
   
@@ -439,9 +442,9 @@ const Profile = () => {
                             style={{ borderRadius: '10px', overflow: 'hidden' }}
                           >
                             <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
-                            <Form form={form} layout="vertical" style={{ marginTop: '40px' }} onFinish={onFinishPassword}>
+                            <Form form={form} layout="vertical" style={{ marginTop: '40px' }} onFinish={() => onFinishPassword(id)}>
                               <Form.Item
-                                name="Password"
+                                name="oldPassword"
                                 label="Masukkan Sandi Lama Anda"
                                 rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
                                 style={{ margin: '20px 20px 20px' }}
@@ -449,8 +452,6 @@ const Profile = () => {
                                 <Input
                                   placeholder="Sandi Lama"
                                   style={{ width: '100%', height: '40px' }}
-                                  value={updatePassword.sandi}
-                                  onChange={(e) => setupdatePassword({ ...updatePassword, sandi: e.target.value })}
                                 />
                               </Form.Item>
                               <Form.Item

@@ -189,13 +189,15 @@ const Page: React.FC = () => {
   const [nama, setnama] = useState('');
   const [harga, setharga] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
-  const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [datalistBarang, setdataListBarang] = useState([]);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang } = barangRepository.hooks.useBarangByName(searchText);
+  const { data: listBarang } = barangRepository.hooks.useBarangByName(search);
+  console.log(search)
   console.log(listBarang, 'listBarang');
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
@@ -292,7 +294,7 @@ const Page: React.FC = () => {
   );
 
   const handleSearch = (value: string) => {
-    setSearchText(value);
+    setSearch(value);
   };
 
   const [dataSource, setDataSource] = useState([]);
@@ -538,8 +540,6 @@ const Page: React.FC = () => {
       },
     },
   ];
-  // Determine which data to display based on search text
-  const dataToDisplay = searchText ? listBarang?.data : listRuanganBarang?.data;
 
   return (
     <div>
@@ -563,7 +563,7 @@ const Page: React.FC = () => {
                   allowClear
                   enterButton
                   onSearch={handleSearch}
-                  style={{ width: 300, marginRight: '700px', height: '40px' }}
+                  style={{ width: 300, marginRight: '100px', height: '40px' }}
                 />
               </div>
               <Button
@@ -602,7 +602,7 @@ const Page: React.FC = () => {
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={dataToDisplay}
+              dataSource={listBarang}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },

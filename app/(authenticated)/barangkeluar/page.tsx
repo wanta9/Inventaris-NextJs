@@ -445,6 +445,7 @@ const Page: React.FC = () => {
               style={{ width: 300, marginRight: '950px', height: '40px' }}
             />
           </div>
+          {role === 'admin' && (
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -460,6 +461,7 @@ const Page: React.FC = () => {
           >
             <span style={{ marginRight: '20px', fontFamily }}>Barang Keluar</span>
           </Button>
+          )}
         </div>
         <Table
           rowClassName={() => 'editable-row'}

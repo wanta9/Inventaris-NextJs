@@ -25,6 +25,7 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
 import { set } from 'mobx';
+import { ruanganBarangRepository } from '#/repository/ruanganbarang';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -150,7 +151,7 @@ const Page: React.FC = () => {
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
   const [id, setId] = useState<string>('');
-  const [jumlah, setJumlah] = useState('');  
+  const [jumlah, setJumlah] = useState('');
   const [tanggalKeluar, settanggalKeluar] = useState('');
   const [keterangan, setketerangan] = useState('');
   const [form] = Form.useForm();
@@ -171,6 +172,7 @@ const Page: React.FC = () => {
     barangKeluarRepository.hooks.useBarangKeluar();
   const { data: listBarang, mutate: mutateBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateRuangan } = ruanganRepository.hooks.useRuangan();
+  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarangByRuanganId();
   const { data: akun } = akunRepository.hooks.useAuth();
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -347,7 +349,7 @@ const Page: React.FC = () => {
       tanggalKeluar: formattedCreatedAt,
       keterangan: record.keterangan,
     });
-  
+
     setId(record.id);
     setJumlah(record.jumlah);
     settanggalKeluar(record.tanggalKeluar);
@@ -394,7 +396,11 @@ const Page: React.FC = () => {
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+<<<<<<< HEAD
+                handleEdit(record);
+=======
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+>>>>>>> a3f4f44aa264de3dc2bfd1e2ceaa45e2964524d0
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
@@ -602,18 +608,21 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item style={{ marginTop: '40px', marginBottom: '-5px' }} wrapperCol={{ offset: 15, span: 18 }}>
-                  <Button
-                    type="default"
-                    onClick={handleModalCancel}
-                    style={{
-                      color: 'black',
-                      borderColor: 'black',
-                      marginRight: '10px',
-                    }}
-                  >
-                    <span>Batal</span>
-                  </Button>
+              <Form.Item
+                style={{ marginTop: '40px', marginBottom: '-5px' }}
+                wrapperCol={{ offset: 15, span: 18 }}
+              >
+                <Button
+                  type="default"
+                  onClick={handleModalCancel}
+                  style={{
+                    color: 'black',
+                    borderColor: 'black',
+                    marginRight: '10px',
+                  }}
+                >
+                  <span>Batal</span>
+                </Button>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -640,11 +649,7 @@ const Page: React.FC = () => {
         onCancel={handleModalCancel}
         footer={null}
       >
-        <Form
-          form={form}
-          layout="horizontal"
-          onFinish={() => onFinishEdit(id)}
-        >
+        <Form form={form} layout="horizontal" onFinish={() => onFinishEdit(id)}>
           <Form.Item
             name="jumlah"
             label="Jumlah"

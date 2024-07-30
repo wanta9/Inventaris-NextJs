@@ -28,6 +28,10 @@ const url = {
   
   updatebarangMasuk(id: string) {
     return `/barangMasuk/${id}`;
+  },
+  
+  getBarangMasukByName(nama: string) {
+    return `/barangMasuk/search/by-name?nama=${nama}`;
   }
 };
 
@@ -38,6 +42,9 @@ const hooks = {
   useBarangMasukById(id: string) {
     return useSWR(url.getBarangMasukById(id), http.fetcher);
   },
+  useBarangMasukByName(nama: string) {
+    return useSWR(url.getBarangMasukByName(nama), http.fetcher);
+  }
 };
 
 const api = {
@@ -47,6 +54,9 @@ const api = {
   updatebarangMasuk(id: string, data: any) {
     return http.put(url.updatebarangMasuk(id)).send(data);
   },
+    getBarangMasukByName(nama: string) {
+    return `/akun/search/by-name?nama=${nama}`;
+  }
 };
 
 export const barangMasukRepository = {

@@ -166,8 +166,9 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } =
-    barangMasukRepository.hooks.useBarangMasuk();
+  const { data : listsearchBarangMasuk } = barangMasukRepository.hooks.useBarangMasukByName(searchText);
+  console.log(listsearchBarangMasuk, 'listsearchBarangMasuk');
+  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
 
@@ -449,8 +450,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div>
           {role === 'admin' && (
@@ -475,7 +476,7 @@ const Page: React.FC = () => {
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangMasuk?.data}
+          dataSource={listsearchBarangMasuk}
           onRow={(record) => {
             return {
               onClick: () => handleRowClick(record.id),

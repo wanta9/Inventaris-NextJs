@@ -18,9 +18,11 @@ const Peminjam = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const { data : listPeminjam } = akunRepository.hooks.useSearchByName(searchText);
+  console.log(listPeminjam, 'list peminjam');
   const { data: listAkun } = akunRepository.hooks.useAkun();
-  const peminjamData = listAkun?.data?.filter((akun: any) => akun.peran.Role === 'peminjam');
-  console.log(listAkun, 'list peminjam');
+  const peminjamData = listPeminjam?.filter((item: any) => item.peran.Role === 'peminjam');
+  console.log(listAkun, 'list akun');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const router = useRouter();
@@ -108,7 +110,7 @@ const Peminjam = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
+              onSearch={handleSearch}
               style={{ width: 300, marginRight: '950px', height: '40px' }}
             />
           </div>

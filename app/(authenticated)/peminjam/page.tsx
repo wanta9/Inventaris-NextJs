@@ -63,6 +63,7 @@ const Peminjam = () => {
     status: string;
     gambar: string;
     akun: string;
+    peminjam?: any;
   }
 
   // useEffect(() => {
@@ -141,14 +142,14 @@ const Peminjam = () => {
               //   return record.telp;
               // }}
             />
-            {/* <Column
+            <Column
               title="NISN"
               dataIndex="NISN"
               key="nisn"
               render={(text, record: DataType) => {
-                return record.peminjam[0].NISN;
+                return record.peminjam?.NISN;
               }}
-            /> */}
+            />
             <Column
               title="Status"
               dataIndex="tatus"

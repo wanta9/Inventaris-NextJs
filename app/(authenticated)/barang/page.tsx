@@ -197,11 +197,10 @@ const Page: React.FC = () => {
   const [datalistBarang, setdataListBarang] = useState([]);
   const fontFamily = 'Barlow, sans-serif';
   const { data: listBarang } = barangRepository.hooks.useBarangByName(search);
-  console.log(search);
+  console.log(search)
   console.log(listBarang, 'listBarang');
   const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
-
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -521,20 +520,20 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
-            {role === 'admin' && (
-              <Button
-                type="link"
-                onClick={(e) => {
-                  e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                  handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-                }}
-                icon={
-                  <img
-                    src="/logoEdit.svg"
-                    style={{ width: '19px', height: '19px', marginLeft: '80px' }}
-                  />
-                }
-              />
+            {role === 'admin' && (          
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+              }}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                />
+              }
+            />
             )}
           </span>
         );
@@ -737,159 +736,159 @@ const Page: React.FC = () => {
               </Row>
             </Form>
           </Modal>
-
-          {role === 'admin' && (
-            <Modal
-              title={
-                <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
-                  Edit Barang
-                </div>
-              }
-              style={{ textAlign: 'center' }}
-              centered
-              visible={modalEditVisible}
-              onCancel={handleModalCancel}
-              width={900}
-              footer={null}
-              maskStyle={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              <Form form={form} layout="horizontal" onFinish={() => handleEditbarang(id)}>
-                <Row gutter={[10, 20]} style={{ marginTop: '70px' }}>
-                  <Col span={16}>
-                    <Row gutter={[40, 40]}>
-                      <Col span={24}>
-                        <Form.Item
-                          label="Nama Barang"
-                          name="nama"
-                          style={{ marginBottom: '-10px' }}
-                          labelCol={{ span: 6 }}
-                          wrapperCol={{ span: 16 }}
-                        >
-                          <Input
-                            style={{
-                              width: '100%', // Full width of the container
-                              maxWidth: '300px', // Limit max width
-                              height: '40px',
-                            }}
-                            placeholder="Nama Barang"
-                            value={updateBarang.nama}
-                            onChange={(e) =>
-                              setupdateBarang({ ...updateBarang, nama: e.target.value })
+          
+          {role === 'admin' && (       
+          <Modal
+            title={
+              <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+                Edit Barang
+              </div>
+            }
+            style={{ textAlign: 'center' }}
+            centered
+            visible={modalEditVisible}
+            onCancel={handleModalCancel}
+            width={900}
+            footer={null}
+            maskStyle={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            <Form form={form} layout="horizontal" onFinish={() => handleEditbarang(id)}>
+              <Row gutter={[10, 20]} style={{ marginTop: '70px' }}>
+                <Col span={16}>
+                  <Row gutter={[40, 40]}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Nama Barang"
+                        name="nama"
+                        style={{ marginBottom: '-10px' }}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 16 }}
+                      >
+                        <Input
+                          style={{
+                            width: '100%', // Full width of the container
+                            maxWidth: '300px', // Limit max width
+                            height: '40px',
+                          }}
+                          placeholder="Nama Barang"
+                          value={updateBarang.nama}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, nama: e.target.value })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Harga"
+                        name="harga"
+                        style={{ marginBottom: '-10px' }}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 20 }}
+                      >
+                        <Input
+                          type='number'
+                          style={{
+                            width: '100%',
+                            maxWidth: '300px',
+                            height: '40px',
+                          }}
+                          prefix="Rp"
+                          placeholder="Harga"
+                          value={updateBarang.harga}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (/^\d*\.?\d*$/.test(value)) {
+                              setupdateBarang({ ...updateBarang, harga: value });
                             }
-                          />
-                        </Form.Item>
-                      </Col>
+                          }}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Deskripsi"
+                        name="deskripsi"
+                        style={{ marginBottom: '-10px', marginLeft: '10px' }}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 20 }}
+                      >
+                        <Input.TextArea
+                          style={{
+                            width: '100%', // Full width of the container
+                            maxWidth: '300px', // Limit max width
+                            height: '80px',
+                          }}
+                          placeholder="Deskripsi Barang"
+                          value={updateBarang.deskripsi}
+                          onChange={(e) =>
+                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    name="gambar"
+                    label="Unggah Foto"
+                    style={{ marginBottom: '12px' }}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 24 }}
+                  >
+                    <Row align="middle">
                       <Col span={24}>
-                        <Form.Item
-                          label="Harga"
-                          name="harga"
-                          style={{ marginBottom: '-10px' }}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 20 }}
+                        <Upload
+                          listType="picture"
+                          beforeUpload={() => false}
+                          onChange={handleChange}
                         >
-                          <Input
-                            type="number"
-                            style={{
-                              width: '100%',
-                              maxWidth: '300px',
-                              height: '40px',
-                            }}
-                            prefix="Rp"
-                            placeholder="Harga"
-                            value={updateBarang.harga}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (/^\d*\.?\d*$/.test(value)) {
-                                setupdateBarang({ ...updateBarang, harga: value });
-                              }
-                            }}
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={24}>
-                        <Form.Item
-                          label="Deskripsi"
-                          name="deskripsi"
-                          style={{ marginBottom: '-10px', marginLeft: '10px' }}
-                          labelCol={{ span: 4 }}
-                          wrapperCol={{ span: 20 }}
-                        >
-                          <Input.TextArea
-                            style={{
-                              width: '100%', // Full width of the container
-                              maxWidth: '300px', // Limit max width
-                              height: '80px',
-                            }}
-                            placeholder="Deskripsi Barang"
-                            value={updateBarang.deskripsi}
-                            onChange={(e) =>
-                              setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
-                            }
-                          />
-                        </Form.Item>
+                          <Button
+                            style={{ color: 'black', borderColor: 'black' }}
+                            icon={<UploadOutlined />}
+                          >
+                            Unggah
+                          </Button>
+                        </Upload>
                       </Col>
                     </Row>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      name="gambar"
-                      label="Unggah Foto"
-                      style={{ marginBottom: '12px' }}
-                      labelCol={{ span: 8 }}
-                      wrapperCol={{ span: 24 }}
-                    >
-                      <Row align="middle">
-                        <Col span={24}>
-                          <Upload
-                            listType="picture"
-                            beforeUpload={() => false}
-                            onChange={handleChange}
-                          >
-                            <Button
-                              style={{ color: 'black', borderColor: 'black' }}
-                              icon={<UploadOutlined />}
-                            >
-                              Unggah
-                            </Button>
-                          </Upload>
-                        </Col>
-                      </Row>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row justify="end" style={{ marginTop: '40px' }}>
-                  <Col>
-                    <Button
-                      type="default"
-                      onClick={handleModalCancel}
-                      style={{
-                        marginRight: '10px',
-                        borderColor: 'black',
-                      }}
-                    >
-                      <span style={{ color: 'black' }}>Batal</span>
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      style={{
-                        backgroundColor: '#582DD2',
-                        color: 'white',
-                        borderColor: '#582DD2',
-                        marginRight: '20px',
-                      }}
-                    >
-                      <span>Simpan</span>
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
-            </Modal>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row justify="end" style={{ marginTop: '40px' }}>
+                <Col>
+                  <Button
+                    type="default"
+                    onClick={handleModalCancel}
+                    style={{
+                      marginRight: '10px',
+                      borderColor: 'black',
+                    }}
+                  >
+                    <span style={{ color: 'black' }}>Batal</span>
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      borderColor: '#582DD2',
+                      marginRight: '20px',
+                    }}
+                  >
+                    <span>Simpan</span>
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Modal>
           )}
           {/* Button Tambah Letak barang */}
           <Modal
@@ -1002,19 +1001,7 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-<<<<<<< HEAD
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
-=======
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '16px',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
->>>>>>> 03a0de631c1aa8cef8215e0cfaff2c6a78ef81eb
             {dataSource.map((item, index) => (
               <div
                 key={index}

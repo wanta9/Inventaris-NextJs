@@ -142,23 +142,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       controls={false}
                       style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
                     />
-<<<<<<< HEAD
-                  {/* Kotak 3 */}
-                  <Button onClick={() => handleChange(value + 1)} style={{  width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)'}}>{<img src="/pluseicon.svg" style={{ width: '12px', height: '12px', marginBottom: '5px' }} />}</Button>
-                </div>
-                  <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}> 
-                  <Popconfirm
-                  title="Menghapus koleksi"
-                  description="Apakah Anda yakin ingin menghapus barang ini?"
-                  onConfirm={() => handleDelete(id)}
-                  okButtonProps={{ loading: confirmLoading }}
-                  onCancel={handleCancel}
-                  okText="Iya"
-                  cancelText="Tidak"
-                  >
-                    <Button type="link" icon={<img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px' }} />}><span style={{ color: 'black' }}>Hapus</span></Button>
-                  </Popconfirm>
-=======
                     {/* Kotak 3 */}
                     <Button
                       onClick={() => handleChange(value + 1)}
@@ -191,7 +174,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <span style={{ color: 'black' }}>Hapus</span>
                       </Button>
                     </Popconfirm>
->>>>>>> 03a0de631c1aa8cef8215e0cfaff2c6a78ef81eb
                   </div>
                 </div>
               </div>

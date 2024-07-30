@@ -57,10 +57,6 @@ const api = {
     return http.put(url.updateAkun(id)).send(data);
   },
 
-  updateAkun(id: string, data: any) {
-    return http.put(url.updateAkun(id)).send(data);
-  },
-
   deleteAkun(id: string) {
     return http.del(url.deleteAkun(id));
   }

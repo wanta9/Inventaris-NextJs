@@ -448,6 +448,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               fontFamily,
               fontSize: '17px',
               whiteSpace: 'pre-wrap',
+              display: 'flex',
+              flexWrap: 'wrap',
             }}
           >
             {PilihRuangan ? (

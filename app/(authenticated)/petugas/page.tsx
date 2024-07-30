@@ -553,14 +553,7 @@ const Page: React.FC = () => {
             form={form}
             layout="horizontal"
             onFinish={onFinish}
-            initialValues={{
-              nama: '',
-              nip: '',
-              telp: '',
-              namaPengguna: '',
-              sandi: '',
-              konfirmasiSandi: '',
-            }}
+
           >
             <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
               <Col xs={24} sm={12}>

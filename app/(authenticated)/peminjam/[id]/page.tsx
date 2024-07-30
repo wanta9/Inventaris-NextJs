@@ -15,7 +15,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const fontWeight = '500';
   const id: string = params?.id;
   const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
-  console.log(akunbyId, 'barang masuk by id');
+  console.log(akunbyId, 'akun by id');
   const router = useRouter();
 
   const Kembali = () => {
@@ -27,16 +27,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   };
 
   const SaveChanges = async () => {
+    console.log(id, status);
     if (status) {
       try {
         await akunRepository.api.updateAkun(id, { status });
         console.log('Status updated successfully!');
-        
-message.success('Akun berhasil diterima!');
+          
+        message.success('Akun berhasil diterima!');
 
       } catch (error) {
         console.error('Failed to update status:', error);
-        message.error('Akun berhasil ditolak!');
       }
     } else {
       console.warn('No status selected!');
@@ -100,7 +100,7 @@ message.success('Akun berhasil diterima!');
                   :
                 </Col>
                 <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
-                  {akunbyId?.data?.akun?.NISN}
+                  {akunbyId?.data?.peminjam?.NISN}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>

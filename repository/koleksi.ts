@@ -27,6 +27,10 @@ const url = {
   updatekoleksi(id: string) { 
       return `/koleksi/${id}`;
     },
+
+    deletekoleksi(id: string) { 
+      return `/koleksi/${id}`;
+    },
 }
 const hooks = {
   useGetkoleksi() {
@@ -46,6 +50,10 @@ const api = {
     },
     updatekoleksi(id: string, data: any) {
       return http.put(url.updatekoleksi(id)).send(data);
+    },
+    
+    deletekoleksi(id: string) {
+      return http.del(url.deletekoleksi(id));
     },
          
 }

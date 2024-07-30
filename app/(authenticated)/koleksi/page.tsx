@@ -1,7 +1,18 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, Divider, DatePicker, Select, InputNumber, Popconfirm } from 'antd';
+import {
+  Button,
+  Card,
+  Row,
+  Col,
+  Divider,
+  DatePicker,
+  Select,
+  InputNumber,
+  Popconfirm,
+  message,
+} from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
@@ -14,6 +25,7 @@ const { Option } = Select;
 const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
+  const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const { data: koleksi } = koleksiRepository.hooks.useGetkoleksi();
@@ -24,11 +36,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const handleButtonClick = (status: string) => {
     console.log('Button clicked for phone number:', status);
   };
-
-  const handleDelete = () => {
-    console.log('Item deleted');
-  };
-
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const [value, setValue] = useState(1);
@@ -54,6 +61,18 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const handleCancel = () => {
     console.log('Clicked cancel button');
     setOpen(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await koleksiRepository.api.deletekoleksi(id); // Panggil API untuk menghapus akun berdasarkan ID
+      const newData = dataSource.filter((item) => item.id !== id);
+      console.log(newData, 'delete');
+      message.success('Akun Berhasil Dihapus!');
+      setDataSource(newData);
+    } catch (error) {
+      console.error('Akun Gagal Dihapus:', error);
+    }
   };
 
   return (
@@ -139,7 +158,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     <Popconfirm
                       title="Menghapus koleksi"
                       description="Apakah Anda yakin ingin menghapus barang ini?"
-                      onConfirm={handleOk}
+                      onConfirm={() => handleDelete(record.id)}
                       okButtonProps={{ loading: confirmLoading }}
                       onCancel={handleCancel}
                       okText="Iya"

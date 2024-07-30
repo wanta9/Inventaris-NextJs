@@ -21,6 +21,9 @@ const url = {
   getRuanganBarangById(id: string) {
     return `/ruanganBarang/${id}`;
   },
+  getRuanganBarangByRuanganId(barangId: string) {
+    return `/ruanganBarang/ruangan-by-barang/${barangId}`;
+  },
 };
 
 const hooks = {
@@ -29,6 +32,9 @@ const hooks = {
   },
   useRuanganBarangById(id: string) {
     return useSWR(url.getRuanganBarangById(id), http.fetcher);
+  },
+  useRuanganBarangByRuanganId(barangId: string) {
+    return useSWR(url.getRuanganBarangByRuanganId(barangId), http.fetcher);
   },
 };
 

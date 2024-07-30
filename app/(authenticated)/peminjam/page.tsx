@@ -21,8 +21,13 @@ const Peminjam = () => {
   const { data : listPeminjam } = akunRepository.hooks.useSearchByName(searchText);
   console.log(listPeminjam, 'list peminjam');
   const { data: listAkun } = akunRepository.hooks.useAkun();
+<<<<<<< HEAD
   const peminjamData = listPeminjam?.filter((item: any) => item.peran.Role === 'peminjam');
   console.log(listAkun, 'list akun');
+=======
+  const peminjamData = listAkun?.data?.filter((akun) => akun.peran.Role === 'peminjam');
+  console.log(listAkun, 'list peminjam');
+>>>>>>> 85f36aa12a87c607f0df37dd66de90d27b124b6b
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const router = useRouter();
@@ -151,7 +156,7 @@ const Peminjam = () => {
               render={(text, record: DataType) => {
                 return record.peminjam?.NISN;
               }}
-            />  
+            />
             <Column
               title="Status"
               dataIndex="tatus"

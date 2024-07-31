@@ -572,8 +572,8 @@ const Page: React.FC = () => {
                   bottom: '35px',
                   display: 'flex',
                   marginLeft: 'auto',
-                  fontFamily: 'inherit', // Pastikan fontFamily yang benar di sini
-                  marginRight: '10px', // Mengurangi margin kanan untuk jarak yang lebih kecil
+                  fontFamily: 'inherit', 
+                  marginRight: '10px', 
                 }}
               >
                 <span style={{ marginTop: '3px', marginLeft: '10px' }}>Letak Barang</span>

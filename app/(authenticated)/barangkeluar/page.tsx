@@ -397,11 +397,7 @@ const Page: React.FC = () => {
               type="link"
               onClick={(e) => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-<<<<<<< HEAD
                 handleEdit(record);
-=======
-                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
->>>>>>> a3f4f44aa264de3dc2bfd1e2ceaa45e2964524d0
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
@@ -433,15 +429,6 @@ const Page: React.FC = () => {
       <title>Barang Keluar</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Keluar</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '10px',
-            marginBottom: '16px',
-            marginTop: '20px',
-          }}
-        >
           {role === 'admin' && (
           <div ref={searchRef}>
             <Search
@@ -450,7 +437,7 @@ const Page: React.FC = () => {
               allowClear
               enterButton
               onSearch={handleSearch}
-              style={{ width: 300, height: '40px' }}
+              style={{ width: 300, height: '40px', marginTop: '15px' }}
             />
           </div>     
           )}
@@ -470,7 +457,7 @@ const Page: React.FC = () => {
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
             style={{
               backgroundColor: 'white',
               boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
@@ -478,12 +465,14 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
+              display: 'flex',
+              marginLeft: 'auto',
+              bottom: '35px',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily }}>Barang Keluar</span>
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px', }}>Barang Keluar</span>
           </Button>
           )}
-        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
@@ -494,7 +483,7 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '50px' }}
+          style={{ marginTop: '10px' }}
         />
       </Card>
       <Modal

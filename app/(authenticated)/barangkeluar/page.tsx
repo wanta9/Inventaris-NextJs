@@ -168,12 +168,18 @@ const Page: React.FC = () => {
     tanggalKeluar: '',
     keterangan: '',
   });
+<<<<<<< HEAD
+  const { data: listBarangKeluar, mutate: mutateBarangKeluar } =
+    barangKeluarRepository.hooks.useBarangKeluar();
+  console.log(listBarangKeluar, 'listBarangKeluar');
+=======
   const { data : listSearchBarangkeluar } = barangKeluarRepository.hooks.useBarangdKeluarByName(searchText);
   console.log(listSearchBarangkeluar, 'listSearchBarangkeluar');
   const { data: listBarangKeluar, mutate: mutateBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
   const { data: listBarang, mutate: mutateBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateRuangan } = ruanganRepository.hooks.useRuangan();
-  const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarangByRuanganId();
+  // const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarangByRuanganId();
   const { data: akun } = akunRepository.hooks.useAuth();
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -392,6 +398,23 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
+<<<<<<< HEAD
+            {role === 'admin' && (
+              <Button
+                type="link"
+                onClick={(e) => {
+                  e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                  handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+                }}
+                icon={
+                  <img
+                    src="/logoEdit.svg"
+                    style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                  />
+                }
+              />
+            )}
+=======
             {role === 'admin' && (          
             <Button
               type="link"
@@ -402,6 +425,7 @@ const Page: React.FC = () => {
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
             )}  
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
           </span>
         );
       },
@@ -454,6 +478,23 @@ const Page: React.FC = () => {
           </div>
           )}
           {role === 'admin' && (
+<<<<<<< HEAD
+            <Button
+              type="primary"
+              onClick={handleButtonClick}
+              icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+              style={{
+                backgroundColor: 'white',
+                boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                color: 'black',
+                marginRight: '20px',
+                width: '200px',
+                height: '40px',
+              }}
+            >
+              <span style={{ marginRight: '20px', fontFamily }}>Barang Keluar</span>
+            </Button>
+=======
           <Button
             type="primary"
             onClick={handleButtonClick}
@@ -472,6 +513,7 @@ const Page: React.FC = () => {
           >
             <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px', }}>Barang Keluar</span>
           </Button>
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
           )}
         <Table
           rowClassName={() => 'editable-row'}

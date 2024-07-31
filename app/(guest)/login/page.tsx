@@ -12,7 +12,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  
+
   // Check if the user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -43,9 +43,9 @@ const Login = () => {
         localStorage.setItem('access_token', request.body.data);
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-        if (parseToken.existUser.status === 'aktif' || 'tidak aktif') {
+        if (parseToken.existUser.status === 'aktif' || 'tidak aktif' || 'diterima') {
           router.push('/dashboard');
-        } else if (parseToken.existUser.status === 'pending') {
+        } else if (parseToken.existUser.status === 'pending' || 'ditolak') {
           router.push('/approval');
         }
       }

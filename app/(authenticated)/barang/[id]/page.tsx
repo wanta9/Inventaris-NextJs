@@ -122,9 +122,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const [value, setValue] = useState(1);
 
-  const handleChange = (newValue: any) => {
+  // Define the handleChange function to update both the component's state and the createKoleksi state
+  const handleChange = (newValue: number) => {
     if (newValue >= 1) {
       setValue(newValue);
+      setcreateKoleksi({ ...createKoleksi, jumlah: newValue });
     }
   };
 
@@ -557,7 +559,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <InputNumber
                     min={1}
                     value={value}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(Number(e))}
                     controls={false}
                     style={{
                       width: '60px',

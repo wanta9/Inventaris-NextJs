@@ -483,7 +483,7 @@ const Page: React.FC = () => {
               marginLeft: 'auto',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily, marginTop }}>Barang Masuk</span>
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px', }}>Barang Masuk</span>
           </Button>
           )}
         <Table

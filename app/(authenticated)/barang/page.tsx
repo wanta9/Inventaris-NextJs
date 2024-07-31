@@ -572,8 +572,8 @@ const Page: React.FC = () => {
                   bottom: '35px',
                   display: 'flex',
                   marginLeft: 'auto',
-                  fontFamily: 'inherit', // Pastikan fontFamily yang benar di sini
-                  marginRight: '10px', // Mengurangi margin kanan untuk jarak yang lebih kecil
+                  fontFamily: 'inherit', 
+                  marginRight: '10px', 
                 }}
               >
                 <span style={{ marginTop: '3px', marginLeft: '10px' }}>Letak Barang</span>
@@ -946,7 +946,7 @@ const Page: React.FC = () => {
                   allowClear
                   enterButton
                   onSearch={handleSearch}
-                  style={{ width: 300, marginRight: '100px', height: '40px' }}
+                  style={{ width: 300, height: '40px' }}
                 />
               </div>
             </div>
@@ -954,7 +954,7 @@ const Page: React.FC = () => {
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={listRuanganBarang?.data}
+              dataSource={listBarang}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },

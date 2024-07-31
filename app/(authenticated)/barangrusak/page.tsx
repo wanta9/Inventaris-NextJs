@@ -473,9 +473,6 @@ const Page: React.FC = () => {
       <title>Barang Rusak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
-        >
           <div ref={searchRef}>
             <Search
               placeholder="Telusuri Barang Rusak"
@@ -489,7 +486,7 @@ const Page: React.FC = () => {
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
             style={{
               backgroundColor: 'white',
               boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
@@ -498,11 +495,13 @@ const Page: React.FC = () => {
               width: '200px',
               height: '40px',
               marginTop: '20px',
+              display : 'flex',
+              marginLeft : 'auto',
+              bottom: '65px',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily }}>Barang Rusak</span>
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px' }}>Barang Rusak</span>
           </Button>
-        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
@@ -512,7 +511,7 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '40px' }}
+          style={{ marginTop: '-10px' }}
         />
       </Card>
       <Modal

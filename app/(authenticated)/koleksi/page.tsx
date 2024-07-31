@@ -13,50 +13,39 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
 import { barangRepository } from '#/repository/barang';
 import { koleksiRepository } from '#/repository/koleksi';
+import { parseJwt } from '#/utils/parseJwt';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
-  const [borrowDate, setBorrowDate] = useState<Date | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [id, setId] = useState<string>('');
-  const [returnedDate, setReturnedDate] = useState<Date | null>(null);
+  const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
+  const [returnDate, setReturnDate] = useState<Date | null>(() => null);
+  // const [dataSource, setDataSource] = useState<DataType[]>([]);
+  const [returnedDate, setReturnedDate] = useState<Date | null>(() => null);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const { data: koleksi, isLoading } = koleksiRepository.hooks.useGetkoleksi();
+  const { data: koleksi } = koleksiRepository.hooks.useGetkoleksi();
+  console.log(koleksi, 'koleksi');
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState('Pending');
-  const [value, setValue] = useState(1);
 
-  useEffect(() => {
-    if (params.id) {
-      setId(params.id);
-      // Fetch data based on params.id
-      fetchKoleksi(params.id);
-    }
-  }, [params.id]);
-
-  const fetchKoleksi = async (id: string) => {
-    try {
-      const result = await koleksiRepository.api.getkoleksi(id);
-      setDataSource([result]);
-    } catch (error) {
-      console.error('Failed to fetch koleksi:', error);
-    }
+  const handleButtonClick = (status: string) => {
+    console.log('Button clicked for phone number:', status);
   };
+  const fontFamily = 'Barlow, sans-serif';
+  const fontWeight = '700';
+  const [value, setValue] = useState(1);
 
   const handleChange = (newValue: any) => {
     if (newValue >= 1) {
       setValue(newValue);
     }
   };
-
   const showPopconfirm = () => {
     setOpen(true);
   };
@@ -77,16 +66,40 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
   const handleDelete = async (id: string) => {
     try {
-      await koleksiRepository.api.deletekoleksi(id); // Call the API to delete the collection by ID
+      await koleksiRepository.api.deletekoleksi(id); // Panggil API untuk menghapus akun berdasarkan ID
       const newData = dataSource.filter((item) => item.id !== id);
       console.log(newData, 'delete');
-      message.success('Koleksi Berhasil Dihapus!');
+      message.success('Akun Berhasil Dihapus!');
       setDataSource(newData);
     } catch (error) {
-      console.error('Gagal menghapus koleksi!', error);
+      console.error('Akun Gagal Dihapus:', error);
     }
   };
 
+  const [dataSource, setDataSource] = useState([]);
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Ensure localStorage is accessed only in the browser
+    if (typeof window !== 'undefined') {
+      // Retrieve token from localStorage
+      const token = localStorage.getItem('access_token');
+      const parsedToken = parseJwt(token);
+      // Extract userId from parsedToken
+      setUserId(parsedToken.existUser?.id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (koleksi != null && userId) {
+      // Filter by akunId using userId
+      const filteredData = koleksi.koleksi.filter((item) => item.akun.id === userId);
+      console.log(filteredData, 'filteredData');
+
+      setDataSource(filteredData);
+    }
+  }, [koleksi, userId]);
 
   return (
     <div style={{ marginLeft: '50px' }}>
@@ -94,9 +107,9 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '20px' }}>Koleksi</h1>
       <div>
         <Row>
-          {/* Left Column with 3 Cards */}
-          {dataSource.map((record) => (
-            <Col key={record.id}>
+          {/* Kolom Kiri dengan 3 Kartu */}
+          {dataSource.map((item, index) => (
+            <Col key={item.id}>
               <Card
                 className="shadow-card"
                 style={{
@@ -118,7 +131,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     }}
                   >
                     <img
-                      src="/kk.png"
+                      src={item.ruanganBarang.barang.gambar || '/kk.png'}
                       style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }}
                     />
                   </div>
@@ -131,48 +144,46 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         marginBottom: '10px',
                       }}
                     >
-                      {record.nama}
+                      {item.ruanganBarang.barang.nama}
                     </div>
                     <div style={{ fontSize: '17px', marginBottom: '15px', marginLeft: '20px' }}>
-                      <span style={{ color: 'grey' }}>RPL</span>
+                      <span style={{ color: 'grey' }}>
+                        {item.ruanganBarang.ruangan.Letak_Barang}
+                      </span>
                     </div>
                     <div style={{ display: 'flex' }}>
                       <Button
-                        onClick={() => handleChange(value - 1)}
+                        onClick={() => handleChange(item.jumlah - 1)}
                         style={{
                           marginLeft: '20px',
                           width: '50px',
                           boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                         }}
                       >
-                        {<img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />}
+                        <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
                       </Button>
-                      {/* Box 2 */}
                       <InputNumber
                         min={1}
-                        value={value}
-                        onChange={handleChange}
+                        value={item.jumlah}
+                        onChange={(value) => handleChange(value)}
                         controls={false}
                         style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
                       />
-                      {/* Box 3 */}
                       <Button
-                        onClick={() => handleChange(value + 1)}
+                        onClick={() => handleChange(item.jumlah + 1)}
                         style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
                       >
-                        {
-                          <img
-                            src="/pluseicon.svg"
-                            style={{ width: '12px', height: '12px', marginBottom: '5px' }}
-                          />
-                        }
+                        <img
+                          src="/pluseicon.svg"
+                          style={{ width: '12px', height: '12px', marginBottom: '5px' }}
+                        />
                       </Button>
                     </div>
                     <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
                       <Popconfirm
                         title="Menghapus koleksi"
                         description="Apakah Anda yakin ingin menghapus barang ini?"
-                        onConfirm={() => handleDelete(record.id)}
+                        onConfirm={() => handleDelete(item.id)}
                         okButtonProps={{ loading: confirmLoading }}
                         onCancel={handleCancel}
                         okText="Iya"
@@ -181,7 +192,10 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <Button
                           type="link"
                           icon={
-                            <img src="/koleksiDelete.svg" style={{ width: '19px', height: '19px' }} />
+                            <img
+                              src="/koleksiDelete.svg"
+                              style={{ width: '19px', height: '19px' }}
+                            />
                           }
                         >
                           <span style={{ color: 'black' }}>Hapus</span>
@@ -193,7 +207,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
               </Card>
             </Col>
           ))}
-          {/* Right Column with 2 Cards */}
+          {/* Kolom Kanan dengan 2 Kartu */}
           <Col style={{ marginLeft: '50px' }}>
             <Card
               className="shadow-card"
@@ -209,7 +223,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
             >
               <div>
                 <p
-                  style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '-20px', marginBottom: '20px' }}
+                  style={{ fontSize: '20px', fontWeight, marginTop: '-20px', marginBottom: '20px' }}
                 >
                   Masukkan Tanggal
                 </p>
@@ -223,7 +237,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     alignItems: 'center',
                   }}
                 >
-                  <span style={{ marginRight: '10px', minWidth: '150px' }}>
+                  <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
                     Tanggal Peminjaman:
                   </span>
                   <DatePicker
@@ -244,7 +258,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     alignItems: 'center',
                   }}
                 >
-                  <span style={{ marginRight: '10px', minWidth: '150px'}}>
+                  <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
                     Tanggal Pengembalian:
                   </span>
                   <DatePicker
@@ -267,7 +281,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   marginLeft: '90px',
                 }}
               >
-                <p style={{ fontSize: '20px', fontWeight: 'bold' }}>Pinjam</p>
+                <p style={{ fontSize: '20px', fontWeight, fontFamily }}>Pinjam</p>
               </Button>
             </Card>
           </Col>

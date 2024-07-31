@@ -483,7 +483,7 @@ const Page: React.FC = () => {
               allowClear
               enterButton
               onSearch={handleSearch}
-              style={{ width: 300, height: '40px', marginTop: '20px', marginRight: '20px' }}
+              style={{ width: 300, height: '40px', marginTop: '20px', marginRight: '950px' }}
             />
           </div>
           <Button

@@ -979,9 +979,7 @@ const Page: React.FC = () => {
                 className="custom-search"
                 allowClear
                 enterButton
-                onSearch={() => {
-                  handleSearch;
-                }}
+                onSearch={handleSearch}
                 style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
               />
             </div>

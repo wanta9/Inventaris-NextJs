@@ -413,6 +413,7 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>

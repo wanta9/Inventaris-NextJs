@@ -106,186 +106,187 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       <title>Koleksi</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '20px' }}>Koleksi</h1>
       <div>
-        <Row>
-          {/* Kolom Kiri dengan 3 Kartu */}
-          {dataSource.map((item, index) => (
-            <Col key={item.id}>
-              <Card
-                className="shadow-card"
+      <Row>
+      <Col>
+        {/* Kolom Kiri dengan 3 Kartu */}
+        {dataSource.map((item, index) => (
+          <Card
+            key={item.id}
+            className="shadow-card"
+            style={{
+              width: '650px',
+              height: '180px',
+              display: 'flex',
+              alignItems: 'center',
+              marginBottom: '20px',
+              borderRadius: '20px',
+              marginTop: '40px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div
                 style={{
-                  width: '650px',
-                  height: '180px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '20px',
+                  backgroundColor: 'rgba(128, 128, 128, 0.5)',
+                  padding: '10px',
                   borderRadius: '20px',
-                  marginTop: '40px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
+                <img
+                  src={item.ruanganBarang.barang.gambar || '/kk.png'}
+                  style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }}
+                />
+              </div>
+              <div>
+                <div
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    marginLeft: '20px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  {item.ruanganBarang.barang.nama}
+                </div>
+                <div style={{ fontSize: '17px', marginBottom: '15px', marginLeft: '20px' }}>
+                  <span style={{ color: 'grey' }}>
+                    {item.ruanganBarang.ruangan.Letak_Barang}
+                  </span>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <Button
+                    onClick={() => handleChange(item.jumlah - 1)}
                     style={{
-                      backgroundColor: 'rgba(128, 128, 128, 0.5)',
-                      padding: '10px',
-                      borderRadius: '20px',
+                      marginLeft: '20px',
+                      width: '50px',
+                      boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                     }}
                   >
+                    <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
+                  </Button>
+                  <InputNumber
+                    min={1}
+                    value={item.jumlah}
+                    onChange={(value) => handleChange(value)}
+                    controls={false}
+                    style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+                  />
+                  <Button
+                    onClick={() => handleChange(item.jumlah + 1)}
+                    style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+                  >
                     <img
-                      src={item.ruanganBarang.barang.gambar || '/kk.png'}
-                      style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }}
+                      src="/pluseicon.svg"
+                      style={{ width: '12px', height: '12px', marginBottom: '5px' }}
                     />
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        marginLeft: '20px',
-                        marginBottom: '10px',
-                      }}
-                    >
-                      {item.ruanganBarang.barang.nama}
-                    </div>
-                    <div style={{ fontSize: '17px', marginBottom: '15px', marginLeft: '20px' }}>
-                      <span style={{ color: 'grey' }}>
-                        {item.ruanganBarang.ruangan.Letak_Barang}
-                      </span>
-                    </div>
-                    <div style={{ display: 'flex' }}>
-                      <Button
-                        onClick={() => handleChange(item.jumlah - 1)}
-                        style={{
-                          marginLeft: '20px',
-                          width: '50px',
-                          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                        }}
-                      >
-                        <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
-                      </Button>
-                      <InputNumber
-                        min={1}
-                        value={item.jumlah}
-                        onChange={(value) => handleChange(value)}
-                        controls={false}
-                        style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-                      />
-                      <Button
-                        onClick={() => handleChange(item.jumlah + 1)}
-                        style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-                      >
-                        <img
-                          src="/pluseicon.svg"
-                          style={{ width: '12px', height: '12px', marginBottom: '5px' }}
-                        />
-                      </Button>
-                    </div>
-                    <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
-                      <Popconfirm
-                        title="Menghapus koleksi"
-                        description="Apakah Anda yakin ingin menghapus barang ini?"
-                        onConfirm={() => handleDelete(item.id)}
-                        okButtonProps={{ loading: confirmLoading }}
-                        onCancel={handleCancel}
-                        okText="Iya"
-                        cancelText="Tidak"
-                      >
-                        <Button
-                          type="link"
-                          icon={
-                            <img
-                              src="/koleksiDelete.svg"
-                              style={{ width: '19px', height: '19px' }}
-                            />
-                          }
-                        >
-                          <span style={{ color: 'black' }}>Hapus</span>
-                        </Button>
-                      </Popconfirm>
-                    </div>
-                  </div>
+                  </Button>
                 </div>
-              </Card>
-            </Col>
-          ))}
-          {/* Kolom Kanan dengan 2 Kartu */}
-          <Col style={{ marginLeft: '50px' }}>
-            <Card
-              className="shadow-card"
+                <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
+                  <Popconfirm
+                    title="Menghapus koleksi"
+                    description="Apakah Anda yakin ingin menghapus barang ini?"
+                    onConfirm={() => handleDelete(item.id)}
+                    okButtonProps={{ loading: confirmLoading }}
+                    onCancel={handleCancel}
+                    okText="Iya"
+                    cancelText="Tidak"
+                  >
+                    <Button
+                      type="link"
+                      icon={
+                        <img
+                          src="/koleksiDelete.svg"
+                          style={{ width: '19px', height: '19px' }}
+                        />
+                      }
+                    >
+                      <span style={{ color: 'black' }}>Hapus</span>
+                    </Button>
+                  </Popconfirm>
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </Col>
+      <Col style={{ marginLeft: '50px' }}>
+        {/* Kolom Kanan dengan 2 Kartu */}
+        <Card
+          className="shadow-card"
+          style={{
+            width: '400px',
+            height: '300px',
+            display: 'flex',
+            marginBottom: '10px',
+            borderRadius: '20px',
+            padding: '20px',
+            marginTop: '40px',
+          }}
+        >
+          <div>
+            <p
+              style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '-20px', marginBottom: '20px' }}
+            >
+              Masukkan Tanggal
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div
               style={{
-                width: '400px',
-                height: '300px',
-                display: 'flex',
                 marginBottom: '10px',
-                borderRadius: '20px',
-                padding: '20px',
-                marginTop: '40px',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
-              <div>
-                <p
-                  style={{ fontSize: '20px', fontWeight, marginTop: '-20px', marginBottom: '20px' }}
-                >
-                  Masukkan Tanggal
-                </p>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                <div
-                  style={{
-                    marginBottom: '10px',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
-                    Tanggal Peminjaman:
-                  </span>
-                  <DatePicker
-                    placeholder="Tanggal Peminjaman"
-                    onChange={(date: Date | null) => setBorrowDate(date)}
-                    style={{
-                      width: 'calc(100% - 160px)',
-                      border: '1px solid rgba(0, 0, 0, .50)',
-                      marginBottom: '10px',
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    marginBottom: '10px',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
-                    Tanggal Pengembalian:
-                  </span>
-                  <DatePicker
-                    placeholder="Tanggal Pengembalian"
-                    onChange={(date: Date | null) => setReturnDate(date)}
-                    style={{
-                      width: 'calc(100% - 160px)',
-                      border: '1px solid rgba(0, 0, 0, .50)',
-                    }}
-                  />
-                </div>
-              </div>
-              <Button
+              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily: 'Arial' }}>
+                Tanggal Peminjaman:
+              </span>
+              <DatePicker
+                placeholder="Tanggal Peminjaman"
+                onChange={(date: Date | null) => setBorrowDate(date)}
                 style={{
-                  width: '140px',
-                  height: '45px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  marginTop: '30px',
-                  marginLeft: '90px',
+                  width: 'calc(100% - 160px)',
+                  border: '1px solid rgba(0, 0, 0, .50)',
+                  marginBottom: '10px',
                 }}
-              >
-                <p style={{ fontSize: '20px', fontWeight, fontFamily }}>Pinjam</p>
-              </Button>
-            </Card>
-          </Col>
-        </Row>
+              />
+            </div>
+            <div
+              style={{
+                marginBottom: '10px',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily: 'Arial' }}>
+                Tanggal Pengembalian:
+              </span>
+              <DatePicker
+                placeholder="Tanggal Pengembalian"
+                onChange={(date: Date | null) => setReturnDate(date)}
+                style={{
+                  width: 'calc(100% - 160px)',
+                  border: '1px solid rgba(0, 0, 0, .50)',
+                }}
+              />
+            </div>
+          </div>
+          <Button
+            style={{
+              width: '140px',
+              height: '45px',
+              backgroundColor: '#582DD2',
+              color: 'white',
+              marginTop: '30px',
+              marginLeft: '90px',
+            }}
+          >
+            <p style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'Arial' }}>Pinjam</p>
+          </Button>
+        </Card>
+      </Col>
+      </Row>
       </div>
     </div>
   );

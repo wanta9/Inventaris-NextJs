@@ -10,9 +10,11 @@ import { barangRepository } from '#/repository/barang';
 import { values } from 'mobx';
 import { peminjamRepository } from '#/repository/peminjam';
 import { koleksiRepository } from '#/repository/koleksi';
+import { parseJwt } from '#/utils/parseJwt';
 
 // const { Option } = Select;
 interface createKoleksi {
+  akunId: string;
   ruanganBarangId: string;
   jumlah: number;
 }
@@ -28,6 +30,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
+    akunId: '',
     ruanganBarangId: '',
     jumlah: 0,
   });
@@ -47,6 +50,33 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     setcreateKoleksi({ ...createKoleksi, ruanganBarangId: name });
   };
 
+  useEffect(() => {
+    // Mendapatkan access_token dari localStorage
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      try {
+        // Parsing token untuk mendapatkan akunId
+        const parseToken = parseJwt(token);
+        console.log('Hasil parsing token:', parseToken); // Log seluruh hasil parsing
+
+        if (parseToken && parseToken.existUser && parseToken.existUser.id) {
+          console.log('Akun ID dari token:', parseToken.existUser.id); // Log akunId yang ditemukan
+          setcreateKoleksi((prevState) => ({
+            ...prevState,
+            akunId: parseToken.existUser.id, // Ambil id dari existUser di dalam token
+          }));
+        } else {
+          console.error('Token tidak memiliki ID akun:', parseToken);
+        }
+      } catch (error) {
+        console.error('Invalid token:', error);
+      }
+    } else {
+      console.error('Tidak ada token ditemukan di localStorage');
+    }
+  }, []);
+
   // CREATE KOLEKSI
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
@@ -55,6 +85,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       setError(null);
 
       const data = {
+        akunId: createKoleksi.akunId,
         ruanganBarangId: createKoleksi.ruanganBarangId,
         jumlah: createKoleksi.jumlah,
       };
@@ -64,6 +95,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Data berhasil disimpan!');
+        console.log('Data berhasil disimpan:', request.body.data);
         setModalVisible(false);
       }
       console.log(request);
@@ -90,9 +122,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   const [value, setValue] = useState(1);
 
-  const handleChange = (newValue: any) => {
+  // Define the handleChange function to update both the component's state and the createKoleksi state
+  const handleChange = (newValue: number) => {
     if (newValue >= 1) {
       setValue(newValue);
+      setcreateKoleksi({ ...createKoleksi, jumlah: newValue });
     }
   };
 
@@ -525,7 +559,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   <InputNumber
                     min={1}
                     value={value}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(Number(e))}
                     controls={false}
                     style={{
                       width: '60px',

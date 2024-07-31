@@ -483,7 +483,7 @@ const Page: React.FC = () => {
               marginLeft: 'auto',
             }}
           >
-            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px' }}>Barang Masuk</span>
+            <span style={{ marginRight: '20px', fontFamily, marginTop }}>Barang Masuk</span>
           </Button>
           )}
         <Table
@@ -497,7 +497,7 @@ const Page: React.FC = () => {
             };
           }}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
 

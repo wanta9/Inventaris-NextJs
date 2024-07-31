@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card, Col, Divider, Row, Select } from 'antd';
+import { Button, Card, Col, Divider, message, Row, Select } from 'antd';
 import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const fontWeight = '500';
   const id: string = params?.id;
   const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
-  console.log(akunbyId, 'barang masuk by id');
+  console.log(akunbyId, 'akun by id');
   const router = useRouter();
 
   const Kembali = () => {
@@ -27,10 +27,14 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   };
 
   const SaveChanges = async () => {
+    console.log(id, status);
     if (status) {
       try {
-        await akunRepository.updateAkun(id, status);
+        await akunRepository.api.updateAkun(id, { status });
         console.log('Status updated successfully!');
+          
+        message.success('Akun berhasil diterima!');
+
       } catch (error) {
         console.error('Failed to update status:', error);
       }

@@ -168,9 +168,15 @@ const Page: React.FC = () => {
     tanggalKeluar: '',
     keterangan: '',
   });
+<<<<<<< HEAD
   const { data: listBarangKeluar, mutate: mutateBarangKeluar } =
     barangKeluarRepository.hooks.useBarangKeluar();
   console.log(listBarangKeluar, 'listBarangKeluar');
+=======
+  const { data : listSearchBarangkeluar } = barangKeluarRepository.hooks.useBarangdKeluarByName(searchText);
+  console.log(listSearchBarangkeluar, 'listSearchBarangkeluar');
+  const { data: listBarangKeluar, mutate: mutateBarangKeluar } = barangKeluarRepository.hooks.useBarangKeluar();
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
   const { data: listBarang, mutate: mutateBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateRuangan } = ruanganRepository.hooks.useRuangan();
   // const { data: listRuanganBarang } = ruanganBarangRepository.hooks.useRuanganBarangByRuanganId();
@@ -392,6 +398,7 @@ const Page: React.FC = () => {
       render: (record: Item) => {
         return (
           <span>
+<<<<<<< HEAD
             {role === 'admin' && (
               <Button
                 type="link"
@@ -407,6 +414,18 @@ const Page: React.FC = () => {
                 }
               />
             )}
+=======
+            {role === 'admin' && (          
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                handleEdit(record);
+              }}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
+            />
+            )}  
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
           </span>
         );
       },
@@ -434,15 +453,6 @@ const Page: React.FC = () => {
       <title>Barang Keluar</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Keluar</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '10px',
-            marginBottom: '16px',
-            marginTop: '20px',
-          }}
-        >
           {role === 'admin' && (
           <div ref={searchRef}>
             <Search
@@ -450,8 +460,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div>     
           )}
@@ -462,12 +472,13 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '1170px', height: '40px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, marginRight: '1170px', height: '40px', marginTop: '15px' }}
             />
           </div>
           )}
           {role === 'admin' && (
+<<<<<<< HEAD
             <Button
               type="primary"
               onClick={handleButtonClick}
@@ -483,19 +494,38 @@ const Page: React.FC = () => {
             >
               <span style={{ marginRight: '20px', fontFamily }}>Barang Keluar</span>
             </Button>
+=======
+          <Button
+            type="primary"
+            onClick={handleButtonClick}
+            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
+            style={{
+              backgroundColor: 'white',
+              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+              color: 'black',
+              marginRight: '20px',
+              width: '200px',
+              height: '40px',
+              display: 'flex',
+              marginLeft: 'auto',
+              bottom: '35px',
+            }}
+          >
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px', }}>Barang Keluar</span>
+          </Button>
+>>>>>>> 7aed3e149b29c8958a3d087be621342516b7febc
           )}
-        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangKeluar?.data}
+          dataSource={listSearchBarangkeluar}
           pagination={{ pageSize: 5 }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '50px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal

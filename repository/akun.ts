@@ -24,6 +24,9 @@ const url = {
   deleteAkun(id: string) {
     return `/akun/${id}`;
   },
+  getSearchByName(nama: string) {
+    return `/akun/search/by-name?nama=${nama}`;
+  }
 };
 
 const hooks = {
@@ -37,6 +40,10 @@ const hooks = {
   useAkunbyId(id: string) {
     return useSWR(url.getakunbyId(id), http.fetcher);
   },
+
+  useSearchByName(nama: string) {
+    return useSWR(url.getSearchByName(nama), http.fetcher);
+  }
 };
 
 const api = {

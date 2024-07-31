@@ -166,8 +166,9 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } =
-    barangMasukRepository.hooks.useBarangMasuk();
+  const { data : listsearchBarangMasuk } = barangMasukRepository.hooks.useBarangMasukByName(searchText);
+  console.log(listsearchBarangMasuk, 'listsearchBarangMasuk');
+  const { data: listBarangMasuk, mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
 
@@ -440,9 +441,6 @@ const Page: React.FC = () => {
       <title>Barang Masuk</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Masuk</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
-        >
           {role === 'admin' && (
           <div ref={searchRef}>
             <Search
@@ -450,8 +448,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div>  
           )}
@@ -462,8 +460,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '1170px', height: '40px', marginTop: '20px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div> 
           )}
@@ -471,7 +469,7 @@ const Page: React.FC = () => {
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
             style={{
               backgroundColor: 'white',
               boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
@@ -479,17 +477,19 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
-              marginTop: '20px',
+              bottom: '50px',
+              marginTop: '10px',
+              display: 'flex',
+              marginLeft: 'auto',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily }}>Barang Masuk</span>
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px', }}>Barang Masuk</span>
           </Button>
           )}
-        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangMasuk?.data}
+          dataSource={listsearchBarangMasuk}
           onRow={(record) => {
             return {
               onClick: () => handleRowClick(record.id),

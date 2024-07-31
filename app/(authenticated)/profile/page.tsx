@@ -104,31 +104,29 @@ const Profile = () => {
     }
   }
 
-  const onFinishPassword = async (id: any) => {
-    const { oldPassword, newPassword } = id; // Ambil nilai newPassword dari form
-    console.log('data id: ', id); // Cetak id untuk debugging
-    // console.log('id: ', id); // Cetak values untuk debugging
+  const onFinishPassword = async (id: string) => {
+    console.log('data id: ', id); 
     try {
-      setLoading(true); // Set loading state ke true
-      setError(null); // Set error state ke null
+      setLoading(true); 
+      setError(null); 
       const data = {
         oldPassword: updatePassword.oldPassword,
-        newPassword: updatePassword.newPassword, // Siapkan data untuk dikirim ke API
+        newPassword: updatePassword.newPassword, 
       };
-      const request = await akunRepository.api.updateAkun(id, data); // Panggil API untuk update akun
+      const request = await akunRepository.api.updateAkun(id, data); 
       if (request.status === 400) {
-        setError(request.body.message); // Set pesan error jika status 400
+        setError(request.body.message); 
       } else {
-        message.success('Berhasil Mengubah Sandi!'); // Tampilkan pesan sukses
-        setModalVisible(false); // Tutup modal
+        message.success('Berhasil Mengubah Sandi!'); 
+        setModalVisible(false); 
       }  
-      console.log(request); // Cetak request untuk debugging
+      console.log(request); 
     } catch (error) {
-      console.log(error); // Cetak error untuk debugging
-      setError('Terjadi kesalahan pada server.'); // Set pesan error umum
-      message.error('Gagal Mengubah Sandi!'); // Tampilkan pesan error
+      console.log(error); 
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal Mengubah Sandi!');
     } finally {
-      setLoading(false); // Set loading state ke false
+      setLoading(false); 
     }
   };
   
@@ -173,6 +171,7 @@ const Profile = () => {
 
   const handleModalCancel = () => {
     setModalVisible(false);
+    form.resetFields();
     // setModalEditVisible(false);
     
   };
@@ -372,7 +371,7 @@ const Profile = () => {
                                 marginRight: '50px',
                                 borderColor: 'black',
                                 width: '150px',
-                                marginTop: '20px',
+                                marginTop: '20px',  
                                 marginLeft: '55px',
                                 color: 'black',
                               }}
@@ -452,6 +451,8 @@ const Profile = () => {
                                 <Input
                                   placeholder="Sandi Lama"
                                   style={{ width: '100%', height: '40px' }}
+                                  value={updatePassword.oldPassword}
+                                  onChange={(e) => setupdatePassword({ ...updatePassword, oldPassword: e.target.value })}
                                 />
                               </Form.Item>
                               <Form.Item
@@ -468,7 +469,7 @@ const Profile = () => {
                                   onChange={(e) => setupdatePassword({ ...updatePassword, newPassword: e.target.value })}
                                 />
                               </Form.Item>
-
+ 
                               <Form.Item
                                 name="confirmNewPassword"
                                 label="Konfirmasi Sandi Baru Anda"

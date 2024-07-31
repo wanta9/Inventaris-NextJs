@@ -497,7 +497,7 @@ const Page: React.FC = () => {
             };
           }}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
 

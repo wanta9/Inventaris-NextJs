@@ -945,7 +945,7 @@ const Page: React.FC = () => {
                   className="custom-search"
                   allowClear
                   enterButton
-                  onSearch={() => {}}
+                  onSearch={handleSearch}
                   style={{ width: 300, marginRight: '950px', height: '40px' }}
                 />
               </div>
@@ -954,7 +954,7 @@ const Page: React.FC = () => {
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={listRuanganBarang?.data}
+              dataSource={listBarang}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },

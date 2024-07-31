@@ -437,11 +437,7 @@ const Page: React.FC = () => {
               allowClear
               enterButton
               onSearch={handleSearch}
-<<<<<<< HEAD
-              style={{ width: 300, height: '40px', marginTop: '15px' }}
-=======
-              style={{ width: 300, marginRight: '950px', height: '40px' }}
->>>>>>> bedf57e86f115be1119b2f3f38bb0128fc613345
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div>     
           )}
@@ -452,8 +448,8 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
-              style={{ width: 300, marginRight: '1170px', height: '40px' }}
+              onSearch={handleSearch}
+              style={{ width: 300, marginRight: '1170px', height: '40px', marginTop: '15px' }}
             />
           </div>
           )}
@@ -480,14 +476,14 @@ const Page: React.FC = () => {
         <Table
           rowClassName={() => 'editable-row'}
           bordered
-          dataSource={listBarangKeluar?.data}
+          dataSource={listSearchBarangkeluar}
           pagination={{ pageSize: 5 }}
           onRow={(record) => ({
             onClick: () => handleRowClick(record.id),
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '10px' }}
+          style={{ marginTop: '40px' }}
         />
       </Card>
       <Modal

@@ -460,7 +460,7 @@ const Page: React.FC = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
+              onSearch={handleSearch}
               style={{ width: 300, height: '40px', marginTop: '20px' }}
             />
           </div> 

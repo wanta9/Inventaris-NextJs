@@ -946,7 +946,7 @@ const Page: React.FC = () => {
                   allowClear
                   enterButton
                   onSearch={handleSearch}
-                  style={{ width: 300, marginRight: '950px', height: '40px' }}
+                  style={{ width: 300, height: '40px' }}
                 />
               </div>
             </div>
@@ -997,7 +997,7 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'flex-start', alignItems: 'center' }}>
             {dataSource.map((item, index) => (
               <div
                 key={index}

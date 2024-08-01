@@ -62,43 +62,49 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
           <Row>
             {/* Kolom Kiri dengan 3 Kartu */}
             <Col>
-              {dataSource.map((item, index) => (
-                <Card
-                  key={index}
-                  className="shadow-card"
-                  style={{
-                    width: '400px',
-                    height: '150px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    borderRadius: '20px',
-                    marginTop: '25px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
-                    <div>
-                      <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                        {item.ruanganBarang.barang.nama}
-                      </div>
-                      <div style={{ marginBottom: '5px' }}>RPL</div>
-                      <Card
-                        style={{
-                          width: '80px',
-                          height: '30px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
-                        }}
-                      >
-                        <h4>{item.jumlah}</h4>
-                      </Card>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </Col>
+  {Array.isArray(dataSource) && dataSource.length > 0 ? (
+    dataSource.map((item, index) => (
+      <Card
+        key={index}
+        className="shadow-card"
+        style={{
+          width: '400px',
+          height: '150px',
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: '20px',
+          marginTop: '25px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/kk.png" style={{ width: '100px', marginRight: '10px' }} />
+          <div>
+            <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+              {item.ruanganBarang.barang.nama}
+            </div>
+            <div style={{ marginBottom: '5px' }}>RPL</div>
+            <Card
+              style={{
+                width: '80px',
+                height: '30px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <h4>{item.jumlah}</h4>
+            </Card>
+          </div>
+        </div>
+      </Card>
+    ))
+  ) : (
+    <div>Data tidak tersedia</div> // Menangani kasus ketika dataSource bukan array atau kosong
+  )}
+</Col>
+
+
             {role === 'admin' && (
               <Col style={{ marginLeft: '50px' }}>
                 <Card

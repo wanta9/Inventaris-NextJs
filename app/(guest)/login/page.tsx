@@ -14,17 +14,17 @@ const Login = () => {
   const router = useRouter();
 
   // Check if the user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      router.push('/dashboard');
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem('access_token');
+  //   if (token) {
+  //     router.push('/dashboard');
+  //   }
+  // }, [router]);
 
-  const parseJwt = (token: string) => {
-    // Your implementation to parse JWT token
-    return JSON.parse(atob(token.split('.')[1]));
-  };
+  // const parseJwt = (token: string) => {
+  //   // Your implementation to parse JWT token
+  //   return JSON.parse(atob(token.split('.')[1]));
+  // };
 
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);

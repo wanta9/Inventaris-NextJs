@@ -33,7 +33,7 @@ const Register = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [createAkun, setcreateAkun] = useState<createAkun>({
-    peranId: '4a114c02-5909-4f63-b88b-27ae49b701ac',
+    peranId: '5954d800-e79a-405d-a408-95095f494e3d',
     username: '',
     nomorInduk: '',
     password: '',

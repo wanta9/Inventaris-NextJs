@@ -238,7 +238,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily: 'Arial' }}>
+              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
                 Tanggal Peminjaman:
               </span>
               <DatePicker
@@ -259,7 +259,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily: 'Arial' }}>
+              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
                 Tanggal Pengembalian:
               </span>
               <DatePicker
@@ -282,7 +282,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
               marginLeft: '90px',
             }}
           >
-            <p style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'Arial' }}>Pinjam</p>
+            <p style={{ fontSize: '20px', fontWeight: 'bold', fontFamily }}>Pinjam</p>
           </Button>
         </Card>
       </Col>

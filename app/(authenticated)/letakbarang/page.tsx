@@ -340,9 +340,7 @@ const Page: React.FC = () => {
           onCancel={handleModalCancel}
           footer={false}
         >
-          <Form layout="horizontal" onFinish={() => onFinish(id)}>
-             {/* labelCol geser kanan
-             wrapperCol lebar input */}
+          <Form form={form} layout="horizontal" onFinish={() => onFinish(id)}>
             <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
                 value={createLetakbarang.Letak_Barang}

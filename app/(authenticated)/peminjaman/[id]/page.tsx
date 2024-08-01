@@ -118,14 +118,10 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
-            {/* {dataSources.map((item, index) => (
-
-                ))} */}
-
-            {/* Kolom Kanan dengan 2 Kartu */}
-            {role === 'peminjam' && (             
+            {dataSources.map((item, index) => (
             <Col style={{ marginLeft: '50px' }}>
               <Card
+                key={index}
                 className="shadow-card"
                 style={{
                   width: '400px',
@@ -153,6 +149,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       Tanggal Peminjaman:
                     </span>
                     <DatePicker
+                      disabled
                       placeholder="Tanggal Peminjaman"
                       onChange={(date: Date | null) => setBorrowDate(date)}
                       style={{
@@ -175,6 +172,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       Tanggal Pengembalian:
                     </span>
                     <DatePicker
+                      disabled
                       placeholder="Tanggal Pengembalian"
                       onChange={(date: Date | null) => setReturnDate(date)}
                       style={{
@@ -197,6 +195,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       Tanggal Dikembalikan:
                     </span>
                     <DatePicker
+                    disabled
                       placeholder="Tanggal Dikembalikan"
                       onChange={(date: Date | null) => setReturnedDate(date)}
                       style={{
@@ -234,6 +233,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                   </div>
                 </div>
               </Card>
+
               <Card
                 className="shadow-card"
                 style={{
@@ -285,7 +285,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </div>
               </Card>
             </Col>
-            )}
+                ))}
 
 
             {role === 'petugas' && (
@@ -315,24 +315,22 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       }}
                     >
                       <span
-                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily, marginBottom: '20px' }}
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
                       >
                         Tanggal Peminjaman:
                       </span>
                       <DatePicker
-                      disabled
                         placeholder="Tanggal Peminjaman"
                         onChange={(date: Date | null) => setBorrowDate(date)}
                         style={{
                           width: 'calc(100% - 160px)',
                           border: '1px solid rgba(0, 0, 0, .50)',
-                          marginBottom: '20px'
                         }}
                       />
                     </div>
                     <div
                       style={{
-                        marginBottom: '30px',
+                        marginBottom: '10px',
                         width: '100%',
                         display: 'flex',
                         alignItems: 'center',
@@ -344,7 +342,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         Tanggal Pengembalian:
                       </span>
                       <DatePicker
-                        disabled
                         placeholder="Tanggal Pengembalian"
                         onChange={(date: Date | null) => setReturnDate(date)}
                         style={{
@@ -353,7 +350,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         }}
                       />
                     </div>
-                    {/* <div
+                    <div
                       style={{
                         marginBottom: '10px',
                         width: '100%',
@@ -374,7 +371,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           border: '1px solid rgba(0, 0, 0, .50)',
                         }}
                       />
-                    </div> */}
+                    </div>
                     <div
                       style={{
                         marginBottom: '10px',
@@ -383,14 +380,17 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         alignItems: 'center',
                       }}
                     >
+                      <span
+                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                      >
+                        Status
+                      </span>
                       <Button
                         style={{
                           color: '#FF0000',
                           backgroundColor: 'rgba(255, 0, 0, 0.3)',
                           borderColor: '#FF0000',
-                          marginRight: '25px',
-                          width: '40%',
-                          marginLeft: '25px'
+                          marginRight: '10px',
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
@@ -443,7 +443,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           color: '#5BFF00',
                           backgroundColor: 'rgba(162, 225, 129, 0.3)',
                           borderColor: '#A2E181',
-                          width: '40%'
                         }}
                         onClick={(e) => {
                           e.stopPropagation();

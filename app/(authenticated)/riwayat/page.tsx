@@ -82,26 +82,6 @@ const Riwayat = () => {
       status: 'Diterima',
       foto: 'image 5.png',
     },
-    {
-      key: '2',
-      namapeminjam: 'Jim Green',
-      telpon: '9876543210',
-      kodepeminjaman: 'kode',
-      tanggalpeminjaman: '2024-02-01',
-      tanggaldikembalikan: '2024-02-15',
-      status: 'Ditolak',
-      foto: 'image 5.png',
-    },
-    {
-      key: '3',
-      namapeminjam: 'Joe Black',
-      telpon: '5432167890',
-      kodepeminjaman: 'kode',
-      tanggalpeminjaman: '2024-03-01',
-      tanggaldikembalikan: '2024-03-15',
-      status: 'Pending',
-      foto: 'image 5.png',
-    },
   ];
 
   useEffect(() => {

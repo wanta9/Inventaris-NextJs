@@ -132,7 +132,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   //   id: '',
   // });
 
-  const save = async () => {
+  const save =   () => {
     try {
       const values = await form.validateFields();
 

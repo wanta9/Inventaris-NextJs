@@ -74,9 +74,10 @@ const Peminjaman = () => {
       setUserId(parsedToken.existUser?.id);
     }
   }, []);
-  const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
-  const peminajamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
-
+  const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman(); // admin && petugas
+  console.log(listPeminjaman, 'listPeminjaman');
+  const peminjamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId); //peminjam
+  console.log(peminjamanData, 'data filterpeminjamanData :');
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
 
@@ -168,71 +169,154 @@ const Peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-          <div ref={searchRef}>
-            <Search
-              placeholder="Telusuri Barang "
-              className="custom-search"
-              allowClear
-              enterButton
-              onSearch={() => {
-                handleSearch;
-              }}
-              style={{ width: 300, marginRight: '500px', height: '40px' }}
-            />
-          </div>
-          <Table
-            dataSource={peminajamanData}
-            style={{ paddingTop: '40px' }}
-            onRow={(record) => ({
-              onClick: () => handleRowClick(record.id),
-              style: { cursor: 'pointer' },
-            })}
-            rowClassName="clickable-row"
-          >
-            <Column
-              title="Nama Peminjam"
-              key="fotonamapeminjam"
-              render={(text, record: DataType) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={record.peminjam?.akun?.gambar} />
-                  <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
-                </div>
-              )}
-            />
-            <Column
-              title="Telepon"
-              dataIndex="telpon"
-              key="telpon"
-              render={(text, record: DataType) => {
-                console.log(record);
-                return record.akun?.telp || 'No Telepon';
-              }}
-            />
-            <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
-            <Column
-              title="Tanggal Peminjaman"
-              dataIndex="tanggalPinjam"
-              key="tanggalpeminjaman"
-              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
-            />
-            <Column
-              title="Status"
-              dataIndex="status"
-              key="status"
-              render={(status: string, record: DataType) => (
-                <Button
-                  type="primary"
-                  style={{ width: '70%' }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleButtonClick(record.id);
-                  }}
-                >
-                  {status}
-                </Button>
-              )}
-            />
-          </Table>
+          {(role === 'admin' || role === 'petugas') && (
+            <Table
+              dataSource={peminjamanData}
+              style={{ paddingTop: '40px' }}
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record.id),
+                style: { cursor: 'pointer' },
+              })}
+              rowClassName="clickable-row"
+            >
+              <Column
+                title="Nama Peminjam"
+                key="fotonamapeminjam"
+                render={(text, record: DataType) => (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Avatar src={record.peminjam?.akun?.gambar} />
+                    <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
+                  </div>
+                )}
+              />
+              <Column
+                title="Telepon"
+                dataIndex="telpon"
+                key="telpon"
+                render={(text, record: DataType) => {
+                  console.log(record);
+                  return record.akun?.telp || 'No Telepon';
+                }}
+              />
+              <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
+              <Column
+                title="Tanggal Peminjaman"
+                dataIndex="tanggalPinjam"
+                key="tanggalpeminjaman"
+                render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+              />
+              <Column
+                title="Status"
+                dataIndex="status"
+                key="status"
+                render={(status: string, record: DataType) => (
+                  <Button
+                    type="primary"
+                    style={{ width: '70%' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick(record.id);
+                    }}
+                  >
+                    {status}
+                  </Button>
+                )}
+              />
+            </Table>
+          )}
+          {role === 'peminjam' && (
+            <Table
+              dataSource={peminjamanData}
+              style={{ paddingTop: '40px' }}
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record.id),
+                style: { cursor: 'pointer' },
+              })}
+              rowClassName="clickable-row"
+            >
+              <Column
+                title="Nama Peminjam"
+                key="fotonamapeminjam"
+                render={(text, record: DataType) => (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Avatar src={record.peminjam?.akun?.gambar} />
+                    <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
+                  </div>
+                )}
+              />
+              <Column
+                title="Telepon"
+                dataIndex="telpon"
+                key="telpon"
+                render={(text, record: DataType) => {
+                  console.log(record);
+                  return record.akun?.telp || 'No Telepon';
+                }}
+              />
+              <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
+              <Column
+                title="Tanggal Peminjaman"
+                dataIndex="tanggalPinjam"
+                key="tanggalpeminjaman"
+                render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+              />
+              <Column
+                title="Tanggal Pengembalian"
+                dataIndex="tanggalPengembalian"
+                key="tanggalPengembalian"
+                render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+              />
+              <Column
+                title="Status"
+                dataIndex="status"
+                key="status"
+                render={(status: string, record: DataType) => (
+                  <Button
+                    type="primary"
+                    style={{
+                      width: '80%',
+                      backgroundColor:
+                        record.status === 'ditolak'
+                          ? '#F87171'
+                          : record.status === 'diterima'
+                          ? '#60A5FA'
+                          : record.status === 'telat'
+                          ? '#FACC15'
+                          : record.status === 'pending'
+                          ? '#9CA3AF'
+                          : undefined,
+                      borderColor:
+                        record.status === 'ditolak'
+                          ? '#B91C1C'
+                          : record.status === 'diterima'
+                          ? '#1D4ED8'
+                          : record.status === 'telat'
+                          ? '#A16207'
+                          : record.status === 'pending'
+                          ? '#374151'
+                          : undefined,
+                      color:
+                        record.status === 'ditolak'
+                          ? '#B91C1C'
+                          : record.status === 'diterima'
+                          ? '#1D4ED8'
+                          : record.status === 'telat'
+                          ? '#A16207'
+                          : record.status === 'pending'
+                          ? '#374151'
+                          : undefined,
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick(record.id);
+                    }}
+                  >
+                    {status}
+                  </Button>
+                )}
+              />
+            </Table>
+          )}
         </div>
       </Card>
       {role === 'admin' && (

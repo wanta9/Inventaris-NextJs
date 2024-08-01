@@ -317,8 +317,9 @@ const Page: React.FC = () => {
     }
   };
 
-  const onFinishEdit = async (id: string) => {
+  const onFinishEdit = async (id: string) => {  
     console.log('data id: ', id);
+    
     try {
       setLoading(true);
       setError(null);
@@ -983,6 +984,7 @@ const Page: React.FC = () => {
                     <Input
                       style={{ width: '80%', height: '45px', marginLeft: '110px' }}
                       placeholder="NIP"
+                      value={updatePetugas.nomorInduk}
                       onChange={(e) =>
                         setupdatePetugas({ ...updatePetugas, nomorInduk: e.target.value })
                       }

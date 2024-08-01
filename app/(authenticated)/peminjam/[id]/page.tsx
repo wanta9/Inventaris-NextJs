@@ -26,11 +26,11 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
     setStatus(value);
   };
 
-  const SaveChanges = async () => {
-    console.log(id, status);
+  const SaveChanges = async (id: string, status: string, data: any) => {
+    console.log(id, status, data);
     if (status) {
       try {
-        await akunRepository.api.updateAkun(id, { status });
+        await akunRepository.api.updateAkun(id, { status }, data);
         console.log('Status updated successfully!');
           
         message.success('Akun berhasil diterima!');

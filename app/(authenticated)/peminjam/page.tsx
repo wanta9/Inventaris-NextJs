@@ -165,6 +165,17 @@ const Peminjam = () => {
                       handleButtonClick(record.status);
                     }
                   }}
+                  style={{
+                    backgroundColor: record.status === 'ditolak' ? '#F87171' : 
+                                    record.status === 'diterima' ? '#60A5FA' : 
+                                    record.status === 'pending' ? '#9CA3AF' : undefined,
+                    borderColor: record.status === 'ditolak' ? '#B91C1C' : 
+                                 record.status === 'diterima' ? '#1D4ED8' : 
+                                 record.status === 'pending' ? '#374151' : undefined,
+                    color:       record.status === 'ditolak' ? '#B91C1C' : 
+                                 record.status === 'diterima' ? '#1D4ED8' : 
+                                 record.status === 'pending' ? '#374151' : undefined,
+                  }}
                 >
                   {record.status}
                 </Button>

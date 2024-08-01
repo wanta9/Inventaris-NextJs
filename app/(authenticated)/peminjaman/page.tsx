@@ -8,6 +8,7 @@ import type { UploadFile } from 'antd';
 import { peminjamanRepository } from '#/repository/peminjaman';
 import { akunRepository } from '#/repository/akun';
 import daysjs from 'dayjs';
+import { parseJwt } from '#/utils/parseJwt';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -62,7 +63,21 @@ const Peminjaman = () => {
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [form] = Form.useForm();
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Ensure localStorage is accessed only in the browser
+    if (typeof window !== 'undefined') {
+      // Retrieve token from localStorage
+      const token = localStorage.getItem('access_token');
+      const parsedToken = parseJwt(token);
+      // Extract userId from parsedToken
+      setUserId(parsedToken.existUser?.id);
+    }
+  }, []);
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
+  const peminajamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
+
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
 
@@ -154,20 +169,8 @@ const Peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-          <div ref={searchRef}>
-            <Search
-              placeholder="Telusuri Barang "
-              className="custom-search"
-              allowClear
-              enterButton
-              onSearch={() => {
-                handleSearch;
-              }}
-              style={{ width: 300, marginRight: '500px', height: '40px' }}
-            />
-          </div>
           <Table
-            dataSource={listPeminjaman?.data}
+            dataSource={peminajamanData}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),

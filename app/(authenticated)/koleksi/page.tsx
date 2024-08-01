@@ -316,63 +316,12 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 width: '500px',
                 height: '300px',
                 display: 'flex',
-<<<<<<< HEAD
-                alignItems: 'center',
-              }}
-            >
-              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
-                Tanggal Peminjaman:
-              </span>
-              <DatePicker
-                placeholder="Tanggal Peminjaman"
-                onChange={(date: Date | null) => setBorrowDate(date)}
-                style={{
-                  width: 'calc(100% - 160px)',
-                  border: '1px solid rgba(0, 0, 0, .50)',
-                  marginBottom: '10px',
-                }}
-              />
-            </div>
-            <div
-              style={{
-=======
->>>>>>> 4205afac644a2a3b6b265ef62ddce5391122a39d
                 marginBottom: '10px',
                 borderRadius: '20px',
                 padding: '20px',
                 marginTop: '40px',
               }}
             >
-<<<<<<< HEAD
-              <span style={{ marginRight: '10px', minWidth: '150px', fontFamily }}>
-                Tanggal Pengembalian:
-              </span>
-              <DatePicker
-                placeholder="Tanggal Pengembalian"
-                onChange={(date: Date | null) => setReturnDate(date)}
-                style={{
-                  width: 'calc(100% - 160px)',
-                  border: '1px solid rgba(0, 0, 0, .50)',
-                }}
-              />
-            </div>
-          </div>
-          <Button
-            style={{
-              width: '140px',
-              height: '45px',
-              backgroundColor: '#582DD2',
-              color: 'white',
-              marginTop: '30px',
-              marginLeft: '90px',
-            }}
-          >
-            <p style={{ fontSize: '20px', fontWeight: 'bold', fontFamily }}>Pinjam</p>
-          </Button>
-        </Card>
-      </Col>
-      </Row>
-=======
               <Form onFinish={onFinishPinjam} layout="horizontal" style={{ textAlign: 'center' }}>
                 <div>
                   <p
@@ -461,7 +410,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
             </Card>
           </Col>
         </Row>
->>>>>>> 4205afac644a2a3b6b265ef62ddce5391122a39d
       </div>
     </div>
   );

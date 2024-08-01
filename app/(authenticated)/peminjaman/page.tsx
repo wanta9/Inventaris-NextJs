@@ -76,10 +76,10 @@ const Peminjaman = () => {
     }
   }, []);
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
-  const peminajamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
-
-  const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
+  const peminjamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
+  console.log(peminjamanData, 'data filterpeminjamanData :')
+  const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -154,12 +154,6 @@ const Peminjaman = () => {
     form.resetFields();
   };
 
-  // const filteredData = data.filter(
-  //   (item) =>
-  //     item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
-  // );
 
   return (
     <div>
@@ -170,7 +164,7 @@ const Peminjaman = () => {
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
           <Table
-            dataSource={peminajamanData}
+            dataSource={listPeminjaman?.data}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),

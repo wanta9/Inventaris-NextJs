@@ -54,6 +54,7 @@ interface DataType {
   updatedAt: string;
   deletedAt: string | null;
   peminjam: Peminjam;
+  akun?: any;
 }
 
 const Peminjaman = () => {
@@ -75,10 +76,10 @@ const Peminjaman = () => {
     }
   }, []);
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
-  const peminajamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
-
-  const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
+  const peminjamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
+  console.log(peminjamanData, 'data filterpeminjamanData :')
+  const { data: akun } = akunRepository.hooks.useAuth();
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -153,12 +154,6 @@ const Peminjaman = () => {
     form.resetFields();
   };
 
-  // const filteredData = data.filter(
-  //   (item) =>
-  //     item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
-  // );
 
   return (
     <div>
@@ -169,7 +164,7 @@ const Peminjaman = () => {
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
           <Table
-            dataSource={peminajamanData}
+            dataSource={listPeminjaman?.data}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),
@@ -204,13 +199,33 @@ const Peminjaman = () => {
               render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
             />
             <Column
+              title="Tanggal Pengembalian"
+              dataIndex="tanggalPengembalian"
+              key="tanggalPengembalian"
+              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+            />
+            <Column
               title="Status"
               dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
                 <Button
                   type="primary"
-                  style={{ width: '70%' }}
+                  style={{ 
+                    width: '80%', 
+                    backgroundColor: record.status === 'ditolak' ? '#F87171' : 
+                                    record.status === 'diterima' ? '#60A5FA' : 
+                                    record.status === 'telat' ? '#FACC15' :  
+                                    record.status === 'pending' ? '#9CA3AF' : undefined,
+                    borderColor: record.status === 'ditolak' ? '#B91C1C' : 
+                                 record.status === 'diterima' ? '#1D4ED8' :
+                                 record.status === 'telat' ? '#A16207' : 
+                                 record.status === 'pending' ? '#374151' : undefined,
+                    color:       record.status === 'ditolak' ? '#B91C1C' : 
+                                 record.status === 'diterima' ? '#1D4ED8' :
+                                 record.status === 'telat' ? '#A16207' :  
+                                 record.status === 'pending' ? '#374151' : undefined,                    
+                  }}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleButtonClick(record.id);

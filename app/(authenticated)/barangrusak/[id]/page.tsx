@@ -81,9 +81,12 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
               <Col span={5}>
                 <Button
                   style={{
-                    color: '#5BFF00',
-                    backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                    borderColor: '#A2E181',
+                    backgroundColor: barangRusakById?.data?.Status === 'rusak' ? '#FFEAE7' : 
+                    barangRusakById?.data?.Status === 'diperbaiki' ? '#E4F8D4' : undefined,
+                    borderColor: barangRusakById?.data?.Status === 'rusak' ? '#FFA7A7' : 
+                    barangRusakById?.data?.Status === 'diperbaiki' ? '#A2E181' : undefined,
+                    color: barangRusakById?.data?.Status === 'rusak' ? '#FF6C6C' : 
+                    barangRusakById?.data?.Status === 'diperbaiki' ? '#5BFF00' : undefined,
                   }}
                   // type="primary"
                   onClick={(e) => {

@@ -5,8 +5,15 @@ import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { akunRepository } from '#/repository/akun';
+import { statusBarang } from '../../dashboard/page';
 
 const { Option } = Select;
+
+
+interface updateStatus {
+ id: string;
+ status: statusBarang;
+}
 
 const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const [status, setStatus] = useState<string | undefined>();
@@ -14,32 +21,51 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '500';
   const id: string = params?.id;
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
   console.log(akunbyId, 'akun by id');
+  const [updateStatus, setupdateStatus] = useState<updateStatus>({
+    id: '',
+    status: statusBarang.Pending,
+  });
+
   const router = useRouter();
 
   const Kembali = () => {
     router.push('/peminjam');
   };
 
-  const handleStatusChange = (value: string) => {
-    setStatus(value);
+  const handleStatusChange = (value: statusBarang) => {
+    setupdateStatus(prevState => ({
+      ...prevState,
+      status: value,
+    }));
   };
 
-  const SaveChanges = async (id: string, status: string, data: any) => {
-    console.log(id, status, data);
-    if (status) {
-      try {
-        await akunRepository.api.updateAkun(id, { status }, data);
-        console.log('Status updated successfully!');
-          
-        message.success('Akun berhasil diterima!');
+  const onFinishEdit = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        status: updateStatus.status
+      };
+      const request = await akunRepository.api.updateAkun(id, data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Berhasil Mengedit Petugas!');
 
-      } catch (error) {
-        console.error('Failed to update status:', error);
       }
-    } else {
-      console.warn('No status selected!');
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('GagalMengedit Petugas!');
+      console.log();
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,10 +147,11 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                       fontWeight,
                       borderColor: 'black',
                     }}
-                    onChange={handleStatusChange}
+                    value={updateStatus.status} 
+                    onChange={handleStatusChange} 
                   >
-                    <Option value="diterima">Diterima</Option>
-                    <Option value="ditolak">Ditolak</Option>
+                  <Option value={statusBarang.Diterima}>Diterima</Option>
+                  <Option value={statusBarang.Ditolak}>Ditolak</Option>
                   </Select>
                 </Col>
               </Row>
@@ -158,7 +185,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                       borderRadius: '10px',
                       marginLeft: '200px',
                     }}
-                    onClick={SaveChanges}
+                    onClick={() => onFinishEdit(id)}
                   >
                     Simpan
                   </Button>

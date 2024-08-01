@@ -71,8 +71,9 @@ const Peminjaman = () => {
   useEffect(() => {
     if (searchRef.current) {
       const searchButton = searchRef.current.querySelector('.ant-input-search-button');
-      if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
-        searchButton.style.backgroundColor = '#582DD2'
+      if (searchButton instanceof HTMLElement) {
+        // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2';
         searchButton.style.borderColor = '#582DD2';
       }
     }
@@ -149,7 +150,7 @@ const Peminjaman = () => {
       <div>
         <title>Peminjaman</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Peminjaman</h1>
-      </div> 
+      </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
           <div ref={searchRef}>
@@ -158,9 +159,11 @@ const Peminjaman = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {handleSearch}}
+              onSearch={() => {
+                handleSearch;
+              }}
               style={{ width: 300, marginRight: '500px', height: '40px' }}
-              />
+            />
           </div>
           <Table
             dataSource={listPeminjaman?.data}
@@ -177,7 +180,7 @@ const Peminjaman = () => {
               render={(text, record: DataType) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Avatar src={record.peminjam?.akun?.gambar} />
-                  <span style={{ marginLeft: 8 }}>{record.peminjam?.akun?.nama}</span>
+                  <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
                 </div>
               )}
             />
@@ -187,7 +190,7 @@ const Peminjaman = () => {
               key="telpon"
               render={(text, record: DataType) => {
                 console.log(record);
-                return record.peminjam?.akun?.telp || 'No Telepon';
+                return record.akun?.telp || 'No Telepon';
               }}
             />
             <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />

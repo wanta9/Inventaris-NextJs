@@ -28,6 +28,10 @@ const url = {
   getBarangById(id: string) {
     return `/barang/${id}`;
   },
+
+  getFoto(photo: string) {
+    return `/upload/get-barang/${photo}`;
+  },
   uploadBarang() {
     return `/upload/barang`;
   },
@@ -47,6 +51,9 @@ const hooks = {
   },
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
+  },
+  useFoto(photo: string) {
+    return useSWR(photo ? url.getFoto(photo) : null, http.fetcher);
   },
   useBarangByName(nama: string) {
     return useSWR(url.getBarangByName(nama), http.fetcher);
@@ -68,7 +75,6 @@ const api = {
   updateBarang(id: string, data: any) {
     return http.put(url.updateBarang(id)).send(data);
   },
-
 };
 
 export const barangRepository = {

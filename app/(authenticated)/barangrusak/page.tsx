@@ -422,9 +422,13 @@ const Page: React.FC = () => {
       render: (status: string, record: any) => (
         <Button
           style={{
-            color: '#5BFF00',
-            backgroundColor: 'rgba(162, 225, 129, 0.3)',
-            borderColor: '#A2E181',
+            backgroundColor: record.Status === 'rusak' ? '#FFEAE7' : 
+            record.status === 'diperbaiki' ? '#E4F8D4' : undefined,
+            borderColor: record.Status === 'rusak' ? '#FFA7A7' : 
+            record.status === 'diperbaiki' ? '#A2E181' : undefined,
+            color: record.Status === 'rusak' ? '#FF6C6C' : 
+            record.status === 'diperbaiki' ? '#5BFF00' : undefined,
+            
           }}
         >
           {status}

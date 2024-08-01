@@ -22,6 +22,7 @@ const Peminjam = () => {
   console.log(listPeminjam, 'list peminjam');
   const { data: listAkun } = akunRepository.hooks.useAkun();
   const peminjamData = listPeminjam?.filter((item: any) => item.peran.Role === 'peminjam');
+  console.log(peminjamData, 'data filter peminjam:')
   console.log(listAkun, 'list akun');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
@@ -154,7 +155,7 @@ const Peminjam = () => {
             />
             <Column
               title="Status"
-              dataIndex="tatus"
+              dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
                 <Button

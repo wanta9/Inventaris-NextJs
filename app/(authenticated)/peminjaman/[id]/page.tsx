@@ -17,8 +17,16 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [status, setStatus] = useState('Pending');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
-
+  console.log(peminjamanById, 'peminjaman by id');
   const [dataSource, setDataSource] = useState([]);
+  const [dataSources, setDataSources] = useState([]);
+
+  useEffect(() => {
+    if (peminjamanById) {
+      setDataSources(peminjamanById.data);
+    }
+    // console.log(peminjamanById, 'peminjaman by id');
+  }, [peminjamanById]);
 
   useEffect(() => {
     if (peminjamanById) {
@@ -110,7 +118,11 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
+            {/* {dataSources.map((item, index) => (
 
+                ))} */}
+
+            {/* Kolom Kanan dengan 2 Kartu */}
             <Col style={{ marginLeft: '50px' }}>
               <Card
                 className="shadow-card"

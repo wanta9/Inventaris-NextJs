@@ -75,7 +75,9 @@ const Peminjaman = () => {
     }
   }, []);
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman();
-  const peminajamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId);
+  const peminajamanData = role === 'peminjam' ? listPeminjaman?.data?.filter((item) => item.akun.id === userId) : listPeminjaman?.data;
+
+
 
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
@@ -152,13 +154,6 @@ const Peminjaman = () => {
     setData(newData);
     form.resetFields();
   };
-
-  // const filteredData = data.filter(
-  //   (item) =>
-  //     item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-  //     item.kodepeminjam.toString().toLowerCase().includes(searchText.toLowerCase())
-  // );
 
   return (
     <div>

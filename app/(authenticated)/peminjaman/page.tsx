@@ -153,18 +153,6 @@ const Peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-          <div ref={searchRef}>
-            <Search
-              placeholder="Telusuri Barang "
-              className="custom-search"
-              allowClear
-              enterButton
-              onSearch={() => {
-                handleSearch;
-              }}
-              style={{ width: 300, marginRight: '500px', height: '40px' }}
-            />
-          </div>
           <Table
             dataSource={listPeminjaman?.data}
             style={{ paddingTop: '40px' }}

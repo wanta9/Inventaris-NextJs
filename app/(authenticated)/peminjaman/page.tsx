@@ -312,8 +312,7 @@ const Peminjaman = () => {
               )}
             />
           </Table>
-          )}
-          
+          )}          
         </div>
       </Card>
       {role === 'admin' && (

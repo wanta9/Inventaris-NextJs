@@ -118,26 +118,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
-<<<<<<< HEAD
-            {/* {dataSources.map((item, index) => (
-            <Col style={{ marginLeft: '50px' }}>
-              <Card
-                key={index}
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '240px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '10px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  borderRadius: '20px',
-                  padding: '30px 10px 20px 20px',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <div
-=======
 
             {(role === 'admin' || role === 'peminjam') &&
               Array.isArray(dataSources) &&
@@ -145,7 +125,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <Col key={index} style={{ marginLeft: '50px' }}>
                   <Card
                     className="shadow-card"
->>>>>>> 1313770542aac2baaf65b78ece5a37488874c326
                     style={{
                       width: '400px',
                       height: '240px',
@@ -309,69 +288,9 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <div style={{ fontFamily }}>{item.akun.telp}</div>
                       </div>
                     </div>
-<<<<<<< HEAD
-                  </div>
-                </div>
-              </Card>
-
-              <Card
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '250px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '10px',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  marginTop: '20px',
-                }}
-              >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
-                    Data Peminjam
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>RonyWjy</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>Rony Wijaya</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>222310404</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>08588828xxx</div>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-                ))} */}
-
-=======
                   </Card>
                 </Col>
               ))}
->>>>>>> 1313770542aac2baaf65b78ece5a37488874c326
 
             {role === 'petugas' &&
               Array.isArray(dataSources) &&

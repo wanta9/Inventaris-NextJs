@@ -6,6 +6,7 @@ import { Avatar, Button, Input, Table, Card, Select, Dropdown, Menu } from 'antd
 import { PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import { akunRepository } from '#/repository/akun';
+import { peminjamanRepository } from '#/repository/peminjaman';
 
 
 const { Column } = Table;
@@ -17,6 +18,8 @@ const Riwayat = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
+  const { data : listRiwayat } = peminjamanRepository.hooks.usePeminjaman(); 
+  console.log(listRiwayat, 'list riwayat: ');
   const [statusFilter, setStatusFilter] = useState('');
   const { data: akun } = akunRepository.hooks.useAuth();
   const router = useRouter();
@@ -71,22 +74,22 @@ const Riwayat = () => {
     foto: string;
   }
 
-  const initialData: DataType[] = [
-    {
-      key: '1',
-      namapeminjam: 'John Brown',
-      telpon: '1234567890',
-      kodepeminjaman: 'kode',
-      tanggalpeminjaman: '2024-01-01',
-      tanggaldikembalikan: '2024-01-15',
-      status: 'Diterima',
-      foto: 'image 5.png',
-    },
-  ];
+  // const initialData: DataType[] = [
+  //   {
+  //     key: '1',
+  //     namapeminjam: 'John Brown',
+  //     telpon: '1234567890',
+  //     kodepeminjaman: 'kode',
+  //     tanggalpeminjaman: '2024-01-01',
+  //     tanggaldikembalikan: '2024-01-15',
+  //     status: 'Diterima',
+  //     foto: 'image 5.png',
+  //   },
+  // ];
 
-  useEffect(() => {
-    setData(initialData);
-  }, []);
+  // useEffect(() => {
+  //   setData(initialData);
+  // }, []);
 
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -101,13 +104,13 @@ const Riwayat = () => {
     setStatusFilter(value);
   };
 
-  const filteredData = data.filter(
-    (item) =>
-      (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.kodepeminjaman.toString().toLowerCase().includes(searchText.toLowerCase())) &&
-      (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
-  );
+  // const filteredData = data.filter(
+  //   (item) =>
+  //     (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.kodepeminjaman.toString().toLowerCase().includes(searchText.toLowerCase())) &&
+  //     (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
+  // );
 
   const handleRowClick = (id: string) => {
     window.location.href = `http://localhost:3001/riwayatditolak?id=${id}`;
@@ -143,7 +146,7 @@ const Riwayat = () => {
             <Option value="Telat">Telat</Option>
           </Select>
         </div>
-        <Table dataSource={filteredData} style={{ paddingTop: '40px' }}>
+        <Table  style={{ paddingTop: '40px' }}>
           <Column
             title="Nama Peminjam"
             key="fotonamapeminjam"

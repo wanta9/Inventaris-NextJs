@@ -118,33 +118,13 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
-<<<<<<< HEAD
-            {/* {dataSources.map((item, index) => (
-            <Col style={{ marginLeft: '50px' }}>
-              <Card
-                key={index}
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '240px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '10px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  borderRadius: '20px',
-                  padding: '30px 10px 20px 20px',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <div
-=======
 
-            {Array.isArray(dataSources) &&
+            {(role === 'admin' || role === 'peminjam') &&
+              Array.isArray(dataSources) &&
               dataSources.map((item, index) => (
                 <Col key={index} style={{ marginLeft: '50px' }}>
                   <Card
                     className="shadow-card"
->>>>>>> 1313770542aac2baaf65b78ece5a37488874c326
                     style={{
                       width: '400px',
                       height: '240px',
@@ -308,288 +288,235 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <div style={{ fontFamily }}>{item.akun.telp}</div>
                       </div>
                     </div>
-<<<<<<< HEAD
-                  </div>
-                </div>
-              </Card>
+                  </Card>
+                </Col>
+            ))}
 
-              <Card
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '250px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '10px',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  marginTop: '20px',
-                }}
-              >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
-                    Data Peminjam
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>RonyWjy</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>Rony Wijaya</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>222310404</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>08588828xxx</div>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-                ))} */}
+{role === 'petugas' &&
+              Array.isArray(dataSources) &&
+              dataSources.map((item, index) => (
+                <Col key={index} style={{ marginLeft: '50px' }}>
+                  <Card
+                    className="shadow-card"
+                    style={{
+                      width: '400px',
+                      height: '240px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '10px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      borderRadius: '20px',
+                      padding: '20px',
+                    }}
+                  >
+                    <div
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
+                    >
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Peminjaman:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalPinjam ? moment(item.tanggalPinjam) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Pengembalian:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalPengembalian ? moment(item.tanggalPengembalian) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Dikembalikan:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Status
+                        </span>
+                        <Button
+                          style={{
+                            color: '#FF0000',
+                            backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                            borderColor: '#FF0000',
+                            marginRight: '10px',
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            showModal();
+                          }}
+                        >
+                          Tolak
+                        </Button>
 
-=======
+                        <Modal
+                          title="Alasan Ditolak"
+                          style={{ textAlign: 'center' }}
+                          visible={isModalVisible}
+                          centered
+                          onCancel={handleCancel}
+                          footer={null}
+                        >
+                          <TextArea style={{ marginTop: '20px', height: '100px' }} />
+                          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                            <Button
+                              type="default"
+                              onClick={handleCancel}
+                              style={{
+                                marginTop: '20px',
+                                marginRight: '10px',
+                                marginBottom: '-20px',
+                                borderColor: 'black',
+                                color: 'black',
+                              }}
+                            >
+                              <span>Batal</span>
+                            </Button>
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              style={{
+                                backgroundColor: '#582DD2',
+                                marginRight: '-165px',
+                                marginTop: '20px',
+                                marginBottom: '-20px',
+                              }}
+                            >
+                              <span>Simpan</span>
+                            </Button>
+                          </Form.Item>
+                        </Modal>
+
+                        <Button
+                          style={{
+                            color: '#5BFF00',
+                            backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                            borderColor: '#A2E181',
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleButtonClick('Accepted');
+                          }}
+                        >
+                          Terima
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card
+                    className="shadow-card"
+                    style={{
+                      width: '400px',
+                      height: '250px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '10px',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                      <div
+                        style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}
+                      >
+                        Data Peminjam
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>
+                          Nama Peminjaman
+                        </div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.peminjam.NISN}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.telp}</div>
+                      </div>
+                    </div>
                   </Card>
                 </Col>
               ))}
->>>>>>> 1313770542aac2baaf65b78ece5a37488874c326
-
-            {role === 'petugas' && (
-              <Col style={{ marginLeft: '50px' }}>
-                <Card
-                  className="shadow-card"
-                  style={{
-                    width: '400px',
-                    height: '240px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                    border: '1px solid rgba(0, 0, 0, .95)',
-                    borderRadius: '20px',
-                    padding: '20px',
-                  }}
-                >
-                  <div
-                    style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
-                  >
-                    <div
-                      style={{
-                        marginBottom: '10px',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                      >
-                        Tanggal Peminjaman:
-                      </span>
-                      <DatePicker
-                        placeholder="Tanggal Peminjaman"
-                        onChange={(date: Date | null) => setBorrowDate(date)}
-                        style={{
-                          width: 'calc(100% - 160px)',
-                          border: '1px solid rgba(0, 0, 0, .50)',
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        marginBottom: '10px',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                      >
-                        Tanggal Pengembalian:
-                      </span>
-                      <DatePicker
-                        placeholder="Tanggal Pengembalian"
-                        onChange={(date: Date | null) => setReturnDate(date)}
-                        style={{
-                          width: 'calc(100% - 160px)',
-                          border: '1px solid rgba(0, 0, 0, .50)',
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        marginBottom: '10px',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                      >
-                        Tanggal Dikembalikan:
-                      </span>
-                      <DatePicker
-                        placeholder="Tanggal Dikembalikan"
-                        onChange={(date: Date | null) => setReturnedDate(date)}
-                        style={{
-                          width: 'calc(100% - 160px)',
-                          border: '1px solid rgba(0, 0, 0, .50)',
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        marginBottom: '10px',
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <span
-                        style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                      >
-                        Status
-                      </span>
-                      <Button
-                        style={{
-                          color: '#FF0000',
-                          backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                          borderColor: '#FF0000',
-                          marginRight: '10px',
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          showModal();
-                        }}
-                      >
-                        Tolak
-                      </Button>
-
-                      <Modal
-                        title="Alasan Ditolak"
-                        style={{ textAlign: 'center' }}
-                        visible={isModalVisible}
-                        centered
-                        onCancel={handleCancel}
-                        footer={null}
-                      >
-                        <TextArea style={{ marginTop: '20px', height: '100px' }} />
-                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                          <Button
-                            type="default"
-                            onClick={handleCancel}
-                            style={{
-                              marginTop: '20px',
-                              marginRight: '10px',
-                              marginBottom: '-20px',
-                              borderColor: 'black',
-                              color: 'black',
-                            }}
-                          >
-                            <span>Batal</span>
-                          </Button>
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            style={{
-                              backgroundColor: '#582DD2',
-                              marginRight: '-165px',
-                              marginTop: '20px',
-                              marginBottom: '-20px',
-                            }}
-                          >
-                            <span>Simpan</span>
-                          </Button>
-                        </Form.Item>
-                      </Modal>
-
-                      <Button
-                        style={{
-                          color: '#5BFF00',
-                          backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                          borderColor: '#A2E181',
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleButtonClick('Accepted');
-                        }}
-                      >
-                        Terima
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card
-                  className="shadow-card"
-                  style={{
-                    width: '400px',
-                    height: '250px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: '10px',
-                    borderRadius: '20px',
-                    border: '1px solid rgba(0, 0, 0, .95)',
-                  }}
-                >
-                  <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                    <div style={{ fontWeight, fontFamily, marginBottom: '30px', fontSize: '20px' }}>
-                      Data Peminjam
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <div style={{ marginBottom: '10px', display: 'flex' }}>
-                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
-                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                      <div style={{ fontFamily }}>RonyWjy</div>
-                    </div>
-                    <div style={{ marginBottom: '10px', display: 'flex' }}>
-                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                      <div style={{ fontFamily }}>Rony Wijaya</div>
-                    </div>
-                    <div style={{ marginBottom: '10px', display: 'flex' }}>
-                      <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                      <div style={{ fontFamily }}>222310404</div>
-                    </div>
-                    <div style={{ marginBottom: '10px', display: 'flex' }}>
-                      <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                      <div style={{ fontFamily }}>08588828xxx</div>
-                    </div>
-                  </div>
-                </Card>
-              </Col>
-            )}
           </Row>
         </div>
       </Card>

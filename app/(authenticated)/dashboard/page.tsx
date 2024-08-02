@@ -380,7 +380,15 @@ const Page = () => {
       <div>
         <title>Dashboard</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Dashboard</h1>
-        <p style={{ paddingBottom: '20px' }}>Halo, Elisabet. Selamat Datang di Inventaris!</p>
+        {role === 'admin' && (          
+        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        )}
+        {role === 'petugas' && (          
+        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        )}
+        {role === 'perminjam' && (          
+        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        )}
 
         {/* Barang, Peminjam, Aktif */}
 
@@ -741,6 +749,7 @@ const Page = () => {
           </Form>
         </Modal>
 
+        {/* CARD Dashboard */}
         <Row gutter={[40, 40]} justify="start" style={{ marginTop: '40px', marginBottom: '40px' }}>
           <Col xs={24} md={15} lg={15} style={{ marginBottom: '40px' }}>
             <Card
@@ -770,6 +779,7 @@ const Page = () => {
               </div>
             </Card>
           </Col>
+          {/* TUTUP CARD Dashboard */}
 
           <Col xs={24} md={8} lg={6}>
             <Card

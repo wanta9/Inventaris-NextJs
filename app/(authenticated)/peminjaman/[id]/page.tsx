@@ -7,6 +7,7 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
 import TextArea from 'antd/es/input/TextArea';
 import { akunRepository } from '#/repository/akun';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
@@ -22,10 +23,9 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [dataSources, setDataSources] = useState([]);
 
   useEffect(() => {
-    if (peminjamanById) {
-      setDataSources(peminjamanById.data);
+    if (peminjamanById && peminjamanById.data) {
+      setDataSources([peminjamanById.data]); // Bungkus objek dalam array
     }
-    // console.log(peminjamanById, 'peminjaman by id');
   }, [peminjamanById]);
 
   useEffect(() => {
@@ -118,175 +118,178 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
-            {dataSources.map((item, index) => (
-            <Col style={{ marginLeft: '50px' }}>
-              <Card
-                key={index}
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '240px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '10px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  borderRadius: '20px',
-                  padding: '30px 10px 20px 20px',
-                }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                  <div
+
+            {Array.isArray(dataSources) &&
+              dataSources.map((item, index) => (
+                <Col key={index} style={{ marginLeft: '50px' }}>
+                  <Card
+                    className="shadow-card"
                     style={{
-                      marginBottom: '10px',
-                      width: '100%',
+                      width: '400px',
+                      height: '240px',
                       display: 'flex',
                       alignItems: 'center',
-                    }}
-                  >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                    >
-                      Tanggal Peminjaman:
-                    </span>
-                    <DatePicker
-                      disabled
-                      placeholder="Tanggal Peminjaman"
-                      onChange={(date: Date | null) => setBorrowDate(date)}
-                      style={{
-                        width: 'calc(100% - 160px)',
-                        border: '1px solid rgba(0, 0, 0, .50)',
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
                       marginBottom: '10px',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      borderRadius: '20px',
+                      padding: '30px 10px 20px 20px',
                     }}
                   >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                    <div
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
                     >
-                      Tanggal Pengembalian:
-                    </span>
-                    <DatePicker
-                      disabled
-                      placeholder="Tanggal Pengembalian"
-                      onChange={(date: Date | null) => setReturnDate(date)}
-                      style={{
-                        width: 'calc(100% - 160px)',
-                        border: '1px solid rgba(0, 0, 0, .50)',
-                      }}
-                    />
-                  </div>
-                  <div
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Peminjaman:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalPinjam ? moment(item.tanggalPinjam) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Pengembalian:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalPengembalian ? moment(item.tanggalPengembalian) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Tanggal Dikembalikan:
+                        </span>
+                        <DatePicker
+                          disabled
+                          value={item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null}
+                          style={{
+                            width: 'calc(100% - 160px)',
+                            border: '1px solid rgba(0, 0, 0, .50)',
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: '10px',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <span
+                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
+                        >
+                          Status
+                        </span>
+                        <div
+                          style={{
+                            width: '50%',
+                            backgroundColor: '#60A5FA',
+                            border: '1px solid #1D4ED8',
+                            textAlign: 'center',
+                            padding: '5px',
+                            borderRadius: '5px',
+                            color: '#1D4ED8',
+                          }}
+                        >
+                          {item.status}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card
+                    className="shadow-card"
                     style={{
-                      marginBottom: '10px',
-                      width: '100%',
+                      width: '400px',
+                      height: '250px',
                       display: 'flex',
+                      flexDirection: 'column',
                       alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '10px',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      marginTop: '20px',
                     }}
                   >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                    >
-                      Tanggal Dikembalikan:
-                    </span>
-                    <DatePicker
-                    disabled
-                      placeholder="Tanggal Dikembalikan"
-                      onChange={(date: Date | null) => setReturnedDate(date)}
-                      style={{
-                        width: 'calc(100% - 160px)',
-                        border: '1px solid rgba(0, 0, 0, .50)',
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      marginBottom: '10px',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <span
-                      style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                    >
-                      Status
-                    </span>
+                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                      <div
+                        style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}
+                      >
+                        Data Peminjam
+                      </div>
+                    </div>
                     <div
                       style={{
-                        width: '50%',
-                        backgroundColor: '#60A5FA',
-                        border: '1px solid #1D4ED8',
-                        textAlign: 'center',
-                        padding: '5px',
-                        borderRadius: '5px',
-                        color: '#1D4ED8',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
                       }}
                     >
-                      Diterima
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>
+                          Nama Peminjaman
+                        </div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.peminjam.NISN}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.telp}</div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card
-                className="shadow-card"
-                style={{
-                  width: '400px',
-                  height: '250px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginBottom: '10px',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(0, 0, 0, .95)',
-                  marginTop: '20px',
-                }}
-              >
-                <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                  <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
-                    Data Peminjam
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>RonyWjy</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>Rony Wijaya</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>222310404</div>
-                  </div>
-                  <div style={{ marginBottom: '10px', display: 'flex' }}>
-                    <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                    <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                    <div style={{ fontFamily }}>08588828xxx</div>
-                  </div>
-                </div>
-              </Card>
-            </Col>
-                ))}
-
+                  </Card>
+                </Col>
+              ))}
 
             {role === 'petugas' && (
               <Col style={{ marginLeft: '50px' }}>

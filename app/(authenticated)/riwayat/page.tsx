@@ -7,7 +7,8 @@ import { PlusOutlined, ArrowLeftOutlined, UserOutlined } from '@ant-design/icons
 import type { UploadFile } from 'antd';
 import { akunRepository } from '#/repository/akun';
 import { peminjamanRepository } from '#/repository/peminjaman';
-
+import { parseJwt } from '#/utils/parseJwt';
+import daysjs from 'dayjs';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -18,13 +19,25 @@ const Riwayat = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
-  const { data : listRiwayat } = peminjamanRepository.hooks.usePeminjaman(); 
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // Ensure localStorage is accessed only in the browser
+    if (typeof window !== 'undefined') {
+      // Retrieve token from localStorage
+      const token = localStorage.getItem('access_token');
+      const parsedToken = parseJwt(token);
+      // Extract userId from parsedToken
+      setUserId(parsedToken.existUser?.id);
+    }
+  }, []);
+  const { data: listRiwayat } = peminjamanRepository.hooks.usePeminjaman();
+  const peminjamanData = listRiwayat?.data?.filter((item) => item.akun.id === userId); //peminjam
   console.log(listRiwayat, 'list riwayat: ');
   const [statusFilter, setStatusFilter] = useState('');
   const { data: akun } = akunRepository.hooks.useAuth();
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
-
 
   const logout = () => {
     localStorage.removeItem('access_token');
@@ -61,7 +74,6 @@ const Riwayat = () => {
       </Item>
     </Menu>
   );
-
 
   interface DataType {
     key: React.Key;
@@ -107,18 +119,18 @@ const Riwayat = () => {
   // const filteredData = data.filter(
   //   (item) =>
   //     (item.namapeminjam.toLowerCase().includes(searchText.toLowerCase()) ||
-  //       item.telpon.toLowerCase().includes(searchText.toLowerCase()) ||
+  //       item.telpon.toLowerCase().includes(searchText.toLowerCase()) |sadasd|
   //       item.kodepeminjaman.toString().toLowerCase().includes(searchText.toLowerCase())) &&
   //     (statusFilter === '' || item.status.toLowerCase() === statusFilter.toLowerCase())
   // );
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3001/riwayatditolak?id=${id}`;
+    window.location.href = `http://localhost:3002/koleksi/${id}`;
   };
 
-  const handleButtonClick = (e: any, id: string) => {
-    e.stopPropagation();
-    handleChangeStatus(id);
+  const handleButtonClick = (id: string) => {
+    form.setFieldsValue({ id });
+    // Show the form to update the status
   };
 
   return (
@@ -146,40 +158,192 @@ const Riwayat = () => {
             <Option value="Telat">Telat</Option>
           </Select>
         </div>
-        <Table  style={{ paddingTop: '40px' }}>
-          <Column
-            title="Nama Peminjam"
-            key="fotonamapeminjam"
-            render={(text, record: DataType) => (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar src={record.foto} />
-                <span style={{ marginLeft: 8 }}>{record.namapeminjam}</span>
-              </div>
-            )}
-          />
-          <Column title="Telepon" dataIndex="telpon" key="telpon" />
-          <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjaman" />
-          <Column
-            title="Tanggal Peminjaman"
-            dataIndex="tanggalpeminjaman"
-            key="tanggalpeminjaman"
-          />
-          <Column
-            title="Tanggal Dikembalikan"
-            dataIndex="tanggaldikembalikan"
-            key="tanggaldikembalikan"
-          />
-          <Column
-            title="Status"
-            dataIndex="status"
-            key="status"
-            render={(status: string, record: DataType) => (
-              <Button type="primary" onClick={() => handleChangeStatus(record.key)}>
-                {status}
-              </Button>
-            )}
-          />
-        </Table>
+        {(role === 'admin' || role === 'petugas') && (
+          <Table
+            dataSource={listRiwayat?.data}
+            style={{ paddingTop: '40px' }}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record.id),
+              style: { cursor: 'pointer' },
+            })}
+            rowClassName="clickable-row"
+          >
+            <Column
+              title="Nama Peminjam"
+              key="fotonamapeminjam"
+              render={(text, record: DataType) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar src={record.peminjam?.akun?.gambar} />
+                  <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
+                </div>
+              )}
+            />
+            <Column
+              title="Telepon"
+              dataIndex="telpon"
+              key="telpon"
+              render={(text, record: DataType) => {
+                console.log(record);
+                return record.akun?.telp || 'No Telepon';
+              }}
+            />
+            <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
+            <Column
+              title="Tanggal Peminjaman"
+              dataIndex="tanggalPinjam"
+              key="tanggalpeminjaman"
+              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+            />
+            <Column
+              title="Tanggal Pengembalian"
+              dataIndex="tanggalPengembalian"
+              key="tanggalPengembalian"
+              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+            />
+            <Column
+              title="Status"
+              dataIndex="status"
+              key="status"
+              render={(status: string, record: DataType) => (
+                <Button
+                  type="primary"
+                  style={{
+                    width: '80%',
+                    backgroundColor:
+                      record.status === 'ditolak'
+                        ? '#F87171'
+                        : record.status === 'diterima'
+                        ? '#60A5FA'
+                        : record.status === 'telat'
+                        ? '#FACC15'
+                        : record.status === 'pending'
+                        ? '#9CA3AF'
+                        : undefined,
+                    borderColor:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
+                    color:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleButtonClick(record.id);
+                  }}
+                >
+                  {status}
+                </Button>
+              )}
+            />
+          </Table>
+        )}
+        {role === 'peminjam' && (
+          <Table
+            dataSource={peminjamanData}
+            style={{ paddingTop: '40px' }}
+            onRow={(record) => ({
+              onClick: () => handleRowClick(record.id),
+              style: { cursor: 'pointer' },
+            })}
+            rowClassName="clickable-row"
+          >
+            <Column
+              title="Nama Peminjam"
+              key="fotonamapeminjam"
+              render={(text, record: DataType) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar src={record.peminjam?.akun?.gambar} />
+                  <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
+                </div>
+              )}
+            />
+            <Column
+              title="Telepon"
+              dataIndex="telpon"
+              key="telpon"
+              render={(text, record: DataType) => {
+                console.log(record);
+                return record.akun?.telp || 'No Telepon';
+              }}
+            />
+            <Column title="Kode Peminjaman" dataIndex="kode" key="kodepeminjam" />
+            <Column
+              title="Tanggal Peminjaman"
+              dataIndex="tanggalPinjam"
+              key="tanggalpeminjaman"
+              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+            />
+            <Column
+              title="Tanggal Pengembalian"
+              dataIndex="tanggalPengembalian"
+              key="tanggalPengembalian"
+              render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
+            />
+            <Column
+              title="Status"
+              dataIndex="status"
+              key="status"
+              render={(status: string, record: DataType) => (
+                <Button
+                  type="primary"
+                  style={{
+                    width: '80%',
+                    backgroundColor:
+                      record.status === 'ditolak'
+                        ? '#F87171'
+                        : record.status === 'diterima'
+                        ? '#60A5FA'
+                        : record.status === 'telat'
+                        ? '#FACC15'
+                        : record.status === 'pending'
+                        ? '#9CA3AF'
+                        : undefined,
+                    borderColor:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
+                    color:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleButtonClick(record.id);
+                  }}
+                >
+                  {status}
+                </Button>
+              )}
+            />
+          </Table>
+        )}
       </Card>
       {role === 'admin' && (
         <div

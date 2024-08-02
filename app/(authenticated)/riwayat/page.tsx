@@ -21,6 +21,25 @@ const Riwayat = () => {
   const [searchText, setSearchText] = useState('');
   const [userId, setUserId] = useState(null);
 
+  const statusStyles = {
+    ditolak: {
+      backgroundColor: '#F87171',
+      borderColor: '#B91C1C',
+      color: '#B91C1C',
+    },
+    telat: {
+      backgroundColor: '#FACC15',
+      borderColor: '#A16207',
+      color: '#A16207',
+    },
+    selesai: {
+      backgroundColor: '#FACC15',
+      borderColor: '#A16207',
+      color: '#2B7800',
+    },
+  };
+  
+
   useEffect(() => {
     // Ensure localStorage is accessed only in the browser
     if (typeof window !== 'undefined') {
@@ -33,6 +52,15 @@ const Riwayat = () => {
   }, []);
   const { data: listRiwayat } = peminjamanRepository.hooks.usePeminjaman();
   const peminjamanData = listRiwayat?.data?.filter((item) => item.akun.id === userId); //peminjam
+  // Filter data berdasarkan status
+const filteredRiwayat = listRiwayat?.data?.filter(
+  (item) =>
+    item.status === 'selesai' ||
+    item.status === 'ditolak' ||
+    item.status === 'telat' 
+    
+);
+
   console.log(listRiwayat, 'list riwayat: ');
   const [statusFilter, setStatusFilter] = useState('');
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -125,13 +153,13 @@ const Riwayat = () => {
   // );
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/koleksi/${id}`;
+    window.location.href = `http://localhost:3002/riwayat/${id}`;
   };
 
-  const handleButtonClick = (id: string) => {
-    form.setFieldsValue({ id });
-    // Show the form to update the status
-  };
+  // const handleButtonClick = (id: string) => {
+  //   form.setFieldsValue({ id });
+  //   // Show the form to update the status
+  // };
 
   return (
     <div>
@@ -160,7 +188,7 @@ const Riwayat = () => {
         </div>
         {(role === 'admin' || role === 'petugas') && (
           <Table
-            dataSource={listRiwayat?.data}
+            dataSource={filteredRiwayat}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),
@@ -209,36 +237,9 @@ const Riwayat = () => {
                   type="primary"
                   style={{
                     width: '80%',
-                    backgroundColor:
-                      record.status === 'ditolak'
-                        ? '#F87171'
-                        : record.status === 'diterima'
-                        ? '#60A5FA'
-                        : record.status === 'telat'
-                        ? '#FACC15'
-                        : record.status === 'pending'
-                        ? '#9CA3AF'
-                        : undefined,
-                    borderColor:
-                      record.status === 'ditolak'
-                        ? '#B91C1C'
-                        : record.status === 'diterima'
-                        ? '#1D4ED8'
-                        : record.status === 'telat'
-                        ? '#A16207'
-                        : record.status === 'pending'
-                        ? '#374151'
-                        : undefined,
-                    color:
-                      record.status === 'ditolak'
-                        ? '#B91C1C'
-                        : record.status === 'diterima'
-                        ? '#1D4ED8'
-                        : record.status === 'telat'
-                        ? '#A16207'
-                        : record.status === 'pending'
-                        ? '#374151'
-                        : undefined,
+                    backgroundColor: statusStyles[record.status]?.backgroundColor,
+                    borderColor: statusStyles[record.status]?.borderColor,
+                    color: statusStyles[record.status]?.color,
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -253,7 +254,7 @@ const Riwayat = () => {
         )}
         {role === 'peminjam' && (
           <Table
-            dataSource={peminjamanData}
+            dataSource={filteredRiwayat}
             style={{ paddingTop: '40px' }}
             onRow={(record) => ({
               onClick: () => handleRowClick(record.id),
@@ -302,36 +303,6 @@ const Riwayat = () => {
                   type="primary"
                   style={{
                     width: '80%',
-                    backgroundColor:
-                      record.status === 'ditolak'
-                        ? '#F87171'
-                        : record.status === 'diterima'
-                        ? '#60A5FA'
-                        : record.status === 'telat'
-                        ? '#FACC15'
-                        : record.status === 'pending'
-                        ? '#9CA3AF'
-                        : undefined,
-                    borderColor:
-                      record.status === 'ditolak'
-                        ? '#B91C1C'
-                        : record.status === 'diterima'
-                        ? '#1D4ED8'
-                        : record.status === 'telat'
-                        ? '#A16207'
-                        : record.status === 'pending'
-                        ? '#374151'
-                        : undefined,
-                    color:
-                      record.status === 'ditolak'
-                        ? '#B91C1C'
-                        : record.status === 'diterima'
-                        ? '#1D4ED8'
-                        : record.status === 'telat'
-                        ? '#A16207'
-                        : record.status === 'pending'
-                        ? '#374151'
-                        : undefined,
                   }}
                   onClick={(e) => {
                     e.stopPropagation();

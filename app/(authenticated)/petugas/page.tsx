@@ -133,7 +133,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   //   id: '',
   // });
 
-  const save =   async () => {
+  const save = async () => {
     try {
       const values = await form.validateFields();
 
@@ -226,7 +226,8 @@ const Page: React.FC = () => {
   // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [petugasId, setPetugasId] = useState<string | null>(null);
-  const { data : listPetugas,mutate: mutateListPetugas } = akunRepository.hooks.useSearchByName(searchText);
+  const { data: listPetugas, mutate: mutateListPetugas } =
+    akunRepository.hooks.useSearchByName(searchText);
   console.log(search, 'search');
   console.log(listPetugas, 'listPetugas');
   const { data: listakun } = akunRepository.hooks.useAkun();
@@ -319,9 +320,9 @@ const Page: React.FC = () => {
     }
   };
 
-  const onFinishEdit = async (id: string) => {  
+  const onFinishEdit = async (id: string) => {
     console.log('data id: ', id);
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -558,12 +559,7 @@ const Page: React.FC = () => {
           onCancel={handleModalCancel}
           footer={null}
         >
-          <Form
-            form={form}
-            layout="horizontal"
-            onFinish={onFinish}
-
-          >
+          <Form form={form} layout="horizontal" onFinish={onFinish}>
             <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
               <Col xs={24} sm={12}>
                 <Form.Item

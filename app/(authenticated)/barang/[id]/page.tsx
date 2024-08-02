@@ -89,6 +89,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         ruanganBarangId: createKoleksi.ruanganBarangId,
         jumlah: createKoleksi.jumlah,
       };
+      router.push('/koleksi');
       console.log(data, 'create koleksi');
       const request = await koleksiRepository.api.koleksi(data);
       if (request.status === 400) {

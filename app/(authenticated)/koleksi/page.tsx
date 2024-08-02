@@ -21,6 +21,7 @@ import { barangRepository } from '#/repository/barang';
 import { koleksiRepository } from '#/repository/koleksi';
 import { parseJwt } from '#/utils/parseJwt';
 import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -42,6 +43,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(() => null);
   const [returnDate, setReturnDate] = useState<Date | null>(() => null);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   // const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -143,6 +145,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
         tanggalPengembalian: createPeminjaman.tanggalPengembalian,
         koleksi: koleksiData,
       };
+      router.push('/peminjaman');
       const request = await peminjamanRepository.api.peminjaman(data);
       if (request.status === 400) {
         setError(request.body.message);

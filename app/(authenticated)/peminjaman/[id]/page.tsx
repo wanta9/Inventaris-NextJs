@@ -1,26 +1,112 @@
 'use client';
 
 import { FormInstance } from 'antd/lib/form';
-import { Button, Card, Row, Col, DatePicker, Modal, Form } from 'antd';
+import { Button, Card, Row, Col, DatePicker, Modal, Form, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamanRepository } from '#/repository/peminjaman';
 import TextArea from 'antd/es/input/TextArea';
 import { akunRepository } from '#/repository/akun';
 import moment from 'moment';
+import { statusBarang } from '../../dashboard/page';
 
 const { RangePicker } = DatePicker;
+
+interface updateDitolak {
+  id: string;
+  status: statusBarang;
+  keterangan: string;
+
+}
+
+interface Item {
+  id: string;
+  status: statusBarang;
+  keterangan: string;
+}
+
+interface updateDiterima {
+  id: string;
+  status: statusBarang;
+}
 
 const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [form] = Form.useForm();
+  const [id, setId] = useState<string>('');
+  const [keterangan, setKeterangan] = useState<string>('');
   const [returnedDate, setReturnedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState('Pending');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [updateDitolak , setupdateDitolak ] = useState<updateDitolak>({
+    id: '',
+    status: statusBarang.Ditolak,
+    keterangan: '',
+  });
+  const [updateDiterima , setupdateDiterima ] = useState<updateDiterima>({
+    id: '',
+    status: statusBarang.Diterima,
+  });  
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
   console.log(peminjamanById, 'peminjaman by id');
   const [dataSource, setDataSource] = useState([]);
   const [dataSources, setDataSources] = useState([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const onFinishDitolak = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        status: updateDitolak.status,
+        keterangan:updateDitolak.keterangan
+      };
+      const request = await peminjamanRepository.api.updatePeminjaman(id, data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Berhasil Menolak Peminjaman!');
+
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal !');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onFinishDiterima = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        id: updateDiterima.id,
+        status: updateDiterima.status,
+      };
+      const request = await peminjamanRepository.api.updatePeminjaman(id, data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Berhasil Menolak Peminjaman!');
+
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal !');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (peminjamanById && peminjamanById.data) {
@@ -49,6 +135,21 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleEdit = (record: Item) => {
+    console.log(record, 'record data:');
+
+    form.setFieldsValue({
+      id: record.id,
+      status: record.status,
+      keterangan: record.keterangan,
+    });
+
+    setId(record.id);
+    setStatus(record.status);
+    setKeterangan(record.keterangan);
+    showModal(); // Menampilkan modal
   };
 
   const fontFamily = 'Barlow, sans-serif';
@@ -292,7 +393,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </Col>
             ))}
 
-{role === 'petugas' &&
+            {role === 'petugas' &&
               Array.isArray(dataSources) &&
               dataSources.map((item, index) => (
                 <Col key={index} style={{ marginLeft: '50px' }}>
@@ -400,7 +501,13 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            showModal();
+                            // Contoh item data untuk digunakan dengan handleEdit
+                            const item: Item = {
+                              id: '', 
+                              status: statusBarang.Ditolak,
+                              keterangan: 'Alasan penolakan', 
+                            };
+                            handleEdit(item);
                           }}
                         >
                           Tolak
@@ -414,15 +521,25 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           onCancel={handleCancel}
                           footer={null}
                         >
-                          <TextArea style={{ marginTop: '20px', height: '100px' }} />
-                          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Form
+                          form={form}
+                          onFinish={() => onFinishDitolak(id)}
+                          layout="vertical"
+                        >
+                          <Form.Item name="reason" rules={[{ required: true, message: 'Silakan masukkan alasan!' }]}>
+                            <TextArea 
+                            style={{ marginTop: '20px', height: '100px' }} 
+                            value={updateDitolak.keterangan}
+                            onChange={(e) => setupdateDitolak({ ...updateDitolak, keterangan: e.target.value })}
+                            />
+                          </Form.Item>
+                          <Form.Item>
                             <Button
                               type="default"
                               onClick={handleCancel}
                               style={{
                                 marginTop: '20px',
                                 marginRight: '10px',
-                                marginBottom: '-20px',
                                 borderColor: 'black',
                                 color: 'black',
                               }}
@@ -434,25 +551,20 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                               htmlType="submit"
                               style={{
                                 backgroundColor: '#582DD2',
-                                marginRight: '-165px',
                                 marginTop: '20px',
-                                marginBottom: '-20px',
                               }}
                             >
                               <span>Simpan</span>
                             </Button>
                           </Form.Item>
-                        </Modal>
-
+                        </Form>
+                      </Modal>
                         <Button
+                          onClick={() => onFinishDiterima(id)}
                           style={{
                             color: '#5BFF00',
                             backgroundColor: 'rgba(162, 225, 129, 0.3)',
                             borderColor: '#A2E181',
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleButtonClick('Accepted');
                           }}
                         >
                           Terima

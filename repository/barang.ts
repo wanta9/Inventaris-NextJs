@@ -52,6 +52,7 @@ const hooks = {
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
   },
+
   useFoto(photo: string) {
     return useSWR(photo ? url.getFoto(photo) : null, http.fetcher);
   },

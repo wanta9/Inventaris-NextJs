@@ -26,6 +26,7 @@ import { akunRepository } from '#/repository/akun';
 import { ruanganRepository } from '#/repository/ruangan';
 import { barangRepository } from '#/repository/barang';
 import { relative } from 'path';
+import { config } from 'process';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -166,7 +167,7 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listsearchBarangMasuk,mutate: mutateListBarangMasuk } =
+  const { data: listsearchBarangMasuk, mutate: mutateListBarangMasuk } =
     barangMasukRepository.hooks.useBarangMasukByName(searchText);
   console.log(listsearchBarangMasuk, 'listsearchBarangMasuk');
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();

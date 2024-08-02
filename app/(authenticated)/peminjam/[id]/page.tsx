@@ -6,14 +6,18 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
 import { akunRepository } from '#/repository/akun';
 import { statusBarang } from '../../dashboard/page';
+import { config } from '#/config/app';
+
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
+
+console.log(imgUrl, 'img url');
 
 const { Option } = Select;
 
-
 interface updateStatus {
- id: string;
- peranId: string;
- status: statusBarang;
+  id: string;
+  peranId: string;
+  status: statusBarang;
 }
 
 const Editpeminjam = ({ params }: { params: { id: string } }) => {
@@ -39,7 +43,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   };
 
   const handleStatusChange = (value: statusBarang) => {
-    setupdateStatus(prevState => ({
+    setupdateStatus((prevState) => ({
       ...prevState,
       status: value,
     }));
@@ -52,14 +56,13 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
       setError(null);
       const data = {
         peranId: updateStatus.peranId,
-        status: updateStatus.status
+        status: updateStatus.status,
       };
       const request = await akunRepository.api.updateAkun(id, data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
-
       }
       console.log(request);
     } catch (error) {
@@ -92,10 +95,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Lengkap
                 </Col>
-                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={3}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   :
                 </Col>
-                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={8}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   {akunbyId?.data?.nama}
                 </Col>
               </Row>
@@ -103,10 +112,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Nama Pengguna
                 </Col>
-                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={3}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   :
                 </Col>
-                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={8}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   {akunbyId?.data?.username}
                 </Col>
               </Row>
@@ -114,10 +129,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Telp
                 </Col>
-                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={3}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   :
                 </Col>
-                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={8}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   {akunbyId?.data?.telp}
                 </Col>
               </Row>
@@ -125,10 +146,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   NISN
                 </Col>
-                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={3}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   :
                 </Col>
-                <Col span={8} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={8}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   {akunbyId?.data?.peminjam?.NISN}
                 </Col>
               </Row>
@@ -136,7 +163,10 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 <Col span={12} style={{ fontSize: '17px', fontFamily, fontWeight }}>
                   Status
                 </Col>
-                <Col span={3} style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                <Col
+                  span={3}
+                  style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
+                >
                   :
                 </Col>
                 <Col span={8}>
@@ -150,11 +180,11 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                       fontWeight,
                       borderColor: 'black',
                     }}
-                    value={updateStatus.status} 
-                    onChange={handleStatusChange} 
+                    value={updateStatus.status}
+                    onChange={handleStatusChange}
                   >
-                  <Option value={statusBarang.Diterima}>Diterima</Option>
-                  <Option value={statusBarang.Ditolak}>Ditolak</Option>
+                    <Option value={statusBarang.Diterima}>Diterima</Option>
+                    <Option value={statusBarang.Ditolak}>Ditolak</Option>
                   </Select>
                 </Col>
               </Row>
@@ -166,7 +196,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
               <Row align="middle">
                 <Col span={12}>
                   <img
-                    src="/sitmen.png"
+                    src={imgUrl(akunbyId?.data?.gambar)}
                     alt="gambar"
                     style={{
                       width: '250px',

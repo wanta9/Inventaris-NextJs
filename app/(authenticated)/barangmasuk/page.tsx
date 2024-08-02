@@ -166,8 +166,7 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { data: listsearchBarangMasuk,mutate: mutateListBarangMasuk } =
-    barangMasukRepository.hooks.useBarangMasukByName(searchText);
+  const { data: listsearchBarangMasuk,mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasukByName(searchText);
   console.log(listsearchBarangMasuk, 'listsearchBarangMasuk');
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();

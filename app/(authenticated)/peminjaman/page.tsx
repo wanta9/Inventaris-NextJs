@@ -57,6 +57,7 @@ interface DataType {
   akun?: any;
 }
 
+
 const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
@@ -64,7 +65,25 @@ const Peminjaman = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [form] = Form.useForm();
   const [userId, setUserId] = useState(null);
-
+  
+  const statusStyles = {
+    diterima: {
+      backgroundColor: '#60A5FA',
+      borderColor: '#1D4ED8',
+      color: '#1D4ED8',
+    },
+    pending: {
+      backgroundColor: '#9CA3AF',
+      borderColor: '#374151',
+      color: '#374151',
+    },
+    // ditolak: {
+    //   backgroundColor: '#F87171',
+    //   borderColor: '#B91C1C',
+    //   color: '#B91C1C',
+    // },
+  };
+  
   useEffect(() => {
     // Ensure localStorage is accessed only in the browser
     if (typeof window !== 'undefined') {
@@ -145,6 +164,8 @@ const Peminjaman = () => {
     // Show the form to update the status
   };
 
+  
+
   const onFinish = (values: any) => {
     console.log('Form values:', values);
     // Handle form submission logic, e.g., updating the status in the data source
@@ -170,6 +191,18 @@ const Peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
+        {role === 'admin' && (
+          <div ref={searchRef}>
+            <Search
+              placeholder="Telusuri Barang Masuk"
+              className="custom-search"
+              allowClear
+              enterButton
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px' }}
+            />
+          </div>
+        )}
           {(role === 'admin' || role === 'petugas') && (
             <Table
               dataSource={listPeminjaman?.data}
@@ -221,36 +254,9 @@ const Peminjaman = () => {
                     type="primary"
                     style={{
                       width: '80%',
-                      backgroundColor:
-                        record.status === 'ditolak'
-                          ? '#F87171'
-                          : record.status === 'diterima'
-                          ? '#60A5FA'
-                          : record.status === 'telat'
-                          ? '#FACC15'
-                          : record.status === 'pending'
-                          ? '#9CA3AF'
-                          : undefined,
-                      borderColor:
-                        record.status === 'ditolak'
-                          ? '#B91C1C'
-                          : record.status === 'diterima'
-                          ? '#1D4ED8'
-                          : record.status === 'telat'
-                          ? '#A16207'
-                          : record.status === 'pending'
-                          ? '#374151'
-                          : undefined,
-                      color:
-                        record.status === 'ditolak'
-                          ? '#B91C1C'
-                          : record.status === 'diterima'
-                          ? '#1D4ED8'
-                          : record.status === 'telat'
-                          ? '#A16207'
-                          : record.status === 'pending'
-                          ? '#374151'
-                          : undefined,
+                      backgroundColor: statusStyles[record.status]?.backgroundColor,
+                      borderColor: statusStyles[record.status]?.borderColor,
+                      color: statusStyles[record.status]?.color,
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -319,8 +325,6 @@ const Peminjaman = () => {
                           ? '#F87171'
                           : record.status === 'diterima'
                           ? '#60A5FA'
-                          : record.status === 'telat'
-                          ? '#FACC15'
                           : record.status === 'pending'
                           ? '#9CA3AF'
                           : undefined,

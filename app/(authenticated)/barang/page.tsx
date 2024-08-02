@@ -198,13 +198,12 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [datalistBarang, setdataListBarang] = useState([]);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang } = barangRepository.hooks.useBarangByName(search);
-  const imageId = 'cad54a10-5c1a-4131-bf09-3088a68d0565_20240731175922.png';
-  const { data: foto } = barangRepository.hooks.useFoto(imageId);
+  const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarangByName(search);
+  const { data: foto } = barangRepository.hooks.useFoto(ImageUrl);
   console.log(foto, 'foto');
   console.log(search);
   console.log(listBarang, 'listBarang');
-  const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
+  const { data: listRuanganBarang} = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
@@ -358,7 +357,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Barang!');
         setModalVisible(false);
-        await mutateListBarang();
+        mutateListBarang();
       }
       console.log(request);
     } catch (error) {

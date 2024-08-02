@@ -57,6 +57,7 @@ export enum statusBarang {
 // }
 interface updatePetugas {
   id: string;
+  peranId: string;
   username: string;
   nomorInduk: string;
   telp: string;
@@ -212,6 +213,7 @@ const Page: React.FC = () => {
 
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
+    peranId: 'a7f86285-bdeb-4c3e-9449-6a4e71d2e96d',
     nomorInduk: '',
     telp: '',
     username: '',
@@ -324,6 +326,7 @@ const Page: React.FC = () => {
       setLoading(true);
       setError(null);
       const data = {
+        peranId: updatePetugas.peranId,
         username: updatePetugas.username,
         nomorInduk: updatePetugas.nomorInduk,
         telp: updatePetugas.telp,

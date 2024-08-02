@@ -118,7 +118,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 <div>No data available</div>
               )}
             </Col>
-            {dataSources.map((item, index) => (
+            {/* {dataSources.map((item, index) => (
             <Col style={{ marginLeft: '50px' }}>
               <Card
                 key={index}
@@ -285,7 +285,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                 </div>
               </Card>
             </Col>
-                ))}
+                ))} */}
 
 
             {role === 'petugas' && (

@@ -12,6 +12,7 @@ const { Option } = Select;
 
 interface updateStatus {
  id: string;
+ peranId: string;
  status: statusBarang;
 }
 
@@ -27,6 +28,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   console.log(akunbyId, 'akun by id');
   const [updateStatus, setupdateStatus] = useState<updateStatus>({
     id: '',
+    peranId: '5954d800-e79a-405d-a408-95095f494e3d',
     status: statusBarang.Pending,
   });
 
@@ -49,6 +51,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError(null);
       const data = {
+        peranId: updateStatus.peranId,
         status: updateStatus.status
       };
       const request = await akunRepository.api.updateAkun(id, data);

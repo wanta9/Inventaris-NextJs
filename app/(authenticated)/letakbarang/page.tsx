@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { Button, Form, Input, Modal, Table, message, Row, Col, Card, Menu, Dropdown } from 'antd';
 import { PlusOutlined, EditOutlined, UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
@@ -116,8 +116,6 @@ const Page: React.FC = () => {
   const { data: akun } = akunRepository.hooks.useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const [initialValues, setInitialValues] = useState({});
   const [createLetakbarang, setcreateLetakbarang] = useState<createLetakbarang>({
     Letak_Barang: '',
   });
@@ -125,23 +123,6 @@ const Page: React.FC = () => {
     id: '',
     Letak_Barang: '',
   });
-
-  useEffect(() => {
-    // Fetch the data based on the ID
-    const fetchData = async () => {
-        try {
-            const response = await fetch(`/api/data/${id}`);
-            const data = await response.json();
-            setInitialValues(data); // Update the initialValues with fetched data
-            form.setFieldsValue(data); // Set the form values
-        } catch (error) {
-            console.error('Failed to fetch data', error);
-        }
-    };
-
-    fetchData();
-}, [id, form]);
-
 
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
@@ -372,6 +353,7 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listRuangan?.data}
+          pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '40px', width: '90%', marginLeft: '14px' }}
         />
@@ -438,7 +420,8 @@ const Page: React.FC = () => {
           <Form 
           layout="horizontal" 
           onFinish={() => onFinishEdit(id)}
-          initialValues={initialValues}>
+
+          >
             <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
               <Input
                 placeholder="Masukkan letak barang"

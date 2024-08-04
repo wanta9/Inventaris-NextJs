@@ -38,6 +38,10 @@ import { argv } from 'process';
 import { ruanganRepository } from '#/repository/ruangan';
 import { parseJwt } from '#/utils/parseJwt';
 import useSWR from 'swr';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
+
+console.log(imgUrl, 'img url');
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -198,12 +202,13 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [datalistBarang, setdataListBarang] = useState([]);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarangByName(search);
+  const { data: listBarang, mutate: mutateListBarang } =
+    barangRepository.hooks.useBarangByName(search);
   const { data: foto } = barangRepository.hooks.useFoto(ImageUrl);
   console.log(foto, 'foto');
   console.log(search);
   console.log(listBarang, 'listBarang');
-  const { data: listRuanganBarang} = barangRepository.hooks.useBarang();
+  const { data: listRuanganBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
@@ -1037,7 +1042,7 @@ const Page: React.FC = () => {
                       }}
                     >
                       <img
-                        src={foto ? `http://localhost:3222/upload/get-barang/${foto}` : ''} // Use the actual URL
+                        src={imgUrl(listBarang?.gambar)}
                         alt="Gambar Barang"
                         style={{ width: '100%' }}
                       />

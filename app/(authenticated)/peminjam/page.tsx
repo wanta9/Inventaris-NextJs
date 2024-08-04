@@ -10,9 +10,7 @@ import { peminjamRepository } from '#/repository/peminjam';
 import { akunRepository } from '#/repository/akun';
 import { config } from '#/config/app';
 
-export const imgUrl = (photo: string) => {
-  `${config.baseUrl}/upload/get-akun/${photo}`;
-};
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 const { Column } = Table;
 const { Search } = Input;
 const { Item } = Menu;
@@ -136,7 +134,7 @@ const Peminjam = () => {
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Avatar
                     src={record.gambar ? imgUrl(record.gambar) : ''}
-                    style={{ marginLeft: '8px' }}
+                    style={{ marginRight: '8px' }}
                   />
                   <span>{record.nama}</span>
                 </div>

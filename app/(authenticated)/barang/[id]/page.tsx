@@ -121,7 +121,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
     }
   }, [ruanganBarangById]);
 
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
 
   // Define the handleChange function to update both the component's state and the createKoleksi state
   const handleChange = (newValue: number) => {

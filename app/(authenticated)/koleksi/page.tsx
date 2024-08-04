@@ -256,32 +256,18 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       </span>
                     </div>
                     <div style={{ display: 'flex' }}>
-                      <Button
-                        onClick={() => handleChange(item.jumlah - 1)}
-                        style={{
-                          marginLeft: '20px',
-                          width: '50px',
-                          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                        }}
-                      >
-                        <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
-                      </Button>
                       <InputNumber
                         min={1}
+                        disabled
                         value={item.jumlah}
                         onChange={(value) => handleChange(value)}
                         controls={false}
-                        style={{ width: '60px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+                        style={{
+                          marginLeft: '20px',
+                          width: '60px',
+                          boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                        }}
                       />
-                      <Button
-                        onClick={() => handleChange(item.jumlah + 1)}
-                        style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-                      >
-                        <img
-                          src="/pluseicon.svg"
-                          style={{ width: '12px', height: '12px', marginBottom: '5px' }}
-                        />
-                      </Button>
                     </div>
                     <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
                       <Popconfirm

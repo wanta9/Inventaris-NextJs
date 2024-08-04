@@ -26,6 +26,7 @@ const Login = () => {
   //   return JSON.parse(atob(token.split('.')[1]));
   // };
 
+  //'aktif' || 'tidak aktif' || 'diterima'
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
     try {
@@ -43,9 +44,11 @@ const Login = () => {
         localStorage.setItem('access_token', request.body.data);
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-        if (parseToken.existUser.status === 'aktif' || 'tidak aktif' || 'diterima') {
+        const status = parseToken.existUser.status;
+
+        if (status === 'aktif' || status === 'tidak aktif' || status === 'diterima') {
           router.push('/dashboard');
-        } else if (parseToken.existUser.status === 'pending' || 'ditolak') {
+        } else if (status === 'pending' || status === 'ditolak') {
           router.push('/approval');
         }
       }

@@ -19,7 +19,6 @@ interface updateDitolak {
 
 }
 
-
 interface updateDiterima {
   id: string;
   status: statusBarang;

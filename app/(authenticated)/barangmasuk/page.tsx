@@ -167,12 +167,8 @@ const Page: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
   const { data: listsearchBarangMasuk, mutate: mutateListBarangMasuk } =
     barangMasukRepository.hooks.useBarangMasukByName(searchText);
-=======
-  const { data: listsearchBarangMasuk,mutate: mutateListBarangMasuk } = barangMasukRepository.hooks.useBarangMasukByName(searchText);
->>>>>>> 374aecad67e3b76478ca1277b88d0b4920f11c94
   console.log(listsearchBarangMasuk, 'listsearchBarangMasuk');
   const { data: listBarangMasuk } = barangMasukRepository.hooks.useBarangMasuk();
   const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Form, Input, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { title } from 'process';
@@ -13,6 +13,19 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Check if the user is already logged in
+  // useEffect(() => {
+  //   const token = localStorage.getItem('access_token');
+  //   if (token) {
+  //     router.push('/dashboard');
+  //   }
+  // }, [router]);
+
+  // const parseJwt = (token: string) => {
+  //   // Your implementation to parse JWT token
+  //   return JSON.parse(atob(token.split('.')[1]));
+  // };
+
   const onFinish = async (values: any) => {
     console.log('Received values of form: ', values);
     try {
@@ -23,15 +36,18 @@ const Login = () => {
         password: values.password,
       };
       const request = await akunRepository.api.login(data);
+      console.log(request);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         localStorage.setItem('access_token', request.body.data);
-        // await mutateAkun();
         const parseToken = parseJwt(request.body.data);
         console.log(parseToken, 'data akun');
-
-        router.push('/dashboard');
+        if (parseToken.existUser.status === 'aktif' || 'tidak aktif' || 'diterima') {
+          router.push('/dashboard');
+        } else if (parseToken.existUser.status === 'pending' || 'ditolak') {
+          router.push('/approval');
+        }
       }
       console.log(request);
     } catch (error) {

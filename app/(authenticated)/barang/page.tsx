@@ -36,6 +36,8 @@ import Meta from 'antd/es/card/Meta';
 import { barangRepository } from '#/repository/barang';
 import { argv } from 'process';
 import { ruanganRepository } from '#/repository/ruangan';
+import { parseJwt } from '#/utils/parseJwt';
+import useSWR from 'swr';
 
 const { Search } = Input;
 const { Item } = Menu;
@@ -184,16 +186,24 @@ const Page: React.FC = () => {
   });
   const [count, setCount] = useState(0);
   const [kodeBarang, setKodeBarang] = useState('');
-  const [namaBarang, setNamaBarang] = useState('');
+  const [nama, setnama] = useState('');
   const [harga, setharga] = useState('');
   const [deskripsi, setDeskripsi] = useState('');
-  const [searchText, setSearchText] = useState('');
+  const [search, setSearch] = useState('');
   const [selectedLocation, setSelectedLocation] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // const [imageId, setImageId] = useState<string>('');
+  const [ImageUrl, setImageUrl] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [datalistBarang, setdataListBarang] = useState([]);
   const fontFamily = 'Barlow, sans-serif';
-  const { data: listRuanganBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarang();
+  const { data: listBarang, mutate: mutateListBarang } = barangRepository.hooks.useBarangByName(search);
+  const { data: foto } = barangRepository.hooks.useFoto(ImageUrl);
+  console.log(foto, 'foto');
+  console.log(search);
+  console.log(listBarang, 'listBarang');
+  const { data: listRuanganBarang} = barangRepository.hooks.useBarang();
   const { data: listRuangan, mutate: mutateListRuangan } = ruanganRepository.hooks.useRuangan();
   console.log(listRuanganBarang, 'list ruangan');
   const fontWeight = '650';
@@ -236,7 +246,18 @@ const Page: React.FC = () => {
   );
 
   const handleRowClick = (id: string) => {
-    window.location.href = `http://localhost:3002/barang/${id}`;
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const parseToken = parseJwt(token);
+      if (parseToken) {
+        console.log(parseToken, 'data akun');
+        window.location.href = `http://localhost:3002/barang/${id}`;
+      } else {
+        message.error('Invalid token, please log in again.');
+      }
+    } else {
+      message.error('Token not found, please log in again.');
+    }
   };
 
   // menu akun
@@ -277,7 +298,7 @@ const Page: React.FC = () => {
   );
 
   const handleSearch = (value: string) => {
-    setSearchText(value);
+    setSearch(value);
   };
 
   const [dataSource, setDataSource] = useState([]);
@@ -294,7 +315,8 @@ const Page: React.FC = () => {
 
   const handleHargaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, ''); // Menghilangkan semua karakter kecuali angka
-    setharga(value);
+    setcreateBarang({ ...createBarang, harga: value });
+    value;
   };
 
   const handleButtonClick = (type: string) => {
@@ -335,7 +357,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambahkan Barang!');
         setModalVisible(false);
-        await mutateListBarang();
+        mutateListBarang();
       }
       console.log(request);
     } catch (error) {
@@ -357,7 +379,7 @@ const Page: React.FC = () => {
         nama: updateBarang.nama,
         harga: updateBarang.harga,
         deskripsi: updateBarang.deskripsi,
-        // // gambar: updateBarang.gambar,
+        // gambar: updateBarang.gambar,
       };
       const request = await barangRepository.api.updateBarang(id, data);
       if (request.status === 400) {
@@ -424,21 +446,18 @@ const Page: React.FC = () => {
     }
   };
 
-  // const handleUpdate = async (args: any) => {
-  //   const file = args.file;
-
+  // // UPDATE GAMBAR
+  // const handleUpdate = async (info: any) => {
+  //   const file = info.file;
   //   try {
-  //     const updateBarang = { file };
-  //     const processUpload = await barangRepository.api.updateBarang(file);
-  //     setupdateBarang((updateBarang) => ({
-  //       ...updateBarang,
+  //     const processUpload = await barangRepository.api.updateFotoBarang(updateBarang.id, file);
+  //     setupdateBarang((prevState) => ({
+  //       ...prevState,
   //       gambar: processUpload?.body?.data?.filename,
   //     }));
-  //     console.log(processUpload, 'update');
-  //     message.success('Gambar Berhasil Diperbarui!');
+  //     message.success('Gambar berhasil diperbarui!');
   //   } catch (e) {
-  //     console.log(e, 'ini catch e');
-  //     message.error('Gambar Gagal Diperbarui!');
+  //     message.error('Gambar gagal diperbarui!');
   //   }
   // };
 
@@ -448,13 +467,19 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
+    console.log('record: ', record);
     setId(record.id);
-    setEditData(record);
-    setKodeBarang(record.kodeBarang);
-    setNamaBarang(record.nama);
+    setnama(record.nama);
     setharga(record.harga);
     setDeskripsi(record.deskripsi);
     setModalEditVisible(true);
+
+    form.setFieldsValue({
+      id: record.id,
+      nama: record.nama,
+      harga: record.harga,
+      deskripsi: record.deskripsi,
+    });
   };
 
   const handleSave = (row: Item) => {
@@ -479,23 +504,13 @@ const Page: React.FC = () => {
     {
       title: 'Kode Barang',
       dataIndex: 'kode',
+      width: '30%',
       editable: true,
     },
     {
       title: 'Nama Barang',
       dataIndex: 'nama',
       editable: true,
-    },
-    {
-      title: 'Letak Barang',
-      dataIndex: 'Letak_Barang',
-      editable: true,
-      render: (_, record) => {
-        if (record.ruanganBarang && record.ruanganBarang.length > 0) {
-          return record.ruanganBarang[0].ruangan.Letak_Barang;
-        }
-        return null;
-      },
     },
     {
       title: 'Jumlah',
@@ -505,17 +520,25 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
-            <Button
-              type="link"
-              onClick={(e) => {
-                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
-              }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
-            />
+            {role === 'admin' && (
+              <Button
+                type="link"
+                onClick={(e) => {
+                  e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
+                  handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+                }}
+                icon={
+                  <img
+                    src="/logoEdit.svg"
+                    style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                  />
+                }
+              />
+            )}
           </span>
         );
       },
@@ -529,95 +552,70 @@ const Page: React.FC = () => {
           <title>Barang</title>
           <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang</h1>
           <Card style={{ marginTop: '50px', borderRadius: '20px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '20px',
-                marginBottom: '16px',
-              }}
-            >
-              <div ref={searchRef}>
-                <Search
-                  placeholder="Telusuri Barang Masuk"
-                  className="custom-search"
-                  allowClear
-                  enterButton
-                  onSearch={() => {}}
-                  style={{ width: 300, marginRight: '500px', height: '40px' }}
-                />
-              </div>
-              <Dropdown
-                overlay={menu1}
-                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-                visible={openDropdown}
-                onVisibleChange={setOpenDropdown}
-              >
-                <Button
-                  style={{
-                    backgroundColor: 'white',
-                    color: 'black',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                    height: '40px',
-                    width: '200px',
-                    fontFamily: 'inherit',
-                    marginLeft: '10px',
-                  }}
-                  onClick={handleDropdownClick}
-                >
-                  Letak Barang{' '}
-                  {openDropdown ? (
-                    <DownOutlined style={{ fontSize: '12px' }} />
-                  ) : (
-                    <RightOutlined style={{ fontSize: '12px' }} />
-                  )}
-                </Button>
-              </Dropdown>
+            <div ref={searchRef}>
+              <Search
+                placeholder="Telusuri Barang"
+                className="custom-search"
+                allowClear
+                enterButton
+                onSearch={handleSearch}
+                style={{ width: 300, marginRight: '100px', height: '40px' }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('letakBarang')}
-                icon={<PlusOutlined />}
+                icon={<PlusOutlined style={{ marginTop: '7px', marginLeft: '20px' }} />}
                 style={{
                   backgroundColor: 'white',
                   color: 'black',
                   boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                   height: '40px',
                   width: '200px',
-                  fontFamily,
+                  bottom: '35px',
+                  display: 'flex',
+                  marginLeft: 'auto',
+                  fontFamily: 'inherit',
+                  marginRight: '10px',
                 }}
               >
-                Letak Barang
+                <span style={{ marginTop: '3px', marginLeft: '10px' }}>Letak Barang</span>
               </Button>
               <Button
                 type="primary"
                 onClick={() => handleButtonClick('barang')}
-                icon={<PlusOutlined style={{}} />}
+                icon={<PlusOutlined style={{ marginTop: '7px', marginLeft: '35px' }} />}
                 style={{
                   backgroundColor: 'white',
                   boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
                   color: 'black',
                   height: '40px',
+                  bottom: '35px',
                   width: '200px',
-                  fontFamily,
+                  display: 'flex',
+                  fontFamily: 'inherit', // Pastikan fontFamily yang benar di sini
                 }}
               >
-                <span style={{ marginRight: '10px' }}>Barang</span>
+                <span style={{ marginTop: '3px', marginLeft: '10px' }}>Barang</span>
               </Button>
             </div>
             <Table
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={listRuanganBarang?.data}
+              dataSource={listBarang}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },
               })}
               pagination={{ pageSize: 5 }}
               columns={columns as ColumnTypes}
-              style={{ marginTop: '40px' }}
+              style={{ marginTop: '10px' }}
             />
           </Card>
+
+          {/* CREATE BARANG */}
           <Modal
             title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
             style={{ textAlign: 'center' }}
@@ -686,9 +684,13 @@ const Page: React.FC = () => {
                             style={{ marginBottom: '12px', width: '75%', height: '40px' }}
                             prefix="Rp"
                             value={createBarang.harga}
-                            onChange={(e) =>
-                              setcreateBarang({ ...createBarang, harga: e.target.value })
-                            }
+                            onChange={(e) => {
+                              // Only allow numeric input (including decimal point)
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setcreateBarang({ ...createBarang, harga: value });
+                              }
+                            }}
                           />
                         </Col>
                       </Row>
@@ -696,7 +698,7 @@ const Page: React.FC = () => {
                     <Col span={24}>
                       <Row align="middle">
                         <Col span={6}>
-                          <p style={{ marginBottom: '80px', fontWeight }}>Deskripsi</p>
+                          <p style={{ marginBottom: '75%', fontWeight }}>Deskripsi</p>
                         </Col>
                         <Col span={18}>
                           <Input.TextArea
@@ -707,7 +709,6 @@ const Page: React.FC = () => {
                             onChange={(e) =>
                               setcreateBarang({ ...createBarang, deskripsi: e.target.value })
                             }
-                            // onChange={(e) => console.log(e.target.value, "deskripsi")}
                           />
                         </Col>
                       </Row>
@@ -737,170 +738,160 @@ const Page: React.FC = () => {
               </Row>
             </Form>
           </Modal>
-          <Modal
-            title={
-              <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
-                Edit Barang
-              </div>
-            }
-            style={{ textAlign: 'center' }}
-            centered
-            visible={modalEditVisible}
-            onCancel={handleModalCancel}
-            width={1000}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={() => handleEditbarang(id)}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
-            maskStyle={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ fontWeight }}>Nama Barang</p>
+
+          {role === 'admin' && (
+            <Modal
+              title={
+                <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+                  Edit Barang
+                </div>
+              }
+              style={{ textAlign: 'center' }}
+              centered
+              visible={modalEditVisible}
+              onCancel={handleModalCancel}
+              width={900}
+              footer={null}
+              maskStyle={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              }}
+            >
+              <Form form={form} layout="horizontal" onFinish={() => handleEditbarang(id)}>
+                <Row gutter={[10, 20]} style={{ marginTop: '70px' }}>
+                  <Col span={16}>
+                    <Row gutter={[40, 40]}>
+                      <Col span={24}>
+                        <Form.Item
+                          label="Nama Barang"
+                          name="nama"
+                          style={{ marginBottom: '-10px' }}
+                          labelCol={{ span: 6 }}
+                          wrapperCol={{ span: 16 }}
+                        >
+                          <Input
+                            style={{
+                              width: '100%', // Full width of the container
+                              maxWidth: '300px', // Limit max width
+                              height: '40px',
+                            }}
+                            placeholder="Nama Barang"
+                            value={updateBarang.nama}
+                            onChange={(e) =>
+                              setupdateBarang({ ...updateBarang, nama: e.target.value })
+                            }
+                          />
+                        </Form.Item>
                       </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '40px',
-                            borderColor: 'black',
-                          }}
-                          placeholder="Nama Barang"
-                          value={updateBarang.nama}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, nama: e.target.value })
-                          }
-                        />
+                      <Col span={24}>
+                        <Form.Item
+                          label="Harga"
+                          name="harga"
+                          style={{ marginBottom: '-10px' }}
+                          labelCol={{ span: 4 }}
+                          wrapperCol={{ span: 20 }}
+                        >
+                          <Input
+                            type="number"
+                            style={{
+                              width: '100%',
+                              maxWidth: '300px',
+                              height: '40px',
+                            }}
+                            prefix="Rp"
+                            placeholder="Harga"
+                            value={updateBarang.harga}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^\d*\.?\d*$/.test(value)) {
+                                setupdateBarang({ ...updateBarang, harga: value });
+                              }
+                            }}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={24}>
+                        <Form.Item
+                          label="Deskripsi"
+                          name="deskripsi"
+                          style={{ marginBottom: '-10px', marginLeft: '10px' }}
+                          labelCol={{ span: 4 }}
+                          wrapperCol={{ span: 20 }}
+                        >
+                          <Input.TextArea
+                            style={{
+                              width: '100%', // Full width of the container
+                              maxWidth: '300px', // Limit max width
+                              height: '80px',
+                            }}
+                            placeholder="Deskripsi Barang"
+                            value={updateBarang.deskripsi}
+                            onChange={(e) =>
+                              setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
+                            }
+                          />
+                        </Form.Item>
                       </Col>
                     </Row>
                   </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ fontWeight }}>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '40px',
-                            borderColor: 'black',
-                          }}
-                          prefix="Rp"
-                          placeholder="Harga"
-                          value={updateBarang.harga}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, harga: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ fontWeight }}>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{
-                            marginBottom: '12px',
-                            width: '75%',
-                            height: '80px',
-                            borderColor: 'black',
-                          }}
-                          placeholder="Deskripsi Barang"
-                          value={updateBarang.deskripsi}
-                          onChange={(e) =>
-                            setupdateBarang({ ...updateBarang, deskripsi: e.target.value })
-                          }
-                        />
-                      </Col>
-                    </Row>
+                  <Col span={8}>
+                    <Form.Item
+                      name="gambar"
+                      label="Unggah Foto"
+                      style={{ marginBottom: '12px' }}
+                      labelCol={{ span: 8 }}
+                      wrapperCol={{ span: 24 }}
+                    >
+                      <Row align="middle">
+                        <Col span={24}>
+                          <Upload
+                            listType="picture"
+                            beforeUpload={() => false}
+                            onChange={handleChange}
+                          >
+                            <Button
+                              style={{ color: 'black', borderColor: 'black' }}
+                              icon={<UploadOutlined />}
+                            >
+                              Unggah
+                            </Button>
+                          </Upload>
+                        </Col>
+                      </Row>
+                    </Form.Item>
                   </Col>
                 </Row>
-              </Col>
-              {/* <Col span={8}>
-              <Form.Item
-              name="gambar"
-              >
-              <Row>
-                <Col span={8}>
-                  <p style={{ fontWeight }}>Unggah Foto</p>
-                </Col>
-                <Col>
-                <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                  listType="picture"
-                  beforeUpload={() => false}
-                  onChange={(args) => handleUpdate(args)}
-                >
-                 <Button
-                   style={{ color: 'black', borderColor: 'black' }}
-                   icon={<UploadOutlined />}
-                  >
-                   Unggah
-                 </Button>
-                </Upload>
-                </Col>
-              </Row>
-              </Form.Item>
-              </Col> */}
-              {/* <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Button
-                    type="default"
-                    onClick={handleModalCancel}
-                    style={{
-                    marginBottom: '40px',
-                    marginLeft: '45vh',
-                    marginRight: '10px',
-                  }}
-                  >
-                    <span>Batal</span>
-                  </Button>
+                <Row justify="end" style={{ marginTop: '40px' }}>
+                  <Col>
                     <Button
-                    onClick={handleEditbarang}
-                    type="primary"
-                    htmlType="submit"
-                    style={{
-                      backgroundColor: '#582DD2',
-                      marginBottom: '40px',
-                    }}
-                  >
-                  <span>Simpan</span>
-                </Button>
-               </div> */}
-            </Row>
-          </Modal>
+                      type="default"
+                      onClick={handleModalCancel}
+                      style={{
+                        marginRight: '10px',
+                        borderColor: 'black',
+                      }}
+                    >
+                      <span style={{ color: 'black' }}>Batal</span>
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      style={{
+                        backgroundColor: '#582DD2',
+                        color: 'white',
+                        borderColor: '#582DD2',
+                        marginRight: '20px',
+                      }}
+                    >
+                      <span>Simpan</span>
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Modal>
+          )}
           {/* Button Tambah Letak barang */}
           <Modal
             title="Tambah Letak Barang"
@@ -954,46 +945,20 @@ const Page: React.FC = () => {
             >
               <div ref={searchRef}>
                 <Search
-                  placeholder="Telusuri Barang Masuk"
+                  placeholder="Telusuri Barang"
                   className="custom-search"
                   allowClear
                   enterButton
-                  onSearch={() => {}}
-                  style={{ width: 300, marginRight: '950px', height: '40px' }}
+                  onSearch={handleSearch}
+                  style={{ width: 300, height: '40px' }}
                 />
               </div>
-              <Dropdown
-                overlay={menu1}
-                placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-                visible={openDropdown}
-                onVisibleChange={setOpenDropdown}
-              >
-                <Button
-                  style={{
-                    backgroundColor: 'white',
-                    color: 'black',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                    height: '40px',
-                    width: '200px',
-                    fontFamily: 'inherit',
-                    marginLeft: '10px', // Margin here
-                  }}
-                  onClick={handleDropdownClick}
-                >
-                  Letak Barang{' '}
-                  {openDropdown ? (
-                    <DownOutlined style={{ fontSize: '12px' }} />
-                  ) : (
-                    <RightOutlined style={{ fontSize: '12px' }} />
-                  )}
-                </Button>
-              </Dropdown>
             </div>
             <Table
               components={components}
               rowClassName={() => 'editable-row'}
               bordered
-              dataSource={listRuanganBarang?.data}
+              dataSource={listBarang}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
                 style: { cursor: 'pointer' },
@@ -1003,112 +968,6 @@ const Page: React.FC = () => {
               style={{ marginTop: '40px' }}
             />
           </Card>
-          <Modal
-            title={<div style={{ fontSize: '20px', fontWeight: 'bold' }}>Tambah Barang</div>}
-            style={{ textAlign: 'center' }}
-            centered
-            width={900}
-            visible={modalVisible}
-            onCancel={handleModalCancel}
-            footer={[
-              <Button
-                key="cancel"
-                onClick={handleModalCancel}
-                style={{ backgroundColor: 'white', borderColor: 'black', color: 'black' }}
-              >
-                Batal
-              </Button>,
-              <Button
-                key="save"
-                type="primary"
-                onClick={handleSaveBarang}
-                style={{
-                  marginRight: '27px',
-                  backgroundColor: '#582DD2',
-                  color: 'white',
-                  borderColor: '#582DD2',
-                }}
-              >
-                Simpan
-              </Button>,
-            ]}
-            maskStyle={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            }}
-          >
-            <Row gutter={[24, 24]} style={{ marginTop: '70px' }}>
-              <Col span={16}>
-                <Row gutter={[24, 24]}>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Nama Barang</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          placeholder="Nama Barang"
-                          value={namaBarang}
-                          onChange={(e) => setNamaBarang(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p>Harga</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input
-                          style={{ marginBottom: '12px', width: '75%', height: '40px' }}
-                          prefix="Rp"
-                          value={harga}
-                          onChange={handleHargaChange}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={24}>
-                    <Row align="middle">
-                      <Col span={6}>
-                        <p style={{ marginBottom: '80px' }}>Deskripsi</p>
-                      </Col>
-                      <Col span={18}>
-                        <Input.TextArea
-                          style={{ marginBottom: '12px', width: '75%', height: '50%' }}
-                          rows={4}
-                          placeholder="Deskripsi Barang"
-                          value={deskripsi}
-                          onChange={(e) => setDeskripsi(e.target.value)}
-                        />
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col span={8}>
-                <Row>
-                  <Col>
-                    <p style={{ marginLeft: '-40px', marginRight: '20px' }}>Unggah Foto</p>
-                  </Col>
-                  <Col>
-                    <Upload
-                      action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                      listType="picture"
-                    >
-                      <Button icon={<UploadOutlined />} style={{ marginRight: '50px' }}>
-                        Unggah
-                      </Button>
-                    </Upload>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Modal>
         </div>
       )}
       {role === 'peminjam' && (
@@ -1124,38 +983,10 @@ const Page: React.FC = () => {
                 className="custom-search"
                 allowClear
                 enterButton
-                onSearch={() => {
-                  handleSearch;
-                }}
+                onSearch={handleSearch}
                 style={{ width: 300, marginRight: '500px', height: '40px', marginTop: '10px' }}
               />
             </div>
-            <Dropdown
-              overlay={menu1}
-              placement={openDropdown ? 'bottomLeft' : 'bottomRight'}
-              visible={openDropdown}
-              onVisibleChange={setOpenDropdown}
-            >
-              <Button
-                style={{
-                  backgroundColor: 'white',
-                  color: 'black',
-                  boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                  height: '40px',
-                  width: '200px',
-                  fontFamily: 'inherit',
-                  marginRight: '40px',
-                }}
-                onClick={handleDropdownClick}
-              >
-                Letak Barang{' '}
-                {openDropdown ? (
-                  <DownOutlined style={{ fontSize: '12px' }} />
-                ) : (
-                  <RightOutlined style={{ fontSize: '12px' }} />
-                )}
-              </Button>
-            </Dropdown>
           </div>
           <div
             style={{
@@ -1170,7 +1001,15 @@ const Page: React.FC = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}></div>
             </Dropdown>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '16px',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}
+          >
             {dataSource.map((item, index) => (
               <div
                 key={index}
@@ -1198,7 +1037,7 @@ const Page: React.FC = () => {
                       }}
                     >
                       <img
-                        src="localhost:3222/upload/get-barang/8fbcabff-0975-411e-9e1c-277e4ddd5519_20240705132755.webp"
+                        src={foto ? `http://localhost:3222/upload/get-barang/${foto}` : ''} // Use the actual URL
                         alt="Gambar Barang"
                         style={{ width: '100%' }}
                       />

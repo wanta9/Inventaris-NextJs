@@ -25,6 +25,7 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
 import { Console } from 'console';
+import { set } from 'mobx';
 
 const { Option } = Select;
 const { Search } = Input;
@@ -39,10 +40,11 @@ interface EditableRowProps {
 interface updateBarangrusak {
   id: string;
   jumlah: number;
-  jumlahbarangrusak: number;
-  jumlahbarangdiperbaiki: number;
-  tanggalrusak: string;
-  tanggalperbaikan: string;
+  jmlbarangrusak: number;
+  perbaikan: number;
+  tanggalRusak: string;
+  tanggalPerbaikan: string;
+  status: string;
   keterangan: string;
 }
 
@@ -60,13 +62,15 @@ interface Item {
   id: string;
   kodeBarang: string;
   namaBarang: string;
-  Jumlah: number;
-  tanggalRusak: string;
-  jmlBarangDiperbaiki: number;
+  jumlah: number;
+  barangRusak: number;
   jmlbarangrusak: number;
-  keterangan: string;
+  tanggalRusak: string;
+  perbaikan: number;
   tanggalPerbaikan: string;
+  keterangan: string;
   status: string;
+  createdAt?: any;
 }
 
 interface EditableCellProps {
@@ -161,53 +165,60 @@ const Page: React.FC = () => {
     ruanganId: '',
     jumlah: 0,
     tanggalRusak: '',
-    tanggalPerbaikan: 'null',
+    tanggalPerbaikan: '',
     keterangan: '',
     status: 'Rusak',
   });
-  // const[updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
-  //   id: '',
-  //   jumlah: 0,
-  //   jumlahbarangrusak: 0,
-  //   jumlahbarangdiperbaiki: 0,
-  //   tanggalrusak: '',
-  //   tanggalperbaikan: '',
-  //   keterangan: '',
-  // })
+
+  const [updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
+    id: '',
+    jumlah: 0,
+    jmlbarangrusak: 0,
+    perbaikan: 0,
+    tanggalRusak: '',
+    tanggalPerbaikan: '',
+    status: '',
+    keterangan: '',
+  });
   const [form] = Form.useForm();
+  const { data: listSearchBarangrusak } = barangRusakRepository.hooks.useBarangRusakByName(searchText);
+  console.log( listSearchBarangrusak, 'listSearchBarangrusak');
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
-
   const { data: listBarang } = barangRepository.hooks.useBarang();
   const { data: listRuangan } = ruanganRepository.hooks.useRuangan();
   const { data: akun } = akunRepository.hooks.useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [Jumlah, setJumlah] = useState('');
-  const [jmlbarangrusak, setjmlbarangrusak] = useState('');
-  const [jmlBarangDiperbaiki, setjmlbarangdiperbaiki] = useState<string>('');
+  const [barangRusak, setJumlah] = useState<string | number>('');
+  const [jmlbarangrusak, setJmlbarangrusak] = useState<string | number>('');
+  const [perbaikan, setPerbaikan] = useState<string | number>('');
+  const [status, setStatus] = useState('');
+  const [tanggalRusak, settanggalRusak] = useState('');
   const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
   const [keterangan, setketerangan] = useState('');
+  const [id, setId] = useState<string>('');
   const searchRef = useRef<HTMLDivElement | null>(null);
-  
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
 
   // style button search
   useEffect(() => {
-  if (searchRef.current) {
-    const searchButton = searchRef.current.querySelector('.ant-input-search-button');
-    if (searchButton instanceof HTMLElement) { // Memastikan searchButton adalah HTMLElement
-       searchButton.style.backgroundColor = '#582DD2';
-       searchButton.style.borderColor = '#582DD2';
+    if (searchRef.current) {
+      const searchButton = searchRef.current.querySelector('.ant-input-search-button');
+      if (searchButton instanceof HTMLElement) {
+        // Memastikan searchButton adalah HTMLElement
+        searchButton.style.backgroundColor = '#582DD2';
+        searchButton.style.borderColor = '#582DD2';
       }
     }
   }, []);
 
   const handleDateChange = (date: any, dateString: any) => {
     setcreatebarangRusak({ ...createbarangRusak, tanggalRusak: dateString });
+    setupdateBarangrusak({ ...updateBarangrusak, tanggalRusak: dateString });
   };
 
   // klik row
@@ -287,10 +298,43 @@ const Page: React.FC = () => {
         jumlah: createbarangRusak.jumlah,
         tanggalRusak: createbarangRusak.tanggalRusak,
         keterangan: createbarangRusak.keterangan,
-        status: 'Rusak',
-        tanggalPerbaikan: null,
+        status: 'rusak',
+        tanggalPerbaikan: createbarangRusak.tanggalPerbaikan,
       };
+
       const request = await barangRusakRepository.api.barangRusak(data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Data berhasil disimpan!');
+
+        setModalVisible(false);
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Terjadi kesalahan saat menyimpan data.');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onFinishEdit = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        jumlah: updateBarangrusak.jumlah,
+        jmlbarangrusak: updateBarangrusak.jmlbarangrusak,
+        perbaikan: updateBarangrusak.perbaikan,
+        tanggalRusak: updateBarangrusak.tanggalRusak,
+        tanggalPerbaikan: updateBarangrusak.tanggalPerbaikan,
+        keterangan: updateBarangrusak.keterangan,
+      };
+      const request = await barangRusakRepository.api.updateBarangrusak(id, data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
@@ -319,12 +363,29 @@ const Page: React.FC = () => {
   };
 
   const handleEdit = (record: Item) => {
-    setEditData(record);
-    // setJumlah(record.Jumlah);
-    // setjmlbarangrusak(record.jmlbarangrusak);
-    // setjmlbarangDiperbaiki(record.jmlbarangdiperbaiki);
+    console.log('record data: ', record);
+
+    const formattanggalRusak = record.createdAt ? dayjs(record.createdAt) : null;
+    const formattanggalPerbaikan = record.createdAt ? dayjs(record.createdAt) : null;
+
+    form.setFieldsValue({
+      id: record.id,
+      jumlah: record.jumlah,
+      jmlbarangrusak: record.jmlbarangrusak,
+      perbaikan: record.perbaikan,
+      tanggalRusak: formattanggalRusak,
+      tanggalPerbaikan: formattanggalPerbaikan,
+      keterangan: record.keterangan,
+    });
+
+    setId(record.id);
+    setJumlah(record.jumlah);
+    setJmlbarangrusak(record.jmlbarangrusak);
+    setPerbaikan(record.perbaikan);
+    settanggalRusak(record.tanggalRusak);
+    settanggalPerbaikan(record.tanggalPerbaikan);
     setketerangan(record.keterangan);
-    form.setFieldsValue(record.id);
+
     setModalEditVisible(true);
   };
 
@@ -361,9 +422,13 @@ const Page: React.FC = () => {
       render: (status: string, record: any) => (
         <Button
           style={{
-            color: '#5BFF00',
-            backgroundColor: 'rgba(162, 225, 129, 0.3)',
-            borderColor: '#A2E181',
+            backgroundColor: record.Status === 'rusak' ? '#FFEAE7' : 
+            record.status === 'diperbaiki' ? '#E4F8D4' : undefined,
+            borderColor: record.Status === 'rusak' ? '#FFA7A7' : 
+            record.status === 'diperbaiki' ? '#A2E181' : undefined,
+            color: record.Status === 'rusak' ? '#FF6C6C' : 
+            record.status === 'diperbaiki' ? '#5BFF00' : undefined,
+            
           }}
         >
           {status}
@@ -373,6 +438,7 @@ const Page: React.FC = () => {
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
@@ -382,7 +448,7 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
+              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
             />
           </span>
         );
@@ -411,23 +477,20 @@ const Page: React.FC = () => {
       <title>Barang Rusak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-        <div
-          style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginBottom: '16px' }}
-        >
           <div ref={searchRef}>
-          <Search
-            placeholder="Telusuri Barang Masuk"
-            className="custom-search"
-            allowClear
-            enterButton
-            onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '20px' }}
-          />
+            <Search
+              placeholder="Telusuri Barang Rusak"
+              className="custom-search"
+              allowClear
+              enterButton
+              onSearch={handleSearch}
+              style={{ width: 300, height: '40px', marginTop: '20px', marginRight: '950px' }}
+            />
           </div>
           <Button
             type="primary"
             onClick={handleButtonClick}
-            icon={<PlusOutlined style={{ marginTop: '4px', marginRight: '10px' }} />}
+            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
             style={{
               backgroundColor: 'white',
               boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
@@ -435,12 +498,14 @@ const Page: React.FC = () => {
               marginRight: '20px',
               width: '200px',
               height: '40px',
-              marginTop: '20px'
+              marginTop: '20px',
+              display : 'flex',
+              marginLeft : 'auto',
+              bottom: '65px',
             }}
           >
-            <span style={{ marginRight: '20px', fontFamily }}>Barang Rusak</span>
+            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px' }}>Barang Rusak</span>
           </Button>
-        </div>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
@@ -450,19 +515,24 @@ const Page: React.FC = () => {
             style: { cursor: 'pointer' },
           })}
           columns={mergedColumns as ColumnTypes}
-          style={{ marginTop: '40px' }}
+          style={{ marginTop: '-10px' }}
         />
       </Card>
       <Modal
         visible={modalEditVisible}
         title={<span style={{ fontSize: '20px', fontWeight: 'bold' }}>Edit Barang Rusak</span>}
-        style={{ textAlign: 'center'}}
+        style={{ textAlign: 'center' }}
         onCancel={handleModalCancel}
         centered
         width={900}
         footer={null}
       >
-        <Form form={form} layout="horizontal" style={{ marginTop: '70px' }}>
+        <Form
+          form={form}
+          layout="horizontal"
+          style={{ marginTop: '70px' }}
+          onFinish={() => onFinishEdit(id)}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div style={{ flex: 1 }}>
               <Form.Item
@@ -472,20 +542,21 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
-                style={{ marginLeft: '20px' }}
+                style={{ marginLeft: '20px',  }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input 
-                placeholder="Jumlah" 
-                style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                // value={updateBarangrusak.jumlah}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
-                // }
+                <Input
+                  placeholder="Jumlah"
+                  style={{ width: '100%', height: '40px' }}
+                  value={updateBarangrusak.jumlah}
+                  disabled
+                  onChange={(e) =>
+                    setupdateBarangrusak({ ...updateBarangrusak, jumlah: Number(e.target.value) })
+                  }
                 />
               </Form.Item>
               <Form.Item
-                name="jumlah1"
+                name="jmlbarangrusak"
                 label={
                   <span>
                     Jumlah barang
@@ -500,15 +571,20 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" style={{ width: '100%', height: '40px', borderColor: 'black' }} 
-                // value={updateBarangrusak.jumlahbarangrusak}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangrusak: Number(e.target.value) })
-                // }
+                <Input
+                  placeholder="Jumlah Barang Rusak"
+                  style={{ width: '100%', height: '40px' }}
+                  value={updateBarangrusak.jmlbarangrusak}
+                  onChange={(e) =>
+                    setupdateBarangrusak({
+                      ...updateBarangrusak,
+                      jmlbarangrusak: Number(e.target.value),
+                    })
+                  }
                 />
               </Form.Item>
               <Form.Item
-                name="jumlah2"
+                name="perbaikan"
                 label={
                   <span>
                     Jumlah barang
@@ -523,12 +599,16 @@ const Page: React.FC = () => {
                 style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
-                <Input placeholder="Jumlah" 
-                style={{ width: '100%', height: '40px', borderColor: 'black' }}
-                // value={updateBarangrusak.jumlahbarangdiperbaiki}
-                // onChange={(e) =>
-                //   setupdateBarangrusak({ ...updateBarangrusak, jumlahbarangdiperbaiki: Number(e.target.value) })
-                // }
+                <Input
+                  placeholder="Jumlah Barang Perbaikan"
+                  style={{ width: '100%', height: '40px' }}
+                  value={updateBarangrusak.perbaikan}
+                  onChange={(e) =>
+                    setupdateBarangrusak({
+                      ...updateBarangrusak,
+                      perbaikan: Number(e.target.value),
+                    })
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -564,15 +644,19 @@ const Page: React.FC = () => {
                 wrapperCol={{ span: 17 }}
                 style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong pilih tanggal Perbaikan!' }]}
-                
               >
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
-                  style={{ width: '100%', height: '40px', marginLeft: '30px', borderColor: 'black' }}
-                  // value={updateBarangrusak.tanggalperbaikan}
-                  // onChange={(e) =>
-                  //   setupdateBarangrusak({ ...updateBarangrusak, tanggalperbaikan: Number(e.target.value) })
+                  style={{ width: '100%', height: '40px', marginLeft: '30px' }}
+                  // value={
+                  //   updateBarangrusak.tanggalRusak
+                  //     ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD').isValid()
+                  //       ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD')
+                  //       : null
+                  //     : null
                   // }
+                  // onChange={handleDateChange}
+                  // format="YYYY-MM-DD"
                 />
               </Form.Item>
               <Form.Item
@@ -584,11 +668,15 @@ const Page: React.FC = () => {
                 style={{ marginRight: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi keterangan!' }]}
               >
-                <TextArea style={{ height: '170px', marginLeft: '30px', borderColor: 'black' }}/>
+                <TextArea
+                  style={{ height: '170px', marginLeft: '30px' }}
+                  value={updateBarangrusak.keterangan}
+                  onChange={(e) =>
+                    setupdateBarangrusak({ ...updateBarangrusak, keterangan: e.target.value })
+                  }
+                />
               </Form.Item>
-              <Form.Item
-                style={{ position: 'relative', display: 'flex' }}
-              >
+              <Form.Item style={{ position: 'relative', display: 'flex' }}>
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -643,17 +731,17 @@ const Page: React.FC = () => {
               >
                 <Select
                   placeholder="Pilih Kode Barang"
-                  style={{ width: '100%', height: '40px', textAlign: 'left', borderColor: 'black'}}
+                  style={{ width: '100%', height: '40px', textAlign: 'left', borderColor: 'black' }}
                 >
                   {listBarang?.data?.map((barang: any) => (
-                    <Option key={barang.id} value={barang.id} >
+                    <Option key={barang.id} value={barang.id}>
                       {barang.kode}
                     </Option>
                   ))}
                 </Select>
               </Form.Item>
               <Form.Item
-                name="jumlah" 
+                name="barangRusak"
                 label="Jumlah"
                 colon={false}
                 labelAlign="left"
@@ -664,7 +752,10 @@ const Page: React.FC = () => {
                 <Input
                   placeholder="Jumlah"
                   style={{ width: '100%', height: '40px' }}
-                  
+                  value={createbarangRusak.jumlah}
+                  onChange={(e) =>
+                    setcreatebarangRusak({ ...createbarangRusak, jumlah: Number(e.target.value) })
+                  }
                 />
               </Form.Item>
               <Form.Item
@@ -699,7 +790,7 @@ const Page: React.FC = () => {
                 // Atur Col
                 labelCol={{ span: 5 }}
                 // Atur lebar Input
-                wrapperCol={{ span: 8 }}
+                wrapperCol={{ offset: 2, span: 16 }}
                 rules={[{ required: true, message: 'Tolong pilih ruangan!' }]}
               >
                 <Select
@@ -730,9 +821,7 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item
-                style={{ position: 'relative', display: 'flex' }}
-              >
+              <Form.Item style={{ position: 'relative', display: 'flex' }}>
                 <Button
                   type="primary"
                   htmlType="submit"

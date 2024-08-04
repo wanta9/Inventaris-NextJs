@@ -5,6 +5,9 @@ const url = {
   getAkun() {
     return `/akun`;
   },
+  getakunbyId(id: string) {
+    return `/akun/${id}`;
+  },
   loginAkun() {
     return `/akun/login`;
   },
@@ -18,6 +21,12 @@ const url = {
   updateAkun(id: string) {
     return `/akun/${id}`;
   },
+  deleteAkun(id: string) {
+    return `/akun/${id}`;
+  },
+  getSearchByName(nama: string) {
+    return `/akun/search/by-name?nama=${nama}`;
+  }
 };
 
 const hooks = {
@@ -27,6 +36,14 @@ const hooks = {
   useAuth() {
     return useSWR(url.authorize(), http.fetcher);
   },
+
+  useAkunbyId(id: string) {
+    return useSWR(url.getakunbyId(id), http.fetcher);
+  },
+
+  useSearchByName(nama: string) {
+    return useSWR(url.getSearchByName(nama), http.fetcher);
+  }
 };
 
 const api = {
@@ -43,10 +60,13 @@ const api = {
     formData.append('foto', data);
     return http.post(url.uploadAkun()).send(formData);
   },
-
   updateAkun(id: string, data: any) {
     return http.put(url.updateAkun(id)).send(data);
   },
+
+  deleteAkun(id: string) {
+    return http.del(url.deleteAkun(id));
+  }
 };
 
 export const akunRepository = {

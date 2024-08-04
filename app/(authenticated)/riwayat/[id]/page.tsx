@@ -19,23 +19,24 @@ interface updateDitolak {
 
 }
 
-
-interface updateDiterima {
-  id: string;
-  status: statusBarang;
-}
 interface Item {
   id: string;
   status: statusBarang;
   keterangan: string;
 }
 
-const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
+interface updateDiterima {
+  id: string;
+  status: statusBarang;
+}
+
+
+
+const DetailRiwayat = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [form] = Form.useForm();
-  // const [id, setId] = useState<string>('');
-  const id: string = params?.id;
+  const [id, setId] = useState<string>('');
   const [keterangan, setKeterangan] = useState<string>('');
   const [returnedDate, setReturnedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState('Pending');
@@ -57,23 +58,22 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [loading, setLoading] = useState(false);
 
   const statusStyles = {
-    diterima: {
-      backgroundColor: '#60A5FA',
-      borderColor: '#1D4ED8',
-      color: '#1D4ED8',
+    ditolak: {
+      backgroundColor: '#F87171',
+      borderColor: '#B91C1C',
+      color: '#B91C1C',
     },
-    pending: {
-      backgroundColor: '#9CA3AF',
-      borderColor: '#374151',
-      color: '#374151',
+    telat: {
+      backgroundColor: '#FACC15',
+      borderColor: '#A16207',
+      color: '#A16207',
     },
-    // ditolak: {
-    //   backgroundColor: '#F87171',
-    //   borderColor: '#B91C1C',
-    //   color: '#B91C1C',
-    // },
+    selesai: {
+      backgroundColor: '#FACC15',
+      borderColor: '#A16207',
+      color: '#2B7800',
+    },
   };
-  
 
   const onFinishDitolak = async (id: string) => {
     console.log('data id: ', id);
@@ -107,13 +107,14 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError(null);
       const data = {
+        id: updateDiterima.id,
         status: updateDiterima.status,
       };
       const request = await peminjamanRepository.api.updatePeminjaman(id, data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
-        message.success('Berhasil Menerima Peminjaman!');
+        message.success('Berhasil Menolak Peminjaman!');
 
       }
       console.log(request);
@@ -156,33 +157,28 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
     setIsModalVisible(false);
   };
 
-  const onEndLoan = (id) => {
-    // Logic to handle ending the loan
-    console.log(`Loan with ID ${id} ended.`);
+  const handleEdit = (record: Item) => {
+    console.log(record, 'record data:');
+
+    form.setFieldsValue({
+      id: record.id,
+      status: record.status,
+      keterangan: record.keterangan,
+    });
+
+    setId(record.id);
+    setStatus(record.status);
+    setKeterangan(record.keterangan);
+    showModal(); // Menampilkan modal
   };
-
-  // const handleEdit = (record: Item) => {
-  //   console.log(record, 'record data:');
-
-  //   form.setFieldsValue({
-  //     id: record.id,
-  //     status: record.status,
-  //     keterangan: record.keterangan,
-  //   });
-
-  //   setId(record.id);
-  //   setStatus(record.status);
-  //   setKeterangan(record.keterangan);
-  //   showModal(); // Menampilkan modal
-  // };
 
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '500';
 
   return (
     <div style={{ marginLeft: '50px' }}>
-      <title>Detail Peminjaman</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Detail Peminjaman</h1>
+      <title>Riwayat</title>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '70px' }}>Riwayat</h1>
       <Card
         style={{
           marginTop: '30px',
@@ -244,7 +240,176 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
               )}
             </Col>
 
-            {(role === 'admin' || role === 'peminjam') &&
+            {role === 'admin' &&
+            Array.isArray(dataSources) &&
+            dataSources.map((item, index) => (
+              <Col key={index} style={{ marginLeft: '50px' }}>
+                <Card
+                  className="shadow-card"
+                  style={{
+                    width: '400px',
+                    height: '240px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '10px',
+                    border: '1px solid rgba(0, 0, 0, .95)',
+                    borderRadius: '20px',
+                    padding: '30px 10px 20px 20px',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}>
+                        Tanggal Peminjaman:
+                      </span>
+                      <DatePicker
+                        disabled
+                        value={item.tanggalPinjam ? moment(item.tanggalPinjam) : null}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}>
+                        Tanggal Pengembalian:
+                      </span>
+                      <DatePicker
+                        disabled
+                        value={item.tanggalPengembalian ? moment(item.tanggalPengembalian) : null}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}>
+                        Tanggal Dikembalikan:
+                      </span>
+                      <DatePicker
+                        disabled
+                        value={item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null}
+                        style={{
+                          width: 'calc(100% - 160px)',
+                          border: '1px solid rgba(0, 0, 0, .50)',
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        marginBottom: '10px',
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <span style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}>
+                        Status
+                      </span>
+                      <div
+                        style={{
+                          width: '50%',
+                          backgroundColor: statusStyles[item.status]?.backgroundColor,
+                          border: `1px solid ${statusStyles[item.status]?.borderColor}`,
+                          textAlign: 'center',
+                          padding: '5px',
+                          borderRadius: '5px',
+                          color: statusStyles[item.status]?.color,
+                        }}
+                      >
+                        {item.status}
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card
+                  className="shadow-card"
+                  style={{
+                    width: '400px',
+                    height: '250px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '10px',
+                    borderRadius: '20px',
+                    border: '1px solid rgba(0, 0, 0, .95)',
+                    marginTop: '20px',
+                  }}
+                >
+                  <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                    <div style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}>
+                      Data Peminjam
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Peminjaman</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>{item.akun.nama}</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>{item.akun.nama}</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>{item.akun.peminjam.NISN}</div>
+                    </div>
+                    <div style={{ marginBottom: '10px', display: 'flex' }}>
+                      <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                      <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                      <div style={{ fontFamily }}>{item.akun.telp}</div>
+                    </div>
+                  </div>
+                </Card>
+                
+                {item.status === 'ditolak' && (
+                  <>
+                    <p style={{ fontWeight: 'bold', fontFamily, marginTop: '20px' }}>Alasan Ditolak</p>
+                    <Card style={{ borderColor: 'black', padding: '10px' }}>
+                      <div style={{ fontFamily }}>{item.keterangan}</div>
+                    </Card>
+                  </>
+                )}
+              </Col>
+            ))}
+
+
+            {role === 'peminjam' &&
               Array.isArray(dataSources) &&
               dataSources.map((item, index) => (
                 <Col key={index} style={{ marginLeft: '50px' }}>
@@ -319,28 +484,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <span
                           style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
                         >
-                          Tanggal Dikembalikan:
-                        </span>
-                        <DatePicker
-                          disabled
-                          value={item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null}
-                          style={{
-                            width: 'calc(100% - 160px)',
-                            border: '1px solid rgba(0, 0, 0, .50)',
-                          }}
-                        />
-                      </div>
-                      <div
-                        style={{
-                          marginBottom: '10px',
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <span
-                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                        >
                           Status
                         </span>
                         <div
@@ -359,64 +502,13 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                   </Card>
-
+                  <p style={{ fontWeight: 'bold', fontFamily, marginTop: '20px' }}>Alasan Ditolak</p>
                   <Card
-                    className="shadow-card"
-                    style={{
-                      width: '400px',
-                      height: '250px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: '10px',
-                      borderRadius: '20px',
-                      border: '1px solid rgba(0, 0, 0, .95)',
-                      marginTop: '20px',
-                    }}
+                  style={{ borderColor: 'black'}}
                   >
-                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
-                      <div
-                        style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}
-                      >
-                        Data Peminjam
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <div style={{ marginBottom: '10px', display: 'flex' }}>
-                        <div style={{ width: '150px', fontWeight, fontFamily }}>
-                          Nama Peminjaman
-                        </div>
-                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                        <div style={{ fontFamily }}>{item.akun.nama}</div>
-                      </div>
-                      <div style={{ marginBottom: '10px', display: 'flex' }}>
-                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
-                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                        <div style={{ fontFamily }}>{item.akun.nama}</div>
-                      </div>
-                      <div style={{ marginBottom: '10px', display: 'flex' }}>
-                        <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
-                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                        <div style={{ fontFamily }}>{item.akun.peminjam.NISN}</div>
-                      </div>
-                      <div style={{ marginBottom: '10px', display: 'flex' }}>
-                        <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
-                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
-                        <div style={{ fontFamily }}>{item.akun.telp}</div>
-                      </div>
-                    </div>
                   </Card>
                 </Col>
             ))}
-            
 
             {role === 'petugas' &&
               Array.isArray(dataSources) &&
@@ -520,13 +612,20 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         <Button
                           style={{
                             color: '#FF0000',
-                            backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                            borderColor: '#FF0000',
+                            backgroundColor: statusStyles[item.status]?.backgroundColor,
+                            border: `1px solid ${statusStyles[item.status]?.borderColor}`,
                             marginRight: '10px',
+                            color: statusStyles[item.status]?.color,
                           }}
                           onClick={(e) => {
                             e.stopPropagation();
-                            showModal();
+                            // Contoh item data untuk digunakan dengan handleEdit
+                            const item: Item = {
+                              id: '', 
+                              status: statusBarang.Ditolak,
+                              keterangan: 'Alasan penolakan', 
+                            };
+                            handleEdit(item);
                           }}
                         >
                           Tolak
@@ -651,35 +750,8 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
           </Row>
         </div>
       </Card>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-        <Button
-          style={{
-            marginTop: '30px',
-            backgroundColor: '#582DD2',
-            color: 'white',
-            width: '20%',
-            height: '50px',
-            borderRadius: '10px',
-            marginRight: '45vh',
-          }}
-        >
-          <a
-            href="http://localhost:3002/peminjaman"
-            style={{
-              fontSize: '15px',
-              fontWeight,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <ArrowLeftOutlined style={{ marginRight: '10px' }} />
-            Kembali
-          </a>
-        </Button>
-      </div>
     </div>
   );
-};
+};  
 
-export default Detailpeminjaman;
+export default DetailRiwayat;

@@ -37,4 +37,22 @@
 
 
 
+
 /* modal letak barang */
+
+/* Hapus spinner di Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hapus spinner di Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Hapus scrollbar horizontal yang mungkin muncul */
+input[type="number"] {
+  overflow: hidden;
+}

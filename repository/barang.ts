@@ -21,11 +21,16 @@ export interface ListBarang extends Barang {
 }
 
 const url = {
-  getBarang() {
-    return `/barang`;
+  getBarang(params: any = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return `/barang?${queryString}`;
   },
   getBarangById(id: string) {
     return `/barang/${id}`;
+  },
+
+  getFoto(photo: string) {
+    return `/upload/get-barang/${photo}`;
   },
   uploadBarang() {
     return `/upload/barang`;
@@ -33,6 +38,10 @@ const url = {
 
   updateBarang(id: string) {
     return `/barang/${id}`;
+  },
+
+  getBarangByName(nama: string) {
+    return `/barang/search/by-name?nama=${nama}`;
   },
 };
 
@@ -42,6 +51,13 @@ const hooks = {
   },
   useBarangById(id: string) {
     return useSWR(url.getBarangById(id), http.fetcher);
+  },
+
+  useFoto(photo: string) {
+    return useSWR(photo ? url.getFoto(photo) : null, http.fetcher);
+  },
+  useBarangByName(nama: string) {
+    return useSWR(url.getBarangByName(nama), http.fetcher);
   },
 };
 
@@ -60,10 +76,6 @@ const api = {
   updateBarang(id: string, data: any) {
     return http.put(url.updateBarang(id)).send(data);
   },
-
-  // updateUploadBarang(data: any) {
-  //   return http.put(url.updateBarang(data.id)).send(data);
-  // }
 };
 
 export const barangRepository = {

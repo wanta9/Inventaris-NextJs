@@ -1,30 +1,83 @@
 'use client';
 
-import { Button, Card, Col, Divider, Row, Select } from 'antd';
-import React from 'react';
+import { Button, Card, Col, Divider, message, Row, Select } from 'antd';
+import React, { useState } from 'react';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useParams, useRouter } from 'next/navigation';
-import { peminjamRepository } from '#/repository/peminjam';
+import { akunRepository } from '#/repository/akun';
+import { statusBarang } from '../../dashboard/page';
+import { config } from '#/config/app';
+
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
+
+console.log(imgUrl, 'img url');
 
 const { Option } = Select;
 
-const Editpeminjam = () => {
+interface updateStatus {
+  id: string;
+  peranId: string;
+  status: statusBarang;
+}
+
+const Editpeminjam = ({ params }: { params: { id: string } }) => {
+  const [status, setStatus] = useState<string | undefined>();
   const rowStyle = { marginBottom: '25px' };
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '500';
-  const params = useParams();
   const id: string = params?.id;
-  const { data: peminjamById } = peminjamRepository.hooks.usePeminjamById(params.id);
-  console.log(peminjamById, 'barang masuk by id');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
+  console.log(akunbyId, 'akun by id');
+  const [updateStatus, setupdateStatus] = useState<updateStatus>({
+    id: '',
+    peranId: '5954d800-e79a-405d-a408-95095f494e3d',
+    status: statusBarang.Pending,
+  });
+
   const router = useRouter();
 
   const Kembali = () => {
     router.push('/peminjam');
   };
+
+  const handleStatusChange = (value: statusBarang) => {
+    setupdateStatus((prevState) => ({
+      ...prevState,
+      status: value,
+    }));
+  };
+
+  const onFinishEdit = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        peranId: updateStatus.peranId,
+        status: updateStatus.status,
+      };
+      const request = await akunRepository.api.updateAkun(id, data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Berhasil Mengedit Petugas!');
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('GagalMengedit Petugas!');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ marginLeft: '50px', fontFamily }}>
-      <title>Edit Peminjam</title>
-      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Profile</h1>
+      <h1 style={{ fontSize: '25px', fontWeight: 'bold', marginTop: '40px' }}>Edit Peminjam</h1>
       <Card
         style={{
           marginTop: '50px',
@@ -32,6 +85,7 @@ const Editpeminjam = () => {
           width: '80%',
           borderRadius: '30px',
           height: '450px',
+          position: 'relative',
         }}
       >
         <div style={{ padding: '50px 50px 40px 80px', fontFamily }}>
@@ -51,7 +105,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.nama}
+                  {akunbyId?.data?.nama}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -68,7 +122,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.username}
+                  {akunbyId?.data?.username}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -85,7 +139,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.akun?.telp}
+                  {akunbyId?.data?.telp}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -102,7 +156,7 @@ const Editpeminjam = () => {
                   span={8}
                   style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}
                 >
-                  {peminjamById?.data?.NISN}
+                  {akunbyId?.data?.peminjam?.NISN}
                 </Col>
               </Row>
               <Row align="middle" style={rowStyle}>
@@ -126,9 +180,11 @@ const Editpeminjam = () => {
                       fontWeight,
                       borderColor: 'black',
                     }}
+                    value={updateStatus.status}
+                    onChange={handleStatusChange}
                   >
-                    <Option value="diterima">Diterima</Option>
-                    <Option value="ditolak">Ditolak</Option>
+                    <Option value={statusBarang.Diterima}>Diterima</Option>
+                    <Option value={statusBarang.Ditolak}>Ditolak</Option>
                   </Select>
                 </Col>
               </Row>
@@ -140,7 +196,7 @@ const Editpeminjam = () => {
               <Row align="middle">
                 <Col span={12}>
                   <img
-                    src="/sitmen.png"
+                    src={imgUrl(akunbyId?.data?.gambar)}
                     alt="gambar"
                     style={{
                       width: '250px',
@@ -149,6 +205,23 @@ const Editpeminjam = () => {
                       marginTop: '20px',
                     }}
                   />
+                </Col>
+              </Row>
+              <Row align="middle" style={{ marginTop: '20px' }}>
+                <Col span={24}>
+                  <Button
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      width: '40%',
+                      height: '50px',
+                      borderRadius: '10px',
+                      marginLeft: '200px',
+                    }}
+                    onClick={() => onFinishEdit(id)}
+                  >
+                    Simpan
+                  </Button>
                 </Col>
               </Row>
             </Col>

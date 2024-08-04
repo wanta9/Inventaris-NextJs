@@ -9,13 +9,15 @@ import { akunRepository } from '#/repository/akun';
 import { barangRepository } from '#/repository/barang';
 import { values } from 'mobx';
 import { peminjamRepository } from '#/repository/peminjam';
+import { koleksiRepository } from '#/repository/koleksi';
+import { parseJwt } from '#/utils/parseJwt';
 
 // const { Option } = Select;
-// interface createKoleksi {
-//   ruanganId: string;
-//   barangId: string;
-//   jumlah: number;
-// }
+interface createKoleksi {
+  akunId: string;
+  ruanganBarangId: string;
+  jumlah: number;
+}
 const Detailbarang = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
@@ -24,43 +26,77 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
   console.log(ruanganBarangById, 'barang masuk by id');
   const { data: akun } = akunRepository.hooks.useAuth();
   const [modalVisible, setModalVisible] = useState(false);
-  const [PilihRuangan, setPilihRuangan] = useState(null);
+  const [PilihRuangan, setPilihRuangan] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  // const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
-  //   ruanganId: '',
-  //   barangId: '',
-  //   jumlah: 0,
-  // });
+  const [createKoleksi, setcreateKoleksi] = useState<createKoleksi>({
+    akunId: '',
+    ruanganBarangId: '',
+    jumlah: 0,
+  });
   const [form] = Form.useForm();
   const role = akun?.data?.peran?.Role;
+  const [id, setId] = useState('');
   const harga = ruanganBarangById?.data?.harga;
 
-  const [ruanganNames, setRuanganNames] = useState<string[]>([]);
+  const [ruanganNames, setRuanganNames] = useState<{ id: string; displayName: string }[]>([]);
 
   const kembali = () => {
     router.push('/barang');
   };
 
-  const handleRuanganClick = (name: any) => {
+  const handleRuanganClick = (name: string) => {
     setPilihRuangan(name);
+    setcreateKoleksi({ ...createKoleksi, ruanganBarangId: name });
   };
 
+  useEffect(() => {
+    // Mendapatkan access_token dari localStorage
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      try {
+        // Parsing token untuk mendapatkan akunId
+        const parseToken = parseJwt(token);
+        console.log('Hasil parsing token:', parseToken); // Log seluruh hasil parsing
+
+        if (parseToken && parseToken.existUser && parseToken.existUser.id) {
+          console.log('Akun ID dari token:', parseToken.existUser.id); // Log akunId yang ditemukan
+          setcreateKoleksi((prevState) => ({
+            ...prevState,
+            akunId: parseToken.existUser.id, // Ambil id dari existUser di dalam token
+          }));
+        } else {
+          console.error('Token tidak memiliki ID akun:', parseToken);
+        }
+      } catch (error) {
+        console.error('Invalid token:', error);
+      }
+    } else {
+      console.error('Tidak ada token ditemukan di localStorage');
+    }
+  }, []);
+
+  // CREATE KOLEKSI
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
     try {
       setLoading(true);
       setError(null);
+
       const data = {
-        // ruanganId: values.ruanganId || createKoleksi.ruanganId,
-        // barangId: values.barangId || createKoleksi.barangId,
-        // jumlah: values.jumlah || createKoleksi.jumlah,
+        akunId: createKoleksi.akunId,
+        ruanganBarangId: createKoleksi.ruanganBarangId,
+        jumlah: createKoleksi.jumlah,
       };
-      const request = await barangRepository.api.barang(data);
+      router.push('/koleksi');
+      console.log(data, 'create koleksi');
+      const request = await koleksiRepository.api.koleksi(data);
       if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Data berhasil disimpan!');
+        console.log('Data berhasil disimpan:', request.body.data);
         setModalVisible(false);
       }
       console.log(request);
@@ -76,18 +112,22 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (ruanganBarangById?.data?.ruanganBarang) {
-      const names = ruanganBarangById.data.ruanganBarang.map(
-        (item: any) => item.ruangan.Letak_Barang
-      );
+      // Map ruanganBarang to include id and displayName (Letak_Barang)
+      const names = ruanganBarangById.data.ruanganBarang.map((item: any) => ({
+        id: item.id,
+        displayName: item.ruangan.Letak_Barang,
+      }));
       setRuanganNames(names);
     }
   }, [ruanganBarangById]);
 
   const [value, setValue] = useState(1);
 
-  const handleChange = (newValue: any) => {
+  // Define the handleChange function to update both the component's state and the createKoleksi state
+  const handleChange = (newValue: number) => {
     if (newValue >= 1) {
       setValue(newValue);
+      setcreateKoleksi({ ...createKoleksi, jumlah: newValue });
     }
   };
 
@@ -154,7 +194,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         <Card
           style={{
             width: '80%',
-            height: '600px',
+            height: '630px',
             marginTop: '50px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
@@ -368,6 +408,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
         </Card>
       )}
 
+      {/* MODAL PINJAM BARANG DI PEMINJAM */}
       <Modal
         visible={modalVisible}
         onCancel={handleModalCancel}
@@ -443,31 +484,16 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 fontFamily,
                 fontSize: '17px',
                 whiteSpace: 'pre-wrap',
+                display: 'flex',
+                flexWrap: 'wrap',
               }}
             >
               {PilihRuangan ? (
-                <Button
-                  style={{
-                    backgroundColor: '#D9D9D9',
-                    color: 'black',
-                    fontWeight: 'bold',
-                    width: '120px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    marginBottom: '10px',
-                    marginLeft: '30px'
-                    
-                  }}
-                >
-                  {PilihRuangan}
-                </Button>
-              ) : (
-                ruanganNames.map((name, index) => (
+                <Form.Item>
                   <Button
-                    key={index}
                     style={{
-                      backgroundColor: '#FFFFFF',
-                      color: 'grey',
+                      backgroundColor: '#D9D9D9',
+                      color: 'black',
                       fontWeight: 'bold',
                       width: '120px',
                       height: '40px',
@@ -475,10 +501,29 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                       marginBottom: '10px',
                       marginLeft: '30px',
                     }}
-                    onClick={() => handleRuanganClick(name)}
                   >
-                    {name}
+                    {ruanganNames.find((item) => item.id === PilihRuangan)?.displayName}
                   </Button>
+                </Form.Item>
+              ) : (
+                ruanganNames.map((item) => (
+                  <Form.Item key={item.id}>
+                    <Button
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        color: 'grey',
+                        fontWeight: 'bold',
+                        width: '120px',
+                        height: '40px',
+                        borderRadius: '10px',
+                        marginBottom: '10px',
+                        marginLeft: '30px',
+                      }}
+                      onClick={() => handleRuanganClick(item.id)}
+                    >
+                      {item.displayName}
+                    </Button>
+                  </Form.Item>
                 ))
               )}
             </Col>
@@ -499,21 +544,23 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               style={{ marginTop: '25px', marginBottom: '-30px' }}
             >
               <Col style={{ display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-                <Button
-                  onClick={() => handleChange(value - 1)}
-                  style={{
-                    marginLeft: '100px',
-                    width: '50px',
-                    boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
-                </Button>
+                <Form.Item>
+                  <Button
+                    onClick={() => handleChange(value - 1)}
+                    style={{
+                      marginLeft: '100px',
+                      width: '50px',
+                      boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    <img src="/minusicon.svg" style={{ width: '14px', height: '14px' }} />
+                  </Button>
+                </Form.Item>
                 <Form.Item>
                   <InputNumber
                     min={1}
                     value={value}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(Number(e))}
                     controls={false}
                     style={{
                       width: '60px',
@@ -522,31 +569,34 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                     }}
                   />
                 </Form.Item>
-                <Button
-                  onClick={() => handleChange(value + 1)}
-                  style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-                >
-                  <img
-                    src="/pluseicon.svg"
-                    style={{ width: '12px', height: '12px', marginBottom: '5px' }}
-                  />
-                </Button>
+                <Form.Item>
+                  <Button
+                    onClick={() => handleChange(value + 1)}
+                    style={{ width: '50px', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
+                  >
+                    <img
+                      src="/pluseicon.svg"
+                      style={{ width: '12px', height: '12px', marginBottom: '5px' }}
+                    />
+                  </Button>
+                </Form.Item>
               </Col>
               <Form.Item>
                 <Col>
-                <Button
-                  onClick={onFinish}
-                  style={{
-                    backgroundColor: '#582DD2',
-                    color: 'white',
-                    width: '150px',
-                    height: '50px',
-                    borderRadius: '10px',
-                    marginTop: '20px',
-                  }}
-                >
-                  <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
-                </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      width: '150px',
+                      height: '50px',
+                      borderRadius: '10px',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <span style={{ fontSize: '15px', fontWeight: 'bold' }}>Pinjam</span>
+                  </Button>
                 </Col>
               </Form.Item>
             </Row>

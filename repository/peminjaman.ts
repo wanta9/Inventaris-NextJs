@@ -1,4 +1,5 @@
 import { http } from '#/utils/http';
+import { update } from 'lodash';
 import useSWR from 'swr';
 
 export interface peminjaman {
@@ -25,6 +26,9 @@ const url = {
   getpeminjamanById(id: string) {
     return `/peminjaman/${id}`;
   },
+  updatePeminjaman(id: string) {
+    return `/peminjaman/${id}`;
+  }
 };
 
 const hooks = {
@@ -34,12 +38,18 @@ const hooks = {
   usePeminjamanById(id: string) {
     return useSWR(url.getpeminjamanById(id), http.fetcher);
   },
+  useUpdatePeminjaman(id: string) {
+    return useSWR(url.updatePeminjaman(id), http.fetcher);
+  }
 };
 
 const api = {
   peminjaman(data: any) {
     return http.post(url.getPeminjaman()).send(data);
   },
+  updatePeminjaman(id: string, data: any) {
+    return http.put(url.getpeminjamanById(id)).send(data);
+  }
 };
 
 export const peminjamanRepository = {

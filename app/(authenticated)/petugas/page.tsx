@@ -34,6 +34,7 @@ import { petugasRepository } from '#/repository/petugas';
 import { log } from 'console';
 import { akunRepository } from '#/repository/akun';
 import { create } from 'domain';
+import { search } from 'superagent';
 export enum rolePeran {
   Admin = 'admin',
   Petugas = 'petugas',
@@ -56,6 +57,7 @@ export enum statusBarang {
 // }
 interface updatePetugas {
   id: string;
+  peranId: string;
   username: string;
   nomorInduk: string;
   telp: string;
@@ -70,7 +72,7 @@ interface createAkunpetugas {
   username: string;
   password: string;
   status: statusBarang;
-  kelas: string;
+  // kelas: string;
 }
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
@@ -80,6 +82,8 @@ interface Item {
   username: string;
   telp: string;
   nomorInduk: string;
+  petugas?: any;
+  peminjam?: any;
 }
 
 interface EditableRowProps {
@@ -183,7 +187,7 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
-
+  const [id, setId] = useState<string>('');
   const [nama, setNama] = useState('');
   const [nomorInduk, setnomorInduk] = useState('');
   const [username, setusername] = useState('');
@@ -192,10 +196,10 @@ const Page: React.FC = () => {
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
-    peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
+    peranId: 'a7f86285-bdeb-4c3e-9449-6a4e71d2e96d',
     status: statusBarang.Aktif,
     nama: '',
-    kelas: '',
+    // kelas: '',
     nomorInduk: '',
     telp: '',
     gambar: '',
@@ -209,6 +213,7 @@ const Page: React.FC = () => {
 
   const [updatePetugas, setupdatePetugas] = useState<updatePetugas>({
     id: '',
+    peranId: 'a7f86285-bdeb-4c3e-9449-6a4e71d2e96d',
     nomorInduk: '',
     telp: '',
     username: '',
@@ -218,12 +223,17 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<DataType | null>(null);
   const [searchText, setSearchText] = useState('');
+  // const [imageUrl, setImageUrl] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const [petugasId, setPetugasId] = useState<string | null>(null);
+  const { data: listPetugas, mutate: mutateListPetugas } =
+    akunRepository.hooks.useSearchByName(searchText);
+  console.log(search, 'search');
+  console.log(listPetugas, 'listPetugas');
   const { data: listakun } = akunRepository.hooks.useAkun();
-  console.log(listakun, 'listPetugas');
-  const petugasData = listakun?.data?.filter((item: any) => item.peran?.Role === 'petugas');
+  console.log(listakun, 'listakun');
+  const petugasData = listPetugas?.filter((item: any) => item.peran?.Role === 'petugas');
   const [form] = Form.useForm();
-  const [id, setId] = useState<string>('');
   const fontFamily = 'Barlow, sans-serif';
   const fontWeight = '700';
   const { data: akun } = akunRepository.hooks.useAuth();
@@ -272,10 +282,7 @@ const Page: React.FC = () => {
   const handleModalCancel = () => {
     setModalVisible(false);
     setModalEditVisible(false);
-    setNama('');
-    setNamaPengguna('');
-    setnomorInduk('');
-    setTelp('');
+    form.resetFields();
   };
 
   const onFinish = async (values: any) => {
@@ -292,7 +299,7 @@ const Page: React.FC = () => {
         gambar: createAkunpetugas.gambar,
         username: createAkunpetugas.username,
         password: createAkunpetugas.password,
-        kelas: createAkunpetugas.kelas,
+        // kelas: createAkunpetugas.kelas,
       };
       const request = await akunRepository.api.akun(data);
       if (request.status === 400) {
@@ -300,6 +307,7 @@ const Page: React.FC = () => {
       } else {
         message.success('Berhasil Menambah Petugas!');
         setModalVisible(false);
+        await mutateListPetugas();
       }
       console.log(request);
     } catch (error) {
@@ -313,12 +321,13 @@ const Page: React.FC = () => {
   };
 
   const onFinishEdit = async (id: string) => {
-    // console.log('data values: ', values);
     console.log('data id: ', id);
+
     try {
       setLoading(true);
       setError(null);
       const data = {
+        peranId: updatePetugas.peranId,
         username: updatePetugas.username,
         nomorInduk: updatePetugas.nomorInduk,
         telp: updatePetugas.telp,
@@ -328,7 +337,8 @@ const Page: React.FC = () => {
         setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
-        setModalVisible(false);
+        setModalEditVisible(false);
+        await mutateListPetugas();
       }
       console.log(request);
     } catch (error) {
@@ -341,30 +351,33 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.id !== key);
-    setDataSource(newData);
+  const handleDelete = async (id: string) => {
+    try {
+      await akunRepository.api.deleteAkun(id); // Panggil API untuk menghapus akun berdasarkan ID
+      const newData = dataSource.filter((item) => item.id !== id);
+      console.log(newData, 'delete');
+      message.success('Akun Berhasil Dihapus!');
+      setDataSource(newData);
+    } catch (error) {
+      console.error('Akun Gagal Dihapus:', error);
+    }
   };
 
   const handleEdit = (record: Item) => {
-    setEditData(record);
+    console.log('record: ', record);
     setId(record.id);
-    setNama(record.name);
     setusername(record.username);
     setnomorInduk(record.nomorInduk);
-    setTelp(record.telp);
-    setModalEditVisible(true);
-  };
+    setTelp(record.telp); // Memasukkan data ke form
+    setModalEditVisible(true); // Menampilkan modal edit
 
-  // useEffect(() => {
-  //   if (listakun) {
-  //     // Filter data untuk hanya menampilkan entitas dengan peran 'Petugas'
-  //     const filteredData = listakun.filter((item: Item) =>
-  //       item ? akun?.data?.peran?.Role === rolePeran.Petugas : true
-  //     );
-  //     setDataSource(filteredData);
-  //   }
-  // }, [listakun]);
+    form.setFieldsValue({
+      id: record.id,
+      username: record.username,
+      nomorInduk: record?.petugas.NIP,
+      telp: record.telp,
+    });
+  };
 
   const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
     {
@@ -399,26 +412,27 @@ const Page: React.FC = () => {
       width: '20%',
       editable: true,
       render: (_, record) => {
-        return record.petugas[0].NIP;
+        return record.petugas.NIP;
       },
     },
     {
       title: '',
       dataIndex: '',
+      width: '10%',
       render: (record: Item) => {
         return (
           <span>
             <Button
               type="link"
               onClick={(e) => {
-                e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
-                handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
+                e.stopPropagation();
+                handleEdit(record);
               }}
               icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px' }} />}
             />
             <Popconfirm
               title="Hapus Petugas"
-              // onConfirm={() => handleDeletePetugas(id)} // Pastikan `id` yang benar dikirimkan
+              onConfirm={() => handleDelete(record.id)} // Mengirimkan ID yang benar untuk dihapus
               onCancel={(e) => {
                 if (e) e.stopPropagation(); // Mencegah penyebaran klik saat cancel
               }}
@@ -431,9 +445,9 @@ const Page: React.FC = () => {
                 icon={<img src="/logoDelete.svg" style={{ width: '20px', height: '20px' }} />}
               />
             </Popconfirm>
-                </span>
-              );
-         },
+          </span>
+        );
+      },
     },
   ];
 
@@ -499,8 +513,8 @@ const Page: React.FC = () => {
             className="custom-search"
             allowClear
             enterButton
-            onSearch={() => {}}
-            style={{ width: 300, marginRight: '950px', height: '40px', marginTop: '10px' }}
+            onSearch={handleSearch}
+            style={{ width: 300, height: '40px', marginTop: '10px' }}
           />
         </div>
         <Button
@@ -531,6 +545,179 @@ const Page: React.FC = () => {
           columns={columns as ColumnTypes}
           style={{ marginTop: '30px' }}
         />
+        {/* CREATE AKUN PETUGAS */}
+        <Modal
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '20px' }}>
+              Tambah Akun Petugas
+            </div>
+          }
+          style={{ textAlign: 'center' }}
+          centered
+          width={1000}
+          visible={modalVisible}
+          onCancel={handleModalCancel}
+          footer={null}
+        >
+          <Form form={form} layout="horizontal" onFinish={onFinish}>
+            <Row gutter={[24, 24]} justify="center" style={{ marginTop: '50px' }}>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Nama"
+                  name="nama"
+                  rules={[{ required: true, message: 'Nama harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama"
+                    value={createAkunpetugas.nama}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nama: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="NIP"
+                  name="nomorInduk"
+                  rules={[{ required: true, message: 'NIP harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="NIP"
+                    value={createAkunpetugas.nomorInduk}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, nomorInduk: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Telp"
+                  name="telp"
+                  rules={[{ required: true, message: 'Telp harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Telp"
+                    value={createAkunpetugas.telp}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, telp: e.target.value })
+                    }
+                    maxLength={12}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Unggah Foto"
+                  name="foto"
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 14 }}
+                >
+                  <Upload
+                    listType="picture"
+                    beforeUpload={() => false}
+                    onChange={(args) => handleChange(args)}
+                  >
+                    <Button icon={<UploadOutlined />} style={{ marginRight: '200px' }}>
+                      Unggah
+                    </Button>
+                  </Upload>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={12}>
+                <Form.Item
+                  label="Nama Pengguna"
+                  name="username"
+                  rules={[{ required: true, message: 'Nama Pengguna harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Nama Pengguna"
+                    value={createAkunpetugas.username}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, username: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Sandi"
+                  name="password"
+                  rules={[{ required: true, message: 'Sandi harus diisi' }]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Sandi"
+                    value={createAkunpetugas.password}
+                    onChange={(e) =>
+                      setcreateAkunpetugas({ ...createAkunpetugas, password: e.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Konfirmasi Sandi"
+                  name="konfirmasiSandi"
+                  rules={[
+                    { required: true, message: 'Konfirmasi Sandi harus diisi' },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || getFieldValue('password') === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Sandi tidak cocok.'));
+                      },
+                    }),
+                  ]}
+                  labelCol={{ span: 6 }}
+                  wrapperCol={{ span: 16 }}
+                >
+                  <Input.Password
+                    style={{ width: '100%', height: '45px' }}
+                    placeholder="Konfirmasi Sandi"
+                    onChange={(e) => setKonfirmasiSandi(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item style={{ textAlign: 'right', marginTop: '24px', marginRight: '40px' }}>
+              <Button
+                type="default"
+                onClick={handleModalCancel}
+                style={{
+                  width: '100px',
+                  height: '35px',
+                  borderColor: 'black',
+                  color: 'black',
+                  marginRight: '10px',
+                }}
+              >
+                Batal
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  width: '100px',
+                  height: '35px',
+                  backgroundColor: '#582DD2',
+                  color: 'white',
+                  borderColor: '#582DD2',
+                }}
+              >
+                Simpan
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        {/* EDIT AKUN PETUGAS */}
         <Modal
           title={
             <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
@@ -751,7 +938,11 @@ const Page: React.FC = () => {
         </Modal>
 
         <Modal
-          title={<div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>Edit Akun Petugas</div>}
+          title={
+            <div style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '30px' }}>
+              Edit Akun Petugas
+            </div>
+          }
           style={{ textAlign: 'center' }}
           width={600}
           centered
@@ -764,26 +955,18 @@ const Page: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <Form
-            layout="horizontal"
-            onFinish={() => onFinishEdit(id)}
-            initialValues={{
-              username: updatePetugas.username || username,
-              nomorInduk: updatePetugas.nomorInduk || nomorInduk,  
-              telp: updatePetugas.telp || telp,
-            }}
-          >
+          <Form form={form} layout="horizontal" onFinish={() => onFinishEdit(id)}>
             <div style={{ marginTop: '70px', marginRight: '70px' }}>
               <Row gutter={[24, 24]}>
-                <Col push={2} span={10}>
+                <Col span={23} offset={1}>
                   <Form.Item
                     label="Nama Pengguna"
                     name="username"
                     rules={[{ required: true, message: 'Nama Pengguna harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '30px' }}
+                      style={{ width: '100%', height: '45px', marginLeft: '30px' }}
                       placeholder="Nama Pengguna"
                       value={updatePetugas.username}
                       onChange={(e) =>
@@ -795,10 +978,10 @@ const Page: React.FC = () => {
                     label="NIP"
                     name="nomorInduk"
                     rules={[{ required: true, message: 'NIP harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '111px' }}
+                      style={{ width: '80%', height: '45px', marginLeft: '110px' }}
                       placeholder="NIP"
                       value={updatePetugas.nomorInduk}
                       onChange={(e) =>
@@ -810,11 +993,10 @@ const Page: React.FC = () => {
                     label="Telp"
                     name="telp"
                     rules={[{ required: true, message: 'Telp harus di isi' }]}
-                    style={{ paddingLeft: '10px'}}
-
+                    style={{ paddingLeft: '10px' }}
                   >
                     <Input
-                      style={{ width: '300px', height: '45px', border: '', marginLeft: '107px' }}
+                      style={{ width: '80%', height: '45px', marginLeft: '107px' }}
                       placeholder="Telp"
                       value={updatePetugas.telp}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
@@ -825,7 +1007,7 @@ const Page: React.FC = () => {
               </Row>
             </div>
             <Form.Item>
-              <div style={{ textAlign: 'right' }}>
+              <div style={{ textAlign: 'right', marginRight: '40px' }}>
                 <Button
                   key="cancel"
                   onClick={handleModalCancel}
@@ -838,7 +1020,12 @@ const Page: React.FC = () => {
                 >
                   Batal
                 </Button>
-                <Button key="save" type="primary" htmlType="submit" style={{ marginRight: '40px', backgroundColor: '#582DD2' }}>
+                <Button
+                  key="save"
+                  type="primary"
+                  htmlType="submit"
+                  style={{ backgroundColor: '#582DD2', marginRight: '5px' }}
+                >
                   Simpan
                 </Button>
               </div>

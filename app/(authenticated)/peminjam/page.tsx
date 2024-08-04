@@ -8,7 +8,11 @@ import type { UploadFile } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { peminjamRepository } from '#/repository/peminjam';
 import { akunRepository } from '#/repository/akun';
+import { config } from '#/config/app';
 
+export const imgUrl = (photo: string) => {
+  `${config.baseUrl}/upload/get-akun/${photo}`;
+};
 const { Column } = Table;
 const { Search } = Input;
 const { Item } = Menu;
@@ -18,9 +22,12 @@ const Peminjam = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [searchText, setSearchText] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
+  const { data: listPeminjam } = akunRepository.hooks.useSearchByName(searchText);
+  console.log(listPeminjam, 'list peminjam');
   const { data: listAkun } = akunRepository.hooks.useAkun();
-  const peminjamData = listAkun?.data?.filter((akun) => akun.peran.Role === 'peminjam');
-  console.log(listAkun, 'list peminjam');
+  const peminjamData = listPeminjam?.filter((item: any) => item.peran.Role === 'peminjam');
+  console.log(peminjamData, 'data filter peminjam:');
+  console.log(listAkun, 'list akun');
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
   const router = useRouter();
@@ -63,6 +70,7 @@ const Peminjam = () => {
     status: string;
     gambar: string;
     akun: string;
+    peminjam?: any;
   }
 
   // useEffect(() => {
@@ -107,7 +115,7 @@ const Peminjam = () => {
               className="custom-search"
               allowClear
               enterButton
-              onSearch={() => {}}
+              onSearch={handleSearch}
               style={{ width: 300, marginRight: '950px', height: '40px' }}
             />
           </div>
@@ -126,7 +134,10 @@ const Peminjam = () => {
               key="fotoNama"
               render={(text, record: DataType) => (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={record.akun?.gambar} style={{ marginRight: 8 }} />
+                  <Avatar
+                    src={record.gambar ? imgUrl(record.gambar) : ''}
+                    style={{ marginLeft: '8px' }}
+                  />
                   <span>{record.nama}</span>
                 </div>
               )}
@@ -146,12 +157,12 @@ const Peminjam = () => {
               dataIndex="NISN"
               key="nisn"
               render={(text, record: DataType) => {
-                return record.peminjam[0].NISN;
+                return record.peminjam?.NISN;
               }}
             />
             <Column
               title="Status"
-              dataIndex="tatus"
+              dataIndex="status"
               key="status"
               render={(status: string, record: DataType) => (
                 <Button
@@ -161,6 +172,32 @@ const Peminjam = () => {
                     if (record.status) {
                       handleButtonClick(record.status);
                     }
+                  }}
+                  style={{
+                    backgroundColor:
+                      record.status === 'ditolak'
+                        ? '#F87171'
+                        : record.status === 'diterima'
+                        ? '#60A5FA'
+                        : record.status === 'pending'
+                        ? '#9CA3AF'
+                        : undefined,
+                    borderColor:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
+                    color:
+                      record.status === 'ditolak'
+                        ? '#B91C1C'
+                        : record.status === 'diterima'
+                        ? '#1D4ED8'
+                        : record.status === 'pending'
+                        ? '#374151'
+                        : undefined,
                   }}
                 >
                   {record.status}

@@ -113,6 +113,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 const Page: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   const [count, setCount] = useState(0);
+  const [form] = Form.useForm();
   const [id, setId] = useState<string>('');
   const [Letak_Barang, setLetak_Barang] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -122,8 +123,6 @@ const Page: React.FC = () => {
   const { data: akun } = akunRepository.hooks.useAuth();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const [initialValues, setInitialValues] = useState({});
   const [createLetakbarang, setcreateLetakbarang] = useState<createLetakbarang>({
     Letak_Barang: '',
   });
@@ -131,7 +130,6 @@ const Page: React.FC = () => {
     id: '',
     Letak_Barang: '',
   });
-
 
   const onFinish = async (values: any) => {
     console.log('data values: ', values);
@@ -329,6 +327,7 @@ const Page: React.FC = () => {
           rowClassName={() => 'editable-row'}
           bordered
           dataSource={listRuangan?.data}
+          pagination={{ pageSize: 5 }}
           columns={columns as ColumnTypes}
           style={{ marginTop: '40px', width: '90%', marginLeft: '14px' }}
         />

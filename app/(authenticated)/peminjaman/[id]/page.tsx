@@ -8,6 +8,7 @@ import { peminjamanRepository } from '#/repository/peminjaman';
 import TextArea from 'antd/es/input/TextArea';
 import { akunRepository } from '#/repository/akun';
 import moment from 'moment';
+import dayjs from 'dayjs';
 import { statusBarang } from '../../dashboard/page';
 
 const { RangePicker } = DatePicker;
@@ -16,9 +17,13 @@ interface updateDitolak {
   id: string;
   status: statusBarang;
   keterangan: string;
-
 }
 
+interface updateSelesai {
+  id: string;
+  status: statusBarang;
+  tanggalDikembalikan: string;
+}
 
 interface updateDiterima {
   id: string;
@@ -40,15 +45,20 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [returnedDate, setReturnedDate] = useState<Date | null>(null);
   const [status, setStatus] = useState('Pending');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [updateDitolak , setupdateDitolak ] = useState<updateDitolak>({
+  const [updateDitolak, setupdateDitolak] = useState<updateDitolak>({
     id: '',
     status: statusBarang.Ditolak,
     keterangan: '',
   });
-  const [updateDiterima , setupdateDiterima ] = useState<updateDiterima>({
+  const [updateDiterima, setupdateDiterima] = useState<updateDiterima>({
     id: '',
     status: statusBarang.Diterima,
-  });  
+  });
+  const [updateSelesai, setupdateSelesai] = useState<updateSelesai>({
+    id: '',
+    status: statusBarang.selesai,
+    tanggalDikembalikan: '',
+  });
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
   console.log(peminjamanById, 'peminjaman by id');
   const [dataSource, setDataSource] = useState([]);
@@ -73,7 +83,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
     //   color: '#B91C1C',
     // },
   };
-  
 
   const onFinishDitolak = async (id: string) => {
     console.log('data id: ', id);
@@ -82,14 +91,13 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       setError(null);
       const data = {
         status: updateDitolak.status,
-        keterangan:updateDitolak.keterangan
+        keterangan: updateDitolak.keterangan,
       };
       const request = await peminjamanRepository.api.updatePeminjaman(id, data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
         message.success('Berhasil Menolak Peminjaman!');
-
       }
       console.log(request);
     } catch (error) {
@@ -114,7 +122,6 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
         setError(request.body.message);
       } else {
         message.success('Berhasil Menerima Peminjaman!');
-
       }
       console.log(request);
     } catch (error) {
@@ -127,6 +134,34 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const onFinishSelesai = async (id: string) => {
+    console.log('data id: ', id);
+    try {
+      setLoading(true);
+      setError(null);
+      const data = {
+        status: updateDiterima.status,
+      };
+      const request = await peminjamanRepository.api.updatePeminjaman(id, data);
+      if (request.status === 400) {
+        setError(request.body.message);
+      } else {
+        message.success('Berhasil Menerima Peminjaman!');
+      }
+      console.log(request);
+    } catch (error) {
+      console.log(error);
+      setError('Terjadi kesalahan pada server.');
+      message.error('Gagal !');
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDateChange = (date: any, dateString: any) => {
+    setupdateSelesai({ ...updateSelesai, tanggalDikembalikan: dateString });
+  };
   useEffect(() => {
     if (peminjamanById && peminjamanById.data) {
       setDataSources([peminjamanById.data]); // Bungkus objek dalam array
@@ -154,6 +189,11 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const onEndLoan = (id) => {
+    // Logic to handle ending the loan
+    console.log(`Loan with ID ${id} ended.`);
   };
 
   // const handleEdit = (record: Item) => {
@@ -410,7 +450,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     </div>
                   </Card>
                 </Col>
-            ))}
+              ))}
 
             {role === 'petugas' &&
               Array.isArray(dataSources) &&
@@ -476,28 +516,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           }}
                         />
                       </div>
-                      <div
-                        style={{
-                          marginBottom: '10px',
-                          width: '100%',
-                          display: 'flex',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <span
-                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                        >
-                          Tanggal Dikembalikan:
-                        </span>
-                        <DatePicker
-                          disabled
-                          value={item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null}
-                          style={{
-                            width: 'calc(100% - 160px)',
-                            border: '1px solid rgba(0, 0, 0, .50)',
-                          }}
-                        />
-                      </div>
+
                       <div
                         style={{
                           marginBottom: '10px',
@@ -511,20 +530,104 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         >
                           Status
                         </span>
-                        <Button
-                          style={{
-                            color: '#FF0000',
-                            backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                            borderColor: '#FF0000',
-                            marginRight: '10px',
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            showModal();
-                          }}
-                        >
-                          Tolak
-                        </Button>
+                        {item.status === 'pending' && (
+                          <>
+                            <div
+                              style={{
+                                marginBottom: '10px',
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  marginRight: '10px',
+                                  minWidth: '150px',
+                                  fontWeight,
+                                  fontFamily,
+                                }}
+                              >
+                                Tanggal Dikembalikan:
+                              </span>
+                              <DatePicker
+                                disabled={item.status !== 'diterima'}
+                                value={
+                                  item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null
+                                }
+                                style={{
+                                  width: 'calc(100% - 160px)',
+                                  border: '1px solid rgba(0, 0, 0, .50)',
+                                }}
+                              />
+                            </div>
+                            <Button
+                              style={{
+                                color: '#FF0000',
+                                backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                borderColor: '#FF0000',
+                                marginRight: '10px',
+                              }}
+                              onClick={() => {
+                                setupdateDitolak({ id: item.id, keterangan: '' });
+                                showModal(); // Show modal for rejection
+                              }}
+                            >
+                              Tolak
+                            </Button>
+                            <Button
+                              onClick={() => onFinishDiterima(item.id)}
+                              style={{
+                                color: '#5BFF00',
+                                backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                                borderColor: '#A2E181',
+                              }}
+                            >
+                              Terima
+                            </Button>
+                          </>
+                        )}
+                        {item.status === 'diterima' && (
+                          <Form
+                            form={form}
+                            onFinish={() => onFinishSelesai(id)}
+                            layout="horizontal"
+                          >
+                            <Form.Item
+                              name="tanggalDikembalikan"
+                              label="Tanggal Dikembalikan"
+                              style={{
+                                marginBottom: '10px',
+                                width: '100%',
+                              }}
+                            >
+                              <DatePicker
+                                placeholder="Tanggal Masuk"
+                                style={{ width: '100%', height: '40px' }}
+                                value={
+                                  updateSelesai.tanggalDikembalikan
+                                    ? dayjs(updateSelesai.tanggalDikembalikan, 'YYYY-MM-DD')
+                                    : null
+                                }
+                                onChange={handleDateChange}
+                                format="YYYY-MM-DD"
+                              />
+                            </Form.Item>
+                            <Form.Item>
+                              <Button
+                                type="primary"
+                                htmlType="submit"
+                                style={{
+                                  color: '#5BFF00',
+                                  backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                                  borderColor: '#A2E181',
+                                }}
+                              >
+                                Selesaikan
+                              </Button>
+                            </Form.Item>
+                          </Form>
+                        )}
 
                         <Modal
                           title="Alasan Ditolak"
@@ -534,54 +637,45 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           onCancel={handleCancel}
                           footer={null}
                         >
-                        <Form
-                          form={form}
-                          onFinish={() => onFinishDitolak(id)}
-                          layout="vertical"
-                        >
-                          <Form.Item name="reason" rules={[{ required: true, message: 'Silakan masukkan alasan!' }]}>
-                            <TextArea 
-                            style={{ marginTop: '20px', height: '100px' }} 
-                            value={updateDitolak.keterangan}
-                            onChange={(e) => setupdateDitolak({ ...updateDitolak, keterangan: e.target.value })}
-                            />
-                          </Form.Item>
-                          <Form.Item>
-                            <Button
-                              type="default"
-                              onClick={handleCancel}
-                              style={{
-                                marginTop: '20px',
-                                marginRight: '10px',
-                                borderColor: 'black',
-                                color: 'black',
-                              }}
+                          <Form form={form} onFinish={() => onFinishDitolak(id)} layout="vertical">
+                            <Form.Item
+                              name="reason"
+                              rules={[{ required: true, message: 'Silakan masukkan alasan!' }]}
                             >
-                              <span>Batal</span>
-                            </Button>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              style={{
-                                backgroundColor: '#582DD2',
-                                marginTop: '20px',
-                              }}
-                            >
-                              <span>Simpan</span>
-                            </Button>
-                          </Form.Item>
-                        </Form>
-                      </Modal>
-                        <Button
-                          onClick={() => onFinishDiterima(id)}
-                          style={{
-                            color: '#5BFF00',
-                            backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                            borderColor: '#A2E181',
-                          }}
-                        >
-                          Terima
-                        </Button>
+                              <TextArea
+                                style={{ marginTop: '20px', height: '100px' }}
+                                value={updateDitolak.keterangan}
+                                onChange={(e) =>
+                                  setupdateDitolak({ ...updateDitolak, keterangan: e.target.value })
+                                }
+                              />
+                            </Form.Item>
+                            <Form.Item>
+                              <Button
+                                type="default"
+                                onClick={handleCancel}
+                                style={{
+                                  marginTop: '20px',
+                                  marginRight: '10px',
+                                  borderColor: 'black',
+                                  color: 'black',
+                                }}
+                              >
+                                <span>Batal</span>
+                              </Button>
+                              <Button
+                                type="primary"
+                                htmlType="submit"
+                                style={{
+                                  backgroundColor: '#582DD2',
+                                  marginTop: '20px',
+                                }}
+                              >
+                                <span>Simpan</span>
+                              </Button>
+                            </Form.Item>
+                          </Form>
+                        </Modal>
                       </div>
                     </div>
                   </Card>

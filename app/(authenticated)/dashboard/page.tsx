@@ -46,6 +46,7 @@ export enum statusBarang {
   Diterima = 'diterima',
   Ditolak = 'ditolak',
   Telat = 'telat',
+  selesai = 'selesai',
 }
 
 interface DataType {

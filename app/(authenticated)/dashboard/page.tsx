@@ -46,7 +46,7 @@ export enum statusBarang {
   Diterima = 'diterima',
   Ditolak = 'ditolak',
   Telat = 'telat',
-  selesai = 'selesai',
+  Selesai = 'selesai',
 }
 
 interface DataType {
@@ -382,14 +382,20 @@ const Page = () => {
       <div>
         <title>Dashboard</title>
         <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Dashboard</h1>
-        {role === 'admin' && (          
-        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        {role === 'admin' && (
+          <p style={{ paddingBottom: '20px' }}>
+            Halo, {akun?.data?.nama}. Selamat Datang di Inventaris!
+          </p>
         )}
-        {role === 'petugas' && (          
-        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        {role === 'petugas' && (
+          <p style={{ paddingBottom: '20px' }}>
+            Halo, {akun?.data?.nama}. Selamat Datang di Inventaris!
+          </p>
         )}
-        {role === 'perminjam' && (          
-        <p style={{ paddingBottom: '20px' }}>Halo, {akun?.data?.nama}.   Selamat Datang di Inventaris!</p>
+        {role === 'perminjam' && (
+          <p style={{ paddingBottom: '20px' }}>
+            Halo, {akun?.data?.nama}. Selamat Datang di Inventaris!
+          </p>
         )}
 
         {/* Barang, Peminjam, Aktif */}

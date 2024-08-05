@@ -10,6 +10,7 @@ import { akunRepository } from '#/repository/akun';
 import moment from 'moment';
 import dayjs from 'dayjs';
 import { statusBarang } from '../../dashboard/page';
+import { useRouter } from 'next/navigation';
 
 const { RangePicker } = DatePicker;
 
@@ -39,6 +40,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [form] = Form.useForm();
+  const router = useRouter();
   // const [id, setId] = useState<string>('');
   const id: string = params?.id;
   const [keterangan, setKeterangan] = useState<string>('');
@@ -56,7 +58,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
   });
   const [updateSelesai, setupdateSelesai] = useState<updateSelesai>({
     id: '',
-    status: statusBarang.selesai,
+    status: statusBarang.Selesai,
     tanggalDikembalikan: '',
   });
   const { data: peminjamanById } = peminjamanRepository.hooks.usePeminjamanById(params.id);
@@ -117,6 +119,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       const data = {
         status: updateDiterima.status,
       };
+      router.push('/peminjaman');
       const request = await peminjamanRepository.api.updatePeminjaman(id, data);
       if (request.status === 400) {
         setError(request.body.message);
@@ -140,13 +143,15 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
       setLoading(true);
       setError(null);
       const data = {
-        status: updateDiterima.status,
+        status: updateSelesai.status,
+        tanggalDikembalikan: updateSelesai.tanggalDikembalikan,
       };
+      router.push('/peminjaman');
       const request = await peminjamanRepository.api.updatePeminjaman(id, data);
       if (request.status === 400) {
         setError(request.body.message);
       } else {
-        message.success('Berhasil Menerima Peminjaman!');
+        message.success('Berhasil Menyelesaikan Peminjaman!');
       }
       console.log(request);
     } catch (error) {
@@ -489,7 +494,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           disabled
                           value={item.tanggalPinjam ? moment(item.tanggalPinjam) : null}
                           style={{
-                            width: 'calc(100% - 160px)',
+                            width: '15vh',
                             border: '1px solid rgba(0, 0, 0, .50)',
                           }}
                         />
@@ -511,7 +516,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                           disabled
                           value={item.tanggalPengembalian ? moment(item.tanggalPengembalian) : null}
                           style={{
-                            width: 'calc(100% - 160px)',
+                            width: '15vh',
                             border: '1px solid rgba(0, 0, 0, .50)',
                           }}
                         />
@@ -521,15 +526,9 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                         style={{
                           marginBottom: '10px',
                           width: '100%',
-                          display: 'flex',
                           alignItems: 'center',
                         }}
                       >
-                        <span
-                          style={{ marginRight: '10px', minWidth: '150px', fontWeight, fontFamily }}
-                        >
-                          Status
-                        </span>
                         {item.status === 'pending' && (
                           <>
                             <div
@@ -561,72 +560,153 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                                 }}
                               />
                             </div>
-                            <Button
-                              style={{
-                                color: '#FF0000',
-                                backgroundColor: 'rgba(255, 0, 0, 0.3)',
-                                borderColor: '#FF0000',
-                                marginRight: '10px',
-                              }}
-                              onClick={() => {
-                                setupdateDitolak({ id: item.id, keterangan: '' });
-                                showModal(); // Show modal for rejection
-                              }}
-                            >
-                              Tolak
-                            </Button>
-                            <Button
-                              onClick={() => onFinishDiterima(item.id)}
-                              style={{
-                                color: '#5BFF00',
-                                backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                                borderColor: '#A2E181',
-                              }}
-                            >
-                              Terima
-                            </Button>
-                          </>
-                        )}
-                        {item.status === 'diterima' && (
-                          <Form
-                            form={form}
-                            onFinish={() => onFinishSelesai(id)}
-                            layout="horizontal"
-                          >
-                            <Form.Item
-                              name="tanggalDikembalikan"
-                              label="Tanggal Dikembalikan"
+                            <div
                               style={{
                                 marginBottom: '10px',
                                 width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
                               }}
                             >
+                              <span
+                                style={{
+                                  marginRight: '10px',
+                                  minWidth: '150px',
+                                  fontWeight,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  fontFamily,
+                                }}
+                              >
+                                Status:
+                              </span>
+                              <span
+                                style={{
+                                  fontWeight: 'bold',
+                                  color:
+                                    item.status === 'pending'
+                                      ? '#FF0000'
+                                      : item.status === 'diterima'
+                                      ? '#5BFF00'
+                                      : '#000000',
+                                }}
+                              >
+                                <Button
+                                  style={{
+                                    color: '#FF0000',
+                                    backgroundColor: 'rgba(255, 0, 0, 0.3)',
+                                    borderColor: '#FF0000',
+                                    marginRight: '10px',
+                                  }}
+                                  onClick={() => {
+                                    setupdateDitolak({ id: item.id, keterangan: '' });
+                                    showModal(); // Show modal for rejection
+                                  }}
+                                >
+                                  Tolak
+                                </Button>
+                                <Button
+                                  onClick={() => onFinishDiterima(item.id)}
+                                  style={{
+                                    color: '#5BFF00',
+                                    backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                                    borderColor: '#A2E181',
+                                  }}
+                                >
+                                  Terima
+                                </Button>
+                              </span>
+                            </div>
+                          </>
+                        )}
+                        {item.status === 'diterima' && (
+                          <>
+                            <div
+                              style={{
+                                marginBottom: '10px',
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span
+                                style={{
+                                  marginRight: '10px',
+                                  minWidth: '150px',
+                                  fontWeight,
+                                  fontFamily,
+                                }}
+                              >
+                                Tanggal Dikembalikan:
+                              </span>
                               <DatePicker
-                                placeholder="Tanggal Masuk"
+                                placeholder="Tanggal Dikembalikan"
                                 style={{ width: '100%', height: '40px' }}
                                 value={
                                   updateSelesai.tanggalDikembalikan
-                                    ? dayjs(updateSelesai.tanggalDikembalikan, 'YYYY-MM-DD')
+                                    ? dayjs(
+                                        updateSelesai.tanggalDikembalikan,
+                                        'YYYY-MM-DD'
+                                      ).isValid()
+                                      ? dayjs(updateSelesai.tanggalDikembalikan, 'YYYY-MM-DD')
+                                      : null
                                     : null
                                 }
                                 onChange={handleDateChange}
                                 format="YYYY-MM-DD"
                               />
-                            </Form.Item>
-                            <Form.Item>
-                              <Button
-                                type="primary"
-                                htmlType="submit"
+                            </div>
+                            <div
+                              style={{
+                                marginBottom: '10px',
+                                width: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <span
                                 style={{
-                                  color: '#5BFF00',
-                                  backgroundColor: 'rgba(162, 225, 129, 0.3)',
-                                  borderColor: '#A2E181',
+                                  marginRight: '10px',
+                                  minWidth: '150px',
+                                  fontWeight,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  fontFamily,
                                 }}
                               >
-                                Selesaikan
-                              </Button>
-                            </Form.Item>
-                          </Form>
+                                Status:
+                              </span>
+                              <span
+                                style={{
+                                  fontWeight: 'bold',
+                                  color:
+                                    item.status === 'pending'
+                                      ? '#FF0000'
+                                      : item.status === 'diterima'
+                                      ? '#5BFF00'
+                                      : '#000000',
+                                }}
+                              >
+                                <Button
+                                  onClick={() => {
+                                    setupdateSelesai({
+                                      id: item.id,
+                                      status: statusBarang.Selesai, // Updated status to 'selesai'
+                                      tanggalDikembalikan: moment().format('YYYY-MM-DD'),
+                                    });
+                                    onFinishSelesai(item.id); // Update function name if necessary
+                                  }}
+                                  style={{
+                                    color: '#5BFF00',
+                                    backgroundColor: 'rgba(162, 225, 129, 0.3)',
+                                    borderColor: '#A2E181',
+                                  }}
+                                >
+                                  Selesaikan
+                                </Button>
+                              </span>
+                            </div>
+                          </>
                         )}
 
                         <Modal

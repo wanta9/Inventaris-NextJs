@@ -57,7 +57,6 @@ interface DataType {
   akun?: any;
 }
 
-
 const Peminjaman = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [data, setData] = useState<DataType[]>([]);
@@ -65,7 +64,7 @@ const Peminjaman = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [form] = Form.useForm();
   const [userId, setUserId] = useState(null);
-  
+
   const statusStyles = {
     diterima: {
       backgroundColor: '#60A5FA',
@@ -83,7 +82,7 @@ const Peminjaman = () => {
     //   color: '#B91C1C',
     // },
   };
-  
+
   useEffect(() => {
     // Ensure localStorage is accessed only in the browser
     if (typeof window !== 'undefined') {
@@ -100,6 +99,9 @@ const Peminjaman = () => {
   console.log(peminjamanData, 'data filterpeminjamanData :');
   const { data: akun } = akunRepository.hooks.useAuth();
   console.log(listPeminjaman, 'listPeminjaman');
+  const filteredPeminjaman = listPeminjaman?.data?.filter(
+    (item) => item.status === 'pending' || item.status === 'diterima' || item.status === 'telat'
+  );
 
   const router = useRouter();
   const role = akun?.data?.peran?.Role;
@@ -164,8 +166,6 @@ const Peminjaman = () => {
     // Show the form to update the status
   };
 
-  
-
   const onFinish = (values: any) => {
     console.log('Form values:', values);
     // Handle form submission logic, e.g., updating the status in the data source
@@ -191,21 +191,21 @@ const Peminjaman = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px' }}>
-        {role === 'admin' && (
-          <div ref={searchRef}>
-            <Search
-              placeholder="Telusuri Barang Masuk"
-              className="custom-search"
-              allowClear
-              enterButton
-              onSearch={handleSearch}
-              style={{ width: 300, height: '40px', marginTop: '20px' }}
-            />
-          </div>
-        )}
+          {role === 'admin' && (
+            <div ref={searchRef}>
+              <Search
+                placeholder="Telusuri Barang Masuk"
+                className="custom-search"
+                allowClear
+                enterButton
+                onSearch={handleSearch}
+                style={{ width: 300, height: '40px', marginTop: '20px' }}
+              />
+            </div>
+          )}
           {(role === 'admin' || role === 'petugas') && (
             <Table
-              dataSource={listPeminjaman?.data}
+              dataSource={filteredPeminjaman}
               style={{ paddingTop: '40px' }}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),

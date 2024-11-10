@@ -271,7 +271,7 @@ const Peminjaman = () => {
           )}
           {role === 'peminjam' && (
             <Table
-              dataSource={peminjamanData}
+              dataSource={filteredPeminjaman}
               style={{ paddingTop: '40px' }}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
@@ -319,35 +319,34 @@ const Peminjaman = () => {
                   <Button
                     type="primary"
                     style={{
-                      width: '80%',
+                      width: '100%',
                       backgroundColor:
-                        record.status === 'ditolak'
-                          ? '#F87171'
+                        record.status === 'pending'
+                          ? '#9CA3AF'
                           : record.status === 'diterima'
                           ? '#60A5FA'
-                          : record.status === 'pending'
-                          ? '#9CA3AF'
+                          : record.status === 'telat'
+                          ? '#FACC15'
                           : undefined,
                       borderColor:
-                        record.status === 'ditolak'
-                          ? '#B91C1C'
+                        record.status === 'pending'
+                          ? '#374151'
                           : record.status === 'diterima'
                           ? '#1D4ED8'
                           : record.status === 'telat'
                           ? '#A16207'
-                          : record.status === 'pending'
-                          ? '#374151'
                           : undefined,
                       color:
-                        record.status === 'ditolak'
-                          ? '#B91C1C'
+                        record.status === 'pending'
+                          ? '#374151'
                           : record.status === 'diterima'
                           ? '#1D4ED8'
                           : record.status === 'telat'
                           ? '#A16207'
-                          : record.status === 'pending'
-                          ? '#374151'
                           : undefined,
+                      padding: '5px', // Menambahkan padding agar warna lebih terlihat
+                      textAlign: 'center', // Memusatkan teks
+                      borderRadius: '4px', // Menambahkan border radius untuk tampilan yang lebih baik
                     }}
                     onClick={(e) => {
                       e.stopPropagation();

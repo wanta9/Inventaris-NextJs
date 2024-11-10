@@ -54,24 +54,6 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const statusStyles = {
-    ditolak: {
-      backgroundColor: '#F87171',
-      borderColor: '#B91C1C',
-      color: '#B91C1C',
-    },
-    telat: {
-      backgroundColor: '#FACC15',
-      borderColor: '#A16207',
-      color: '#A16207',
-    },
-    selesai: {
-      backgroundColor: '#FACC15',
-      borderColor: '#A16207',
-      color: '#2B7800',
-    },
-  };
-
   const onFinishDitolak = async (id: string) => {
     console.log('data id: ', id);
     try {
@@ -140,9 +122,9 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
   const { data: akun } = akunRepository.hooks.useAuth();
   const role = akun?.data?.peran?.Role;
 
-  const handleButtonClick = (status: string) => {
-    console.log('Button clicked for status:', status);
-  };
+  // const handleButtonClick = (status: string) => {
+  //   console.log('Button clicked for status:', status);
+  // };
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -499,12 +481,33 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                         <div
                           style={{
                             width: '50%',
-                            backgroundColor: statusStyles[item.status]?.backgroundColor,
-                            border: `1px solid ${statusStyles[item.status]?.borderColor}`,
-                            textAlign: 'center',
-                            padding: '5px',
-                            borderRadius: '5px',
-                            color: statusStyles[item.status]?.color,
+                            backgroundColor:
+                              item.status === 'ditolak'
+                                ? '#FCA5A5'
+                                : item.status === 'selesai'
+                                ? '#4ADE80'
+                                : item.status === 'telat'
+                                ? '#FACC15'
+                                : undefined,
+                            borderColor:
+                              item.status === 'ditolak'
+                                ? '#DE3838'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
+                            color:
+                              item.status === 'ditolak'
+                                ? '#C01A1A'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
+                            padding: '5px', // Menambahkan padding agar warna lebih terlihat
+                            textAlign: 'center', // Memusatkan teks
+                            borderRadius: '4px', // Menambahkan border radius untuk tampilan yang lebih baik
                           }}
                         >
                           {item.status}
@@ -621,12 +624,33 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                         <div
                           style={{
                             width: '50%',
-                            backgroundColor: statusStyles[item.status]?.backgroundColor,
-                            border: `1px solid ${statusStyles[item.status]?.borderColor}`,
-                            textAlign: 'center',
-                            padding: '5px',
-                            borderRadius: '5px',
-                            color: statusStyles[item.status]?.color,
+                            backgroundColor:
+                              item.status === 'ditolak'
+                                ? '#FCA5A5'
+                                : item.status === 'selesai'
+                                ? '#4ADE80'
+                                : item.status === 'telat'
+                                ? '#FACC15'
+                                : undefined,
+                            borderColor:
+                              item.status === 'ditolak'
+                                ? '#DE3838'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
+                            color:
+                              item.status === 'ditolak'
+                                ? '#C01A1A'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
+                            padding: '5px', // Menambahkan padding agar warna lebih terlihat
+                            textAlign: 'center', // Memusatkan teks
+                            borderRadius: '4px', // Menambahkan border radius untuk tampilan yang lebih baik
                           }}
                         >
                           {item.status}

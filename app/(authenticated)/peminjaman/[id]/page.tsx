@@ -551,9 +551,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                               </span>
                               <DatePicker
                                 disabled={item.status !== 'diterima'}
-                                value={
-                                  item.tanggalDikembalikan ? moment(item.tanggalDikembalikan) : null
-                                }
+                                value={item.tanggalDikembalikan}
                                 style={{
                                   width: 'calc(100% - 160px)',
                                   border: '1px solid rgba(0, 0, 0, .50)',
@@ -644,12 +642,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                                 style={{ width: '100%', height: '40px' }}
                                 value={
                                   updateSelesai.tanggalDikembalikan
-                                    ? dayjs(
-                                        updateSelesai.tanggalDikembalikan,
-                                        'YYYY-MM-DD'
-                                      ).isValid()
-                                      ? dayjs(updateSelesai.tanggalDikembalikan, 'YYYY-MM-DD')
-                                      : null
+                                    ? dayjs(updateSelesai.tanggalDikembalikan, 'YYYY-MM-DD')
                                     : null
                                 }
                                 onChange={handleDateChange}

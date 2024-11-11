@@ -1042,7 +1042,7 @@ const Page: React.FC = () => {
                       }}
                     >
                       <img
-                        src={imgUrl(listBarang?.gambar)}
+                        src={imgUrl(item.gambar)}
                         alt="Gambar Barang"
                         style={{ width: '100%' }}
                       />

@@ -22,6 +22,9 @@ import { koleksiRepository } from '#/repository/koleksi';
 import { parseJwt } from '#/utils/parseJwt';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
+import { config } from '#/config/app';
+import { imgUrl } from '../barang/page';
+// export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -235,7 +238,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     }}
                   >
                     <img
-                      src={item.ruanganBarang.barang.gambar || '/kk.png'}
+                      src={imgUrl(item.ruanganBarang.barang.gambar)}
                       style={{ width: '100px', marginRight: '10px', marginLeft: '10px' }}
                     />
                   </div>

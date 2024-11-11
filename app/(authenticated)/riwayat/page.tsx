@@ -38,7 +38,6 @@ const Riwayat = () => {
       color: '#2B7800',
     },
   };
-  
 
   useEffect(() => {
     // Ensure localStorage is accessed only in the browser
@@ -53,13 +52,9 @@ const Riwayat = () => {
   const { data: listRiwayat } = peminjamanRepository.hooks.usePeminjaman();
   const peminjamanData = listRiwayat?.data?.filter((item) => item.akun.id === userId); //peminjam
   // Filter data berdasarkan status
-const filteredRiwayat = listRiwayat?.data?.filter(
-  (item) =>
-    item.status === 'selesai' ||
-    item.status === 'ditolak' ||
-    item.status === 'telat' 
-    
-);
+  const filteredRiwayat = listRiwayat?.data?.filter(
+    (item) => item.status === 'selesai' || item.status === 'ditolak' || item.status === 'telat'
+  );
 
   console.log(listRiwayat, 'list riwayat: ');
   const [statusFilter, setStatusFilter] = useState('');
@@ -223,9 +218,9 @@ const filteredRiwayat = listRiwayat?.data?.filter(
               render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
             />
             <Column
-              title="Tanggal Pengembalian"
-              dataIndex="tanggalPengembalian"
-              key="tanggalPengembalian"
+              title="Tanggal Dikembalikan"
+              dataIndex="tanggalDikembalikan"
+              key="tanggalDikembalikan"
               render={(text: string) => daysjs(text).format('DD/MM/YYYY')}
             />
             <Column
@@ -236,10 +231,34 @@ const filteredRiwayat = listRiwayat?.data?.filter(
                 <Button
                   type="primary"
                   style={{
-                    width: '80%',
-                    backgroundColor: statusStyles[record.status]?.backgroundColor,
-                    borderColor: statusStyles[record.status]?.borderColor,
-                    color: statusStyles[record.status]?.color,
+                    width: '100%',
+                    backgroundColor:
+                      record.status === 'ditolak'
+                        ? '#FCA5A5'
+                        : record.status === 'selesai'
+                        ? '#4ADE80'
+                        : record.status === 'telat'
+                        ? '#FACC15'
+                        : undefined,
+                    borderColor:
+                      record.status === 'ditolak'
+                        ? '#DE3838'
+                        : record.status === 'selesai'
+                        ? '#399242'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : undefined,
+                    color:
+                      record.status === 'ditolak'
+                        ? '#C01A1A'
+                        : record.status === 'selesai'
+                        ? '#399242'
+                        : record.status === 'telat'
+                        ? '#A16207'
+                        : undefined,
+                    padding: '5px', // Menambahkan padding agar warna lebih terlihat
+                    textAlign: 'center', // Memusatkan teks
+                    borderRadius: '4px', // Menambahkan border radius untuk tampilan yang lebih baik
                   }}
                   onClick={(e) => {
                     e.stopPropagation();

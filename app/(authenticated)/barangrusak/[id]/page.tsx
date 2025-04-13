@@ -8,6 +8,8 @@ import { Select } from 'antd/lib';
 import dynamic from 'next/dynamic';
 import { barangRusakRepository } from '#/repository/barangrusak';
 import dayjs from 'dayjs';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const barangRusak = ({ params }: { params: { id: string } }) => {
   const { data: barangRusakById } = barangRusakRepository.hooks.useBarangRusakById(params.id);
@@ -32,7 +34,7 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
           <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <div
               style={{
-                width: '100%',
+                width: '80%',
                 height: '400px',
                 backgroundColor: '#D9D9D9',
                 borderRadius: '20px',
@@ -41,7 +43,16 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <img src="/kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
+              <img
+                src={imgUrl(barangRusakById?.data?.ruanganBarang?.barang?.gambar)}
+                alt="gambar"
+                style={{
+                  width: '70%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                }}
+              />
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginBottom: '30px' }}>
@@ -81,12 +92,24 @@ const barangRusak = ({ params }: { params: { id: string } }) => {
               <Col span={5}>
                 <Button
                   style={{
-                    backgroundColor: barangRusakById?.data?.Status === 'rusak' ? '#FFEAE7' : 
-                    barangRusakById?.data?.Status === 'diperbaiki' ? '#E4F8D4' : undefined,
-                    borderColor: barangRusakById?.data?.Status === 'rusak' ? '#FFA7A7' : 
-                    barangRusakById?.data?.Status === 'diperbaiki' ? '#A2E181' : undefined,
-                    color: barangRusakById?.data?.Status === 'rusak' ? '#FF6C6C' : 
-                    barangRusakById?.data?.Status === 'diperbaiki' ? '#5BFF00' : undefined,
+                    backgroundColor:
+                      barangRusakById?.data?.Status === 'rusak'
+                        ? '#FFEAE7'
+                        : barangRusakById?.data?.Status === 'diperbaiki'
+                        ? '#E4F8D4'
+                        : undefined,
+                    borderColor:
+                      barangRusakById?.data?.Status === 'rusak'
+                        ? '#FFA7A7'
+                        : barangRusakById?.data?.Status === 'diperbaiki'
+                        ? '#A2E181'
+                        : undefined,
+                    color:
+                      barangRusakById?.data?.Status === 'rusak'
+                        ? '#FF6C6C'
+                        : barangRusakById?.data?.Status === 'diperbaiki'
+                        ? '#5BFF00'
+                        : undefined,
                   }}
                   // type="primary"
                   onClick={(e) => {

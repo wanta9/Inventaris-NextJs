@@ -89,7 +89,10 @@ const Register = () => {
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100vh',
-        backgroundColor: '#582DD2',
+        backgroundImage: "url('/image1.png')",
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
         margin: 0,
       }}
     >
@@ -98,7 +101,7 @@ const Register = () => {
           <Card
             style={{
               width: '100%',
-              maxWidth: 400, // Set maximum width for the card
+              maxWidth: 470, // Set maximum width for the card
               maxHeight: 900, // Set maximum height for the card
               padding: 10, // Further reduced padding inside the card
               paddingBottom: 5, // Further reduced bottom padding
@@ -108,7 +111,7 @@ const Register = () => {
             }}
           >
             <div style={{ textAlign: 'center', marginBottom: 20 }}>
-              <img src="ikon.png" alt="logo" style={{ width: 60, marginTop: '-5px' }} />
+              <img src="logo2.png" alt="logo" style={{ width: 45, marginTop: '-5px' }} />
               <div style={{ fontSize: 14, fontWeight: 'bold' }}>PENDAFTARAN</div>
             </div>
             <Form layout="vertical" name="normal_login" onFinish={onFinish}>

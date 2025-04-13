@@ -227,7 +227,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
         style={{
           marginTop: '30px',
           boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          width: '70%',
+          width: '90%',
           borderRadius: '20px',
           padding: '20px 55px',
         }}

@@ -28,6 +28,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
   const id: string = params?.id;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
   const { data: akunbyId } = akunRepository.hooks.useAkunbyId(params.id);
   console.log(akunbyId, 'akun by id');
   const [updateStatus, setupdateStatus] = useState<updateStatus>({
@@ -63,6 +64,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
         setError(request.body.message);
       } else {
         message.success('Berhasil Mengedit Petugas!');
+        router.push('/peminjam');
       }
       console.log(request);
     } catch (error) {
@@ -196,7 +198,11 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
               <Row align="middle">
                 <Col span={12}>
                   <img
-                    src={imgUrl(akunbyId?.data?.gambar)}
+                    src={
+                      akunbyId?.data?.gambar && akunbyId?.data?.gambar !== 'null'
+                        ? imgUrl(akunbyId.data.gambar)
+                        : '/cat.jpg'
+                    }
                     alt="gambar"
                     style={{
                       width: '250px',
@@ -204,9 +210,14 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                       borderRadius: '100%',
                       marginTop: '20px',
                     }}
+                    onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/cat.jpg'; // fallback jika gambar gagal dimuat
+                    }}
                   />
                 </Col>
               </Row>
+
               <Row align="middle" style={{ marginTop: '20px' }}>
                 <Col span={24}>
                   <Button

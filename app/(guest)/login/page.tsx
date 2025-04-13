@@ -73,7 +73,7 @@ const Login = () => {
       <title>Login </title>
       <Card style={{ maxWidth: 400, width: '100%', padding: 20 }}>
         <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <img src="ikon.png" alt="logo" style={{ width: 100 }} />
+          <img src="logo2.png" alt="logo" style={{ width: 65 }} />
           <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 10 }}>Selamat Datang</div>
         </div>
         <Form layout={'vertical'} name="normal_login" onFinish={onFinish}>
@@ -135,11 +135,13 @@ const Login = () => {
         <style>
           {`
                     body {
-                        background-color: #582DD2;
+                     background-image: url(/image1.png);
+                      background-size: cover;
+                      background-repeat: no-repeat;
+                      background-position: center;
                     }
                 `}
         </style>
-        {/* Konten halaman login */}
       </div>
     </div>
   );

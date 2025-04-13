@@ -24,6 +24,7 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { config } from '#/config/app';
 import { imgUrl } from '../barang/page';
+
 // export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const { RangePicker } = DatePicker;
@@ -366,20 +367,7 @@ const Detailpeminjaman = ({ params }: { params: { id: string } }) => {
                     format="YYYY-MM-DD"
                   />
                 </Form.Item>
-                {/* <Form.Item
-                  label="Jumlah"
-                  name="jumlah"
-                  rules={[{ required: true, message: 'Jumlah diperlukan' }]}
-                >
-                  <InputNumber
-                    min={1}
-                    value={createPeminjaman.jumlah}
-                    onChange={(value) =>
-                      setcreatePeminjaman((prev) => ({ ...prev, jumlah: value || 0 }))
-                    }
-                    style={{ width: '100%', boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)' }}
-                  />
-                </Form.Item> */}
+
                 <Form.Item>
                   <Button
                     type="primary"

@@ -33,26 +33,21 @@
   line-height: 40px !important; /* Agar ikon terpusat */
 }
 
-
-
-
-
-
 /* modal letak barang */
 
 /* Hapus spinner di Chrome, Safari, Edge, Opera */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
 /* Hapus spinner di Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
 /* Hapus scrollbar horizontal yang mungkin muncul */
-input[type="number"] {
+input[type='number'] {
   overflow: hidden;
 }

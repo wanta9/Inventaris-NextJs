@@ -10,6 +10,8 @@ import { request } from 'http';
 import { akunRepository } from '#/repository/akun';
 import Password from 'antd/es/input/Password';
 import { update, values } from 'lodash';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 
 const { Option } = Select;
 
@@ -24,7 +26,7 @@ interface updatePetugas {
   nama: string;
   nomorInduk: string;
   telp: string;
-    // gambar: string;
+  // gambar: string;
 }
 
 interface Item {
@@ -32,7 +34,7 @@ interface Item {
   username: string;
   telp: string;
   nomorInduk: string;
-}  
+}
 
 const Profile = () => {
   const fontFamily = 'Barlow, sans-serif';
@@ -64,10 +66,9 @@ const Profile = () => {
     oldPassword: '',
     newPassword: '',
   });
-  
 
- const handleEditClick = () => {
-     setIsEditing(true);
+  const handleEditClick = () => {
+    setIsEditing(true);
   };
 
   const onFinish = async (id: string) => {
@@ -86,13 +87,13 @@ const Profile = () => {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('Berhasil Mengedit Petugas!');
-      // Update state with the new values
-      setNamaLengkap(updatePetugas.nama);
-      setNamaPengguna(updatePetugas.username);
-      setTelpon(updatePetugas.telp);
-      // Optionally, reset `updatePetugas` state to its initial state if needed
-      setIsEditing(false);  
-      }  
+        // Update state with the new values
+        setNamaLengkap(updatePetugas.nama);
+        setNamaPengguna(updatePetugas.username);
+        setTelpon(updatePetugas.telp);
+        // Optionally, reset `updatePetugas` state to its initial state if needed
+        setIsEditing(false);
+      }
       console.log(request);
     } catch (error) {
       console.log(error);
@@ -102,34 +103,48 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  const onFinishPassword = async (id: string) => {
-    console.log('data id: ', id); 
+  const onFinishPassword = async (values: any) => {
+    if (!updatePassword.id) {
+      message.error('ID akun tidak ditemukan.');
+      return;
+    }
     try {
-      setLoading(true); 
-      setError(null); 
-      const data = {
-        oldPassword: updatePassword.oldPassword,
-        newPassword: updatePassword.newPassword, 
-      };
-      const request = await akunRepository.api.updateAkun(id, data); 
+      setLoading(true);
+      setError(null);
+
+      const { oldPassword, newPassword } = values;
+
+      const request = await akunRepository.api.updateAkun(updatePassword.id, {
+        oldPassword,
+        newPassword,
+      });
+
       if (request.status === 400) {
-        setError(request.body.message); 
+        setError(request.body.message);
       } else {
-        message.success('Berhasil Mengubah Sandi!'); 
-        setModalVisible(false); 
-      }  
-      console.log(request); 
+        message.success('Berhasil Mengubah Sandi!');
+        setModalVisible(false);
+        form.resetFields();
+      }
     } catch (error) {
-      console.log(error); 
+      console.error(error);
       setError('Terjadi kesalahan pada server.');
       message.error('Gagal Mengubah Sandi!');
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-  
+  const handleOpenModal = ({ id }: { id: string }) => {
+    setupdatePassword({
+      id,
+      oldPassword: '',
+      newPassword: '',
+    });
+    setModalVisible(true);
+  };
+
   const handleEdit = (record: updatePetugas) => {
     console.log('record: ', record);
     setId(record.id);
@@ -149,8 +164,7 @@ const Profile = () => {
       telp: record.telp,
     });
   };
-          
-  
+
   // const handleChange = async (args: any) => {
   //   const file = args.file;
 
@@ -173,7 +187,6 @@ const Profile = () => {
     setModalVisible(false);
     form.resetFields();
     // setModalEditVisible(false);
-    
   };
 
   const handleButtonClick = () => {
@@ -208,26 +221,38 @@ const Profile = () => {
       >
         <div style={{ padding: '80px 50px 10px 80px', fontFamily }}>
           <Row>
-          <Col span={12} style={{ marginTop: '20px' }}>
-              <Form
-                form={form}
-                layout="horizontal"
-                onFinish={() => onFinish(id)}
-                >
+            <Col span={12} style={{ marginTop: '20px' }}>
+              <Form form={form} layout="horizontal" onFinish={() => onFinish(id)}>
                 <Form.Item
                   label="Nama Lengkap"
                   name="nama"
-                  wrapperCol={{ offset: 7,span: 16 }}
+                  wrapperCol={{ offset: 7, span: 16 }}
                   style={{ marginTop: '20px', fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.nama}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, nama: e.target.value })}
-                      style={{ fontSize: '15px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', marginLeft: '5px', height: '40px' }}
+                      style={{
+                        fontSize: '15px',
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        width: '25vh',
+                        marginLeft: '-8px',
+                        height: '40px',
+                      }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '10px' }}>
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        marginLeft: '10px',
+                      }}
+                    >
                       {akun?.data?.nama}
                     </span>
                   )}
@@ -236,127 +261,186 @@ const Profile = () => {
                 <Form.Item
                   label="Nama Pengguna"
                   name="username"
-                  wrapperCol={{ offset: 7,span: 16 }}
+                  wrapperCol={{ offset: 7, span: 16 }}
                   style={{ marginTop: '20px', fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.username}
-                      onChange={(e) => setupdatePetugas({ ...updatePetugas, username: e.target.value })}
-                      style={{  color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
+                      onChange={(e) =>
+                        setupdatePetugas({ ...updatePetugas, username: e.target.value })
+                      }
+                      style={{
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        width: '25vh',
+                        height: '40px',
+                        marginLeft: '-15px',
+                      }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '-2px' }}>
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        marginLeft: '-2px',
+                      }}
+                    >
                       {akun?.data?.username}
                     </span>
                   )}
                 </Form.Item>
                 {role === 'petugas' && (
-                <Form.Item
-                  label="NIP"
-                  name="nip"
-                  wrapperCol={{ offset: 11,span: 16 }}
-                  style={{  fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
-                >
-                  {isEditing ? (
-                    <Input
-                      disabled
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
-                      {akun?.data?.petugas?.NIP}
-                    </span>
-                  )}
-                </Form.Item>
-                )}  
+                  <Form.Item
+                    label="NIP"
+                    name="nip"
+                    wrapperCol={{ offset: 11, span: 16 }}
+                    style={{ fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
+                  >
+                    {isEditing ? (
+                      <Input
+                        disabled
+                        style={{
+                          fontSize: '17px',
+                          color: '#8D8D8D',
+                          fontFamily,
+                          fontWeight,
+                          width: '25vh',
+                          height: '40px',
+                        }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight }}>
+                        {akun?.data?.petugas?.NIP}
+                      </span>
+                    )}
+                  </Form.Item>
+                )}
 
                 {role === 'peminjam' && (
-                <Form.Item
-                  label="NISN"
-                  name="nisn"
-                  wrapperCol={{ offset: 10,span: 16 }}
-                  style={{  fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
-                >
-                  {isEditing ? (
-                    <Input
-                      disabled
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px', marginLeft: '10px'  }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '10px'  }}>
-                      {akun?.data?.peminjam?.NISN}
-                    </span>
-                  )}
-                </Form.Item>
-                )}  
+                  <Form.Item
+                    label="NISN"
+                    name="nisn"
+                    wrapperCol={{ offset: 10, span: 16 }}
+                    style={{ fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
+                  >
+                    {isEditing ? (
+                      <Input
+                        disabled
+                        style={{
+                          fontSize: '17px',
+                          color: '#8D8D8D',
+                          fontFamily,
+                          fontWeight,
+                          width: '25vh',
+                          height: '40px',
+                          marginLeft: '10px',
+                        }}
+                      />
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: '17px',
+                          color: '#8D8D8D',
+                          fontFamily,
+                          fontWeight,
+                          marginLeft: '10px',
+                        }}
+                      >
+                        {akun?.data?.peminjam?.NISN}
+                      </span>
+                    )}
+                  </Form.Item>
+                )}
 
                 <Form.Item
                   label="Telpon"
                   name="telp"
-                  wrapperCol={{ offset: 10,span: 16 }}
+                  wrapperCol={{ offset: 10, span: 16 }}
                   style={{ fontFamily, fontWeight: 'bold', color: '#8D8D8D' }}
                 >
                   {isEditing ? (
                     <Input
                       value={updatePetugas.telp}
                       onChange={(e) => setupdatePetugas({ ...updatePetugas, telp: e.target.value })}
-                      style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, width: '25vh', height: '40px'  }}
+                      style={{
+                        fontSize: '17px',
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        width: '25vh',
+                        height: '40px',
+                      }}
                     />
                   ) : (
-                    <span style={{ fontSize: '17px', color: '#8D8D8D', fontFamily, fontWeight, marginLeft: '2px' }}>
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        color: '#8D8D8D',
+                        fontFamily,
+                        fontWeight,
+                        marginLeft: '2px',
+                      }}
+                    >
                       {akun?.data?.telp}
                     </span>
                   )}
                 </Form.Item>
                 {isEditing && ( // Only render this block if `isEditing` is true
-                    <Form.Item>
-                      <Row align="middle">
-                        <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                          <Button
-                            key="save"
-                            type="primary"
-                            htmlType="submit"
-                            style={{
-                              backgroundColor: '#582DD2',
-                              color: 'white',
-                              width: '190px',
-                              height: '45px',
-                              borderRadius: '10px',
-                              marginLeft: '15px',
-                            }}
-                          >
-                            <span style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
-                              <EditOutlined style={{ marginRight: '20px' }} />
-                              Simpan
-                            </span>
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form.Item>
-                  )}
+                  <Form.Item>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                      <Button
+                        key="save"
+                        type="primary"
+                        htmlType="submit"
+                        style={{
+                          backgroundColor: '#582DD2',
+                          color: 'white',
+                          width: '190px',
+                          height: '45px',
+                          borderRadius: '10px',
+                          fontSize: '17px',
+                          fontFamily,
+                          fontWeight,
+                        }}
+                      >
+                        <span style={{ fontWeight, fontSize: '14px' }}>
+                          <EditOutlined style={{ marginRight: '10px' }} />
+                          Simpan
+                        </span>
+                      </Button>
+                    </div>
+                  </Form.Item>
+                )}
               </Form>
             </Col>
 
-                <Col span={2} push={2}>
-                  <Divider type="vertical" style={{ height: '100%', borderColor: 'grey' }} />
+            <Col span={2} push={2}>
+              <Divider type="vertical" style={{ height: '100%', borderColor: 'grey' }} />
+            </Col>
+            <Col span={8} push={3}>
+              <Row align="middle">
+                <Col span={12}>
+                  <img
+                    src={
+                      akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                        ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                        : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                    }
+                    alt="gambar"
+                    style={{
+                      width: '250px',
+                      height: 'auto',
+                      borderRadius: '100%',
+                      marginTop: '20px',
+                    }}
+                  />
                 </Col>
-                <Col span={8} push={3}>
-                  <Row align="middle">
-                    <Col span={12}>
-                      <img
-                        src={'/sitmen.png'}
-                        alt="gambar"
-                        style={{
-                          width: '250px',
-                          height: 'auto',
-                          borderRadius: '100%',
-                          marginTop: '20px',
-                        }}
-                      />
-                    </Col>
-                  </Row>
-                  {/* {isEditing && (
+              </Row>
+              {/* {isEditing && (
                     <Col>
                       <Row>
                         <Col>
@@ -383,144 +467,141 @@ const Profile = () => {
                       </Row>
                     </Col>
                   )} */}
+            </Col>
+            <Col push={17} style={{ marginTop: '40px', marginLeft: '40px' }}>
+              <Row align="middle">
+                <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
+                  <Button
+                    style={{
+                      backgroundColor: '#582DD2',
+                      color: 'white',
+                      width: '200px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      display: isEditing ? 'none' : 'block',
+                    }}
+                    onClick={() =>
+                      handleEdit({
+                        id: akun?.data?.id,
+                        username: akun?.data?.username,
+                        nama: akun?.data?.nama,
+                        nomorInduk: akun?.data?.nomorInduk,
+                        telp: akun?.data?.telp,
+                      })
+                    }
+                  >
+                    <a style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
+                      <EditOutlined style={{ marginRight: '20px' }} />
+                      Edit Profile
+                    </a>
+                  </Button>
                 </Col>
-                <Col push={17} style={{ marginTop: '40px', marginLeft: '40px' }}>
+              </Row>
+            </Col>
+            {isEditing && (
+              <>
+                <Col push={15} style={{ marginTop: '40px' }}>
                   <Row align="middle">
-                    <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                      <Button
+                    <Col
+                      style={{
+                        // display: 'flex',
+                        fontSize: '17px',
+                        fontFamily,
+                        fontWeight,
+                        // justifyContent: 'center',
+                        marginTop: '-180px',
+                        marginLeft: '100px',
+                      }}
+                      onClick={() => handleOpenModal({ id: akun?.data?.id })}
+                    >
+                      {/* <Button
                         style={{
                           backgroundColor: '#582DD2',
                           color: 'white',
-                          width: '200px',
-                          height: '40px',
+                          width: '190px',
+                          height: '45px',
                           borderRadius: '10px',
-                          display: isEditing ? 'none' : 'block',
                         }}
-                        onClick={() => handleEdit({
-                          id: akun?.data?.id,
-                          username: akun?.data?.username,
-                          nama: akun?.data?.nama,
-                          nomorInduk: akun?.data?.nomorInduk,
-                          telp: akun?.data?.telp
-                        })}
                       >
-                        <a style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
-                          <EditOutlined style={{ marginRight: '20px' }} />
-                          Edit Profile
-                        </a>
-                      </Button>
+                        <span style={{ fontWeight: 'bold', fontSize: '14px', marginRight: '20px' }}>
+                          <LockOutlined style={{ marginRight: '10px' }} />
+                          Ubah Sandi
+                        </span>
+                      </Button> */}
+
+                      <Modal
+                        centered
+                        visible={modalVisible}
+                        onCancel={handleModalCancel}
+                        footer={null}
+                        width={400}
+                        style={{ borderRadius: '10px', overflow: 'hidden' }}
+                      >
+                        <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
+                        <Form
+                          form={form}
+                          onFinish={onFinishPassword}
+                          layout="vertical"
+                          style={{ margin: '20px' }}
+                        >
+                          <Form.Item
+                            name="oldPassword"
+                            label="Masukkan Sandi Lama Anda"
+                            rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
+                          >
+                            <Input.Password placeholder="Sandi Lama" />
+                          </Form.Item>
+
+                          <Form.Item
+                            name="newPassword"
+                            label="Masukkan Sandi Baru Anda"
+                            rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
+                          >
+                            <Input.Password placeholder="Sandi Baru" />
+                          </Form.Item>
+
+                          <Form.Item
+                            name="confirmNewPassword"
+                            label="Konfirmasi Sandi Baru Anda"
+                            dependencies={['newPassword']}
+                            rules={[
+                              { required: true, message: 'Tolong konfirmasi sandi baru!' },
+                              ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                  if (!value || getFieldValue('newPassword') === value) {
+                                    return Promise.resolve();
+                                  }
+                                  return Promise.reject(new Error('Sandi tidak cocok!'));
+                                },
+                              }),
+                            ]}
+                          >
+                            <Input.Password placeholder="Konfirmasi Sandi Baru" />
+                          </Form.Item>
+                          <Form.Item style={{ textAlign: 'right' }}>
+                            <Button
+                              type="default"
+                              onClick={handleModalCancel}
+                              style={{ marginRight: '8px', color: 'black', borderColor: 'black' }}
+                            >
+                              Batal
+                            </Button>
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              loading={loading}
+                              style={{ backgroundColor: '#582DD2' }}
+                            >
+                              Simpan
+                            </Button>
+                          </Form.Item>
+                        </Form>
+                      </Modal>
                     </Col>
                   </Row>
                 </Col>
-                {isEditing && (
-                  <>
-                    <Col push={15} style={{ marginTop: '40px' }}>
-                      <Row align="middle">
-                        <Col style={{ fontSize: '17px', fontFamily, fontWeight }}>
-                          <Button
-                            onClick={handleButtonClick}
-                            style={{
-                              backgroundColor: '#582DD2',
-                              color: 'white',
-                              width: '190px',
-                              height: '45px',
-                              borderRadius: '10px',
-                            }}
-                          >
-                            <span style={{ fontWeight, fontSize: '14px', marginRight: '20px' }}>
-                              <LockOutlined style={{ marginRight: '20px' }} />
-                              Ubah Sandi
-                            </span>
-                          </Button>
-                          <Modal
-                            centered
-                            visible={modalVisible}
-                            onCancel={handleModalCancel}
-                            footer={null}
-                            width={400}
-                            style={{ borderRadius: '10px', overflow: 'hidden' }}
-                          >
-                            <h1 style={{ fontSize: '20px', textAlign: 'center' }}>Ubah Sandi</h1>
-                            <Form form={form} layout="vertical" style={{ marginTop: '40px' }} onFinish={() => onFinishPassword(id)}>
-                              <Form.Item
-                                name="oldPassword"
-                                label="Masukkan Sandi Lama Anda"
-                                rules={[{ required: true, message: 'Tolong isi sandi lama!' }]}
-                                style={{ margin: '20px 20px 20px' }}
-                              >
-                                <Input
-                                  placeholder="Sandi Lama"
-                                  style={{ width: '100%', height: '40px' }}
-                                  value={updatePassword.oldPassword}
-                                  onChange={(e) => setupdatePassword({ ...updatePassword, oldPassword: e.target.value })}
-                                />
-                              </Form.Item>
-                              <Form.Item
-                                name="newPassword"
-                                label="Masukkan Sandi Baru Anda"
-                                rules={[{ required: true, message: 'Tolong isi sandi baru!' }]}
-                                style={{ margin: '20px 20px 20px' }}
-                              >
-                                <Input
-                                  placeholder="Sandi Baru"
-                                  style={{ width: '100%', height: '40px' }}
-                                  type="password"
-                                  value={updatePassword.newPassword}
-                                  onChange={(e) => setupdatePassword({ ...updatePassword, newPassword: e.target.value })}
-                                />
-                              </Form.Item>
- 
-                              <Form.Item
-                                name="confirmNewPassword"
-                                label="Konfirmasi Sandi Baru Anda"
-                                rules={[
-                                  { required: true, message: 'Tolong konfirmasi sandi baru!' },
-                                  ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                      if (!value || getFieldValue('newPassword') === value) {
-                                        return Promise.resolve();
-                                      }
-                                      return Promise.reject(new Error('Sandi tidak cocok!'));
-                                    },
-                                  }),
-                                ]}
-                                style={{ margin: '20px 20px 20px' }}
-                              >
-                                <Input
-                                  placeholder="Konfirmasi Sandi Baru"
-                                  style={{ width: '100%', height: '40px' }}
-                                  type="password"
-                                />
-                              </Form.Item>
-                              <Form.Item style={{ textAlign: 'right', marginRight: '20px' }}>
-                                <Button
-                                  type="default"
-                                  onClick={handleModalCancel}
-                                  style={{
-                                    marginRight: '8px',
-                                    color: 'black',
-                                    borderColor: 'black',
-                                  }}
-                                >
-                                  <span>Batal</span>
-                                </Button>
-                                <Button
-                                  type="primary"
-                                  htmlType="submit"
-                                  style={{
-                                    backgroundColor: '#582DD2',
-                                  }}
-                                >
-                                  <span>Simpan</span>
-                                </Button>
-                              </Form.Item>
-                            </Form>
-                          </Modal>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </>
-                )}
+              </>
+            )}
           </Row>
         </div>
       </Card>

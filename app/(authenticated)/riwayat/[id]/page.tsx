@@ -9,6 +9,9 @@ import TextArea from 'antd/es/input/TextArea';
 import { akunRepository } from '#/repository/akun';
 import moment from 'moment';
 import { statusBarang } from '../../dashboard/page';
+import { useRouter } from 'next/navigation';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const { RangePicker } = DatePicker;
 
@@ -33,6 +36,7 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
   const [borrowDate, setBorrowDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [form] = Form.useForm();
+  const router = useRouter();
   const [id, setId] = useState<string>('');
   const [keterangan, setKeterangan] = useState<string>('');
   const [returnedDate, setReturnedDate] = useState<Date | null>(null);
@@ -105,6 +109,10 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const kembali = () => {
+    router.push('/riwayat');
+  };
+
   useEffect(() => {
     if (peminjamanById && peminjamanById.data) {
       setDataSources([peminjamanById.data]); // Bungkus objek dalam array
@@ -160,7 +168,7 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
         style={{
           marginTop: '30px',
           boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-          width: '70%',
+          width: '90%',
           borderRadius: '20px',
           padding: '20px 55px',
         }}
@@ -185,8 +193,14 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <img
-                        src="/kk.png"
-                        style={{ width: '100px', marginRight: '10px' }}
+                        src={imgUrl(item.ruanganBarang?.barang?.gambar)}
+                        style={{
+                          width: '30%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          borderRadius: '10px',
+                          marginRight: '20px',
+                        }}
                         alt="Item"
                       />
                       <div>
@@ -319,12 +333,33 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                         <div
                           style={{
                             width: '50%',
-                            backgroundColor: statusStyles[item.status]?.backgroundColor,
-                            border: `1px solid ${statusStyles[item.status]?.borderColor}`,
                             textAlign: 'center',
                             padding: '5px',
                             borderRadius: '5px',
-                            color: statusStyles[item.status]?.color,
+                            backgroundColor:
+                              item.status === 'ditolak'
+                                ? '#FCA5A5'
+                                : item.status === 'selesai'
+                                ? '#4ADE80 '
+                                : item.status === 'telat'
+                                ? '#FACC15'
+                                : undefined,
+                            borderColor:
+                              item.status === 'ditolak'
+                                ? '#DE3838'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
+                            color:
+                              item.status === 'ditolak'
+                                ? '#C01A1A'
+                                : item.status === 'selesai'
+                                ? '#399242'
+                                : item.status === 'telat'
+                                ? '#A16207'
+                                : undefined,
                           }}
                         >
                           {item.status}
@@ -332,7 +367,6 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                       </div>
                     </div>
                   </Card>
-
                   <Card
                     className="shadow-card"
                     style={{
@@ -388,6 +422,61 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                     </div>
                   </Card>
 
+                  {/* <Card
+                    className="shadow-card"
+                    style={{
+                      width: '400px',
+                      height: '250px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '10px',
+                      borderRadius: '20px',
+                      border: '1px solid rgba(0, 0, 0, .95)',
+                      marginTop: '20px',
+                    }}
+                  >
+                    <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+                      <div
+                        style={{ fontWeight, fontFamily, marginBottom: '5px', fontSize: '20px' }}
+                      >
+                        Data Peminjam
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>
+                          Nama Peminjaman
+                        </div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Nama Lengkap</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.nama}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>NISN</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.peminjam.NISN}</div>
+                      </div>
+                      <div style={{ marginBottom: '10px', display: 'flex' }}>
+                        <div style={{ width: '150px', fontWeight, fontFamily }}>Telp</div>
+                        <div style={{ width: '50px', fontWeight, fontFamily }}>: </div>
+                        <div style={{ fontFamily }}>{item.akun.telp}</div>
+                      </div>
+                    </div>
+                  </Card> */}
+
                   {item.status === 'ditolak' && (
                     <>
                       <p style={{ fontWeight: 'bold', fontFamily, marginTop: '20px' }}>
@@ -398,6 +487,24 @@ const DetailRiwayat = ({ params }: { params: { id: string } }) => {
                       </Card>
                     </>
                   )}
+                  <div
+                    style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}
+                    onClick={() => kembali()}
+                  >
+                    <Button
+                      style={{
+                        marginTop: '30px',
+                        backgroundColor: '#582DD2',
+                        color: 'white',
+                        width: '60%',
+                        height: '50px',
+                        borderRadius: '10px',
+                      }}
+                    >
+                      <ArrowLeftOutlined style={{ marginRight: '20px' }} />
+                      <span style={{ fontSize: '15px', fontWeight }}>Kembali</span>
+                    </Button>
+                  </div>
                 </Col>
               ))}
 

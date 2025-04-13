@@ -9,7 +9,8 @@ import { peminjamanRepository } from '#/repository/peminjaman';
 import { akunRepository } from '#/repository/akun';
 import daysjs from 'dayjs';
 import { parseJwt } from '#/utils/parseJwt';
-
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 const { Column } = Table;
 const { Search } = Input;
 const { Item } = Menu;
@@ -64,6 +65,7 @@ const Peminjaman = () => {
   const searchRef = useRef<HTMLDivElement | null>(null);
   const [form] = Form.useForm();
   const [userId, setUserId] = useState(null);
+  const [roles, setRole] = useState('');
 
   const statusStyles = {
     diterima: {
@@ -91,16 +93,21 @@ const Peminjaman = () => {
       const parsedToken = parseJwt(token);
       // Extract userId from parsedToken
       setUserId(parsedToken.existUser?.id);
+      setRole(parsedToken.existUser?.role); // Simpan role user
     }
   }, []);
   const { data: listPeminjaman } = peminjamanRepository.hooks.usePeminjaman(); // admin && petugas
   console.log(listPeminjaman, 'listPeminjaman');
-  const peminjamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId); //peminjam
-  console.log(peminjamanData, 'data filterpeminjamanData :');
+  // const peminjamanData = listPeminjaman?.data?.filter((item) => item.akun.id === userId); //peminjam
+  // console.log(peminjamanData, 'data filterpeminjamanData :');
   const { data: akun } = akunRepository.hooks.useAuth();
-  console.log(listPeminjaman, 'listPeminjaman');
   const filteredPeminjaman = listPeminjaman?.data?.filter(
     (item) => item.status === 'pending' || item.status === 'diterima' || item.status === 'telat'
+  );
+  const filteredPeminjamans = listPeminjaman?.data?.filter(
+    (item) =>
+      (item.status === 'pending' || item.status === 'diterima' || item.status === 'telat') &&
+      item.akun?.id === userId
   );
 
   const router = useRouter();
@@ -218,7 +225,18 @@ const Peminjaman = () => {
                 key="fotonamapeminjam"
                 render={(text, record: DataType) => (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar src={record.peminjam?.akun?.gambar} />
+                    <Avatar
+                      src={
+                        record.akun?.gambar && record.akun?.gambar !== 'null'
+                          ? imgUrl(record.akun?.gambar)
+                          : '/cat.jpg'
+                      }
+                      style={{ marginRight: '8px' }}
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/cat.jpg'; // Fallback ke ikon default jika gambar error
+                      }}
+                    />
                     <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
                   </div>
                 )}
@@ -271,7 +289,7 @@ const Peminjaman = () => {
           )}
           {role === 'peminjam' && (
             <Table
-              dataSource={filteredPeminjaman}
+              dataSource={filteredPeminjamans}
               style={{ paddingTop: '40px' }}
               onRow={(record) => ({
                 onClick: () => handleRowClick(record.id),
@@ -284,7 +302,18 @@ const Peminjaman = () => {
                 key="fotonamapeminjam"
                 render={(text, record: DataType) => (
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar src={record.peminjam?.akun?.gambar} />
+                    <Avatar
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{ marginRight: '8px' }}
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/cat.jpg'; // Fallback ke ikon default jika gambar error
+                      }}
+                    />
                     <span style={{ marginLeft: 8 }}>{record.akun?.nama}</span>
                   </div>
                 )}
@@ -361,129 +390,167 @@ const Peminjaman = () => {
           )}
         </div>
       </Card>
-      {role === 'admin' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '200px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
-                    </div>
-                  </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'petugas' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'peminjam' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '55px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

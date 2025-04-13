@@ -6,6 +6,8 @@ import { ArrowLeftOutlined } from '@ant-design/icons';
 import { barangKeluarRepository } from '#/repository/barangkeluar';
 import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const BarangKeluar = ({ params }: { params: { id: string } }) => {
   const fontFamily = 'Barlow, sans-serif';
@@ -26,7 +28,7 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
           <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <div
               style={{
-                width: '100%',
+                width: '80%',
                 height: '400px',
                 backgroundColor: '#D9D9D9',
                 borderRadius: '20px',
@@ -35,7 +37,16 @@ const BarangKeluar = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <img src="/kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
+              <img
+                src={imgUrl(barangKeluarById?.data?.ruanganBarang?.barang?.gambar)}
+                alt="gambar"
+                style={{
+                  width: '70%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                }}
+              />
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginBottom: '60px' }}>

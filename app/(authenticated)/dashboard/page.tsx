@@ -35,6 +35,8 @@ import { barangKeluarRepository } from '#/repository/barangkeluar';
 // import { parseCookies } from 'nookies';
 import { dashboardRepository } from '#/repository/dashboard';
 import { parseJwt } from '#/utils/parseJwt';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 
 const { Item } = Menu;
 const { Option } = Select;
@@ -82,7 +84,7 @@ const Page = () => {
   const [sandi, setSandi] = useState('');
   const [konfirmasiSandi, setKonfirmasiSandi] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [selectedYear, setSelectedYear] = useState('thisYear');
+  const [selectedYear, setSelectedYear] = useState('');
   const [selectText, setSelectText] = useState('Tahun Ini');
   const [createAkunpetugas, setcreateAkunpetugas] = useState<createAkunpetugas>({
     peranId: 'c0534779-e544-4325-89a0-6933432c69ec',
@@ -99,7 +101,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   // State untuk menyimpan status online dalam bentuk angka
   const [jumlahAktif, setJumlahAktif] = useState(0);
-  const allowedYears = ['2024', '2023', '2022'];
+  const allowedYears = ['2025', '2024', '2023'];
   const router = useRouter();
   const [form] = Form.useForm();
   const fontFamily = 'Barlow, sans-serif';
@@ -248,12 +250,14 @@ const Page = () => {
     setModalVisible(false);
   };
 
+  const [chartData, setChartData] = useState(Array(12).fill(0));
+
   useEffect(() => {
-    let config = {
-      type: 'bar',
-      label: '',
-      data: {
-        labels: [
+    if (Dashboard && Dashboard.monthlyPeminjaman) {
+      console.log('monthlyPeminjaman:', Dashboard.monthlyPeminjaman);
+      const updatedData = Array(12).fill(0);
+      Dashboard.monthlyPeminjaman.forEach((item) => {
+        const monthIndex = [
           'Januari',
           'Februari',
           'Maret',
@@ -266,116 +270,75 @@ const Page = () => {
           'Oktober',
           'November',
           'Desember',
-        ],
-        datasets: [
-          {
-            label: selectedYear,
-            backgroundColor: [
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-            ],
-            borderColor: [
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-              '#582DD2',
-            ],
-            borderWidth: 1,
-            data: [65, 59, 80, 81, 56, 55, 40, 30, 45, 20, 70, 100],
-            fill: false,
-            barThickness: 20,
-            borderRadius: {
-              topLeft: 10,
-              topRight: 10,
-            },
-          },
-        ],
-      },
-      options: {
-        maintainAspectRatio: false,
-        responsive: true,
-        title: {
-          display: false,
-          text: 'Orders Chart',
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true,
-        },
-        legend: {
-          labels: {
-            fontColor: 'rgba(0,0,0,.4)',
-          },
-          align: 'end',
-          position: 'bottom',
-        },
-        scales: {
-          xAxes: [
-            {
-              display: false,
-              scaleLabel: {
-                display: true,
-                labelString: 'Month',
-              },
-              gridLines: {
-                borderDash: [2],
-                borderDashOffset: [2],
-                color: 'rgba(33, 37, 41, 0.3)',
-                zeroLineColor: 'rgba(33, 37, 41, 0.3)',
-                zeroLineBorderDash: [2],
-                zeroLineBorderDashOffset: [2],
-              },
-            },
-          ],
-          yAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: false,
-                labelString: 'Value',
-              },
-              gridLines: {
-                borderDash: [2],
-                drawBorder: false,
-                borderDashOffset: [2],
-                color: 'rgba(33, 37, 41, 0.2)',
-                zeroLineColor: 'rgba(33, 37, 41, 0.15)',
-                zeroLineBorderDash: [2],
-                zeroLineBorderDashOffset: [2],
-              },
-            },
-          ],
-        },
-      },
-    };
-    if (window.myBar) {
-      window.myBar.destroy();
+        ].indexOf(item.Bulan); // ⬅️ gunakan lowercase sesuai alias dari backend ('bulan')
+        if (monthIndex !== -1) {
+          updatedData[monthIndex] = parseInt(item.jumlah, 10);
+        }
+      });
+      setChartData(updatedData);
     }
-    let ctx = document.getElementById('bar-chart').getContext('2d');
-    window.myBar = new Chart(ctx, config);
-  }, []);
+  }, [Dashboard]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let config = {
+        type: 'bar',
+        data: {
+          labels: [
+            'Januari',
+            'Februari',
+            'Maret',
+            'April',
+            'Mei',
+            'Juni',
+            'Juli',
+            'Agustus',
+            'September',
+            'Oktober',
+            'November',
+            'Desember',
+          ],
+          datasets: [
+            {
+              label: selectedYear,
+              backgroundColor: '#582DD2',
+              borderColor: '#582DD2',
+              borderWidth: 1,
+              data: chartData,
+              fill: false,
+              barThickness: 20,
+              borderRadius: {
+                topLeft: 10,
+                topRight: 10,
+              },
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            labels: { fontColor: 'rgba(0,0,0,.4)' },
+            align: 'end',
+            position: 'bottom',
+          },
+          scales: {
+            xAxes: [{ display: true }],
+            yAxes: [{ display: true }],
+          },
+        },
+      };
+
+      if (window.myBar) {
+        window.myBar.destroy();
+      }
+
+      let ctx = document.getElementById('bar-chart')?.getContext('2d');
+      if (ctx) {
+        window.myBar = new Chart(ctx, config);
+      }
+    }
+  }, [chartData]);
 
   return (
     <>
@@ -449,55 +412,106 @@ const Page = () => {
               </div>
             </Card>
           </Col>
-
-          <Col xs={24} sm={12} md={8} lg={6}>
-            <Card
-              style={{
-                width: '100%',
-                maxWidth: '300px', // Batas maksimum lebar card
-                height: '150px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '20px',
-                borderRadius: '8px',
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div
-                  style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    backgroundColor: '#fff0e0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: '30px',
-                  }}
-                >
-                  <img
-                    src="/dshpeminjam.svg"
-                    alt="Peminjam Icon"
-                    style={{ width: '50%', height: '50%' }}
-                  />
-                </div>
-                <div>
+          {role === 'peminjam' && (
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card
+                style={{
+                  width: '100%',
+                  maxWidth: '300px', // Batas maksimum lebar card
+                  height: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '20px',
+                  borderRadius: '8px',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <div
                     style={{
-                      fontSize: '24px',
-                      fontWeight: 'bold',
-                      fontFamily: 'Arial, sans-serif',
+                      width: '60px',
+                      height: '60px',
+                      borderRadius: '50%',
+                      backgroundColor: '#fff0e0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '30px',
                     }}
                   >
-                    {Dashboard?.totalAkunPeminjam}
+                    <img
+                      src="/dshpeminjam.svg"
+                      alt="Peminjam Icon"
+                      style={{ width: '50%', height: '50%' }}
+                    />
                   </div>
-                  <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Peminjam</div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial, sans-serif',
+                      }}
+                    >
+                      {Dashboard?.totalAkunTidakAktif}
+                    </div>
+                    <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Petugas</div>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </Col>
+              </Card>
+            </Col>
+          )}
+          {(role === 'admin' || role === 'petugas') && (
+            <Col xs={24} sm={12} md={8} lg={6}>
+              <Card
+                style={{
+                  width: '100%',
+                  maxWidth: '300px', // Batas maksimum lebar card
+                  height: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '20px',
+                  borderRadius: '8px',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <div
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      borderRadius: '50%',
+                      backgroundColor: '#fff0e0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: '30px',
+                    }}
+                  >
+                    <img
+                      src="/dshpeminjam.svg"
+                      alt="Peminjam Icon"
+                      style={{ width: '50%', height: '50%' }}
+                    />
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        fontFamily: 'Arial, sans-serif',
+                      }}
+                    >
+                      {Dashboard?.totalAkunPeminjam}
+                    </div>
+                    <div style={{ fontFamily: 'Arial, sans-serif', color: 'grey' }}>Pengajuan</div>
+                  </div>
+                </div>
+              </Card>
+            </Col>
+          )}
 
           <Col xs={24} sm={12} md={8} lg={6}>
             <Card
@@ -554,7 +568,12 @@ const Page = () => {
               sm={12}
               md={8}
               lg={6}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginLeft: '-50px',
+              }}
             >
               <Button
                 type="primary"
@@ -759,29 +778,22 @@ const Page = () => {
 
         {/* CARD Dashboard */}
         <Row gutter={[40, 40]} justify="start" style={{ marginTop: '40px', marginBottom: '40px' }}>
-          <Col xs={24} md={15} lg={15} style={{ marginBottom: '40px' }}>
+          <Col xs={24} md={16} lg={17} style={{ marginBottom: '40px' }}>
             <Card
               className="shadow-card"
-              style={{ width: '100%', height: '600px', borderRadius: '30px' }}
+              style={{ width: '100%', height: '520px', borderRadius: '30px' }}
             >
-              <h1 style={{ fontSize: '15px', color: '#A7A7A7', padding: '10px 15px' }}>
+              <h1
+                style={{
+                  fontSize: '15px',
+                  color: '#A7A7A7',
+                  padding: '10px 15px',
+                  marginBottom: '20px',
+                }}
+              >
                 Jumlah Peminjaman
               </h1>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-                <Select
-                  value={selectText}
-                  onChange={handleChangeYear}
-                  style={{ width: 120 }}
-                  allowClear
-                  placeholder={<span>Tahun Ini</span>}
-                >
-                  {allowedYears.map((year) => (
-                    <Option key={year} value={year}>
-                      {year}
-                    </Option>
-                  ))}
-                </Select>
-              </div>
+
               <div>
                 <canvas id="bar-chart" style={{ height: '35vh' }}></canvas>
               </div>
@@ -795,11 +807,18 @@ const Page = () => {
               style={{
                 padding: '100px 50px',
                 width: '35vh',
-                height: '600px',
+                height: '350px',
                 borderRadius: '30px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '50px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '50px',
+                  marginTop: '-40px',
+                }}
+              >
                 <div
                   style={{
                     width: '70px',
@@ -843,7 +862,7 @@ const Page = () => {
                   <div style={{ color: 'grey' }}>Barang Keluar</div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              {/* <div style={{ display: 'flex', alignItems: 'center' }}>
                 <div
                   style={{
                     width: '70px',
@@ -864,7 +883,7 @@ const Page = () => {
                   </div>
                   <div style={{ color: 'grey' }}>Barang Rusak</div>
                 </div>
-              </div>
+              </div> */}
             </Card>
           </Col>
         </Row>
@@ -904,15 +923,24 @@ const Page = () => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <img
-                        src="ikon.png"
-                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        src={
+                          akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                            ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                            : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                        }
+                        style={{
+                          width: '40px',
+                          marginRight: '15px',
+
+                          borderRadius: '50%',
+                        }}
                         alt="ikon"
                       />
                       <div>
-                        <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        <div style={{ fontSize: '12px', color: 'black' }}>
                           Halo, {akun?.data?.nama}
                         </div>
-                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
                           {akun?.data?.peran?.Role}
                         </div>
                       </div>
@@ -945,15 +973,24 @@ const Page = () => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <img
-                        src="ikon.png"
-                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        src={
+                          akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                            ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                            : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                        }
+                        style={{
+                          width: '40px',
+                          marginRight: '15px',
+
+                          borderRadius: '50%',
+                        }}
                         alt="ikon"
                       />
                       <div>
-                        <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
+                        <div style={{ fontSize: '12px', color: 'black' }}>
                           Halo, {akun?.data?.nama}
                         </div>
-                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
                           {akun?.data?.peran?.Role}
                         </div>
                       </div>
@@ -986,15 +1023,24 @@ const Page = () => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <img
-                        src="ikon.png"
-                        style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
+                        src={
+                          akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                            ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                            : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                        }
+                        style={{
+                          width: '40px',
+                          marginRight: '15px',
+
+                          borderRadius: '50%',
+                        }}
                         alt="ikon"
                       />
                       <div>
-                        <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
+                        <div style={{ fontSize: '12px', color: 'black' }}>
                           Halo, {akun?.data?.nama}
                         </div>
-                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
+                        <div style={{ fontSize: '12px', color: 'grey', marginRight: '55px' }}>
                           {akun?.data?.peran?.Role}
                         </div>
                       </div>

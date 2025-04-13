@@ -40,8 +40,15 @@ const url = {
     return `/barang/${id}`;
   },
 
-  getBarangByName(nama: string) {
-    return `/barang/search/by-name?nama=${nama}`;
+  getBarangByName(nama: string, ruanganId?: string) {
+    let url = `/barang/search/by-name?nama=${nama}`;
+    if (ruanganId) {
+      url += `&ruanganId=${ruanganId}`;
+    }
+    return url;
+  },
+  getBarangByKode(kode: string) {
+    return `/barang/search/by-kode?kode=${kode}`;
   },
 };
 
@@ -56,8 +63,11 @@ const hooks = {
   useFoto(photo: string) {
     return useSWR(photo ? url.getFoto(photo) : null, http.fetcher);
   },
-  useBarangByName(nama: string) {
-    return useSWR(url.getBarangByName(nama), http.fetcher);
+  useBarangByName(nama: string, ruanganId?: string) {
+    return useSWR(() => url.getBarangByName(nama, ruanganId), http.fetcher);
+  },
+  useBarangByKode(kode: string) {
+    return useSWR(url.getBarangByKode(kode), http.fetcher);
   },
 };
 

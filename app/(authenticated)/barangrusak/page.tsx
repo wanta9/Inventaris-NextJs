@@ -26,7 +26,8 @@ import { barangRepository } from '#/repository/barang';
 import { ruanganRepository } from '#/repository/ruangan';
 import { Console } from 'console';
 import { set } from 'mobx';
-
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 const { Option } = Select;
 const { Search } = Input;
 const { Item } = Menu;
@@ -40,8 +41,8 @@ interface EditableRowProps {
 interface updateBarangrusak {
   id: string;
   jumlah: number;
-  jmlbarangrusak: number;
-  perbaikan: number;
+  // jmlbarangrusak: number;
+  barangRusakSelesaiDiperbaiki: number;
   tanggalRusak: string;
   tanggalPerbaikan: string;
   status: string;
@@ -64,9 +65,9 @@ interface Item {
   namaBarang: string;
   jumlah: number;
   barangRusak: number;
-  jmlbarangrusak: number;
+
   tanggalRusak: string;
-  perbaikan: number;
+  barangRusakSelesaiDiperbaiki: number;
   tanggalPerbaikan: string;
   keterangan: string;
   status: string;
@@ -160,6 +161,7 @@ const Page: React.FC = () => {
   const [modalEditVisible, setModalEditVisible] = useState(false);
   const [editData, setEditData] = useState<Item | null>(null);
   const [count, setCount] = useState(0);
+  const [selectedBarang, setSelectedBarang] = useState<any | null>(null);
   const [createbarangRusak, setcreatebarangRusak] = useState<createbarangRusak>({
     barangId: '',
     ruanganId: '',
@@ -173,16 +175,16 @@ const Page: React.FC = () => {
   const [updateBarangrusak, setupdateBarangrusak] = useState<updateBarangrusak>({
     id: '',
     jumlah: 0,
-    jmlbarangrusak: 0,
-    perbaikan: 0,
+    barangRusakSelesaiDiperbaiki: 0,
     tanggalRusak: '',
     tanggalPerbaikan: '',
     status: '',
     keterangan: '',
   });
   const [form] = Form.useForm();
-  const { data: listSearchBarangrusak } = barangRusakRepository.hooks.useBarangRusakByName(searchText);
-  console.log( listSearchBarangrusak, 'listSearchBarangrusak');
+  const { data: listSearchBarangrusak } =
+    barangRusakRepository.hooks.useBarangRusakByName(searchText);
+  console.log(listSearchBarangrusak, 'listSearchBarangrusak');
   const { data: listBarangRusak } = barangRusakRepository.hooks.useBarangRusak();
   console.log(listBarangRusak, 'listBarangRusak');
   const { data: listBarang } = barangRepository.hooks.useBarang();
@@ -192,8 +194,8 @@ const Page: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState('');
   const [barangRusak, setJumlah] = useState<string | number>('');
-  const [jmlbarangrusak, setJmlbarangrusak] = useState<string | number>('');
-  const [perbaikan, setPerbaikan] = useState<string | number>('');
+  // const [jmlbarangrusak, setJmlbarangrusak] = useState<string | number>('');
+  const [barangRusakSelesaiDiperbaiki, setPerbaikan] = useState<string | number>('');
   const [status, setStatus] = useState('');
   const [tanggalRusak, settanggalRusak] = useState('');
   const [tanggalPerbaikan, settanggalPerbaikan] = useState('');
@@ -328,8 +330,8 @@ const Page: React.FC = () => {
       setError(null);
       const data = {
         jumlah: updateBarangrusak.jumlah,
-        jmlbarangrusak: updateBarangrusak.jmlbarangrusak,
-        perbaikan: updateBarangrusak.perbaikan,
+
+        barangRusakSelesaiDiperbaiki: updateBarangrusak.barangRusakSelesaiDiperbaiki,
         tanggalRusak: updateBarangrusak.tanggalRusak,
         tanggalPerbaikan: updateBarangrusak.tanggalPerbaikan,
         keterangan: updateBarangrusak.keterangan,
@@ -371,8 +373,8 @@ const Page: React.FC = () => {
     form.setFieldsValue({
       id: record.id,
       jumlah: record.jumlah,
-      jmlbarangrusak: record.jmlbarangrusak,
-      perbaikan: record.perbaikan,
+
+      barangRusakSelesaiDiperbaiki: record.barangRusakSelesaiDiperbaiki,
       tanggalRusak: formattanggalRusak,
       tanggalPerbaikan: formattanggalPerbaikan,
       keterangan: record.keterangan,
@@ -380,8 +382,7 @@ const Page: React.FC = () => {
 
     setId(record.id);
     setJumlah(record.jumlah);
-    setJmlbarangrusak(record.jmlbarangrusak);
-    setPerbaikan(record.perbaikan);
+    setPerbaikan(record.barangRusakSelesaiDiperbaiki);
     settanggalRusak(record.tanggalRusak);
     settanggalPerbaikan(record.tanggalPerbaikan);
     setketerangan(record.keterangan);
@@ -422,13 +423,24 @@ const Page: React.FC = () => {
       render: (status: string, record: any) => (
         <Button
           style={{
-            backgroundColor: record.Status === 'rusak' ? '#FFEAE7' : 
-            record.status === 'diperbaiki' ? '#E4F8D4' : undefined,
-            borderColor: record.Status === 'rusak' ? '#FFA7A7' : 
-            record.status === 'diperbaiki' ? '#A2E181' : undefined,
-            color: record.Status === 'rusak' ? '#FF6C6C' : 
-            record.status === 'diperbaiki' ? '#5BFF00' : undefined,
-            
+            backgroundColor:
+              record.Status === 'rusak'
+                ? '#FFEAE7'
+                : record.status === 'diperbaiki'
+                ? '#E4F8D4'
+                : undefined,
+            borderColor:
+              record.Status === 'rusak'
+                ? '#FFA7A7'
+                : record.status === 'diperbaiki'
+                ? '#A2E181'
+                : undefined,
+            color:
+              record.Status === 'rusak'
+                ? '#FF6C6C'
+                : record.status === 'diperbaiki'
+                ? '#5BFF00'
+                : undefined,
           }}
         >
           {status}
@@ -448,7 +460,12 @@ const Page: React.FC = () => {
                 e.stopPropagation(); // Menghentikan penyebaran klik ke baris lain
                 handleEdit(record); // Memanggil fungsi handleEdit saat tombol Edit diklik
               }}
-              icon={<img src="/logoEdit.svg" style={{ width: '19px', height: '19px', marginLeft: '80px' }} />}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '19px', height: '19px', marginLeft: '80px' }}
+                />
+              }
             />
           </span>
         );
@@ -477,35 +494,35 @@ const Page: React.FC = () => {
       <title>Barang Rusak</title>
       <h1 style={{ fontSize: '25px', fontWeight: 'bold' }}>Barang Rusak</h1>
       <Card style={{ marginTop: '100px', borderRadius: '30px' }}>
-          <div ref={searchRef}>
-            <Search
-              placeholder="Telusuri Barang Rusak"
-              className="custom-search"
-              allowClear
-              enterButton
-              onSearch={handleSearch}
-              style={{ width: 300, height: '40px', marginTop: '20px', marginRight: '950px' }}
-            />
-          </div>
-          <Button
-            type="primary"
-            onClick={handleButtonClick}
-            icon={<PlusOutlined  style={{ marginTop: '7px', marginLeft: '20px' }}/>}
-            style={{
-              backgroundColor: 'white',
-              boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
-              color: 'black',
-              marginRight: '20px',
-              width: '200px',
-              height: '40px',
-              marginTop: '20px',
-              display : 'flex',
-              marginLeft : 'auto',
-              bottom: '65px',
-            }}
-          >
-            <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px' }}>Barang Rusak</span>
-          </Button>
+        <div ref={searchRef}>
+          <Search
+            placeholder="Telusuri Barang Rusak"
+            className="custom-search"
+            allowClear
+            enterButton
+            onSearch={handleSearch}
+            style={{ width: 300, height: '40px', marginTop: '20px', marginRight: '950px' }}
+          />
+        </div>
+        <Button
+          type="primary"
+          onClick={handleButtonClick}
+          icon={<PlusOutlined style={{ marginTop: '7px', marginLeft: '20px' }} />}
+          style={{
+            backgroundColor: 'white',
+            boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
+            color: 'black',
+            marginRight: '20px',
+            width: '200px',
+            height: '40px',
+            marginTop: '20px',
+            display: 'flex',
+            marginLeft: 'auto',
+            bottom: '65px',
+          }}
+        >
+          <span style={{ marginLeft: '10px', fontFamily, marginTop: '3px' }}>Barang Rusak</span>
+        </Button>
         <Table
           rowClassName={() => 'editable-row'}
           bordered
@@ -542,7 +559,7 @@ const Page: React.FC = () => {
                 labelAlign="left"
                 labelCol={{ span: 7 }}
                 wrapperCol={{ span: 15 }}
-                style={{ marginLeft: '20px',  }}
+                style={{ marginLeft: '20px' }}
                 rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
               >
                 <Input
@@ -555,34 +572,7 @@ const Page: React.FC = () => {
                   }
                 />
               </Form.Item>
-              <Form.Item
-                name="jmlbarangrusak"
-                label={
-                  <span>
-                    Jumlah barang
-                    <br />
-                    rusak
-                  </span>
-                }
-                colon={false}
-                labelAlign="left"
-                labelCol={{ span: 7 }}
-                wrapperCol={{ span: 15 }}
-                style={{ marginLeft: '20px' }}
-                rules={[{ required: true, message: 'Tolong isi jumlah!' }]}
-              >
-                <Input
-                  placeholder="Jumlah Barang Rusak"
-                  style={{ width: '100%', height: '40px' }}
-                  value={updateBarangrusak.jmlbarangrusak}
-                  onChange={(e) =>
-                    setupdateBarangrusak({
-                      ...updateBarangrusak,
-                      jmlbarangrusak: Number(e.target.value),
-                    })
-                  }
-                />
-              </Form.Item>
+
               <Form.Item
                 name="perbaikan"
                 label={
@@ -602,11 +592,11 @@ const Page: React.FC = () => {
                 <Input
                   placeholder="Jumlah Barang Perbaikan"
                   style={{ width: '100%', height: '40px' }}
-                  value={updateBarangrusak.perbaikan}
+                  value={updateBarangrusak.barangRusakSelesaiDiperbaiki}
                   onChange={(e) =>
                     setupdateBarangrusak({
                       ...updateBarangrusak,
-                      perbaikan: Number(e.target.value),
+                      barangRusakSelesaiDiperbaiki: Number(e.target.value),
                     })
                   }
                 />
@@ -648,15 +638,15 @@ const Page: React.FC = () => {
                 <DatePicker
                   placeholder="Tanggal Perbaikan"
                   style={{ width: '100%', height: '40px', marginLeft: '30px' }}
-                  // value={
-                  //   updateBarangrusak.tanggalRusak
-                  //     ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD').isValid()
-                  //       ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD')
-                  //       : null
-                  //     : null
-                  // }
-                  // onChange={handleDateChange}
-                  // format="YYYY-MM-DD"
+                  value={
+                    updateBarangrusak.tanggalRusak
+                      ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD').isValid()
+                        ? dayjs(updateBarangrusak.tanggalRusak, 'YYYY-MM-DD')
+                        : null
+                      : null
+                  }
+                  onChange={handleDateChange}
+                  format="YYYY-MM-DD"
                 />
               </Form.Item>
               <Form.Item
@@ -731,7 +721,12 @@ const Page: React.FC = () => {
               >
                 <Select
                   placeholder="Pilih Kode Barang"
-                  style={{ width: '100%', height: '40px', textAlign: 'left', borderColor: 'black' }}
+                  style={{ width: '100%', height: '40px', textAlign: 'left' }}
+                  onChange={(value) => {
+                    const selected = listBarang?.data?.find((barang: any) => barang.id === value);
+                    setSelectedBarang(selected); // simpan data barang lengkap
+                    form.setFieldValue('barangId', value); // update field form
+                  }}
                 >
                   {listBarang?.data?.map((barang: any) => (
                     <Option key={barang.id} value={barang.id}>
@@ -797,9 +792,9 @@ const Page: React.FC = () => {
                   placeholder="Pilih Ruangan"
                   style={{ width: '100%', height: '40px', textAlign: 'left' }}
                 >
-                  {listRuangan?.data?.map((ruangan) => (
-                    <Option key={ruangan.id} value={ruangan.id}>
-                      {ruangan.Letak_Barang}
+                  {selectedBarang?.ruanganBarang?.map((rb) => (
+                    <Option key={rb.ruangan.id} value={rb.ruangan.id}>
+                      {rb.ruangan.Letak_Barang}
                     </Option>
                   ))}
                 </Select>
@@ -852,129 +847,167 @@ const Page: React.FC = () => {
           </div>
         </Form>
       </Modal>
-      {role === 'admin' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '200px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
-                    </div>
-                  </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'petugas' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'peminjam' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '55px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

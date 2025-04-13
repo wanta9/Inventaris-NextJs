@@ -8,6 +8,8 @@ import type { FormInstance } from 'antd';
 import { ruanganRepository } from '#/repository/ruangan';
 import { useRouter } from 'next/navigation';
 import { akunRepository } from '#/repository/akun';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-akun/${photo}`;
 
 const { Item } = Menu;
 
@@ -24,7 +26,7 @@ interface createLetakbarang {
   Letak_Barang: string;
 }
 
-interface Item {  
+interface Item {
   id: string;
   Letak_Barang: string;
 }
@@ -83,7 +85,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     }
   }, [editing]);
 
-
   let childNode = children;
 
   if (editable) {
@@ -98,7 +99,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
           },
         ]}
       >
-        <Input ref={inputRef}/>
+        <Input ref={inputRef} />
       </Form.Item>
     ) : (
       <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
@@ -135,12 +136,12 @@ const Page: React.FC = () => {
     console.log('data values: ', values);
     try {
       setLoading(true);
-      setError(null); 
+      setError(null);
       const data = {
         Letak_Barang: createLetakbarang.Letak_Barang.toUpperCase(),
       };
       const request = await ruanganRepository.api.ruangan(data);
-      if (request.status === 400) { 
+      if (request.status === 400) {
         setError(request.body.message); // Set pesan error
       } else {
         message.success('berhasil Menambahkan Letak Barang!');
@@ -167,7 +168,7 @@ const Page: React.FC = () => {
         Letak_Barang: upperCaseLetak_Barang,
       };
       const request = await ruanganRepository.api.updateRuangan(id, data);
-      if (request.status === 400) { 
+      if (request.status === 400) {
         setError(request.body.message); // Set error message
       } else {
         message.success('Berhasil Mengedit Letak Barang!');
@@ -183,7 +184,6 @@ const Page: React.FC = () => {
       setLoading(false);
     }
   };
-  
 
   const router = useRouter();
 
@@ -257,7 +257,12 @@ const Page: React.FC = () => {
             <Button
               type="link"
               onClick={() => handleEdit(record)}
-              icon={ <img src="/logoEdit.svg" style={{ width: '18px', height: '18px', marginLeft: '22px' }}/>}
+              icon={
+                <img
+                  src="/logoEdit.svg"
+                  style={{ width: '18px', height: '18px', marginLeft: '22px' }}
+                />
+              }
             />
           </span>
         );
@@ -333,14 +338,20 @@ const Page: React.FC = () => {
         />
         <Modal
           title="Tambah Letak Barang"
-          style={{ textAlign: 'center'}}
+          style={{ textAlign: 'center' }}
           visible={modalVisible}
           centered
           onCancel={handleModalCancel}
           footer={false}
         >
           <Form form={form} layout="horizontal" onFinish={() => onFinish(id)}>
-            <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
+            <Form.Item
+              label="Nama Ruangan"
+              style={{ marginTop: '50px' }}
+              colon={false}
+              labelCol={{ span: 7 }}
+              wrapperCol={{ span: 16 }}
+            >
               <Input
                 value={createLetakbarang.Letak_Barang}
                 onChange={(e) =>
@@ -350,37 +361,37 @@ const Page: React.FC = () => {
                 className="uppercase-input"
               />
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    backgroundColor: '#582DD2',
-                    display: 'absolute',
-                    top: '10px',
-                    right: '-125px',
-                  }}
-                >
-                  <span>Simpan</span>
-                </Button>
-                <Button
-                  type="default"
-                  onClick={handleModalCancel}
-                  style={{
-                    display: 'absolute',
-                    left: '-25px',
-                    top: '10px',
-                    borderColor: 'black',
-                    color: 'black',
-                  }}
-                >
-                  <span>Batal</span>
-                </Button>
-              </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative' }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  backgroundColor: '#582DD2',
+                  display: 'absolute',
+                  top: '10px',
+                  right: '-125px',
+                }}
+              >
+                <span>Simpan</span>
+              </Button>
+              <Button
+                type="default"
+                onClick={handleModalCancel}
+                style={{
+                  display: 'absolute',
+                  left: '-25px',
+                  top: '10px',
+                  borderColor: 'black',
+                  color: 'black',
+                }}
+              >
+                <span>Batal</span>
+              </Button>
+            </Form.Item>
           </Form>
         </Modal>
 
-    {/* Modal Edit */}
+        {/* Modal Edit */}
         <Modal
           title="Edit Letak Barang"
           style={{ textAlign: 'center' }}
@@ -389,13 +400,14 @@ const Page: React.FC = () => {
           onCancel={handleModalCancel}
           footer={null}
         >
-          <Form 
-          form={form}
-          layout="horizontal" 
-          onFinish={() => onFinishEdit(id)}
-
-          >
-            <Form.Item label="Nama Ruangan" style={{ marginTop: '50px' }} colon={false} labelCol={{ span: 7 }} wrapperCol={{ span: 16  }}>
+          <Form form={form} layout="horizontal" onFinish={() => onFinishEdit(id)}>
+            <Form.Item
+              label="Nama Ruangan"
+              style={{ marginTop: '50px' }}
+              colon={false}
+              labelCol={{ span: 7 }}
+              wrapperCol={{ span: 16 }}
+            >
               <Input
                 placeholder="Masukkan letak barang"
                 className="uppercase-input"
@@ -405,159 +417,197 @@ const Page: React.FC = () => {
                 }
               />
             </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative'}}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{
-                    backgroundColor: '#582DD2',
-                    display: 'absolute',
-                    top: '10px',
-                    right: '-125px',
-                  }}
-                >
-                  <span>Simpan</span>
-                </Button>
-                <Button
-                  type="default"
-                  onClick={handleModalCancel}
-                  style={{
-                    display: 'absolute',
-                    left: '-25px',
-                    top: '10px',
-                    borderColor: 'black',
-                    color: 'black',
-                  }}
-                >
-                  <span>Batal</span>
-                </Button>
-              </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ display: 'relative' }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{
+                  backgroundColor: '#582DD2',
+                  display: 'absolute',
+                  top: '10px',
+                  right: '-125px',
+                }}
+              >
+                <span>Simpan</span>
+              </Button>
+              <Button
+                type="default"
+                onClick={handleModalCancel}
+                style={{
+                  display: 'absolute',
+                  left: '-25px',
+                  top: '10px',
+                  borderColor: 'black',
+                  color: 'black',
+                }}
+              >
+                <span>Batal</span>
+              </Button>
+            </Form.Item>
           </Form>
         </Modal>
       </Card>
-      {role === 'admin' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '200px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
-                    </div>
-                  </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'petugas' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '20px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+      <div
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '100px',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {/* menu inpo */}
+        {role === 'admin' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
-      {role === 'peminjam' && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '100px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <Dropdown overlay={menu} placement="bottomCenter">
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                style={{
-                  width: '190px',
-                  height: '50px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    src="ikon.png"
-                    style={{ width: '70px', marginRight: '5px', marginLeft: '-10px' }}
-                    alt="ikon"
-                  />
-                  <div>
-                    <div style={{ fontSize: '12px', color: 'black', marginRight: '70px' }}>
-                      Halo, {akun?.data?.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: 'grey', marginRight: '75px' }}>
-                      {akun?.data?.peran?.Role}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'petugas' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '-20px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '200px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '60px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Button>
-            </div>
-          </Dropdown>
-        </div>
-      )}
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+        {role === 'peminjam' && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '20px',
+              right: '10px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Dropdown overlay={menu} placement="bottomCenter">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Button
+                  style={{
+                    width: '190px',
+                    height: '50px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                      src={
+                        akun?.data?.gambar && akun?.data?.gambar !== 'null'
+                          ? imgUrl(akun?.data?.gambar) // Menggunakan imgUrl untuk gambar yang valid
+                          : '/cat.jpg' // Gambar fallback jika tidak ada gambar
+                      }
+                      style={{
+                        width: '40px',
+                        marginRight: '15px',
+
+                        borderRadius: '50%',
+                      }}
+                      alt="ikon"
+                    />
+                    <div>
+                      <div style={{ fontSize: '12px', color: 'black' }}>
+                        Halo, {akun?.data?.nama}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'grey', marginRight: '55px' }}>
+                        {akun?.data?.peran?.Role}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            </Dropdown>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

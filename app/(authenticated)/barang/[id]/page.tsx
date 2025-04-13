@@ -11,6 +11,8 @@ import { values } from 'mobx';
 import { peminjamRepository } from '#/repository/peminjam';
 import { koleksiRepository } from '#/repository/koleksi';
 import { parseJwt } from '#/utils/parseJwt';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 // const { Option } = Select;
 interface createKoleksi {
@@ -193,9 +195,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       {(role === 'admin' || role === 'petugas') && (
         <Card
           style={{
-            width: '80%',
-            height: '630px',
-            marginTop: '50px',
+            width: '85%',
+            height: '730px',
+            marginTop: '35px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
         >
@@ -216,7 +218,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   bottom: '',
                 }}
               >
-                <img src="/kk.png" style={{ width: '70%', borderRadius: '20px' }} />
+                <img
+                  src={imgUrl(ruanganBarangById?.data?.gambar)}
+                  style={{
+                    width: '70%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                  }}
+                />
               </div>
             </Col>
             <Col span={12} style={{ paddingLeft: '40px', marginTop: '5px' }}>
@@ -283,9 +293,8 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                 fontWeight,
                 fontFamily,
                 fontSize: '17px',
-                overflowY: wordCount > 100 ? 'scroll' : 'visible',
-                maxHeight: wordCount > 100 ? '100px' : 'auto',
-                whiteSpace: 'pre-wrap',
+                maxHeight: '120px', // Menentukan tinggi maksimum elemen
+                overflowY: 'auto',
               }}
             >
               {ruanganBarangById?.data?.deskripsi}
@@ -297,9 +306,9 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       {role === 'peminjam' && (
         <Card
           style={{
-            width: '80%',
-            height: '650px',
-            marginTop: '50px',
+            width: '85%',
+            height: '690px',
+            marginTop: '40px',
             boxShadow: '0px 7px 10px rgba(0, 0, 0, 0.1)',
           }}
         >
@@ -318,7 +327,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   marginTop: '30px',
                 }}
               >
-                <img src="/kk.png" style={{ width: '55%', borderRadius: '20px' }} />
+                <img
+                  src={imgUrl(ruanganBarangById?.data?.gambar)}
+                  style={{
+                    width: '70%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    // borderRadius: '20px',
+                  }}
+                />
               </div>
             </Col>
             <Col xs={24} md={12} style={{ paddingLeft: '40px', marginTop: '20px' }}>
@@ -366,7 +383,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               style={{
                 fontWeight,
                 fontSize: '20px',
-                marginTop: '80px',
+                marginTop: '20px',
                 marginBottom: '10px',
                 marginLeft: '10px',
               }}
@@ -380,9 +397,11 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
               style={{
                 fontWeight,
                 fontFamily,
-                fontSize: '15px',
-                whiteSpace: 'pre-wrap',
+                fontSize: '17px',
+                maxHeight: '120px', // Menentukan tinggi maksimum elemen
+                overflowY: 'auto',
                 marginLeft: '20px',
+                marginBottom: '30px',
               }}
             >
               {ruanganBarangById?.data?.deskripsi}
@@ -434,7 +453,15 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
                   bottom: '',
                 }}
               >
-                <img src="/kk.png" style={{ width: '50%', borderRadius: '20px' }} />
+                <img
+                  src={imgUrl(ruanganBarangById?.data?.gambar)}
+                  style={{
+                    width: '70%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                  }}
+                />
               </div>
             </Col>
             <Col span={12} style={{ paddingLeft: '40px', marginTop: '70px' }}>
@@ -605,7 +632,7 @@ const Detailbarang = ({ params }: { params: { id: string } }) => {
       </Modal>
 
       <div
-        style={{ display: 'flex', justifyContent: 'flex-end', width: '80%' }}
+        style={{ display: 'flex', justifyContent: 'flex-end', width: '80%', marginLeft: '70px' }}
         onClick={() => kembali()}
       >
         <Button

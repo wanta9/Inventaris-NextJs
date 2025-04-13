@@ -9,6 +9,8 @@ import { useParams } from 'next/navigation';
 import { barangMasukRepository } from '#/repository/barangmasuk';
 import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
+import { config } from '#/config/app';
+export const imgUrl = (photo: string) => `${config.baseUrl}/upload/get-barang/${photo}`;
 
 const Editpeminjam = ({ params }: { params: { id: string } }) => {
   // const params = useParams();
@@ -43,7 +45,7 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
           <Col span={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <div
               style={{
-                width: '100%',
+                width: '80%',
                 height: '400px',
                 backgroundColor: '#D9D9D9',
                 borderRadius: '20px',
@@ -52,7 +54,16 @@ const Editpeminjam = ({ params }: { params: { id: string } }) => {
                 alignItems: 'center',
               }}
             >
-              <img src="/kk.png" alt="gambar" style={{ width: '70%', borderRadius: '20px' }} />
+              <img
+                src={imgUrl(barangMasukById?.data?.ruanganBarang?.barang?.gambar)}
+                alt="gambar"
+                style={{
+                  width: '70%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '10px',
+                }}
+              />
             </div>
           </Col>
           <Col span={12} style={{ paddingLeft: '40px', marginBottom: '50px' }}>

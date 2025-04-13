@@ -172,13 +172,13 @@ const Riwayat = () => {
       </div>
       <Card style={{ marginTop: '100px' }}>
         <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-          <Search
+          {/* <Search
             placeholder="Cari nama, nama pengguna, atau NISN"
             allowClear
             onSearch={handleSearch}
             style={{ width: 300 }}
-          />
-          <Select
+          /> */}
+          {/* <Select
             placeholder="Filter Status"
             style={{ width: 200 }}
             onChange={handleStatusFilterChange}
@@ -187,7 +187,7 @@ const Riwayat = () => {
             <Option value="Selesai">Selesai</Option>
             <Option value="Ditolak">Ditolak</Option>
             <Option value="Telat">Telat</Option>
-          </Select>
+          </Select> */}
         </div>
         {(role === 'admin' || role === 'petugas') && (
           <Table

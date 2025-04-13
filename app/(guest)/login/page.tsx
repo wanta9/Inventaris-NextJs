@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Card, Col, Form, Input, Row, message } from 'antd';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { LockOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { title } from 'process';
 import { akunRepository } from '#/repository/akun';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,10 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // const logout = () => {
+  //   localStorage.removeItem('access_token');
+  //   router.push('/login');
+  // };
   // Check if the user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -101,6 +105,9 @@ const Login = () => {
             >
               Masuk
             </Button>
+            {/* <Button icon={<LogoutOutlined />} onClick={logout} danger size="small">
+              Logout
+            </Button> */}
             <div
               style={{
                 textAlign: 'center',
